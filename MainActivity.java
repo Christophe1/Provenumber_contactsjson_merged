@@ -46,6 +46,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static com.example.tutorialspoint.R.id.txtSMSMayApply;
+
 public class MainActivity extends AppCompatActivity  {
 
     // this is the php file name where to insert into the database, the user's phone number
@@ -93,6 +95,8 @@ public class MainActivity extends AppCompatActivity  {
     String CountryCode;
     String phoneNoofUserbeforeE164;
 
+    //TextView txtSMSMayApply;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +110,8 @@ public class MainActivity extends AppCompatActivity  {
        buttonRegister = (Button) findViewById(R.id.buttonRegister);
 
         txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
+
+        //txtSMSMayApply = (TextView) findViewById(R.id.txtSMSMayApply);
 
         //buttonRegister.setOnClickListener(this);
 
@@ -199,9 +205,11 @@ public class MainActivity extends AppCompatActivity  {
                     //save the phone number so this process is skipped in future
                     SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
+                    //phoneNoofUser String is unique, the username of this particular user
                     editor.putString("phonenumberofuser", phoneNoofUser);
                     editor.commit();
 
+                    //txtSMSMayApply.setText(phoneNoofUser);
 
                     //Here we want to add the user's phone number to the user table
                     //using Volley
@@ -284,7 +292,7 @@ public class MainActivity extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
+                       // Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -458,11 +466,6 @@ public class MainActivity extends AppCompatActivity  {
 //                }
         }
 
-        //convert all contacts on the user's phone to JSON
-     //   convertNumberstoJSON();
-        ;
-// cursor.close();
-//return null;
     }
 
 
@@ -530,9 +533,14 @@ public class MainActivity extends AppCompatActivity  {
                 //The KEY, KEY_PHONENUMBER = "phonenumber" . In PHP we will have $_POST["phonenumber"]
                 //The VALUE, phonenumber, will be of the form "12345678"
                 params.put(KEY_PHONENUMBER_CONTACT,jsonArrayContacts.toString());
+                //We are also posting the user's phone number in this request, so we can get
+                //matching user_id for checking contacts
+                params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
+
                 System.out.println(Collections.singletonList(params));
                 //System.out.println("contact is : " + jsonArrayContacts);
                 return params;
+
 
 
             }
