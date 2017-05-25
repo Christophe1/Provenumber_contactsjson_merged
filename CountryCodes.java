@@ -1,8 +1,6 @@
 package com.example.chris.tutorialspoint;
 
 import android.content.Intent;
-import android.inputmethodservice.Keyboard;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +8,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -58,7 +55,7 @@ public class CountryCodes extends AppCompatActivity {
               //  Toast.makeText(getApplicationContext(),text, Toast.LENGTH_LONG).show();
 
                 //start Main activity, taking the Country Code
-                Intent myIntent = new Intent(CountryCodes.this, MainActivity.class);
+                Intent myIntent = new Intent(CountryCodes.this, VerifyUserPhoneNumber.class);
                 myIntent.putExtra("CountryCode", parts[0]);
                 CountryCodes.this.startActivity(myIntent);
             }

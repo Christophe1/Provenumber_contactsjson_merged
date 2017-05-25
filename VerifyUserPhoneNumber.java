@@ -5,18 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
-import android.app.Activity;
 import android.provider.ContactsContract;
-import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,9 +41,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static com.example.tutorialspoint.R.id.txtSMSMayApply;
-
-public class MainActivity extends AppCompatActivity  {
+public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
     // this is the php file name where to insert into the database, the user's phone number
     private static final String REGISTER_URL = "http://www.populisto.com/insert.php";
@@ -137,9 +130,9 @@ public class MainActivity extends AppCompatActivity  {
         }
         else {
             // if it is registered then start the next activity
-            Intent myIntent = new Intent(MainActivity.this, PopulistoContactList.class);
+            Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
             myIntent.putExtra("keyName", phoneNoofUserCheck);
-            MainActivity.this.startActivity(myIntent);
+            VerifyUserPhoneNumber.this.startActivity(myIntent);
 
 
         }
@@ -159,9 +152,9 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
 
-                Intent myIntent = new Intent(MainActivity.this, CountryCodes.class);
+                Intent myIntent = new Intent(VerifyUserPhoneNumber.this, CountryCodes.class);
                // myIntent.putExtra("key", value); //Optional parameters
-                MainActivity.this.startActivity(myIntent);
+                VerifyUserPhoneNumber.this.startActivity(myIntent);
             }
         });
 
@@ -220,9 +213,9 @@ public class MainActivity extends AppCompatActivity  {
                     convertNumberstoJSON();
 
                     //start next activity, taking the phone number
-                    Intent myIntent = new Intent(MainActivity.this, PopulistoContactList.class);
+                    Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
                     myIntent.putExtra("keyName", phoneNoofUser);
-                    MainActivity.this.startActivity(myIntent);
+                    VerifyUserPhoneNumber.this.startActivity(myIntent);
 
 
                 }
@@ -292,13 +285,13 @@ public class MainActivity extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                       // Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
+                       // Toast.makeText(VerifyUserPhoneNumber.this, response, Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(VerifyUserPhoneNumber.this, error.toString(), Toast.LENGTH_LONG).show();
 
                     }
 
@@ -411,7 +404,9 @@ public class MainActivity extends AppCompatActivity  {
 
                     PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
                     try {
-                        Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, "IE");
+                        //if phone number on user's phone is not in E.164 format,
+                        //precede the number with user's country code.
+                        Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, CountryCode);
                         phoneNumberofContact = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
                         //Since you know the country you can format it as follows:
                         //System.out.println(phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164));
@@ -504,14 +499,15 @@ public class MainActivity extends AppCompatActivity  {
     }
 
 
-
+//this will have to be checked every so often as user's may add or delete contacts
+// it's not a static once off thing.
     private void CheckifUserisContact() {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, CHECKPHONENUMBER_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
+                        Toast.makeText(VerifyUserPhoneNumber.this, response, Toast.LENGTH_LONG).show();
                         //textView.append(response + " \n");
 
                     }
@@ -519,7 +515,7 @@ public class MainActivity extends AppCompatActivity  {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(VerifyUserPhoneNumber.this, error.toString(), Toast.LENGTH_LONG).show();
 
                     }
 
