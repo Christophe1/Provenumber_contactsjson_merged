@@ -35,15 +35,20 @@ public class PopulistoListView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_populisto_contact_list);
 
-       // textphonenumber = (TextView) findViewById(R.id.textView3);
+        // textphonenumber = (TextView) findViewById(R.id.textView3);
 
         Intent myIntent = this.getIntent();
         //phone number of the user, get it from VerifyPhoneNumber activity
         phoneNoofUser = myIntent.getStringExtra("keyName");
 
-       // textphonenumber.setText(phoneNoofUser);
+        // textphonenumber.setText(phoneNoofUser);
 
+        //Here we want to display the user's reviews in a listview
+        showListView();
 
+    }
+
+    private void showListView() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, SelectUserReviews_URL,
                 new Response.Listener<String>() {
                     @Override
