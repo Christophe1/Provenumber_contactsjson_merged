@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 public class Review {
     private String category, thumbnailUrl, name, phone, comment;
-    private int year;
-    private double rating;
+    private int reviewid;
+  //  private int year;
+  //  private double rating;
     private ArrayList<String> genre;
 
     public Review() {
@@ -19,9 +20,10 @@ public class Review {
         this.name = name;
         this.phone = phone;
         this.comment = comment;
-        this.year = year;
-        this.rating = rating;
+     //   this.year = year;
+     //   this.rating = rating;
         this.genre = genre;
+        this.reviewid = reviewid;
     }
 
     public String getCategory() {
@@ -32,6 +34,7 @@ public class Review {
         this.category = category;
     }
 
+/*
     public String getThumbnailUrl() {
         return thumbnailUrl;
     }
@@ -39,6 +42,7 @@ public class Review {
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
     }
+*/
 
     public String getName() {
         return name;
@@ -48,11 +52,13 @@ public class Review {
         this.name = name;
     }
 
-    public int getYear() {
+    /*public int getYear() {
         return year;
-    }
+    }*/
 
+/*
     public void setYear(int year) {this.year = year;}
+*/
 
     public String getPhone() {
         return phone;
@@ -70,6 +76,15 @@ public class Review {
         this.comment = comment;
     }
 
+    public int getReviewid() {
+        return reviewid;
+    }
+
+    public void setReviewid(int reviewid) {
+        this.reviewid = reviewid;
+    }
+
+/*
     public ArrayList<String> getGenre() {
         return genre;
     }
@@ -77,5 +92,6 @@ public class Review {
     public void setGenre(ArrayList<String> genre) {
         this.genre = genre;
     }
+*/
 
 }

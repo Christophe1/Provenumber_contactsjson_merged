@@ -33,7 +33,7 @@ import java.util.Map;
 
 import static com.android.volley.Request.Method.POST;
 
-public class PopulistoListView extends Activity {
+public class PopulistoListView extends AppCompatActivity {
 
     // this is the php file name where to select from.
     // we will post the user's phone number into Php and get the matching user_id
@@ -77,19 +77,21 @@ public class PopulistoListView extends Activity {
 
         // changing action bar color
         //getActionBar().setBackgroundDrawable(
-        //  new ColorDrawable(Color.parseColor("#1b1b1b")));
+          //new ColorDrawable(Color.parseColor("#1b1b1b")));
 
         // textphonenumber.setText(phoneNoofUser);
 
+        //post the phone number of the logged in user to SelectUserReviews.php and from that
+        //get the logged in user's reviews
         StringRequest stringRequest = new StringRequest(Request.Method.POST, SelectUserReviews_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //hide the 'loading' box
+                        //hide the 'loading' box when the page loads
                         hidePDialog();
-
+                        //post the response of SelectUserReviews.php, which is a string
                         Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
-
+                        //convert the response to a JSON array
                         for (int i = 0; i < response.length(); i++) {
                         try {
                         JSONArray responseObject = new JSONArray(response);
