@@ -69,6 +69,7 @@ public class PopulistoListView extends AppCompatActivity {
 
         Intent myIntent = this.getIntent();
         //phone number of the user, get it from VerifyPhoneNumber activity
+        //this is the number we are posting to php
         phoneNoofUser = myIntent.getStringExtra("keyName");
         //phoneNoofUser="JK Rowling";
 
@@ -97,6 +98,7 @@ public class PopulistoListView extends AppCompatActivity {
                         //toast the response of SelectUserReviews.php, which is a string
                         Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
                         //convert the response to a JSON array
+                        //we need to sort out this error we keep getting in logcat
                         final int numberOfItemsInResp = response.length();
                         for (int i = 0; i < numberOfItemsInResp; i++) {
                             try {
@@ -154,12 +156,12 @@ public class PopulistoListView extends AppCompatActivity {
                 //cast the getItem(position) return value to a review object
                 Review review = (Review) adapter.getItem(position);
                 //if (review.getReviewid() == 50) {
-        /*            Intent i = new Intent(Bienvenida.this, registroAsistencia.class);
-                    i.putExtra("programacion",  item.get_idprogramacion());
-                    i.putExtra("maxhoras",  item.get_maxhoras());
+                   Intent i = new Intent(PopulistoListView.this, ContactView.class);
+                    i.putExtra("category",  review.getCategory());
+                 //   i.putExtra("maxhoras",  item.get_maxhoras());
                     startActivity(i);
-                }
-                else{*/
+              //  }
+              //  else{*/
                     Toast.makeText(PopulistoListView.this, review.getReviewid(), Toast.LENGTH_SHORT).show();
                     //}
 
