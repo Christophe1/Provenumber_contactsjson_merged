@@ -8,12 +8,16 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.example.tutorialspoint.R;
+
+import static com.example.tutorialspoint.R.id.list;
+import static com.example.tutorialspoint.R.layout.list_row;
 
 public class CustomListAdapter extends BaseAdapter {
     private Activity activity;
@@ -25,6 +29,8 @@ public class CustomListAdapter extends BaseAdapter {
         this.activity = activity;
         this.reviews = reviews;
     }
+
+    //public String reviewid;
 
     @Override
     public int getCount() {
@@ -48,7 +54,7 @@ public class CustomListAdapter extends BaseAdapter {
             inflater = (LayoutInflater) activity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null)
-            convertView = inflater.inflate(R.layout.list_row, null);
+            convertView = inflater.inflate(list_row, null);
 
         if (imageLoader == null)
             imageLoader = AppController.getInstance().getImageLoader();
@@ -59,24 +65,29 @@ public class CustomListAdapter extends BaseAdapter {
         TextView phone = (TextView) convertView.findViewById(R.id.phone);
         //TextView genre = (TextView) convertView.findViewById(R.id.genre);
         TextView comment = (TextView) convertView.findViewById(R.id.comment);
-
+        //TextView reviewid = (TextView) convertView.findViewById(R.id.reviewid);
         // getting movie data for the row
-        Review m = reviews.get(position);
+        Review r = reviews.get(position);
 
         // thumbnail image
 //		thumbNail.setImageUrl(m.getThumbnailUrl(), imageLoader);
 
         // category
-        category.setText(m.getCategory());
+        //set the category id in xml to the mysql value that getCategory gives to us etc....
+        category.setText(r.getCategory());
 
         // name
-        name.setText(m.getName());
+        name.setText(r.getName());
 
         // phone
-        phone.setText("Phone: " + m.getPhone());
+        phone.setText("Phone: " + r.getPhone());
 
         // comment
-        comment.setText("Bill says: " + m.getComment());
+        comment.setText("Bill says: " + r.getComment());
+
+        // reviewid
+        //reviewid.setText(r.getReviewid());
+
         // genre
 /*		String genreStr = "";
 		for (String str : m.getGenre()) {

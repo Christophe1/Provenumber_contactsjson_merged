@@ -2,27 +2,33 @@ package com.example.chris.tutorialspoint;
 
 import java.util.ArrayList;
 
+import static java.util.logging.Logger.global;
+
 public class Review {
     private String category, thumbnailUrl, name, phone, comment;
-    private int reviewid;
+    public String reviewid;
+    //int reviewid;
   //  private int year;
   //  private double rating;
     private ArrayList<String> genre;
+    //public static String reviewidtoString;
+   // public static String reviewid;
+
 
     public Review() {
     }
 
     public Review(String category, String thumbnailUrl, String name, String phone,
-                  String comment, int year, double rating,
+                  String comment, int year, String reviewid, double rating,
                   ArrayList<String> genre) {
         this.category = category;
-        this.thumbnailUrl = thumbnailUrl;
+       // this.thumbnailUrl = thumbnailUrl;
         this.name = name;
         this.phone = phone;
         this.comment = comment;
      //   this.year = year;
      //   this.rating = rating;
-        this.genre = genre;
+      //  this.genre = genre;
         this.reviewid = reviewid;
     }
 
@@ -76,12 +82,13 @@ public class Review {
         this.comment = comment;
     }
 
-    public int getReviewid() {
+    public String getReviewid() {
         return reviewid;
     }
 
-    public void setReviewid(int reviewid) {
+    public void setReviewid(String reviewid) {
         this.reviewid = reviewid;
+        //reviewidtoString = String.valueOf(reviewid);
     }
 
 /*

@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -52,7 +54,7 @@ public class PopulistoListView extends AppCompatActivity {
     private CustomListAdapter adapter;
     //private TextView textphonenumber;
     //private String strphone;
-
+//private int reviewid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +77,12 @@ public class PopulistoListView extends AppCompatActivity {
         pDialog.setMessage("Loading...");
         pDialog.show();
 
+        //reviewid
+        //reviewid = r.getReviewid();
+
         // changing action bar color
         //getActionBar().setBackgroundDrawable(
-          //new ColorDrawable(Color.parseColor("#1b1b1b")));
+        //new ColorDrawable(Color.parseColor("#1b1b1b")));
 
         // textphonenumber.setText(phoneNoofUser);
 
@@ -89,33 +94,36 @@ public class PopulistoListView extends AppCompatActivity {
                     public void onResponse(String response) {
                         //hide the 'loading' box when the page loads
                         hidePDialog();
-                        //post the response of SelectUserReviews.php, which is a string
+                        //toast the response of SelectUserReviews.php, which is a string
                         Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
                         //convert the response to a JSON array
-                        for (int i = 0; i < response.length(); i++) {
-                        try {
-                        JSONArray responseObject = new JSONArray(response);
-                            JSONObject obj = responseObject.getJSONObject(i);
-                            Review review = new Review();
-                            review.setCategory(obj.getString("category"));
-                            review.setName(obj.getString("name"));
-                            review.setPhone(obj.getString("phone"));
-                            review.setComment(obj.getString("comment"));
-                           // Toast.makeText(PopulistoListView.this, responseObject.toString(), Toast.LENGTH_LONG).show();
+                        final int numberOfItemsInResp = response.length();
+                        for (int i = 0; i < numberOfItemsInResp; i++) {
+                            try {
+                                JSONArray responseObject = new JSONArray(response);
+                                JSONObject obj = responseObject.getJSONObject(i);
+                                Review review = new Review();
+                                review.setCategory(obj.getString("category"));
+                                review.setName(obj.getString("name"));
+                                review.setPhone(obj.getString("phone"));
+                                review.setComment(obj.getString("comment"));
+                                //we are getting the review id so we can pull extra needed info, like Address etc
+                                review.setReviewid(obj.getString("reviewid"));
+                                // Toast.makeText(PopulistoListView.this, responseObject.toString(), Toast.LENGTH_LONG).show();
 
-                            reviewList.add(review);
+                                reviewList.add(review);
 
-                    }
-                        catch (JSONException e) {
-                            Log.e("MYAPP", "unexpected JSON exception", e);
-                            // Do something to recover ... or kill the app.
+                            } catch (JSONException e) {
+                                Log.e("MYAPP", "unexpected JSON exception", e);
+                                // Do something to recover ... or kill the app.
+                            }
                         }
-                    }
                         // notifying list adapter about data changes
                         // so that it renders the list view with updated data
                         adapter.notifyDataSetChanged();
 
-                       // System.out.println("size of reviewlist " + reviewList.size());
+                        // System.out.println("size of reviewlist " + reviewList.size());
+                        System.out.println("heree it is" + reviewList.toString());
                     }
                 },
                 new Response.ErrorListener() {
@@ -139,8 +147,28 @@ public class PopulistoListView extends AppCompatActivity {
         requestQueue.add(stringRequest);
 
 
-    }
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                //cast the getItem(position) return value to a review object
+                Review review = (Review) adapter.getItem(position);
+                //if (review.getReviewid() == 50) {
+        /*            Intent i = new Intent(Bienvenida.this, registroAsistencia.class);
+                    i.putExtra("programacion",  item.get_idprogramacion());
+                    i.putExtra("maxhoras",  item.get_maxhoras());
+                    startActivity(i);
+                }
+                else{*/
+                    Toast.makeText(PopulistoListView.this, review.getReviewid(), Toast.LENGTH_SHORT).show();
+                    //}
 
+                //}
+            }
+
+
+        });
+    }
 
     @Override
     public void onDestroy() {
