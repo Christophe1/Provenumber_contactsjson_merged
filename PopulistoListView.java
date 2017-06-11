@@ -78,13 +78,6 @@ public class PopulistoListView extends AppCompatActivity {
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        //reviewid
-        //reviewid = r.getReviewid();
-
-        // changing action bar color
-        //getActionBar().setBackgroundDrawable(
-        //new ColorDrawable(Color.parseColor("#1b1b1b")));
-
         // textphonenumber.setText(phoneNoofUser);
 
         //post the phone number of the logged in user to SelectUserReviews.php and from that
