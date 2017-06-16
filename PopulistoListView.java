@@ -88,9 +88,10 @@ public class PopulistoListView extends AppCompatActivity {
                     public void onResponse(String response) {
                         //hide the 'loading' box when the page loads
                         hidePDialog();
-                        //toast the response of SelectUserReviews.php, which is a string
+                        //toast the response of SelectUserReviews.php, which has been converted to a
+                        //JSON array in the Php file with JSON encode
                         Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
-                        //convert the response to a JSON array
+                        //break up the JSON Array into parts
                         //we need to sort out this error we keep getting in logcat
                         final int numberOfItemsInResp = response.length();
                         for (int i = 0; i < numberOfItemsInResp; i++) {
@@ -148,10 +149,10 @@ public class PopulistoListView extends AppCompatActivity {
                                     int position, long id) {
                 //cast the getItem(position) return value to a review object
                 Review review = (Review) adapter.getItem(position);
-                //if (review.getReviewid() == 50) {
+                //we want to pass the review_id of the review being clicked
+                //to the ContactView activity
                    Intent i = new Intent(PopulistoListView.this, ContactView.class);
-                    i.putExtra("category",  review.getCategory());
-                 //   i.putExtra("maxhoras",  item.get_maxhoras());
+                    i.putExtra("review_id",  review.getReviewid());
                     startActivity(i);
               //  }
               //  else{*/

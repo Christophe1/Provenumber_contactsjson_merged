@@ -63,6 +63,7 @@ public class CustomListAdapter extends BaseAdapter {
         TextView category = (TextView) convertView.findViewById(R.id.category);
         TextView name = (TextView) convertView.findViewById(R.id.name);
         TextView phone = (TextView) convertView.findViewById(R.id.phone);
+        //TextView address = (TextView) convertView.findViewById(R.id.address);
         //TextView genre = (TextView) convertView.findViewById(R.id.genre);
         TextView comment = (TextView) convertView.findViewById(R.id.comment);
         //TextView reviewid = (TextView) convertView.findViewById(R.id.reviewid);

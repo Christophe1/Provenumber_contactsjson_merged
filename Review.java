@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import static java.util.logging.Logger.global;
 
 public class Review {
-    private String category, thumbnailUrl, name, phone, comment;
+    private String category, thumbnailUrl, name, phone, address, comment;
     public String reviewid;
     //int reviewid;
   //  private int year;
@@ -18,13 +18,14 @@ public class Review {
     public Review() {
     }
 
-    public Review(String category, String thumbnailUrl, String name, String phone,
-                  String comment, int year, String reviewid, double rating,
+    public Review(String category, String thumbnailUrl, String name, String phone, String address,
+                  String comment, String reviewid, double rating,
                   ArrayList<String> genre) {
         this.category = category;
        // this.thumbnailUrl = thumbnailUrl;
         this.name = name;
         this.phone = phone;
+        this.address = address;
         this.comment = comment;
      //   this.year = year;
      //   this.rating = rating;
@@ -56,6 +57,14 @@ public class Review {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     /*public int getYear() {
