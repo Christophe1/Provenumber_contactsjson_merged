@@ -150,7 +150,8 @@ public class PopulistoListView extends AppCompatActivity {
                 //cast the getItem(position) return value to a review object
                 Review review = (Review) adapter.getItem(position);
                 //we want to pass the review_id of the review being clicked
-                //to the ContactView activity
+                //to the ContactView activity, so we can post it and get more
+                //info for that review - address, comments etc
                    Intent i = new Intent(PopulistoListView.this, ContactView.class);
                     i.putExtra("review_id",  review.getReviewid());
                     startActivity(i);

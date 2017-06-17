@@ -42,12 +42,15 @@ public class ContactView extends AppCompatActivity {
     public static final String KEY_REVIEW_ID = "review_id";
     //the edit button, if the user wants to edit a review
     Button edit;
-    //String getCategory;
-    //String categoryfromListView;
-    private TextView category;
+
+    private TextView categoryname;
+    private TextView namename;
+    private TextView phonename;
+    private TextView addressname;
+    private TextView commentname;
 
     // temporary string to show the parsed response
-    private String jsonResponse;
+    //private String jsonResponse;
 
     //this is the review that hs been clicked in the ListView
     String review_id;
@@ -73,10 +76,12 @@ public class ContactView extends AppCompatActivity {
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        category = (TextView) findViewById(R.id.textViewCategory);
-
-       // category = (TextView) findViewById(R.id.textViewCategory);
-
+        //cast a TextView for each of the field ids in activity_contact_view.xml
+         categoryname = (TextView) findViewById(R.id.textViewCategory);
+         namename = (TextView) findViewById(R.id.textViewName);
+         phonename = (TextView) findViewById(R.id.textViewPhone);
+         addressname = (TextView) findViewById(R.id.textViewAddress);
+         commentname = (TextView) findViewById(R.id.textViewComment);
 
         // textphonenumber.setText(phoneNoofUser);
 
@@ -105,15 +110,22 @@ public class ContactView extends AppCompatActivity {
                             String address = responseObject.getString("address");
                             String comment = responseObject.getString("comment");
 
-                            jsonResponse = "";
+                /*            jsonResponse = "";
                             jsonResponse += "Category: " + category + "\n\n";
                             jsonResponse += "Name: " + name + "\n\n";
                             jsonResponse += "Phone: " + phone + "\n\n";
                             jsonResponse += "Address: " + address + "\n\n";
-                            jsonResponse += "Comment: " + comment + "\n\n";
+                            jsonResponse += "Comment: " + comment + "\n\n";*/
 
-                           // category.setText(jsonResponse);
-                            Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
+                            //assign a textview to each of the fields in the review
+                            categoryname.setText(category);
+                            namename.setText(name);
+                            phonename.setText(phone);
+                            addressname.setText(address);
+                            commentname.setText(comment);
+
+                            //System.out.println("heree it is" + jsonResponse);
+                            //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
 
 
                         } catch (JSONException e) {
@@ -122,6 +134,7 @@ public class ContactView extends AppCompatActivity {
                                     "Error: " + e.getMessage(),
                                     Toast.LENGTH_LONG).show();
                         }
+
                     }
 
                         // System.out.println("size of reviewlist " + reviewList.size());
@@ -181,7 +194,13 @@ public class ContactView extends AppCompatActivity {
                 System.out.println("you clicked it, edit");
             //open the Edit Activity
                 Intent i = new Intent(ContactView.this, EditView.class);
-                i.putExtra("category",  "abctest");
+                //"category" is the key, categoryname.getText() is the
+                // content to pass. etc....
+                i.putExtra("category",  categoryname.getText());
+                i.putExtra("name",  namename.getText());
+                i.putExtra("phone",  phonename.getText());
+                i.putExtra("address",  addressname.getText());
+                i.putExtra("comment",  commentname.getText());
                 startActivity(i);
 
 
