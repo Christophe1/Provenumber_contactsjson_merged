@@ -41,7 +41,7 @@ public class PopulistoListView extends AppCompatActivity {
     // we will post the user's phone number into Php and get the matching user_id
     private static final String SelectUserReviews_URL = "http://www.populisto.com/SelectUserReviews.php";
 
-    //we are posting phoneNoofUser, which in PHP is phonenumberofuser
+    //we are posting phoneNoofUser, the key is phonenumberofuser, which we see in php
     public static final String KEY_PHONENUMBER_USER = "phonenumberofuser";
 
    // private static final String TAG = PopulistoListView.class.getSimpleName();
@@ -133,6 +133,9 @@ public class PopulistoListView extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
+                //phoneNoofUser is the value we get from Android, the user's phonenumber.
+                //the key is "phonenumberofuser". When we see "phonenumberofuser" in our php,
+                //put in phoneNoofUser
                 params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
                 return params;
 
@@ -152,7 +155,7 @@ public class PopulistoListView extends AppCompatActivity {
                 //we want to pass the review_id of the review being clicked
                 //to the ContactView activity, so we can post it and get more
                 //info for that review - address, comments etc
-                   Intent i = new Intent(PopulistoListView.this, ContactView.class);
+                   Intent i = new Intent(PopulistoListView.this, ViewReview.class);
                     i.putExtra("review_id",  review.getReviewid());
                     startActivity(i);
               //  }

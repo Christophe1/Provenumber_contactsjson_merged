@@ -31,12 +31,12 @@ import java.util.Map;
 
 import static com.example.tutorialspoint.R.id.category;
 
-public class ContactView extends AppCompatActivity {
+public class ViewReview extends AppCompatActivity {
 
     // this is the php file name where to select from.
     // we will post the review id of the review in ListView into Php and
     // get the matching details - Category, name, phone, address etc...
-    private static final String ContactView_URL = "http://www.populisto.com/ContactView.php";
+    private static final String ContactView_URL = "http://www.populisto.com/ViewReview.php";
 
     //we are posting review_id, which in PHP is review_id
     public static final String KEY_REVIEW_ID = "review_id";
@@ -52,7 +52,7 @@ public class ContactView extends AppCompatActivity {
     // temporary string to show the parsed response
     //private String jsonResponse;
 
-    //this is the review that hs been clicked in the ListView
+    //this is the review that has been clicked in the ListView
     String review_id;
     private ProgressDialog pDialog;
 
@@ -69,6 +69,8 @@ public class ContactView extends AppCompatActivity {
         //this is the review_id we are posting to php
         review_id = i.getStringExtra("review_id");
         //Toast.makeText(ContactView.this, review_id, Toast.LENGTH_SHORT).show();
+
+
 
 
         pDialog = new ProgressDialog(this);
@@ -96,7 +98,7 @@ public class ContactView extends AppCompatActivity {
                         pDialog.dismiss();
                         //toast the response of ContactView.php, which has been converted to a
                         //JSON object in the Php file with JSON encode
-                        Toast.makeText(ContactView.this, response, Toast.LENGTH_LONG).show();
+                        Toast.makeText(ViewReview.this, response, Toast.LENGTH_LONG).show();
 
                         try {
 
@@ -145,7 +147,7 @@ public class ContactView extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(ContactView.this, error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(ViewReview.this, error.toString(), Toast.LENGTH_LONG).show();
 
                     }
 
@@ -153,7 +155,7 @@ public class ContactView extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                //we are posting review_id into our ContactView.php file,
+                //we are posting review_id into our ViewReview.php file,
                 //to get matching details
                 params.put(KEY_REVIEW_ID, review_id);
                 return params;
@@ -189,11 +191,14 @@ public class ContactView extends AppCompatActivity {
         //for the edit button
         edit = (Button) findViewById(R.id.edit);
 
+
         edit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 System.out.println("you clicked it, edit");
-            //open the Edit Activity
-                Intent i = new Intent(ContactView.this, EditView.class);
+            //open the Edit Activity, pass over the review_id so we can get that reviews
+                //associated fields
+                Intent i = new Intent(ViewReview.this, EditView.class);
+                i.putExtra("review_id",  review_id);
                 //"category" is the key, categoryname.getText() is the
                 // content to pass. etc....
                 i.putExtra("category",  categoryname.getText());
@@ -203,9 +208,23 @@ public class ContactView extends AppCompatActivity {
                 i.putExtra("comment",  commentname.getText());
                 startActivity(i);
 
-
             }
         });
+
+        pDialog.dismiss();
+
+        //update the class with new values from EditView
+        Intent j = getIntent();
+        String new_category_value = j.getStringExtra("category");
+        String new_name_value = j.getStringExtra("name");
+        String new_phone_value = j.getStringExtra("phone");
+        String new_address_value = j.getStringExtra("address");
+        String new_comment_value = j.getStringExtra("comment");
+        categoryname.setText(new_category_value);
+        namename.setText(new_name_value);
+        phonename.setText(new_phone_value);
+        addressname.setText(new_address_value);
+        commentname.setText(new_comment_value);
 
        // System.out.println("the cat is " + getCategory);
 
