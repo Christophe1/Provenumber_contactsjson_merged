@@ -3,11 +3,7 @@ package com.example.chris.tutorialspoint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,26 +13,22 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tutorialspoint.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.tutorialspoint.R.id.category;
-
-public class ViewReview extends AppCompatActivity {
+public class ViewContact extends AppCompatActivity {
 
     // this is the php file name where to select from.
     // we will post the review id of the review in ListView into Php and
     // get the matching details - Category, name, phone, address etc...
-    private static final String ContactView_URL = "http://www.populisto.com/ViewReview.php";
+    private static final String ViewContact_URL = "http://www.populisto.com/ViewContact.php";
 
     //we are posting review_id, which in PHP is review_id
     public static final String KEY_REVIEW_ID = "review_id";
@@ -59,7 +51,7 @@ public class ViewReview extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact_view);
+        setContentView(R.layout.activity_view_contact);
 
         //********************
 
@@ -78,7 +70,7 @@ public class ViewReview extends AppCompatActivity {
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        //cast a TextView for each of the field ids in activity_contact_view.xml
+        //cast a TextView for each of the field ids in activity_view_contact.xml
          categoryname = (TextView) findViewById(R.id.textViewCategory);
          namename = (TextView) findViewById(R.id.textViewName);
          phonename = (TextView) findViewById(R.id.textViewPhone);
@@ -89,7 +81,7 @@ public class ViewReview extends AppCompatActivity {
 
         //post the review_id that has been clicked in the ListView and send it to
         // ContactView.php and from that get other review details, like name, address etc..
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ContactView_URL,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ViewContact_URL,
                 new Response.Listener<String>() {
 
             @Override
@@ -98,7 +90,7 @@ public class ViewReview extends AppCompatActivity {
                         pDialog.dismiss();
                         //toast the response of ContactView.php, which has been converted to a
                         //JSON object in the Php file with JSON encode
-                        Toast.makeText(ViewReview.this, response, Toast.LENGTH_LONG).show();
+                        Toast.makeText(ViewContact.this, response, Toast.LENGTH_LONG).show();
 
                         try {
 
@@ -147,7 +139,7 @@ public class ViewReview extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(ViewReview.this, error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(ViewContact.this, error.toString(), Toast.LENGTH_LONG).show();
 
                     }
 
@@ -155,7 +147,7 @@ public class ViewReview extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                //we are posting review_id into our ViewReview.php file,
+                //we are posting review_id into our ViewContact.php file,
                 //to get matching details
                 params.put(KEY_REVIEW_ID, review_id);
                 return params;
@@ -197,7 +189,7 @@ public class ViewReview extends AppCompatActivity {
                 System.out.println("you clicked it, edit");
             //open the Edit Activity, pass over the review_id so we can get that reviews
                 //associated fields
-                Intent i = new Intent(ViewReview.this, EditView.class);
+                Intent i = new Intent(ViewContact.this, EditContact.class);
                 i.putExtra("review_id",  review_id);
                 //"category" is the key, categoryname.getText() is the
                 // content to pass. etc....

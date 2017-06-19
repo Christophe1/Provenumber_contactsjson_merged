@@ -1,14 +1,13 @@
 package com.example.chris.tutorialspoint;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -18,8 +17,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tutorialspoint.R;
@@ -32,8 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.android.volley.Request.Method.POST;
 
 public class PopulistoListView extends AppCompatActivity {
 
@@ -155,7 +150,7 @@ public class PopulistoListView extends AppCompatActivity {
                 //we want to pass the review_id of the review being clicked
                 //to the ContactView activity, so we can post it and get more
                 //info for that review - address, comments etc
-                   Intent i = new Intent(PopulistoListView.this, ViewReview.class);
+                   Intent i = new Intent(PopulistoListView.this, ViewContact.class);
                     i.putExtra("review_id",  review.getReviewid());
                     startActivity(i);
               //  }
@@ -185,12 +180,20 @@ public class PopulistoListView extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.new_contact:
+                Intent intent = new Intent(PopulistoListView.this, NewContact.class);
+                startActivity(intent);
+                return true;
+        }
+        return false;
+    }
 
     }
 

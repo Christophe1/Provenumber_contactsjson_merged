@@ -1,31 +1,32 @@
 package com.example.chris.tutorialspoint;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.tutorialspoint.R;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class EditView extends AppCompatActivity {
+public class EditContact extends AppCompatActivity {
 
     // this is the php file name where to select from.
     // we will post the category, name, phone, address and comment into Php and
     // save with matching review_id
-    private static final String EditReview_URL = "http://www.populisto.com/EditReview.php";
+    private static final String EditContact_URL = "http://www.populisto.com/EditContact.php";
+
+    private ProgressDialog pDialog;
+
 
     //this is the review of the current activity
     String review_id;
@@ -44,10 +45,9 @@ public class EditView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_view);
+        setContentView(R.layout.activity_edit_contact);
 
-
-        //cast an EditText for each of the field ids in activity_edit_view.xml
+        //cast an EditText for each of the field ids in activity_edit_contact.xmlxml
         //can be edited and changed by the user
         categoryname = (EditText) findViewById(R.id.textViewCategory);
         namename = (EditText) findViewById(R.id.textViewName);
@@ -55,7 +55,8 @@ public class EditView extends AppCompatActivity {
         addressname = (EditText) findViewById(R.id.textViewAddress);
         commentname = (EditText) findViewById(R.id.textViewComment);
 
-        //get the intent we created in ContactView class
+        //get the intent we created in ContactView class, to bring the changes over
+        //to this class
         Intent i = this.getIntent();
         //we need to get review_id to ensure changes made are saved to correct review_id
         review_id = i.getStringExtra("review_id");
@@ -88,16 +89,24 @@ public class EditView extends AppCompatActivity {
         save = (Button) findViewById(R.id.save);
 
        save.setOnClickListener(new View.OnClickListener() {
+
            public void onClick(View view) {
                System.out.println("you clicked it, save");
 
-               //post the review_id in the current activity to EditReview.php and from that
+               pDialog = new ProgressDialog(EditContact.this);
+               // Showing progress dialog for the review being saved
+               pDialog.setMessage("Saving...");
+               pDialog.show();
+
+               //post the review_id in the current activity to EditContact.php and from that
                //get associated values - category, name, phone etc...
-               StringRequest stringRequest = new StringRequest(Request.Method.POST, EditReview_URL,
+               StringRequest stringRequest = new StringRequest(Request.Method.POST, EditContact_URL,
                        new Response.Listener<String>() {
                            @Override
                            public void onResponse(String response) {
-                               Toast.makeText(EditView.this, response, Toast.LENGTH_LONG).show();
+                               //hide the dialogue box when page is saved
+                               pDialog.dismiss();
+                               Toast.makeText(EditContact.this, response, Toast.LENGTH_LONG).show();
                            }
                        },
                        new Response.ErrorListener() {
@@ -132,9 +141,9 @@ public class EditView extends AppCompatActivity {
 
            AppController.getInstance().addToRequestQueue(stringRequest);
 
-                //when saved, go back to the ViewReview class and update with
+                //when saved, go back to the ViewContact class and update with
                //the edited values
-               Intent j = new Intent(EditView.this,ViewReview.class);
+               Intent j = new Intent(EditContact.this,ViewContact.class);
                 j.putExtra("category", categoryname.getText().toString());
                j.putExtra("name", namename.getText().toString());
                j.putExtra("phone", phonename.getText().toString());
@@ -142,6 +151,8 @@ public class EditView extends AppCompatActivity {
                j.putExtra("comment", commentname.getText().toString());
 
                startActivity(j);
+
+               finish();
 
        }
 
