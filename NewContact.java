@@ -61,7 +61,7 @@ public class NewContact extends AppCompatActivity {
         commentname = (EditText) findViewById(R.id.textViewComment);
 
 
-        //categoryname.setText(phoneNoofUserCheck);
+        categoryname.setText(phoneNoofUserCheck);
 
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
@@ -123,7 +123,7 @@ public class NewContact extends AppCompatActivity {
 
                 //when saved, go back to the ViewContact class and update with
                 //the edited values
-                Intent j = new Intent(NewContact.this,ViewContact.class);
+            /*    Intent j = new Intent(NewContact.this,ViewContact.class);
                 j.putExtra("category", categoryname.getText().toString());
                 j.putExtra("name", namename.getText().toString());
                 j.putExtra("phone", phonename.getText().toString());
@@ -132,7 +132,7 @@ public class NewContact extends AppCompatActivity {
 
                 startActivity(j);
 
-                finish();
+                finish();*/
 
             }
 
