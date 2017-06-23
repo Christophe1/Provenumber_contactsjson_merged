@@ -85,7 +85,8 @@ public class PopulistoListView extends AppCompatActivity {
                         hidePDialog();
                         //toast the response of SelectUserReviews.php, which has been converted to a
                         //JSON array in the Php file with JSON encode
-                        Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
+
                         //break up the JSON Array into parts
                         //we need to sort out this error we keep getting in logcat
                         final int numberOfItemsInResp = response.length();

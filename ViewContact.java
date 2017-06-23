@@ -41,6 +41,8 @@ public class ViewContact extends AppCompatActivity {
     private TextView addressname;
     private TextView commentname;
 
+    //for categoryiid we only need the value, don't need to cast it to anything
+    String categoryid;
     // temporary string to show the parsed response
     //private String jsonResponse;
 
@@ -99,6 +101,7 @@ public class ViewContact extends AppCompatActivity {
                             //respective parts
                             JSONObject responseObject = new JSONObject(response);
                             String category = responseObject.getString("category");
+                            String category_id = responseObject.getString("category_id");
                             String name = responseObject.getString("name");
                             String phone = responseObject.getString("phone");
                             String address = responseObject.getString("address");
@@ -117,6 +120,8 @@ public class ViewContact extends AppCompatActivity {
                             phonename.setText(phone);
                             addressname.setText(address);
                             commentname.setText(comment);
+
+                            categoryid = category_id;
 
                             //System.out.println("heree it is" + jsonResponse);
                             //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
@@ -194,7 +199,8 @@ public class ViewContact extends AppCompatActivity {
                 //"category" is the key, categoryname.getText() is the
                 // content to pass. etc....
                 i.putExtra("category",  categoryname.getText());
-                i.putExtra("name",  namename.getText());
+                i.putExtra("category_id",  categoryid);
+                i.putExtra("name", namename.getText());
                 i.putExtra("phone",  phonename.getText());
                 i.putExtra("address",  addressname.getText());
                 i.putExtra("comment",  commentname.getText());

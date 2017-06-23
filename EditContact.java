@@ -1,7 +1,9 @@
 package com.example.chris.tutorialspoint;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -40,12 +42,19 @@ public class EditContact extends AppCompatActivity {
     private EditText commentname;
 
     //string for getting intent info from ContactView class
-    String category, name, phone, address, comment;
+    String categoryid, category, name, phone, address, comment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_contact);
+
+        //(getting user_id a different way)
+        //first of all we want to get the phone number of the current user so we
+        //can post it and then get the user_id in php
+        //get the phone number, stored in an XML file, when the user first registered the app
+        //SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        //final String phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
 
         //cast an EditText for each of the field ids in activity_edit_contact.xmlxml
         //can be edited and changed by the user
@@ -61,8 +70,9 @@ public class EditContact extends AppCompatActivity {
         //we need to get review_id to ensure changes made are saved to correct review_id
         review_id = i.getStringExtra("review_id");
         //get the key, "category", in ContactView activity
-        category = i.getStringExtra("category");
+        categoryid = i.getStringExtra("category");
         //etc..
+        category = i.getStringExtra("category");
         name = i.getStringExtra("name");
         phone = i.getStringExtra("phone");
         address = i.getStringExtra("address");
@@ -119,6 +129,8 @@ public class EditContact extends AppCompatActivity {
 
                    protected Map<String, String> getParams() {
                        Map<String, String> params = new HashMap<String, String>();
+                       //post the phone number to php get the user_id in the user table
+                       //params.put("phonenumberofuser", phoneNoofUserCheck);
                        params.put("review_id", review_id);
                        //the second value, categoryname.getText().toString() etc...
                        // is the value we get from Android.
