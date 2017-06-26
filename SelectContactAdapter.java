@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import com.example.tutorialspoint.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by Chris on 23/06/2017.
@@ -62,7 +64,7 @@ public class SelectContactAdapter extends BaseAdapter {
     static class ViewHolder {
         //        In each cell in the listview show the items you want to have
 //        Having a ViewHolder caches our ids, instead of having to call and load each one again and again
-        ImageView imageView;
+        CheckBox checkbox;
         TextView title, phone, lookup;
 //        CheckBox check;
     }
@@ -104,26 +106,26 @@ public class SelectContactAdapter extends BaseAdapter {
         v.phone = (TextView) view.findViewById(R.id.no);
 //        make the lookup view invisible, user doesn't need to see it
         v.lookup = (TextView) view.findViewById(R.id.lookup);
-        v.imageView = (ImageView) view.findViewById(R.id.arrowright);
+        v.checkbox = (CheckBox) view.findViewById(R.id.checkBoxContact);
 
 //        store the holder with the view
         final SelectContact data = (SelectContact) theContactsList.get(i);
         v.title.setText(data.getName());
-//        v.check.setChecked(data.getCheckedBox());
+        v.checkbox.setChecked(data.getCheckedBox());
         v.phone.setText(data.getPhone());
         v.lookup.setText(data.getLookup());
 
 //        set a tag for a string we're calling getthename, and make it equal to the name of the contact
-        v.imageView.setTag(R.string.getthename,data.getName());
-        v.imageView.setTag(R.string.getthenumber,data.getPhone());
-        v.imageView.setTag(R.string.getthelookup,data.getLookup());
+        //same for getthenumber and getthelookup
+        v.checkbox.setTag(R.string.getthename,data.getName());
+        v.checkbox.setTag(R.string.getthenumber,data.getPhone());
+        v.checkbox.setTag(R.string.getthelookup,data.getLookup());
 
 
-
-//        Log.e("Image Thumb", "--------------" + data.getThumb());
-
-        /*// Set check box listener android
-        v.check.setOnClickListener(new View.OnClickListener() {
+      //   Set checkbox listener android
+        // need this here so the listview remembers which checkbox is clicked,
+        //when scrolled
+        v.checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CheckBox checkBox = (CheckBox) view;
@@ -133,14 +135,14 @@ public class SelectContactAdapter extends BaseAdapter {
                     data.setCheckedBox(false);
                 }
             }
-        });*/
+        });
 
         view.setTag(data);
 
         return view;
     }
 
-    // Filter Class
+    // Filter Class. This is for search
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
 //        theContactsList is our list of contacts

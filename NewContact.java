@@ -53,7 +53,7 @@ public class NewContact extends AppCompatActivity {
 
     //*******************
 
-   // This is for the phone contacts listview
+   // Details below are for the phone contacts listview
 
     // ArrayList called selectContacts that will contain SelectContact info
     ArrayList<SelectContact> selectContacts;
@@ -72,7 +72,8 @@ public class NewContact extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
 
-        // This is for the phone contacts listview
+        //*************************
+        // Details below are for the phone contacts listview
 
         //selectContacts is an empty array list that will hold our SelectContct info
         selectContacts = new ArrayList<SelectContact>();
