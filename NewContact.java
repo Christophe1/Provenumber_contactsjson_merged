@@ -286,15 +286,18 @@ public class NewContact extends AppCompatActivity {
 
 
                     } catch (Exception e) {
+                        Toast.makeText(NewContact.this, "what the...", Toast.LENGTH_LONG).show();
                         e.printStackTrace();
-                        cursor.close();
+                     //   cursor.close();
                     } finally {
 
                     }
                 }});
-//            cursor.close();
-            return null;
+            if (cursor != null) {
+                cursor.close();
 
+            }
+            return null;
         }
 
         @Override
