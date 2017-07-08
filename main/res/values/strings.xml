@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">App</string>
+    <string name="new_contact">New Contact</string>
+    <string name="title_activity_contact_view">ContactView</string>
+    <string-array name="name_array">
+        <item>Bill</item>
+        <item>Bob</item>
+        <item>Burt</item>
+        <item>Cammy</item>
+        <item>Chris</item>
+        <item>Daniel</item>
+        <item>Dave</item>
+    </string-array>
+</resources>
