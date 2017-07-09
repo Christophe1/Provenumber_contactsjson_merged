@@ -100,9 +100,6 @@ public class NewContact extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
        // listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
-        //this function measures the height of the listview, with all the contacts, and loads it to be that
-        //size. We need to do this because there's a problem with a listview in a scrollview.
-        justifyListViewHeightBasedOnChildren(listView);
 
         //*************************
 
@@ -337,6 +334,11 @@ public class NewContact extends AppCompatActivity {
 
             listView.setAdapter(adapter);
 
+            //this function measures the height of the listview, with all the contacts, and loads it to be that
+            //size. We need to do this because there's a problem with a listview in a scrollview.
+            justifyListViewHeightBasedOnChildren(listView);
+
+
             // Select item on listclick
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -450,6 +452,8 @@ public class NewContact extends AppCompatActivity {
         par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
         listView.setLayoutParams(par);
         listView.requestLayout();
+
+        System.out.println("the getcount is " + adapter.getCount());
     }
 
 
