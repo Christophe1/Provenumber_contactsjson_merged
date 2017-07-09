@@ -6,8 +6,6 @@
     android:orientation="vertical"
     tools:context="com.example.chris.tutorialspoint.NewContact">
 
-
-
     <ScrollView android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -64,29 +62,6 @@
                 android:layout_weight="1"
                 android:textSize="30dp" />
 
-            <EditText
-                android:id="@+id/textViewPhone2"
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:background="@drawable/back"
-                android:layout_weight="1"
-                android:textSize="30dp" />
-
-            <EditText
-                android:id="@+id/textViewAddress2"
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:background="@drawable/back"
-                android:layout_weight="1"
-                android:textSize="30dp" />
-
-            <EditText
-                android:id="@+id/textViewComment2"
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:background="@drawable/back"
-                android:layout_weight="1"
-                android:textSize="30dp" />
 
             <TextView
                 android:id="@+id/textViewSharedWith"

@@ -27,24 +27,24 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:paddingLeft="10dp"
             android:id="@+id/no"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:text="Phone no."
-            android:textSize="18sp" />
+            android:textSize="0sp" />
 
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:paddingLeft="10dp"
             android:id="@+id/lookup"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:text="lookup"
-            android:textSize="18sp" />
+            android:textSize="0sp" />
     </LinearLayout>
 
     <View
