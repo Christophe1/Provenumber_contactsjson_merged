@@ -11,9 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.tutorialspoint.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,8 +43,10 @@ public class NewContact extends AppCompatActivity {
 
     private ProgressDialog pDialog;
 
+    //testing purposes, trying to get listview working
+    String[] names;
 
-    //this is the review of the current activity
+    //this is the review of the current activity,
    // String review_id;
 
     Button save;
@@ -72,13 +78,28 @@ public class NewContact extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
 
+        names = getResources().getStringArray(R.array.name_array);
+        listView = (ListView) findViewById(R.id.listviewPhoneContacts);
+
+        //testing purposes, trying to get listview working
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+
+        listView.setAdapter(adapter);
+
+        //testing purposes, trying to get listview working
+        System.out.println("names are" + Arrays.toString(names));
+
+        //this function measures the height of the listview, with all the contacts, and loads it to be that
+        //size. We need to do this because there's a problem with a listview in a scrollview.
+        justifyListViewHeightBasedOnChildren(listView);
+
         //*************************
         // Details below are for the phone contacts listview
 
         //selectContacts is an empty array list that will hold our SelectContct info
         selectContacts = new ArrayList<SelectContact>();
 
-        listView = (ListView) findViewById(R.id.listviewPhoneContacts);
+       // listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
         //*************************
 
@@ -101,79 +122,6 @@ public class NewContact extends AppCompatActivity {
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
 
-        save.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                System.out.println("you clicked it, save");
-
-                pDialog = new ProgressDialog(NewContact.this);
-                // Showing progress dialog for the review being saved
-                pDialog.setMessage("Saving...");
-                pDialog.show();
-
-                //post phoneNoofUserCheck to NewContact.php and from that
-                //get the user_id in the user table, then post  category, name, phone etc...
-                //to the review table
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, NewContact_URL,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                //hide the dialogue box when page is saved
-                                pDialog.dismiss();
-                                Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-
-                        }) {
-
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<String, String>();
-                        //post the phone number to php get the user_id in the user table
-                        params.put("phonenumberofuser", phoneNoofUserCheck);
-                        //the second value, categoryname.getText().toString() etc...
-                        // is the value we get from Android.
-                        //the key is "category", "name" etc.
-                        // When we see these in our php,  $_POST["category"],
-                        //put in the value from Android
-                        params.put("category", categoryname.getText().toString());
-                        params.put("name", namename.getText().toString());
-                        params.put("phone", phonename.getText().toString());
-                        params.put("address", addressname.getText().toString());
-                        params.put("comment", commentname.getText().toString());
-                        return params;
-
-                    }
-
-
-
-                };
-
-
-                AppController.getInstance().addToRequestQueue(stringRequest);
-
-                //when saved, go back to the PopulistoListView class and update with
-                //the new entry
-/*                Intent j = new Intent(NewContact.this,PopulistoListView.class);
-                j.putExtra("category", categoryname.getText().toString());
-                j.putExtra("name", namename.getText().toString());
-                j.putExtra("phone", phonename.getText().toString());
-                //j.putExtra("address", addressname.getText().toString());
-                j.putExtra("comment", commentname.getText().toString());
-
-                startActivity(j);*/
-
-                finish();
-
-            }
-
-
-
-        });
 
 
     }
@@ -311,102 +259,33 @@ public class NewContact extends AppCompatActivity {
 //            The next part, NewContact.this, is our context, which is where we want the list to appear
             adapter = new SelectContactAdapter(selectContacts, NewContact.this);
 
-//            adapter.notifyDataSetChanged();
-
-            listView.setAdapter(adapter);
-
-            // Select item on listclick
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-//                    cursor = getApplicationContext().getContentResolver()
-//                            .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
-//
-//                    if (cursor != null) {
-////                        cursor.moveToFirst();
-////                                    get the cursor id of the clicked position
-//                        cursor.moveToPosition(i);
-//                         nameofcontact = ((TextView)view.findViewById(R.id.name)).getText();
-//                    }
-                    // Creates a new Intent to edit a contact
-//                        Intent intent = new Intent(Intent.ACTION_EDIT);
-//                        //Add the bundle to the intent
-//                        intent.putExtras(bundle);
-//                        start the intent
-
-//                        startActivity(editIntent);
-//                    Intent intent = new Intent(Intent.ACTION_EDIT);
-//                    intent.setData(ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY)));
-//                    // Sets the special extended data for navigation
-//                    intent.putExtra("finishActivityOnSaveCompleted", true);
-//                    intent.putExtra(ContactsContract.Intents.Insert.NAME, nameofcontact);
-
-//                    startActivity(intent);
+            adapter.notifyDataSetChanged();
 
 
-//******************************************
-//                        String contactlookupkey = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY));
-////
-//                        String contactname = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-//
-//                        String contactphoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//
-//                        Intent intent = new Intent(getApplicationContext(), EditorNewContact.class);
-//
-                    //Create the bundle
-//                        Bundle bundle = new Bundle();
-//
-//                    }
-                    //Add your data to bundle
-//                        bundle.putString("lookup_key", contactlookupkey);
-//                      ****************************************8
-
-    /*
-     * Once the user has selected a contact to edit,
-     * this gets the contact's lookup key and _ID values from the
-     * cursor and creates the necessary URI.
-     */
-
-
-                    // Creates a new Intent to edit a contact
-//                    Intent editIntent = new Intent(Intent.ACTION_EDIT);
-//                        Log.e("lookupkey", contactlookupkey);
-//                        String contactphonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-//                        Log.e("Name", toString(nameddd));
-//                    System.out.println(nameofcontact);
-//                        Log.e("phone", phoneNumber);
-                    Log.d("index value", String.valueOf(i));
-
-
-                    listView.setFastScrollEnabled(true);
-//                    we need to notify the listview that changes may have been made on
-//                    the background thread, doInBackground, like adding or deleting contacts,
-//                    and these changes need to be reflected visibly in the listview. It works
-//                    in conjunction with selectContacts.clear()
-
-//                    adapter.notifyDataSetChanged();
-
-
-                }
-
-
-
-            });
-        }}
-
-
-    @Override
-    protected void onResume() {
-
-        super.onResume();
-//    load the contacts again, refresh them, when the user resumes the activity
-        LoadContact loadContact = new LoadContact();
-        loadContact.execute();
-//    cursor.close();
+        }
     }
 
-    //*****phone contats in listview, above
+//this is the function we call to measure the height of the listview
+    public static void justifyListViewHeightBasedOnChildren (ListView listView) {
+
+        ListAdapter adapter = listView.getAdapter();
+
+        if (adapter == null) {
+            return;
+        }
+        ViewGroup vg = listView;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, vg);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams par = listView.getLayoutParams();
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(par);
+        listView.requestLayout();
+    }
+
 
 }
-
