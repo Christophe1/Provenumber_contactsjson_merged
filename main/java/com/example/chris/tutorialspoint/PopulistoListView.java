@@ -1,7 +1,9 @@
 package com.example.chris.tutorialspoint;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,7 +44,7 @@ public class PopulistoListView extends AppCompatActivity {
    // private static final String TAG = PopulistoListView.class.getSimpleName();
 
 
-    String phoneNoofUser;
+   // String phoneNoofUser;
     private ProgressDialog pDialog;
     private List<Review> reviewList = new ArrayList<Review>();
     private ListView listView;
@@ -62,16 +64,21 @@ public class PopulistoListView extends AppCompatActivity {
         adapter = new CustomListAdapter(this, reviewList);
         listView.setAdapter(adapter);
 
-        Intent myIntent = this.getIntent();
-        //phone number of the user, get it from VerifyPhoneNumber activity
-        //this is the number we are posting to php
-        phoneNoofUser = myIntent.getStringExtra("keyName");
-        //phoneNoofUser="JK Rowling";
+        //get the phone number value from shared preferences file instead
+        //of from the VerifiedUserPhoneNumber class because we might not
+        //be coming from that class, for example on Edit, New etc. The phone
+        //number needs to be posted for this listview to load properly.
+        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        final String phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
 
         pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
         pDialog.show();
+
+       // Intent j = this.getIntent();
+       // phoneNoofUser = j.getStringExtra("phonenumberofuser");
+        //Toast.makeText(ContactView.this, review_id, Toast.LENGTH_SHORT).show();
 
         // textphonenumber.setText(phoneNoofUser);
 
@@ -85,7 +92,7 @@ public class PopulistoListView extends AppCompatActivity {
                         hidePDialog();
                         //toast the response of SelectUserReviews.php, which has been converted to a
                         //JSON array in the Php file with JSON encode
-                        //Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
+                        Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
 
                         //break up the JSON Array into parts
                         //we need to sort out this error we keep getting in logcat
