@@ -439,13 +439,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 //                    hashMapsArrayList.add(hashMap);
 //                        }
 
-                    // SelectContact selectContact = new SelectContact();
+                    // SelectPhoneContact selectContact = new SelectPhoneContact();
 //                    selectContact.setThumb(bit_thumb);
                     // selectContact.setName(name);
                     // selectContact.setPhone(phoneNumberofContact);
                     // selectContact.setLookup(lookupkey);
 //                    selectContact.setCheckedBox(false);
-                    // selectContacts.add(selectContact);
+                    // selectPhoneContacts.add(selectContact);
                 }
 
 

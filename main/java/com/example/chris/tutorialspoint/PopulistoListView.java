@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,7 +47,7 @@ public class PopulistoListView extends AppCompatActivity {
     private ProgressDialog pDialog;
     private List<Review> reviewList = new ArrayList<Review>();
     private ListView listView;
-    private CustomListAdapter adapter;
+    private CustomPopulistoListAdapter adapter;
     //private TextView textphonenumber;
     //private String strphone;
 //private int reviewid;
@@ -61,7 +60,7 @@ public class PopulistoListView extends AppCompatActivity {
         // textphonenumber = (TextView) findViewById(R.id.textView3);
 
         listView = (ListView) findViewById(R.id.list);
-        adapter = new CustomListAdapter(this, reviewList);
+        adapter = new CustomPopulistoListAdapter(this, reviewList);
         listView.setAdapter(adapter);
 
         //get the phone number value from shared preferences file instead
@@ -75,12 +74,6 @@ public class PopulistoListView extends AppCompatActivity {
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
         pDialog.show();
-
-       // Intent j = this.getIntent();
-       // phoneNoofUser = j.getStringExtra("phonenumberofuser");
-        //Toast.makeText(ContactView.this, review_id, Toast.LENGTH_SHORT).show();
-
-        // textphonenumber.setText(phoneNoofUser);
 
         //post the phone number of the logged in user to SelectUserReviews.php and from that
         //get the logged in user's reviews
@@ -134,6 +127,7 @@ public class PopulistoListView extends AppCompatActivity {
 
                 }) {
             @Override
+            //post info to php
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 //phoneNoofUser is the value we get from Android, the user's phonenumber.
@@ -156,17 +150,15 @@ public class PopulistoListView extends AppCompatActivity {
                 //cast the getItem(position) return value to a review object
                 Review review = (Review) adapter.getItem(position);
                 //we want to pass the review_id of the review being clicked
-                //to the ContactView activity, so we can post it and get more
+                //to the ViewContact activity, and from there post it and get more
                 //info for that review - address, comments etc
                    Intent i = new Intent(PopulistoListView.this, ViewContact.class);
-                    i.putExtra("review_id",  review.getReviewid());
+                    //pass the review_id to ViewContact class
+                i.putExtra("review_id",  review.getReviewid());
                     startActivity(i);
-              //  }
-              //  else{*/
-                    Toast.makeText(PopulistoListView.this, review.getReviewid(), Toast.LENGTH_SHORT).show();
-                    //}
 
-                //}
+                    Toast.makeText(PopulistoListView.this, review.getReviewid(), Toast.LENGTH_SHORT).show();
+
             }
 
 
