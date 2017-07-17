@@ -27,13 +27,13 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:id="@+id/no"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:text="Phone no."
-            android:textSize="0sp" />
+            android:textSize="18sp" />
 
 
         <TextView

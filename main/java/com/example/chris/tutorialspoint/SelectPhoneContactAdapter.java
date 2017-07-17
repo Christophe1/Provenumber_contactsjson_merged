@@ -102,7 +102,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         v.title = (TextView) view.findViewById(R.id.name);
 //        v.check = (CheckBox) view.findViewById(R.id.check);
         v.phone = (TextView) view.findViewById(R.id.no);
-//        make the lookup view invisible, user doesn't need to see it
+//        set text size to 0dp, and height to 0dp, user doesn't need to see it
         v.lookup = (TextView) view.findViewById(R.id.lookup);
         v.checkbox = (CheckBox) view.findViewById(R.id.checkBoxContact);
 

@@ -246,52 +246,64 @@ public class NewContact extends AppCompatActivity {
 
                         cursor.moveToFirst();
 
-//              We make a new Hashset to hold all our contact_ids, including duplicates, if they come up
+//              We make a new Hashset to hold all our phone numbers, including duplicates, if they come up
                         Set<String> ids = new HashSet<>();
+
+                        Set<String> ids2 = new HashSet<>();
                         do {
                             System.out.println("=====>in while");
-//                  get a handle on the contactid, which is a string. Loop through all the contact_ids
+//                  get a handle on the phone number, which is a string. Loop through all the phone numbers
+                            String phoneid = cursor.getString(phoneNumberIdx);
+ //                  get a handle on the contact ids, which is a string. Loop through all the contact ids
                             String contactid = cursor.getString(Idx);
-//                  if our Hashset doesn't already contain the contactid string,
-//                    then add it to the hashset
-                            if (!ids.contains(contactid)) {
-                                ids.add(contactid);
-
-                                HashMap<String, String> hashMap = new HashMap<String, String>();
+                            //First, make sure the phone number is a mobile number.
+//                  Then, if our Hashset doesn't already contain the phone number and the contact id
+//                    then add the phone number to the hashset
+                            //(in other words, remove duplicate phone numbers and duplicate ids)
+                            int phoneType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                            if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
+                                if (!ids.contains(phoneid)) {
+                                    ids.add(phoneid);
+                                    if (!ids2.contains(contactid)) {
+                                        ids2.add(contactid);
+                                        //  HashMap<String, String> hashMap = new HashMap<String, String>();
 //                        get a handle on the display name, which is a string
-                                name = cursor.getString(nameIdx);
+                                        name = cursor.getString(nameIdx);
 //                        get a handle on the phone number, which is a string
-                                phoneNumber = cursor.getString(phoneNumberIdx);
+                                        phoneNumber = cursor.getString(phoneNumberIdx);
 //                        String image = cursor.getString(photoIdIdx);
-
-                                lookupkey = cursor.getString(contactlookupkey);
+//                                    get a handle on the lookup key, which is a string
+                                        lookupkey = cursor.getString(contactlookupkey);
 
 //                    System.out.println("Id--->"+contactid+"Name--->"+name);
-                                System.out.println("Id--->" + contactid + " Name--->" + name);
-                                System.out.println("Id--->" + contactid + " Number--->" + phoneNumber);
-                                System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
-
-                                if (!phoneNumber.contains("*")) {
+                                        System.out.println("Id--->" + contactid + " Name--->" + name);
+                                        System.out.println("Id--->" + contactid + " Number--->" + phoneNumber);
+                                        System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
+//*****************************
+                                        //not sure what this does here, duplicates seem to be removed without this
+/*                                if (!phoneNumber.contains("*")) {
                                     hashMap.put("contactid", "" + contactid);
                                     hashMap.put("name", "" + name);
                                     hashMap.put("phoneNumber", "" + phoneNumber);
-                                   // hashMap.put("image", "" + image);
+                                    // hashMap.put("image", "" + image);
                                     // hashMap.put("email", ""+email);
                                     if (hashMapsArrayList != null) {
                                         hashMapsArrayList.add(hashMap);}
-                                //     hashMapsArrayList.add(hashMap);
+                                    //     hashMapsArrayList.add(hashMap);
+                                }*/
+//******************************
+
+                                        SelectPhoneContact selectContact = new SelectPhoneContact();
+
+                                        selectContact.setName(name);
+                                        selectContact.setPhone(phoneNumber);
+                                        selectContact.setLookup(lookupkey);
+//                    selectContact.setCheckedBox(false);
+                                        selectPhoneContacts.add(selectContact);
+                                    }
+
                                 }
                             }
-
-
-                                SelectPhoneContact selectContact = new SelectPhoneContact();
-
-                                selectContact.setName(name);
-                                selectContact.setPhone(phoneNumber);
-                                selectContact.setLookup(lookupkey);
-//                    selectContact.setCheckedBox(false);
-                                selectPhoneContacts.add(selectContact);
-
 
 
                         } while (cursor.moveToNext());
@@ -314,7 +326,7 @@ public class NewContact extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-
+//Show the result obtained from doInBackground
             super.onPostExecute(aVoid);
 
 //into each inflate_listview, put a name and phone number, which are the details making
