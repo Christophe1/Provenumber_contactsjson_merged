@@ -100,7 +100,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
 
-       buttonRegister = (Button) findViewById(R.id.buttonRegister);
+       //buttonRegister = (Button) findViewById(R.id.buttonRegister);
 
         txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
 
@@ -111,10 +111,23 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         //  when the form loads, check to see if phoneNoofUser is in there,if the user is
         // already registered, by checking the MyData XML file
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        String phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
+        phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
+
+        //  when the form loads, check to see if CountryCode is in there,if the user is
+        // already registered, by checking the MyData XML file
+        //We need this for putting phone contacts into E164
+        SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
+
+        Log.v("index value", "dddd");
+        Log.v("index value", phoneNoofUser);
+        Log.v("index value", CountryCode);
+        //System.out.print("fuuuutt1");
+       // System.out.print(phoneNoofUserCheck);
+
 
         //  if the user has not already registered
-        if ( phoneNoofUserCheck == null || phoneNoofUserCheck.equals("") ) {
+        if ( phoneNoofUser == null || phoneNoofUser.equals("") ) {
 
 
             btnSendSMS.setOnClickListener(new View.OnClickListener() {
@@ -129,22 +142,22 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         }
         else {
-            // if it is registered then start the next activity
-            Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
-            myIntent.putExtra("keyName", phoneNoofUserCheck);
-            VerifyUserPhoneNumber.this.startActivity(myIntent);
+            // if it is registered then
+            //get all the contacts on the user's phone
+            System.out.println("fuuuutt2");
+
+            getPhoneContacts();
+            //convert all contacts on the user's phone to JSON
+            convertNumberstoJSON();
+
+            // then start the next activity
+           // Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+            //myIntent.putExtra("keyName", phoneNoofUserCheck);
+           // VerifyUserPhoneNumber.this.startActivity(myIntent);
 
 
         }
 
-        //Here just for testing purposes
-  /*      buttonRegister.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                System.out.println("you clicked it, register");
-                phoneNoofUser = txtphoneNoofUser.getText().toString();
-                registerUser();
-            }
-        });*/
 
         //when 'Select Country' Text is clicked
         //load the new activity CountryCodes showing the list of all countries
@@ -197,15 +210,24 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 if (origNumber.equals(phoneNoofUser)) {
                     //save the phone number so this process is skipped in future
                     SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+                    //save the country code so this process is skipped in future
+                    SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+
                     SharedPreferences.Editor editor = sharedPreferences.edit();
+                    SharedPreferences.Editor editor2 = sharedPreferencesCountryCode.edit();
+
                     //phoneNoofUser String is unique, the username of this particular user
                     editor.putString("phonenumberofuser", phoneNoofUser);
+                    //we need the Country code as it is needed for determining phone contacts in E164 format
+                    editor2.putString("countrycode", CountryCode);
+
                     editor.commit();
+                    editor2.commit();
 
                     //txtSMSMayApply.setText(phoneNoofUser);
 
                     //Here we want to add the user's phone number to the user table
-                    //using Volley
+                    //using Volley. this is a once-off
                     registerUser();
                     //get all the contacts on the user's phone
                     getPhoneContacts();
@@ -237,13 +259,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         phoneNoofUserbeforeE164 = txtphoneNoofUser.getText().toString();
         phoneNoofUser = String.valueOf(CountryCode) +  String.valueOf(phoneNoofUserbeforeE164);
 
-        //phoneNoofUser = txtphoneNoofUser.getText().toString();
-
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         try {
             //For the second parameter, CountryCode, put whatever country code the user picks
             //we pass it through phoneUtil to get rid of first 0 like in +353087 etc
             Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNoofUser, CountryCode);
+
+            //phoneNoofUser in the format of E164
             phoneNoofUser = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
             //Since you know the country you can format it as follows:
             //System.out.println(phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164));
@@ -278,9 +300,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     }*/
 
     // register the user's phone number in the user table, this is called
-    //when the phone number is verified
+    //when the phone number is verified, when the originating number = sent to number
     private void registerUser() {
-
+//REGISTER_URL is insert.php
         StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -299,6 +321,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
+                //the second value, phoneNoofUser
+                // is the value we get from Android.
+                //the key is "phonenumberofuser",
+                // When we see these in our php,  $_POST["phonenumberofuser"],
+                //put in the value from Android
                 params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
                 return params;
 
@@ -323,7 +350,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     }
 
 
-    //get the names and phone numbers of all contacts in phone book, take out duplicates
+    //get the names and phone numbers of all phone contacts in phone book, take out duplicates
     private void getPhoneContacts() {
 //          we have this here to avoid cursor errors
         if (cursor != null) {
@@ -390,33 +417,35 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
                     //------------------------------------------------------
+                    //need to strip all characters except numbers, EXCEPT the first +
+                    phoneNumberofContact = phoneNumberofContact.replaceAll("[^0-9]+", "");
                     //replace numbers starting with 00 with +
-                    //if (phoneNumberofContact.startsWith("00")) {
-                    //    System.out.println(phoneNumberofContact = phoneNumberofContact.replaceFirst("00", "+"));
-                    //}
-                    // remove splaces between phone numbers
-                    //phoneNumberofContact = phoneNumberofContact.replaceAll("\\s+", "");
+                    if (phoneNumberofContact.startsWith("00")) {
+                        phoneNumberofContact = phoneNumberofContact.replaceFirst("00", "+");
+                    }
 
                     //all phone numbers not starting with +, make them E.164 format,
-                    //for Irish phones. Although it should really be for the country code of the User
-                    // if (!phoneNumberofContact.startsWith("+")) {
-
+                    //for the country code the user has chosen.
+                     if (!phoneNumberofContact.startsWith("+")) {
+                    //CountryCode is the country code chosen by the user originally
+                    phoneNumberofContact = String.valueOf(CountryCode) + String.valueOf(phoneNumberofContact);
 
                     PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
                     try {
                         //if phone number on user's phone is not in E.164 format,
                         //precede the number with user's country code.
-                        Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, CountryCode);
+                        Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, "");
                         phoneNumberofContact = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
-                        //Since you know the country you can format it as follows:
-                        //System.out.println(phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164));
+                        //If an error happens :
                     } catch (NumberParseException e) {
                         System.err.println("NumberParseException was thrown: " + e.toString());
+                        System.out.println(phoneNumberofContact);
                     }
-                    // }
+                     }
 
                     //----------------------------------------------------------
 
+                    //alContacts is a list of all the phone numbers in the user's contacts
                     alContacts.add(phoneNumberofContact);
 
                     lookupkey = cursor.getString(contactlookupkey);
@@ -463,7 +492,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
     }
 
-
+//CONVERT all phone contacts on the user's phone into JSON
     protected void convertNumberstoJSON() {
 
         try {
@@ -498,15 +527,16 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         CheckifUserisContact();
     }
 
-
+//CHECK IF USER IS A CONTACT
 //this will have to be checked every so often as user's may add or delete contacts
 // it's not a static once off thing.
     private void CheckifUserisContact() {
-
+//CHECKPHONENUMBER_URL is checkcontact.php
         StringRequest stringRequest = new StringRequest(Request.Method.POST, CHECKPHONENUMBER_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        //echo the number of contacts and the contacts
                         Toast.makeText(VerifyUserPhoneNumber.this, response, Toast.LENGTH_LONG).show();
                         //textView.append(response + " \n");
 
@@ -526,12 +556,15 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                //The KEY, KEY_PHONENUMBER = "phonenumber" . In PHP we will have $_POST["phonenumber"]
-                //The VALUE, phonenumber, will be of the form "12345678"
-                params.put(KEY_PHONENUMBER_CONTACT,jsonArrayContacts.toString());
-                //We are also posting the user's phone number in this request, so we can get
+                //We are  posting the user's phone number in this request, so we can get
                 //matching user_id for checking contacts
+                //The KEY is php, KEY_PHONENUMBER_USER = "phonenumberofuser" .
+                // In PHP we will have $_POST["phonenumberofuser"]
                 params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
+                //The KEY is php, KEY_PHONENUMBER_CONTACT = "phonenumberofcontact" . In PHP we will have $_POST["phonenumberofcontact"]
+                //The VALUE, jsonArrayContacts.toString, is Android side, it will be a sequence of phone numbers
+                // of the form "+12345678"
+                params.put(KEY_PHONENUMBER_CONTACT,jsonArrayContacts.toString());
 
                 System.out.println(Collections.singletonList(params));
                 //System.out.println("contact is : " + jsonArrayContacts);

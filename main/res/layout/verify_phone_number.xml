@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:text="Send Sms"
         android:id="@+id/btnSendSMS"
-        android:layout_above="@+id/buttonRegister"
+        android:layout_above="@+id/txtSMSMayApply"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="26dp" />
 
@@ -76,8 +76,9 @@
         android:textColorHint="#ff87ff09"
         android:layout_below="@+id/textView2"
         android:layout_marginTop="57dp"
-        android:layout_alignLeft="@+id/buttonRegister"
-        android:layout_alignStart="@+id/buttonRegister" />
+        android:layout_alignLeft="@+id/textView1"
+
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -91,14 +92,6 @@
         android:layout_alignLeft="@+id/textView1"
         android:layout_alignStart="@+id/textView1" />
 
-    <Button
-        android:text="Register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonRegister"
-        android:layout_above="@+id/editText2"
-        android:layout_alignRight="@+id/editText2"
-        android:layout_alignEnd="@+id/editText2" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -109,7 +102,9 @@
         android:layout_alignBaseline="@+id/editText2"
         android:layout_alignBottom="@+id/editText2"
         android:layout_alignRight="@+id/txtphoneNoofUser"
-        android:layout_alignEnd="@+id/txtphoneNoofUser" />
+        android:layout_alignEnd="@+id/txtphoneNoofUser"
+        android:layout_below="@+id/txtphoneNoofUser"
+        />
 
 
 </RelativeLayout>
