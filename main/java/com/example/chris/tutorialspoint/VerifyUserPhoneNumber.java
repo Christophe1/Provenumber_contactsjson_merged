@@ -41,6 +41,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static android.R.id.input;
+
 public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
     // this is the php file name where to insert into the database, the user's phone number
@@ -100,13 +102,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
 
-       //buttonRegister = (Button) findViewById(R.id.buttonRegister);
-
         txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
 
         //txtSMSMayApply = (TextView) findViewById(R.id.txtSMSMayApply);
-
-        //buttonRegister.setOnClickListener(this);
 
         //  when the form loads, check to see if phoneNoofUser is in there,if the user is
         // already registered, by checking the MyData XML file
@@ -119,9 +117,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
 
-        Log.v("index value", "dddd");
-        Log.v("index value", phoneNoofUser);
-        Log.v("index value", CountryCode);
+//        Log.v("index value", "dddd");
+//        Log.v("index value", phoneNoofUser);
+//        Log.v("index value", CountryCode);
         //System.out.print("fuuuutt1");
        // System.out.print(phoneNoofUserCheck);
 
@@ -144,21 +142,22 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         else {
             // if it is registered then
             //get all the contacts on the user's phone
-            System.out.println("fuuuutt2");
-
             getPhoneContacts();
+
             //convert all contacts on the user's phone to JSON
             convertNumberstoJSON();
 
             // then start the next activity
-           // Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
-            //myIntent.putExtra("keyName", phoneNoofUserCheck);
-           // VerifyUserPhoneNumber.this.startActivity(myIntent);
+            Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+            //we need phoneNoofUser so we can get user_id and corresponding
+            //reviews in the next activity
+            myIntent.putExtra("keyName", phoneNoofUser);
+            VerifyUserPhoneNumber.this.startActivity(myIntent);
 
 
         }
 
-
+        //...back to if the user is registering, has not yet used the App
         //when 'Select Country' Text is clicked
         //load the new activity CountryCodes showing the list of all countries
         txtSelectCountry.setOnClickListener(new View.OnClickListener() {
@@ -399,26 +398,37 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 //              We make a new Hashset to hold all our contact_ids, including duplicates, if they come up
             Set<String> ids = new HashSet<>();
+//              We make a new Hashset to hold all our lookup keys, including duplicates, if they come up
+            Set<String> ids2 = new HashSet<>();
             do {
                 System.out.println("=====>in while");
+
+               // get a handle on the phone number of contact, which is a string. Loop through all the phone numbers
+                String phoneid = cursor.getString(phoneNumberofContactIdx);
 //                  get a handle on the contactid, which is a string. Loop through all the contact_ids
                 String contactid = cursor.getString(Idx);
-//                  if our Hashset doesn't already contain the contactid string,
+//                  if our Hashset doesn't already contain the phone number string,
 //                    then add it to the hashset
-                if (!ids.contains(contactid)) {
-                    ids.add(contactid);
+                if (!ids.contains(phoneid)) {
+                    ids.add(phoneid);
+                 //   if our Hashset doesn't already contain the contactid string,
+//                    then add it to the hashset
+                if (!ids2.contains(contactid)) {
+                    ids2.add(contactid);
 
-                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                  //  HashMap<String, String> hashMap = new HashMap<String, String>();
+
 //                        get a handle on the display name, which is a string
                     name = cursor.getString(nameIdx);
+
+                    lookupkey = cursor.getString(contactlookupkey);
 //                        get a handle on the phone number, which is a string
                     phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
-//                        String image = cursor.getString(photoIdIdx);
 
 
                     //------------------------------------------------------
-                    //need to strip all characters except numbers, EXCEPT the first +
-                    phoneNumberofContact = phoneNumberofContact.replaceAll("[^0-9]+", "");
+                    //need to strip all characters except numbers and + (+ for the first character)
+                    phoneNumberofContact = phoneNumberofContact.replaceAll("[^+0-9]", "");
                     //replace numbers starting with 00 with +
                     if (phoneNumberofContact.startsWith("00")) {
                         phoneNumberofContact = phoneNumberofContact.replaceFirst("00", "+");
@@ -439,7 +449,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         //If an error happens :
                     } catch (NumberParseException e) {
                         System.err.println("NumberParseException was thrown: " + e.toString());
-                        System.out.println(phoneNumberofContact);
+                       // System.out.println(phoneNumberofContact);
                     }
                      }
 
@@ -448,11 +458,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     //alContacts is a list of all the phone numbers in the user's contacts
                     alContacts.add(phoneNumberofContact);
 
-                    lookupkey = cursor.getString(contactlookupkey);
-
 //                    System.out.println("Id--->"+contactid+"Name--->"+name);
                     System.out.println("Id--->" + contactid + " Name--->" + name);
-                    System.out.println("Id--->" + contactid + " Numberbob--->" + phoneNumberofContact);
+                    System.out.println("Id--->" + contactid + " Phone number of contact--->" + phoneNumberofContact);
                     System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
 //                        System.out.println("Id--->" + contactid + " lookupkey2--->" + contactlookupkey2);
 
@@ -478,7 +486,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 }
 
 
-            } while (cursor.moveToNext());
+                //String sanitized = numberwewant.replaceAll("[^+0-9]", "");
+                //System.out.println(sanitized);
+
+            }
+            }
+
+            while (cursor.moveToNext());
 
 
         } catch (Exception e) {
@@ -492,7 +506,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
     }
 
-//CONVERT all phone contacts on the user's phone into JSON
+//CONVERT all phone contacts on the user's phone  - the alContacts array, into JSON
     protected void convertNumberstoJSON() {
 
         try {
@@ -579,6 +593,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
     }
+
+
 
 
 }
