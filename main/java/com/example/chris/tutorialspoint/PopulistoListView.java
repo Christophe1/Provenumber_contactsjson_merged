@@ -68,7 +68,7 @@ public class PopulistoListView extends AppCompatActivity {
         //be coming from that class, for example on Edit, New etc. The phone
         //number needs to be posted for this listview to load properly.
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        final String phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
+        final String phoneNoofUser = sharedPreferences.getString(KEY_PHONENUMBER_USER, "");
 
         pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
@@ -87,29 +87,36 @@ public class PopulistoListView extends AppCompatActivity {
                         //JSON array in the Php file with JSON encode
                         Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
 
-                        //break up the JSON Array into parts
-                        //we need to sort out this error we keep getting in logcat
-                        final int numberOfItemsInResp = response.length();
-                        for (int i = 0; i < numberOfItemsInResp; i++) {
-                            try {
-                                JSONArray responseObject = new JSONArray(response);
-                                JSONObject obj = responseObject.getJSONObject(i);
+                        try {
+                            //name our JSONArray responseObject
+                            JSONArray responseObject = new JSONArray(response);
+
+
+                                for
+                                        //get the number of objects in the Array
+                                        (int i = 0; i < responseObject.length(); i++) {
+                                    //for each object in the array, name it obj
+                                    //each obj will consist of reviewid, category, name, phone,comment
+                                    JSONObject obj = responseObject.getJSONObject(i);
+                                // and create a new review, getting details of user's reviews in the db
                                 Review review = new Review();
+                                    //we are getting the reviewid so we can pull extra matching info,
+                                    review.setReviewid(obj.getString("reviewid"));
+                                //set the category part of the object to that matching reviewid
                                 review.setCategory(obj.getString("category"));
+                                //etc...
                                 review.setName(obj.getString("name"));
                                 review.setPhone(obj.getString("phone"));
                                 review.setComment(obj.getString("comment"));
-                                //we are getting the review id so we can pull extra needed info, like Address etc
-                                review.setReviewid(obj.getString("reviewid"));
-                                // Toast.makeText(PopulistoListView.this, responseObject.toString(), Toast.LENGTH_LONG).show();
 
+                                //add the review to the reviewList
                                 reviewList.add(review);
 
-                            } catch (JSONException e) {
+                            }} catch (JSONException e) {
                                 Log.e("MYAPP", "unexpected JSON exception", e);
                                 // Do something to recover ... or kill the app.
                             }
-                        }
+
                         // notifying list adapter about data changes
                         // so that it renders the list view with updated data
                         adapter.notifyDataSetChanged();

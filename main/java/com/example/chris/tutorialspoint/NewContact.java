@@ -174,6 +174,8 @@ public class NewContact extends AppCompatActivity {
 
 
         });
+        //scroll is the same speed, be it fast scroll or not
+       // listView.setFastScrollEnabled(true);
 
     }
 
@@ -335,6 +337,10 @@ public class NewContact extends AppCompatActivity {
 //            The next part, NewContact.this, is our context, which is where we want the list to appear
             adapter = new SelectPhoneContactAdapter(selectPhoneContacts, NewContact.this);
 
+//                    we need to notify the listview that changes may have been made on
+//                    the background thread, doInBackground, like adding or deleting contacts,
+//                    and these changes need to be reflected visibly in the listview. It works
+//                    in conjunction with selectContacts.clear()
             adapter.notifyDataSetChanged();
 
             listView.setAdapter(adapter);
@@ -353,7 +359,7 @@ public class NewContact extends AppCompatActivity {
                     Log.d("index value", String.valueOf(i));
 
 
-                    listView.setFastScrollEnabled(true);
+
 //                    we need to notify the listview that changes may have been made on
 //                    the background thread, doInBackground, like adding or deleting contacts,
 //                    and these changes need to be reflected visibly in the listview. It works

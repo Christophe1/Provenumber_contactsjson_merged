@@ -34,6 +34,7 @@ public class ViewContact extends AppCompatActivity {
     public static final String KEY_REVIEW_ID = "review_id";
     //the edit button, if the user wants to edit a review
     Button edit;
+    Button delete;
 
     private TextView categoryname;
     private TextView namename;
@@ -164,27 +165,7 @@ public class ViewContact extends AppCompatActivity {
         requestQueue.add(stringRequest);
 
 
-        //*****************
-
-        //make a TextView called category, cast this to our TextView id
-        // set the text of the TextView to our getCategory string
-        //category.setText(getCategory);
-
-
-        //cast our textview
-/*
-
-        Intent i = this.getIntent();
-        //categoryListView, get the category for the review in PopulistoListView activity
-        categoryfromListView = i.getStringExtra("category");
-        categoryfield.setText(categoryfromListView);*/
-
-
-
-
-
-
-
+        //*****************************************
         //for the edit button
         edit = (Button) findViewById(R.id.edit);
 
@@ -224,7 +205,23 @@ public class ViewContact extends AppCompatActivity {
         addressname.setText(new_address_value);
         commentname.setText(new_comment_value);
 
-       // System.out.println("the cat is " + getCategory);
+
+        //*****************************************
+        //for the delete button
+        delete = (Button) findViewById(R.id.delete);
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+
+                Toast.makeText(ViewContact.this, "delete stuff", Toast.LENGTH_SHORT).show();
+
+                pDialog = new ProgressDialog(ViewContact.this);
+                // Showing progress dialog for the review being saved
+                pDialog.setMessage("Deleting...");
+                pDialog.show();
+
+            }
+        });
 
     }
 
