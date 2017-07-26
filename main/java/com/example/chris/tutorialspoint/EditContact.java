@@ -64,7 +64,7 @@ public class EditContact extends AppCompatActivity {
         addressname = (EditText) findViewById(R.id.textViewAddress);
         commentname = (EditText) findViewById(R.id.textViewComment);
 
-        //get the intent we created in ContactView class, to bring the changes over
+        //get the intent we created in ViewContact class, to bring the changes over
         //to this class
         Intent i = this.getIntent();
         //we need to get review_id to ensure changes made are saved to correct review_id

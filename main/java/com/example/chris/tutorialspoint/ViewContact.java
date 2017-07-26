@@ -30,6 +30,11 @@ public class ViewContact extends AppCompatActivity {
     // get the matching details - Category, name, phone, address etc...
     private static final String ViewContact_URL = "http://www.populisto.com/ViewContact.php";
 
+    // this is for the Save buton, the php file name where to select from.
+    // we will post the review_id and delete associated fields - category, name, phone,
+    // address and comment from the review table
+    private static final String DeleteContact_URL = "http://www.populisto.com/DeleteContact.php";
+
     //we are posting review_id, which in PHP is review_id
     public static final String KEY_REVIEW_ID = "review_id";
     //the edit button, if the user wants to edit a review
@@ -220,7 +225,59 @@ public class ViewContact extends AppCompatActivity {
                 pDialog.setMessage("Deleting...");
                 pDialog.show();
 
+                //post the review_id in the current activity to EditContact.php and from that
+                //get associated values - category, name, phone etc...
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, DeleteContact_URL,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //hide the dialogue box when page is saved
+                                pDialog.dismiss();
+                                Toast.makeText(ViewContact.this, response, Toast.LENGTH_LONG).show();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+
+                        }) {
+
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<String, String>();
+                        //we are posting review_id into our DeleteContact.php file,
+                        //the second value, review_id,
+                        // is the value we get from Android.
+                        //the key is KEY_REVIEW_ID
+                        // When we see this in our php,  $_POST["review_id"],
+                        //put in the value from Android
+                        params.put(KEY_REVIEW_ID, review_id);
+                        return params;
+                    }
+
+
+                };
+
+
+                AppController.getInstance().addToRequestQueue(stringRequest);
+
+                //when deleted, go back to the Populisto ListView class and update
+
+                Intent j = new Intent(ViewContact.this,PopulistoListView.class);
+//                j.putExtra("category", categoryname.getText().toString());
+//                j.putExtra("name", namename.getText().toString());
+//                j.putExtra("phone", phonename.getText().toString());
+//                j.putExtra("address", addressname.getText().toString());
+//                j.putExtra("comment", commentname.getText().toString());
+//
+                startActivity(j);
+//
+//                finish();
+
             }
+
         });
 
     }

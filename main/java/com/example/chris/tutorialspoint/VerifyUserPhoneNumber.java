@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -63,7 +65,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     //alContacts is a list of all the phone numbers in the user's contacts
     public static final ArrayList<String> alContacts = new ArrayList<String>();
 
-    // JSONObject dataToSend = new JSONObject();
+    // we will be making all phone contacts as a JsonArray
     JSONArray jsonArrayContacts = new JSONArray();
 
     Cursor cursor;
@@ -197,9 +199,24 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 if (extras == null)
                     return;
 
-                Object[] pdus = (Object[]) extras.get("pdus");
-                SmsMessage msg = SmsMessage.createFromPdu((byte[]) pdus[0]);
-                origNumber = msg.getOriginatingAddress();
+                SmsMessage smsMessage;
+
+                //apparently this code deals with the deprecated createFromPdu
+                //issue, for more modern phones
+                if (Build.VERSION.SDK_INT >= 19) { //KITKAT
+                    SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
+                    smsMessage = msgs[0];
+                    origNumber = smsMessage.getOriginatingAddress();
+                } else {
+                    Object pdus[] = (Object[]) extras.get("pdus");
+                    smsMessage = SmsMessage.createFromPdu((byte[]) pdus[0]);
+                    origNumber = smsMessage.getOriginatingAddress();
+
+                }
+
+//                Object[] pdus = (Object[]) extras.get("pdus");
+//                SmsMessage msg = SmsMessage.createFromPdu((byte[]) pdus[0]);
+//                origNumber = msg.getOriginatingAddress();
 
                 Toast.makeText(getApplicationContext(), "Originating number" + origNumber, Toast.LENGTH_LONG).show();
                 Toast.makeText(getApplicationContext(), "Sent to number" + phoneNoofUser, Toast.LENGTH_LONG).show();
@@ -455,10 +472,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                     //----------------------------------------------------------
 
-                    //alContacts is a list of all the phone numbers in the user's contacts
+                    //alContacts is a list of all the phone numbers in the user's phone
+                    // contacts. we will be using this list to see who are currently users of
+                    //the app, with the CheckifUserisaContact function below
                     alContacts.add(phoneNumberofContact);
 
-//                    System.out.println("Id--->"+contactid+"Name--->"+name);
                     System.out.println("Id--->" + contactid + " Name--->" + name);
                     System.out.println("Id--->" + contactid + " Phone number of contact--->" + phoneNumberofContact);
                     System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
@@ -507,13 +525,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     }
 
 //CONVERT all phone contacts on the user's phone  - the alContacts array, into JSON
+    //we will be using this array to see which numbers are already users of our app
     protected void convertNumberstoJSON() {
 
         try {
-            //  JSONObject dataToSend = new JSONObject();
 
-            // contacts
-            //  JSONArray jsonArrayContacts = new JSONArray();
             //alContacts is our arraylist with all the phone numbers
             for (int i = 0; i < alContacts.size(); i++)
             {
@@ -522,13 +538,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 // jsonObjectContact will be of the form {"phone_number":"123456789"}
                 jsonObjectContact.put("phone_number", alContacts.get(i));
 
-                // Add jsonObjectContact to contacts jsonArray
+                //make all the Json Objects into a JsonArray
                 jsonArrayContacts.put(jsonObjectContact);
 
             }
             System.out.println("the amount in alContacts :" + alContacts.size());
-            // Add contacts jsonArray to jsonObject dataToSend
-            // dataToSend.put("contacts", jsonArrayContacts);
 
             System.out.println("JSONarraycontacts: " + jsonArrayContacts.toString());
             //System.out.println("JSON object datatoSend: " + dataToSend.toString());

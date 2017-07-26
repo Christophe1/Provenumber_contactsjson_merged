@@ -33,6 +33,10 @@ import java.util.Set;
 
 public class NewContact extends AppCompatActivity {
 
+    //***TESTING
+    String name_test;
+    //*********
+
     // this is the php file name where to save to.
     // we will post the category, name, phone, address, comment etc into Php and
     // create a new review_id
@@ -97,6 +101,13 @@ public class NewContact extends AppCompatActivity {
         phonename = (EditText) findViewById(R.id.textViewPhone);
         addressname = (EditText) findViewById(R.id.textViewAddress);
         commentname = (EditText) findViewById(R.id.textViewComment);
+
+//**************TESTING***********
+        //get the names and numbers from VerifyPhoneNumber and bring them
+        //over to this class
+        Intent i = this.getIntent();
+        //we need to get review_id to ensure changes made are saved to correct review_id
+        name_test = i.getStringExtra("review_id");
 
 
         //for the save button ******************************
