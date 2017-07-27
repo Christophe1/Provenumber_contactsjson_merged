@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -188,6 +189,21 @@ public class NewContact extends AppCompatActivity {
         //scroll is the same speed, be it fast scroll or not
        // listView.setFastScrollEnabled(true);
 
+
+        //listen for which radio button is clicked
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int SelectWho) {
+                // checkedId is the RadioButton selected
+                Toast.makeText(NewContact.this, "Select Who", Toast.LENGTH_LONG).show();
+
+
+            }
+        });
+
+
     }
 
 //******for the phone contacts in the listview
@@ -197,17 +213,15 @@ public class NewContact extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
-
 
         @Override
         protected Void doInBackground(Void... voids) {
 
 //            Perhaps running this thread on the UI thread has solved the issue of the app
 //            crashing? ListView had not been updating properly, I think.
-            runOnUiThread(new Runnable() {
-                public void run() {
+//            runOnUiThread(new Runnable() {
+//                public void run() {
 
 //          we want to delete the old selectContacts from the listview when the Activity loads
 //          because it may need to be updated and we want the user to see the updated listview,
@@ -226,97 +240,35 @@ public class NewContact extends AppCompatActivity {
 //                get a handle on the Content Resolver, so we can query the provider,
                         cursor = getApplicationContext().getContentResolver()
 //                the table to query
-                                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-//               Null. This means that we are not making any conditional query into the contacts table.
-//               Hence, all data is returned into the cursor.
-//                                Projection - the columns you want to query
-                                        null,
-//                                Selection - with this you are extracting records with assigned (by you) conditions and rules
-                                        null,
-//                                SelectionArgs - This replaces any question marks (?) in the selection string
-//                               if you have something like String[] args = { "first string", "second@string.com" };
-                                        null,
-//                                display in ascending order
-                                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+                                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                                        null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
 
-//                get the column number of the Contact_ID column, make it an integer.
-//                I think having it stored as a number makes for faster operations later on.
-                        int Idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
-//                get the column number of the DISPLAY_NAME column
                         int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 //                 get the column number of the NUMBER column
-                        int phoneNumberIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-
-//                ****
-                        int contactlookupkey = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY);
-//                ****
-//                cursor.moveToFirst();
-//        String contactlookupkey2 = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY));
-
-
-//                int photoIdIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI);
-
+                        int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
                         cursor.moveToFirst();
 
-//              We make a new Hashset to hold all our phone numbers, including duplicates, if they come up
-                        Set<String> ids = new HashSet<>();
-
-                        Set<String> ids2 = new HashSet<>();
                         do {
                             System.out.println("=====>in while");
-//                  get a handle on the phone number, which is a string. Loop through all the phone numbers
-                            String phoneid = cursor.getString(phoneNumberIdx);
- //                  get a handle on the contact ids, which is a string. Loop through all the contact ids
-                            String contactid = cursor.getString(Idx);
-                            //First, make sure the phone number is a mobile number.
-//                  Then, if our Hashset doesn't already contain the phone number and the contact id
-//                    then add the phone number to the hashset
-                            //(in other words, remove duplicate phone numbers and duplicate ids)
-                            int phoneType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                            if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
-                                if (!ids.contains(phoneid)) {
-                                    ids.add(phoneid);
-                                    if (!ids2.contains(contactid)) {
-                                        ids2.add(contactid);
-                                        //  HashMap<String, String> hashMap = new HashMap<String, String>();
-//                        get a handle on the display name, which is a string
-                                        name = cursor.getString(nameIdx);
-//                        get a handle on the phone number, which is a string
-                                        phoneNumber = cursor.getString(phoneNumberIdx);
-//                        String image = cursor.getString(photoIdIdx);
-//                                    get a handle on the lookup key, which is a string
-                                        lookupkey = cursor.getString(contactlookupkey);
 
-//                    System.out.println("Id--->"+contactid+"Name--->"+name);
-                                        System.out.println("Id--->" + contactid + " Name--->" + name);
-                                        System.out.println("Id--->" + contactid + " Number--->" + phoneNumber);
-                                        System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
-//*****************************
-                                        //not sure what this does here, duplicates seem to be removed without this
-/*                                if (!phoneNumber.contains("*")) {
-                                    hashMap.put("contactid", "" + contactid);
-                                    hashMap.put("name", "" + name);
-                                    hashMap.put("phoneNumber", "" + phoneNumber);
-                                    // hashMap.put("image", "" + image);
-                                    // hashMap.put("email", ""+email);
-                                    if (hashMapsArrayList != null) {
-                                        hashMapsArrayList.add(hashMap);}
-                                    //     hashMapsArrayList.add(hashMap);
-                                }*/
-//******************************
+                            // get a handle on the phone number of contact, which is a string. Loop through all the phone numbers
+                            String phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
+
+                            // get a handle on the display name, which is a string
+                            name = cursor.getString(nameIdx);
+
+                            System.out.println(" NewContact.java Name--->" + name);
+                            System.out.println(" NewContact.java Phone number of contact--->" + phoneNumberofContact);
+                            //System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
 
                                         SelectPhoneContact selectContact = new SelectPhoneContact();
 
                                         selectContact.setName(name);
-                                        selectContact.setPhone(phoneNumber);
-                                        selectContact.setLookup(lookupkey);
+                                        //selectContact.setPhone(phoneNumber);
+                                        //selectContact.setLookup(lookupkey);
 //                    selectContact.setCheckedBox(false);
                                         selectPhoneContacts.add(selectContact);
-                                    }
-
-                                }
-                            }
 
 
                         } while (cursor.moveToNext());
@@ -325,16 +277,18 @@ public class NewContact extends AppCompatActivity {
                     } catch (Exception e) {
                         Toast.makeText(NewContact.this, "what the...", Toast.LENGTH_LONG).show();
                         e.printStackTrace();
-                        //   cursor.close();
+
                     } finally {
 
-                    }
-                }});
+            }
             if (cursor != null) {
                 cursor.close();
 
             }
             return null;
+
+
+
         }
 
         @Override
@@ -342,7 +296,9 @@ public class NewContact extends AppCompatActivity {
 //Show the result obtained from doInBackground
             super.onPostExecute(aVoid);
 
-//into each inflate_listview, put a name and phone number, which are the details making
+
+
+            //into each inflate_listview, put a name and phone number, which are the details making
 //            our SelectContact, above. And SelectContacts is all these inflate_listviews together
 //            This is the first property of our SelectContactAdapter, a list
 //            The next part, NewContact.this, is our context, which is where we want the list to appear
@@ -360,16 +316,10 @@ public class NewContact extends AppCompatActivity {
             //size. We need to do this because there's a problem with a listview in a scrollview.
             justifyListViewHeightBasedOnChildren(listView);
 
-
             // Select item on listclick
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-//
-                    Log.d("index value", String.valueOf(i));
-
-
 
 //                    we need to notify the listview that changes may have been made on
 //                    the background thread, doInBackground, like adding or deleting contacts,
