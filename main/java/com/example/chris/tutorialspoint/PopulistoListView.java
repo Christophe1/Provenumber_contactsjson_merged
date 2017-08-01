@@ -178,7 +178,7 @@ public class PopulistoListView extends AppCompatActivity {
         hidePDialog();
     }
 
-    private void hidePDialog() {
+    public void hidePDialog() {
         if (pDialog != null) {
             pDialog.dismiss();
             pDialog = null;

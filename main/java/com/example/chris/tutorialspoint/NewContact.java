@@ -88,6 +88,10 @@ public class NewContact extends AppCompatActivity {
 
         //*************************
 
+        pDialog = new ProgressDialog(this);
+        // Showing progress dialog as soon as activity starts loading
+        pDialog.setMessage("Loading...");
+        pDialog.show();
 
         //first of all we want to get the phone number of the current user so we
         //can post it and then get the user_id in php
@@ -166,7 +170,6 @@ public class NewContact extends AppCompatActivity {
                     }
 
 
-
                 };
 
                 // Adding request to request queue
@@ -174,14 +177,16 @@ public class NewContact extends AppCompatActivity {
 
                 //when saved, go back to the PopulistoListView class and update with
                 //the new entry
-                Intent j = new Intent(NewContact.this,PopulistoListView.class);
-                j.putExtra("phonenumberofuser",phoneNoofUserCheck);
+                Intent j = new Intent(NewContact.this, PopulistoListView.class);
+                j.putExtra("phonenumberofuser", phoneNoofUserCheck);
 
                 NewContact.this.startActivity(j);
 
                 finish();
 
             }
+
+
 
 
 
@@ -196,8 +201,8 @@ public class NewContact extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(RadioGroup group, int SelectWho) {
-                // checkedId is the RadioButton selected
-                Toast.makeText(NewContact.this, "Select Who", Toast.LENGTH_LONG).show();
+            // SelectWho is the RadioButton selected
+            Toast.makeText(NewContact.this, "Select Who", Toast.LENGTH_LONG).show();
 
 
             }
@@ -218,84 +223,135 @@ public class NewContact extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
 
-//            Perhaps running this thread on the UI thread has solved the issue of the app
-//            crashing? ListView had not been updating properly, I think.
-//            runOnUiThread(new Runnable() {
-//                public void run() {
 
 //          we want to delete the old selectContacts from the listview when the Activity loads
 //          because it may need to be updated and we want the user to see the updated listview,
 //          like if the user adds new names and numbers to their phone contacts.
-                    selectPhoneContacts.clear();
+            selectPhoneContacts.clear();
 
 //          we have this here to avoid cursor errors
-                    if (cursor != null) {
-                        cursor.moveToFirst();
+            if (cursor != null) {
+                cursor.moveToFirst();
 
-                    }
+            }
 
 
-                    try {
+            try {
 
 //                get a handle on the Content Resolver, so we can query the provider,
-                        cursor = getApplicationContext().getContentResolver()
+                cursor = getApplicationContext().getContentResolver()
 //                the table to query
-                                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                                        null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+                        .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//               Null. This means that we are not making any conditional query into the contacts table.
+//               Hence, all data is returned into the cursor.
+//                                Projection - the columns you want to query
+                                null,
+//                                Selection - with this you are extracting records with assigned (by you) conditions and rules
+                                null,
+//                                SelectionArgs - This replaces any question marks (?) in the selection string
+//                               if you have something like String[] args = { "first string", "second@string.com" };
+                                null,
+//                                display in ascending order
+                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
 
-                        int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+//                get the column number of the Contact_ID column, make it an integer.
+//                I think having it stored as a number makes for faster operations later on.
+                int ContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+//                get the column number of the DISPLAY_NAME column
+                int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 //                 get the column number of the NUMBER column
-                        int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                int phoneNumberIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
-                        cursor.moveToFirst();
+//                ****
+                int lookupkeyIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY);
 
-                        do {
-                            System.out.println("=====>in while");
+                cursor.moveToFirst();
 
-                            // get a handle on the phone number of contact, which is a string. Loop through all the phone numbers
-                            String phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
+//              We make a new Hashset to hold all our phone numbers, including duplicates, if they come up
+                Set<String> ids = new HashSet<>();
 
-                            // get a handle on the display name, which is a string
-                            name = cursor.getString(nameIdx);
+                Set<String> ids2 = new HashSet<>();
+                do {
+                    System.out.println("=====>in while");
+//                  get a handle on the phone number, which is a string. Loop through all the phone numbers
+                    String phoneid = cursor.getString(phoneNumberIdx);
+                    //                  get a handle on the contact ids, which is a string. Loop through all the contact ids
+                    String contactid = cursor.getString(ContactIdx);
+                    // get a handle on the lookupkey, which is a string
+                    String lookupkey = cursor.getString(lookupkeyIdx);
+//                  Then, if our Hashset doesn't already contain the phone number and the contact id
+//                    then add the phone number to the hashset
+                    //(in other words, remove duplicate phone numbers and duplicate ids)
+                    int phoneType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                    //if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
+                        if (!ids.contains(phoneid)) {
+                            ids.add(phoneid);
+                           // if (!ids2.contains(lookupkey)) {
+                            //    ids2.add(lookupkey);
+                                //  HashMap<String, String> hashMap = new HashMap<String, String>();
+//                        get a handle on the display name, which is a string
+                                name = cursor.getString(nameIdx);
+//                        get a handle on the phone number, which is a string
+                                phoneNumber = cursor.getString(phoneNumberIdx);
+//                        String image = cursor.getString(photoIdIdx);
+//                                    get a handle on the lookup key, which is a string
+                                lookupkey = cursor.getString(lookupkeyIdx);
 
-                            System.out.println(" NewContact.java Name--->" + name);
-                            System.out.println(" NewContact.java Phone number of contact--->" + phoneNumberofContact);
-                            //System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
+//                    System.out.println("Id--->"+contactid+"Name--->"+name);
+                                System.out.println("Id--->" + contactid + " Name--->" + name);
+                                System.out.println("Id--->" + contactid + " Number--->" + phoneNumber);
+                                System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
+//*****************************
+                                //not sure what this does here, duplicates seem to be removed without this
+/*                                if (!phoneNumber.contains("*")) {
+                                    hashMap.put("contactid", "" + contactid);
+                                    hashMap.put("name", "" + name);
+                                    hashMap.put("phoneNumber", "" + phoneNumber);
+                                    // hashMap.put("image", "" + image);
+                                    // hashMap.put("email", ""+email);
+                                    if (hashMapsArrayList != null) {
+                                        hashMapsArrayList.add(hashMap);}
+                                    //     hashMapsArrayList.add(hashMap);
+                                }*/
+//******************************
 
-                                        SelectPhoneContact selectContact = new SelectPhoneContact();
+                                SelectPhoneContact selectContact = new SelectPhoneContact();
 
-                                        selectContact.setName(name);
-                                        //selectContact.setPhone(phoneNumber);
-                                        //selectContact.setLookup(lookupkey);
+                                selectContact.setName(name);
+                                selectContact.setPhone(phoneNumber);
+                                selectContact.setLookup(lookupkey);
 //                    selectContact.setCheckedBox(false);
-                                        selectPhoneContacts.add(selectContact);
+                                selectPhoneContacts.add(selectContact);
+                            }
+
+                      //  }
+                   // }
 
 
-                        } while (cursor.moveToNext());
+                } while (cursor.moveToNext());
 
 
-                    } catch (Exception e) {
-                        Toast.makeText(NewContact.this, "what the...", Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-
-                    } finally {
+            } catch (Exception e) {
+                Toast.makeText(NewContact.this, "what the...", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                //   cursor.close();
+            } finally {
 
             }
-            if (cursor != null) {
-                cursor.close();
-
-            }
-            return null;
 
 
+    if (cursor != null) {
+        cursor.close();
 
-        }
+    }
+    return null;
+}
+
 
         @Override
         protected void onPostExecute(Void aVoid) {
 //Show the result obtained from doInBackground
             super.onPostExecute(aVoid);
-
 
 
             //into each inflate_listview, put a name and phone number, which are the details making
@@ -316,8 +372,10 @@ public class NewContact extends AppCompatActivity {
             //size. We need to do this because there's a problem with a listview in a scrollview.
             justifyListViewHeightBasedOnChildren(listView);
 
+
+
             // Select item on listclick
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+/*            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -333,18 +391,22 @@ public class NewContact extends AppCompatActivity {
 
 
 
-            });
-        }}
+            });*/
+
+            //hide the 'loading' box when the page loads
+            pDialog.dismiss();
+        }
+    }
 
 
     @Override
     protected void onResume() {
 
         super.onResume();
-//    load the contacts again, refresh them, when the user resumes the activity
+
+        //    load the contacts again, refresh them, when the user resumes the activity
         LoadContact loadContact = new LoadContact();
         loadContact.execute();
-//    cursor.close();
     }
 
 
@@ -372,6 +434,24 @@ public class NewContact extends AppCompatActivity {
         listView.requestLayout();
 
         System.out.println("the getcount is " + adapter.getCount());
+        System.out.println("the height is " + par.height);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (cursor != null) {
+            cursor.close();
+    }
+    }
+
+    public void onStop(){
+        super.onDestroy();
+        if (cursor != null) {
+            cursor.close();
+        }
+
+    }
+
 
 }
