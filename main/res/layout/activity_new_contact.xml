@@ -15,7 +15,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
         <LinearLayout
-            android:id="@+id/foodItemActvity_linearLayout_fragments"
+            android:id="@+id/listview1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >

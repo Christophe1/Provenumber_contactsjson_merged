@@ -72,7 +72,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     Cursor cursor;
     String name;
     String phoneNumberofContact;
-    String lookupkey;
+//    String lookupkey;
 
     //*************************************************************************************
 
@@ -383,26 +383,26 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 //               Null. This means that we are not making any conditional query into the contacts table.
 //               Hence, all data is returned into the cursor.
-//                                Projection - the columns you want to query
+//               Projection - the columns you want to query
                             null,
-//                                Selection - with this you are extracting records with assigned (by you) conditions and rules
+//               Selection - with this you are extracting records with assigned (by you) conditions and rules
                             null,
-//                                SelectionArgs - This replaces any question marks (?) in the selection string
-//                               if you have something like String[] args = { "first string", "second@string.com" };
+//               SelectionArgs - This replaces any question marks (?) in the selection string
+//               if you have something like String[] args = { "first string", "second@string.com" };
                             null,
-//                                display in ascending order
+//               display in ascending order
                             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
 
 //                get the column number of the Contact_ID column, make it an integer.
 //                I think having it stored as a number makes for faster operations later on.
-            int Idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+//            int Idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
 //                get the column number of the DISPLAY_NAME column
             int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 //                 get the column number of the NUMBER column
             int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
 //                ****
-            int contactlookupkey = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY);
+//            int contactlookupkey = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY);
 //                ****
 //                cursor.moveToFirst();
 //        String contactlookupkey2 = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY));
@@ -416,7 +416,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 //              We make a new Hashset to hold all our contact_ids, including duplicates, if they come up
             Set<String> ids = new HashSet<>();
 //              We make a new Hashset to hold all our lookup keys, including duplicates, if they come up
-            Set<String> ids2 = new HashSet<>();
+//            Set<String> ids2 = new HashSet<>();
             do {
                 System.out.println("=====>in while");
 
@@ -425,7 +425,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 //                        get a handle on the display name, which is a string
                         name = cursor.getString(nameIdx);
 
-                        lookupkey = cursor.getString(contactlookupkey);
+//                        lookupkey = cursor.getString(contactlookupkey);
 //                        get a handle on the phone number, which is a string
                         phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
 
@@ -464,7 +464,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             //    String phoneid = cursor.getString(phoneNumberofContactIdx);
 //                  get a handle on the contactid, which is a string. Loop through all the contact_ids
               //don't need this
-                String contactid = cursor.getString(Idx);
+//                String contactid = cursor.getString(Idx);
 //                  if our Hashset doesn't already contain the phone number string,
 //                    then add it to the hashset
                 if (!ids.contains(phoneNumberofContact)) {
@@ -483,35 +483,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         alContacts.add(phoneNumberofContact);
 
 //                    System.out.println("Id--->"+contactid+"Name--->"+name);
-                        System.out.println("Id--->" + contactid + " Name--->" + name);
-                        System.out.println("Id--->" + contactid + " Phone number of contact--->" + phoneNumberofContact);
-                        System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
-//                        System.out.println("Id--->" + contactid + " lookupkey2--->" + contactlookupkey2);
-
-//                        if (!phoneNumberofContact.contains("*")) {
-//                            hashMap.put("contactid", "" + contactid);
-//                            hashMap.put("name", "" + name);
-//                            hashMap.put("phoneNumberofContact", "" + phoneNumberofContact);
-//                            hashMap.put("image", "" + image);
-                        // hashMap.put("email", ""+email);
-//                            if (hashMapsArrayList != null) {
-//                                hashMapsArrayList.add(hashMap);
-//                            }
-//                    hashMapsArrayList.add(hashMap);
-//                        }
-
-                        // SelectPhoneContact selectContact = new SelectPhoneContact();
-//                    selectContact.setThumb(bit_thumb);
-                        // selectContact.setName(name);
-                        // selectContact.setPhone(phoneNumberofContact);
-                        // selectContact.setLookup(lookupkey);
-//                    selectContact.setCheckedBox(false);
-                        // selectPhoneContacts.add(selectContact);
-                 //   }
-
-
-                    //String sanitized = numberwewant.replaceAll("[^+0-9]", "");
-                    //System.out.println(sanitized);
+                        System.out.println(" Name--->" + name);
+                        System.out.println(" Phone number of contact--->" + phoneNumberofContact);
+//                        System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
 
                 }
             }
@@ -571,8 +545,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //echo the number of contacts and the contacts
+                        //echo the phone contacts who are also app contacts
                         Toast.makeText(VerifyUserPhoneNumber.this, response, Toast.LENGTH_LONG).show();
+                        System.out.println("the Populisto contacts of this user are :" + response);
                         //textView.append(response + " \n");
 
                     }

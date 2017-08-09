@@ -9,7 +9,7 @@ import android.graphics.Bitmap;
 public class SelectPhoneContact {
 
 
-    Bitmap thumb;
+/*    Bitmap thumb;
 
     public Bitmap getThumb() {
         return thumb;
@@ -17,7 +17,7 @@ public class SelectPhoneContact {
 
     public void setThumb(Bitmap thumb) {
         this.thumb = thumb;
-    }
+    }*/
 
     String phone;
 
@@ -47,7 +47,7 @@ public class SelectPhoneContact {
         this.name = name;
     }
 
-    String email;
+ /*   String email;
 
     public String getEmail() {
         return email;
@@ -65,7 +65,7 @@ public class SelectPhoneContact {
 
     public void setLookup(String lookup) {
         this.lookup = lookup;
-    }
+    }*/
 
 
 

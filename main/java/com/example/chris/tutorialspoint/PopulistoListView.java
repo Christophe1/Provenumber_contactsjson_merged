@@ -55,7 +55,7 @@ public class PopulistoListView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.listview_contacts);
+        setContentView(R.layout.phone_listview_contacts);
 
         // textphonenumber = (TextView) findViewById(R.id.textView3);
 
@@ -86,6 +86,7 @@ public class PopulistoListView extends AppCompatActivity {
                         //toast the response of SelectUserReviews.php, which has been converted to a
                         //JSON array in the Php file with JSON encode
                         Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
+                        System.out.println("the review list array is :" + response);
 
                         try {
                             //name our JSONArray responseObject

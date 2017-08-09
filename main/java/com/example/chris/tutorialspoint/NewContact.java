@@ -25,6 +25,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.tutorialspoint.R;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,6 +71,8 @@ public class NewContact extends AppCompatActivity {
     String lookupkey;
     CharSequence nameofcontact;
     Cursor cursor;
+    String CountryCode;
+    String phoneNumberofContact;
     //to remove duplicates phone numbers
     ArrayList hashMapsArrayList;
 
@@ -98,6 +103,11 @@ public class NewContact extends AppCompatActivity {
         //get the phone number, stored in an XML file, when the user first registered the app
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         final String phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
+
+        //get the CountryCode, stored in an XML file, when the user first registered the app
+        //We need this for putting phone contacts into E164 and comparing against the app db
+        SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
 
         //cast an EditText for each of the field ids in activity_edit_contactact.xml
         //can be edited and changed by the user
@@ -241,92 +251,93 @@ public class NewContact extends AppCompatActivity {
 //                get a handle on the Content Resolver, so we can query the provider,
                 cursor = getApplicationContext().getContentResolver()
 //                the table to query
-                        .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                 .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 //               Null. This means that we are not making any conditional query into the contacts table.
 //               Hence, all data is returned into the cursor.
-//                                Projection - the columns you want to query
+//               Projection - the columns you want to query
                                 null,
-//                                Selection - with this you are extracting records with assigned (by you) conditions and rules
+//               Selection - with this you are extracting records with assigned (by you) conditions and rules
                                 null,
-//                                SelectionArgs - This replaces any question marks (?) in the selection string
-//                               if you have something like String[] args = { "first string", "second@string.com" };
+//               SelectionArgs - This replaces any question marks (?) in the selection string
+//               if you have something like String[] args = { "first string", "second@string.com" };
                                 null,
-//                                display in ascending order
-                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+//               display in ascending order
+                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
 
 //                get the column number of the Contact_ID column, make it an integer.
 //                I think having it stored as a number makes for faster operations later on.
-                int ContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+//            int Idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
 //                get the column number of the DISPLAY_NAME column
                 int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 //                 get the column number of the NUMBER column
-                int phoneNumberIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-
-//                ****
-                int lookupkeyIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY);
+                int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
                 cursor.moveToFirst();
 
-//              We make a new Hashset to hold all our phone numbers, including duplicates, if they come up
+//              We make a new Hashset to hold all our contact_ids, including duplicates, if they come up
                 Set<String> ids = new HashSet<>();
 
-                Set<String> ids2 = new HashSet<>();
                 do {
+
                     System.out.println("=====>in while");
-//                  get a handle on the phone number, which is a string. Loop through all the phone numbers
-                    String phoneid = cursor.getString(phoneNumberIdx);
-                    //                  get a handle on the contact ids, which is a string. Loop through all the contact ids
-                    String contactid = cursor.getString(ContactIdx);
-                    // get a handle on the lookupkey, which is a string
-                    String lookupkey = cursor.getString(lookupkeyIdx);
-//                  Then, if our Hashset doesn't already contain the phone number and the contact id
-//                    then add the phone number to the hashset
-                    //(in other words, remove duplicate phone numbers and duplicate ids)
-                    int phoneType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                    //if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
-                        if (!ids.contains(phoneid)) {
-                            ids.add(phoneid);
-                           // if (!ids2.contains(lookupkey)) {
-                            //    ids2.add(lookupkey);
-                                //  HashMap<String, String> hashMap = new HashMap<String, String>();
+
 //                        get a handle on the display name, which is a string
-                                name = cursor.getString(nameIdx);
+                    name = cursor.getString(nameIdx);
+
 //                        get a handle on the phone number, which is a string
-                                phoneNumber = cursor.getString(phoneNumberIdx);
-//                        String image = cursor.getString(photoIdIdx);
-//                                    get a handle on the lookup key, which is a string
-                                lookupkey = cursor.getString(lookupkeyIdx);
+                    phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
+
+
+                    //----------PUT INTO E164 FORMAT--------------------------------------
+                    //need to strip all characters except numbers and + (+ for the first character)
+                    phoneNumberofContact = phoneNumberofContact.replaceAll("[^+0-9]", "");
+                    //replace numbers starting with 00 with +
+                    if (phoneNumberofContact.startsWith("00")) {
+                        phoneNumberofContact = phoneNumberofContact.replaceFirst("00", "+");
+                    }
+
+                    //all phone numbers not starting with +, make them E.164 format,
+                    //for the country code the user has chosen.
+                    if (!phoneNumberofContact.startsWith("+")) {
+                        //CountryCode is the country code chosen by the user originally
+                        phoneNumberofContact = String.valueOf(CountryCode) + String.valueOf(phoneNumberofContact);
+
+                        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+                        try {
+                            //if phone number on user's phone is not in E.164 format,
+                            //precede the number with user's country code.
+                            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, "");
+                            phoneNumberofContact = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
+                            //If an error happens :
+                        } catch (NumberParseException e) {
+                            System.err.println("NumberParseException was thrown: " + e.toString());
+                            // System.out.println(phoneNumberofContact);
+                        }
+                    }
+
+                    //----------------------------------------------------------
+
+
+                    // get a handle on the phone number of contact, which is a string. Loop through all the phone numbers
+//                  if our Hashset doesn't already contain the phone number string,
+//                    then add it to the hashset
+                    if (!ids.contains(phoneNumberofContact)) {
+                        ids.add(phoneNumberofContact);
+
+                        //alContacts is a list of all the phone numbers in the user's contacts
+                        //alContacts.add(phoneNumberofContact);
 
 //                    System.out.println("Id--->"+contactid+"Name--->"+name);
-                                System.out.println("Id--->" + contactid + " Name--->" + name);
-                                System.out.println("Id--->" + contactid + " Number--->" + phoneNumber);
-                                System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
-//*****************************
-                                //not sure what this does here, duplicates seem to be removed without this
-/*                                if (!phoneNumber.contains("*")) {
-                                    hashMap.put("contactid", "" + contactid);
-                                    hashMap.put("name", "" + name);
-                                    hashMap.put("phoneNumber", "" + phoneNumber);
-                                    // hashMap.put("image", "" + image);
-                                    // hashMap.put("email", ""+email);
-                                    if (hashMapsArrayList != null) {
-                                        hashMapsArrayList.add(hashMap);}
-                                    //     hashMapsArrayList.add(hashMap);
-                                }*/
-//******************************
+                        System.out.println(" Name--->" + name);
+                        System.out.println(" Phone number of contact--->" + phoneNumberofContact);
 
                                 SelectPhoneContact selectContact = new SelectPhoneContact();
 
                                 selectContact.setName(name);
-                                selectContact.setPhone(phoneNumber);
-                                selectContact.setLookup(lookupkey);
-//                    selectContact.setCheckedBox(false);
+                                selectContact.setPhone(phoneNumberofContact);
+                             //   selectContact.setLookup(lookupkey);
                                 selectPhoneContacts.add(selectContact);
                             }
-
-                      //  }
-                   // }
-
 
                 } while (cursor.moveToNext());
 
@@ -354,7 +365,7 @@ public class NewContact extends AppCompatActivity {
             super.onPostExecute(aVoid);
 
 
-            //into each inflate_listview, put a name and phone number, which are the details making
+            //into each phone_inflate_listview, put a name and phone number, which are the details making
 //            our SelectContact, above. And SelectContacts is all these inflate_listviews together
 //            This is the first property of our SelectContactAdapter, a list
 //            The next part, NewContact.this, is our context, which is where we want the list to appear
@@ -438,7 +449,7 @@ public class NewContact extends AppCompatActivity {
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         if (cursor != null) {
             cursor.close();

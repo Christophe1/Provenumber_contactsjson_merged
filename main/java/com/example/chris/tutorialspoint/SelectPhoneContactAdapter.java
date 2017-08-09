@@ -77,7 +77,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
             //if there is nothing there (if it's null) inflate the layout for each row
             LayoutInflater li = (LayoutInflater) _c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = li.inflate(R.layout.inflate_listview, null);
+            view = li.inflate(R.layout.phone_inflate_listview, null);
 //            Log.e("Inside", "here--------------------------- In view1");
 
 
@@ -90,20 +90,20 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
         //        we are making a cell format in the ListView, which will contain info like
 //        number, name... the layout for this, with name, no, pic etc...
-//        is contained in inflate_listview.xml, which describes how each cell data
+//        is contained in phone_inflate_listview.xmlew.xml, which describes how each cell data
 //        loads into the listview
         //Viewholder stores component views together so we can
         // immediately access them without the need to lookup repeatedly.
         // Saves on resources, makes the listview smoother. It saves on having to look up findviewbyid all the time
         v = new ViewHolder();
 
-//      So, for example, title is cast to the name id, in inflate_listview,
+//      So, for example, title is cast to the name id, in phone_inflate_listview,
 //        phone is cast to the id called no etc
         v.title = (TextView) view.findViewById(R.id.name);
 //        v.check = (CheckBox) view.findViewById(R.id.check);
         v.phone = (TextView) view.findViewById(R.id.no);
 //        set text size to 0dp, and height to 0dp, user doesn't need to see it
-        v.lookup = (TextView) view.findViewById(R.id.lookup);
+        //v.lookup = (TextView) view.findViewById(R.id.lookup);
         v.checkbox = (CheckBox) view.findViewById(R.id.checkBoxContact);
 
 //        store the holder with the view
@@ -111,19 +111,19 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         v.title.setText(data.getName());
         v.checkbox.setChecked(data.getCheckedBox());
         v.phone.setText(data.getPhone());
-        v.lookup.setText(data.getLookup());
+        //v.lookup.setText(data.getLookup());
 
 //        set a tag for a string we're calling getthename, and make it equal to the name of the contact
         //same for getthenumber and getthelookup
-        v.checkbox.setTag(R.string.getthename,data.getName());
-        v.checkbox.setTag(R.string.getthenumber,data.getPhone());
-        v.checkbox.setTag(R.string.getthelookup,data.getLookup());
+     //   v.checkbox.setTag(R.string.getthename,data.getName());
+     //   v.checkbox.setTag(R.string.getthenumber,data.getPhone());
+    //    v.checkbox.setTag(R.string.getthelookup,data.getLookup());
 
 
       //   Set checkbox listener android
         // need this here so the listview remembers which checkbox is clicked,
         //when scrolled
-        v.checkbox.setOnClickListener(new View.OnClickListener() {
+/*        v.checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CheckBox checkBox = (CheckBox) view;
@@ -133,7 +133,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                     data.setCheckedBox(false);
                 }
             }
-        });
+        });*/
 
         view.setTag(data);
 
