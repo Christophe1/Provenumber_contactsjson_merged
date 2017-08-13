@@ -1,7 +1,6 @@
 package com.example.chris.tutorialspoint;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -41,10 +40,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static android.R.id.input;
 
 public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
@@ -67,7 +65,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     public static final ArrayList<String> alContacts = new ArrayList<String>();
 
     // we will be making all phone contacts as a JsonArray
-    JSONArray jsonArrayContacts = new JSONArray();
+    JSONArray jsonArrayAllPhoneContacts = new JSONArray();
 
     Cursor cursor;
     String name;
@@ -520,12 +518,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 jsonObjectContact.put("phone_number", alContacts.get(i));
 
                 //make all the Json Objects into a JsonArray
-                jsonArrayContacts.put(jsonObjectContact);
+                jsonArrayAllPhoneContacts.put(jsonObjectContact);
 
             }
             System.out.println("the amount in alContacts :" + alContacts.size());
-
-            System.out.println("JSONarraycontacts: " + jsonArrayContacts.toString());
+            System.out.println("here is the list of alContacts :" + alContacts);
+            System.out.println("JSONarraycontacts: " + jsonArrayAllPhoneContacts.toString());
             //System.out.println("JSON object datatoSend: " + dataToSend.toString());
 
 
@@ -550,6 +548,22 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         System.out.println("the Populisto contacts of this user are :" + response);
                         //textView.append(response + " \n");
 
+                        //the above response of matching contacts is a JSON Array, let's
+                        //isolate the phone numbers
+                        final List<String> responseContacts = new ArrayList<String>();
+                        try {
+                            JSONArray responseObject = new JSONArray(response);
+                            for (int i = 0; i < responseObject.length(); i++) {
+                                final JSONObject obj = responseObject.getJSONObject(i);
+                                responseContacts.add(obj.getString("contact_phonenumber"));
+                            }
+                            System.out.println("2, the Populisto contacts of this user are :" + responseContacts);
+
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -572,12 +586,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 // In PHP we will have $_POST["phonenumberofuser"]
                 params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
                 //The KEY is php, KEY_PHONENUMBER_CONTACT = "phonenumberofcontact" . In PHP we will have $_POST["phonenumberofcontact"]
-                //The VALUE, jsonArrayContacts.toString, is Android side, it will be a sequence of phone numbers
+                //The VALUE, jsonArrayAllPhoneContacts.toString, is Android side, it will be a sequence of phone numbers
                 // of the form "+12345678"
-                params.put(KEY_PHONENUMBER_CONTACT,jsonArrayContacts.toString());
+                params.put(KEY_PHONENUMBER_CONTACT, jsonArrayAllPhoneContacts.toString());
 
                 System.out.println(Collections.singletonList(params));
-                //System.out.println("contact is : " + jsonArrayContacts);
+                //System.out.println("contact is : " + jsonArrayAllPhoneContacts);
                 return params;
 
 
