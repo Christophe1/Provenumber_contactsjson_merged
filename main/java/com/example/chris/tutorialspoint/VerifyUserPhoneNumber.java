@@ -49,7 +49,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     // this is the php file name where to insert into the database, the user's phone number
     private static final String REGISTER_URL = "http://www.populisto.com/insert.php";
 
-    //we are posting phoneNoofUser, which in PHP is phonenumberofuser
+    //into insert.php we are posting phoneNoofUser, which in PHP is phonenumberofuser
     public static final String KEY_PHONENUMBER_USER = "phonenumberofuser";
 
     //*************TO DO WITH COMPARING APP CONTACTS AND PHONE CONTACTS*******************
@@ -57,8 +57,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     // this is the php file we are contacting with Volley to see what contacts are using the App
     private static final String CHECKPHONENUMBER_URL = "http://www.populisto.com/checkcontact.php";
 
-    //we are posting phoneNoofContact, which in PHP is phonenumberofcontact
-
+    //into checkcontact.php we are posting phoneNoofContact, which in PHP is phonenumberofcontact
     public static final String KEY_PHONENUMBER_CONTACT = "phonenumberofcontact";
 
     //alContacts is a list of all the phone numbers in the user's contacts
@@ -71,14 +70,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     String name;
     String phoneNumberofContact;
 //    String lookupkey;
-
+//    String theMatchingContacts;
     //*************************************************************************************
 
     //related to SMS verification
     Button btnSendSMS;
-
-    Button buttonRegister;
-
     EditText txtphoneNoofUser;
 
     String phoneNoofUser;
@@ -105,9 +101,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
 
-        //txtSMSMayApply = (TextView) findViewById(R.id.txtSMSMayApply);
-
-        //  when the form loads, check to see if phoneNoofUser is in there,if the user is
+        //  when the form loads, check to see if phoneNoofUser is using the App,if the user is
         // already registered, by checking the MyData XML file
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
@@ -121,16 +115,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         Log.v("index value", phoneNoofUser);
         Log.v("index value", CountryCode);
 
-
-        //  if the user has not already registered
+        //  if the user has not already registered then when they click the Send Message button
+        //call sendSMSMessage()
         if ( phoneNoofUser == null || phoneNoofUser.equals("") ) {
-
 
             btnSendSMS.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     System.out.println("you clicked it, send message");
                     sendSMSMessage();
-
 
                 }
             });
@@ -170,7 +162,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         txtCountryCode =(TextView) findViewById(R.id.txtCountryCode);
         Intent myIntent =this.getIntent();
-        //put in the Country code selected by the user in CountryCodes.java
+        //coming back to this activity, put in the Country code selected by the user in CountryCodes.java
         CountryCode = myIntent.getStringExtra("CountryCode");
         txtCountryCode.setText(CountryCode);
     }
@@ -544,13 +536,24 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     @Override
                     public void onResponse(String response) {
                         //echo the phone contacts who are also app contacts
-                        Toast.makeText(VerifyUserPhoneNumber.this, response, Toast.LENGTH_LONG).show();
+                        Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
                         System.out.println("the Populisto contacts of this user are :" + response);
                         //textView.append(response + " \n");
+                       String theMatchingContacts = response.toString();
+                        System.out.println("matching contacts of this user are :" + theMatchingContacts);
+
+
+                        // then start the next activity, PopulistoListView
+                        Intent myIntent2 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+                        myIntent2.putExtra("JsonArrayMatchingContacts", theMatchingContacts);
+                        System.out.println("phonenoofuser" + phoneNoofUser);
+                        System.out.println("the matching contacts are " + theMatchingContacts);
+
+                        VerifyUserPhoneNumber.this.startActivity(myIntent2);
 
                         //the above response of matching contacts is a JSON Array, let's
                         //isolate the phone numbers
-                        final List<String> responseContacts = new ArrayList<String>();
+             /*           final List<String> responseContacts = new ArrayList<String>();
                         try {
                             JSONArray responseObject = new JSONArray(response);
                             for (int i = 0; i < responseObject.length(); i++) {
@@ -559,9 +562,18 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                             }
                             System.out.println("2, the Populisto contacts of this user are :" + responseContacts);
 
+
                         } catch(Exception e) {
                             e.printStackTrace();
-                        }
+                        }*/
+
+
+
+
+                        //pass the Array List of matching contacts as separate values to NewContact
+                        //Intent intent2 = new Intent(VerifyUserPhoneNumber.this, NewContact.class);
+                        //intent2.putStringArrayListExtra("message", (ArrayList<String>) responseContacts);
+                        //startActivity(intent2);
 
 
                     }

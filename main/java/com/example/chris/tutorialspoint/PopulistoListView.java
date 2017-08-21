@@ -51,6 +51,7 @@ public class PopulistoListView extends AppCompatActivity {
     //private TextView textphonenumber;
     //private String strphone;
 //private int reviewid;
+    String JsonArrayMatchingContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,31 @@ public class PopulistoListView extends AppCompatActivity {
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
         pDialog.show();
+
+        Intent myIntent = getIntent();
+        //get the JSONArray of matching contacts from VerifyPhoneNumber
+        JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
+        System.out.println("here ya go fromPoplistview" + JsonArrayMatchingContacts);
+/*
+        Intent intent = getIntent();
+        //pass the JSONArray  of matching contacts from VerifyPhoneNumber
+        String JsonArrayMatchingContacts = intent.getStringExtra("JsonArrayMatchingContacts");
+
+        try {
+            JSONArray array = new JSONArray(JsonArrayMatchingContacts);
+            System.out.println("here ya go" + array.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //pass the Array List of matching contacts from VerifyPhoneNumber
+        //ArrayList<String> message2 = getIntent().getStringArrayListExtra("message2");
+
+        System.out.println("Transferred to PopulistoListView, the Populisto contacts of this user are :" + JsonArrayMatchingContacts);
+       // System.out.println("Transferred to PopulistoListView, the Populisto contacts of this user are :" + message2);
+*/
+
+
 
         //post the phone number of the logged in user to SelectUserReviews.php and from that
         //get the logged in user's reviews
@@ -196,7 +222,10 @@ public class PopulistoListView extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
             case R.id.new_contact:
+                //start the NewContact class
                 Intent intent = new Intent(PopulistoListView.this, NewContact.class);
+                //also take the matching contacts, so they'll be displayed in the list view
+                intent.putExtra("JsonArrayMatchingContacts", JsonArrayMatchingContacts);
                 startActivity(intent);
                 return true;
         }

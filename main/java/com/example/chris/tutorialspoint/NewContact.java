@@ -30,6 +30,8 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,6 +80,7 @@ public class NewContact extends AppCompatActivity {
      String phoneNumberofContact;
     //to remove duplicates phone numbers
     ArrayList hashMapsArrayList;
+    String JsonArrayMatchingContacts;
 
     //*******************************
 
@@ -126,6 +129,12 @@ public class NewContact extends AppCompatActivity {
         Intent i = this.getIntent();
         //we need to get review_id to ensure changes made are saved to correct review_id
         name_test = i.getStringExtra("review_id");
+        //get the matching contacts from populistolistview, so we can put them at the top
+        //of the listview with a checkbox
+        JsonArrayMatchingContacts = i.getStringExtra("JsonArrayMatchingContacts");
+        System.out.println("here ya go from NewContact" + JsonArrayMatchingContacts);
+
+
 
 
         //for the save button ******************************
@@ -307,17 +316,32 @@ public class NewContact extends AppCompatActivity {
                         SelectPhoneContact selectContact = new SelectPhoneContact();
 
 
+                        ArrayList<String> MatchingContacts = new ArrayList<String>();
+                        try {
+                            JSONArray Object = new JSONArray(JsonArrayMatchingContacts);
+                            for (int x = 0; x < Object.length(); x++) {
+                                final JSONObject obj = Object.getJSONObject(x);
+                                MatchingContacts.add(obj.getString("contact_phonenumber"));
 
-                        if (phoneNumberofContact.equals("3456781276"))/* check your condition here: is it the number you are looking for? */
+                            }
+                            System.out.println("MatchingContacts :" + MatchingContacts);
+
+
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                        }
+                        //if a phone number is in our array of matching contacts
+                        if (MatchingContacts.contains(phoneNumberofContact))/* check your condition here: is it the number you are looking for? */
                         {
                             // insert the contact at the beginning
-                             selectPhoneContacts.add(0, selectContact);
-                           // phoneNumberofContact= "eeeee";
-                           // selectPhoneContacts.add(selectContact);
+                            // selectPhoneContacts.add(0, selectContact);
+                            phoneNumberofContact= phoneNumberofContact + "A a c";
+                            selectPhoneContacts.add(selectContact);
                         } else {
                             // insert it at the end (default)
                             selectPhoneContacts.add(selectContact);
                         }
+
 
 
                         selectContact.setName(name);
