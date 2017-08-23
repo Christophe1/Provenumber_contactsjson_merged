@@ -81,6 +81,8 @@ public class NewContact extends AppCompatActivity {
     //to remove duplicates phone numbers
     ArrayList hashMapsArrayList;
     String JsonArrayMatchingContacts;
+    ArrayList allPhoneContacts;
+
 
     //*******************************
 
@@ -115,8 +117,7 @@ public class NewContact extends AppCompatActivity {
         SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
 
-        //cast an EditText for each of the field ids in activity_edit_contactact.xml
-        //can be edited and changed by the user
+        //cast an EditText for each of the field ids in activity_new_contactact.xml
         categoryname = (EditText) findViewById(R.id.textViewCategory);
         namename = (EditText) findViewById(R.id.textViewName);
         phonename = (EditText) findViewById(R.id.textViewPhone);
@@ -127,10 +128,14 @@ public class NewContact extends AppCompatActivity {
         //get the names and numbers from VerifyPhoneNumber and bring them
         //over to this class
         Intent i = this.getIntent();
-        //we need to get review_id to ensure changes made are saved to correct review_id
-        name_test = i.getStringExtra("review_id");
-        //get the matching contacts from populistolistview, so we can put them at the top
-        //of the listview with a checkbox
+
+        //get the Array list of all contacts on user's phone, alContacts, from PopulistoListView
+        ArrayList<String> allPhoneContacts = i.getStringArrayListExtra("allPhoneContacts");
+        System.out.println("allphonecontacts from NewContact" + allPhoneContacts);
+        //get the JSON Array called the MatchingContacts from PopulistoListView,
+        // which in turn gets it from VerifyUserPhoneNumber. This JSON Array is the matching contacts -
+        // users of the app and contacts in the user's phone book. We will put them at the top
+        //of the listview with a checkbox, distinguished from the other users not yet using the app.
         JsonArrayMatchingContacts = i.getStringExtra("JsonArrayMatchingContacts");
         System.out.println("here ya go from NewContact" + JsonArrayMatchingContacts);
 
@@ -158,7 +163,7 @@ public class NewContact extends AppCompatActivity {
                             @Override
                             public void onResponse(String response) {
                                 //hide the dialogue box when page is saved
-                                pDialog.dismiss();
+                              //  pDialog.dismiss();
                                 //response, for testing purposes, is "$last_id"
                                 Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
                             }
@@ -301,8 +306,8 @@ public class NewContact extends AppCompatActivity {
 
 
                     //********************************
-                    lookupkey = cursor.getString(contactlookupkey);
-                    contact_id = cursor.getString(Idx);
+                    //lookupkey = cursor.getString(contactlookupkey);
+                   // contact_id = cursor.getString(Idx);
 
                     //*************************************
 
@@ -315,7 +320,8 @@ public class NewContact extends AppCompatActivity {
 
                         SelectPhoneContact selectContact = new SelectPhoneContact();
 
-
+                        //make an arraylist so we can get the objects of JsonArrayMatchingContacts
+                        //which we import from VerifyUserPhoneNumber
                         ArrayList<String> MatchingContacts = new ArrayList<String>();
                         try {
                             JSONArray Object = new JSONArray(JsonArrayMatchingContacts);
@@ -334,14 +340,13 @@ public class NewContact extends AppCompatActivity {
                         if (MatchingContacts.contains(phoneNumberofContact))/* check your condition here: is it the number you are looking for? */
                         {
                             // insert the contact at the beginning
-                            // selectPhoneContacts.add(0, selectContact);
-                            phoneNumberofContact= phoneNumberofContact + "A a c";
+                             selectPhoneContacts.add(0, selectContact);
+                           // phoneNumberofContact= phoneNumberofContact + "A a c";
                             selectPhoneContacts.add(selectContact);
                         } else {
                             // insert it at the end (default)
                             selectPhoneContacts.add(selectContact);
                         }
-
 
 
                         selectContact.setName(name);
@@ -352,8 +357,6 @@ public class NewContact extends AppCompatActivity {
                         System.out.println(" Phone number of contact--->" + phoneNumberofContact);
                         System.out.println(" Look up key--->" + lookupkey);
                         System.out.println(" contact id--->" + contact_id);
-
-
 
                     }
 
@@ -368,11 +371,6 @@ public class NewContact extends AppCompatActivity {
 
             }
 
-
-    if (cursor != null) {
-        cursor.close();
-
-    }
     return null;
 }
 
@@ -404,7 +402,6 @@ public class NewContact extends AppCompatActivity {
 
         super.onResume();
 
-        //    load the contacts again, refresh them, when the user resumes the activity
         LoadContact loadContact = new LoadContact();
         loadContact.execute();
     }
@@ -437,21 +434,21 @@ public class NewContact extends AppCompatActivity {
         System.out.println("the height is " + par.height);
     }
 
-/*    @Override
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (cursor != null) {
             cursor.close();
     }
-    }*/
+    }
 
-    public void onStop(){
+/*    public void onStop(){
         super.onDestroy();
         if (cursor != null) {
             cursor.close();
         }
 
-    }
+    }*/
 
 
 }

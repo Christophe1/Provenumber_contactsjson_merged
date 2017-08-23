@@ -51,6 +51,7 @@ public class PopulistoListView extends AppCompatActivity {
     //private TextView textphonenumber;
     //private String strphone;
 //private int reviewid;
+    ArrayList allPhoneContacts;
     String JsonArrayMatchingContacts;
 
     @Override
@@ -77,9 +78,13 @@ public class PopulistoListView extends AppCompatActivity {
         pDialog.show();
 
         Intent myIntent = getIntent();
+        //get the Array list of all contacts on user's phone, alContacts, from VerifyPhoneNumber
+        ArrayList<String> allPhoneContacts = getIntent().getStringArrayListExtra("allPhoneContacts");
+       // allPhoneContacts = myIntent.getStringExtra("allPhoneContacts");
+        System.out.println("alContacts fromPoplistview" + allPhoneContacts);
         //get the JSONArray of matching contacts from VerifyPhoneNumber
         JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
-        System.out.println("here ya go fromPoplistview" + JsonArrayMatchingContacts);
+        System.out.println("matching contacts fromPoplistview" + JsonArrayMatchingContacts);
 /*
         Intent intent = getIntent();
         //pass the JSONArray  of matching contacts from VerifyPhoneNumber
@@ -224,6 +229,8 @@ public class PopulistoListView extends AppCompatActivity {
             case R.id.new_contact:
                 //start the NewContact class
                 Intent intent = new Intent(PopulistoListView.this, NewContact.class);
+                //pass allPhoneContacts Array to NewContact, so we can display in ListView
+                intent.putExtra("allPhoneContacts", allPhoneContacts);
                 //also take the matching contacts, so they'll be displayed in the list view
                 intent.putExtra("JsonArrayMatchingContacts", JsonArrayMatchingContacts);
                 startActivity(intent);

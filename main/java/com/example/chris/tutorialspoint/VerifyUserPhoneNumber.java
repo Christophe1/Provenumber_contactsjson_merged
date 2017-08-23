@@ -538,18 +538,22 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         //echo the phone contacts who are also app contacts
                         Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
                         System.out.println("the Populisto contacts of this user are :" + response);
-                        //textView.append(response + " \n");
+
                        String theMatchingContacts = response.toString();
                         System.out.println("matching contacts of this user are :" + theMatchingContacts);
 
-
                         // then start the next activity, PopulistoListView
-                        Intent myIntent2 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
-                        myIntent2.putExtra("JsonArrayMatchingContacts", theMatchingContacts);
+                        Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+                        //we want to send alContacts, all contacts in the user's phone book,
+                        //to the next activity
+                        myIntent.putExtra("allPhoneContacts", alContacts);
+                        //we want to send theMatchingContacts, all contacts in the user's phone book who
+                        // also use the app, to the next activity
+                        myIntent.putExtra("JsonArrayMatchingContacts", theMatchingContacts);
                         System.out.println("phonenoofuser" + phoneNoofUser);
                         System.out.println("the matching contacts are " + theMatchingContacts);
 
-                        VerifyUserPhoneNumber.this.startActivity(myIntent2);
+                        VerifyUserPhoneNumber.this.startActivity(myIntent);
 
                         //the above response of matching contacts is a JSON Array, let's
                         //isolate the phone numbers
