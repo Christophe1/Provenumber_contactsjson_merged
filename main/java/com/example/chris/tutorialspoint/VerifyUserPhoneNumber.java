@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,8 +59,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     //into checkcontact.php we are posting phoneNoofContact, which in PHP is phonenumberofcontact
     public static final String KEY_PHONENUMBER_CONTACT = "phonenumberofcontact";
 
-    //alContacts is a list of all the phone numbers in the user's contacts
-    public static final ArrayList<String> alContacts = new ArrayList<String>();
+    //allPhonesofContacts is a list of all the phone numbers in the user's contacts
+    public static final ArrayList<String> allPhonesofContacts = new ArrayList<String>();
+
+    //allNamesofContacts is a list of all the names in the user's contacts
+    public static final ArrayList<String> allNamesofContacts = new ArrayList<String>();
 
     // we will be making all phone contacts as a JsonArray
     JSONArray jsonArrayAllPhoneContacts = new JSONArray();
@@ -469,19 +471,28 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
 
-                        //alContacts is a list of all the phone numbers in the user's contacts
-                        alContacts.add(phoneNumberofContact);
+                        //allPhonesofContacts is a list of all the phone numbers in the user's contacts
+                        allPhonesofContacts.add(phoneNumberofContact);
+                        //allNamesofContacts is a list of all the names in the user's contacts
+                        allNamesofContacts.add(name);
 
 //                    System.out.println("Id--->"+contactid+"Name--->"+name);
                         System.out.println(" Name--->" + name);
                         System.out.println(" Phone number of contact--->" + phoneNumberofContact);
 //                        System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
 
+
+                    //We want to make a JSON Array like [{"name":"Tom", "number":"+1234567"},....]
                 }
+
             }
 
-        while (cursor.moveToNext());
 
+        while (cursor.moveToNext());
+            System.out.println("size of allPhonesofContacts :" + allPhonesofContacts.size());
+            System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
+            System.out.println("size of all names :" + allNamesofContacts.size());
+            System.out.println("here is the list of names in contacts :" + allNamesofContacts);
 
     } catch (Exception e) {
         e.printStackTrace();
@@ -495,27 +506,28 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 }
 
 
-//CONVERT all phone contacts on the user's phone  - the alContacts array, into JSON
+//CONVERT all phone contacts on the user's phone  - the allPhonesofContacts array, into JSON
     //we will be using this array to see which numbers are already users of our app
     protected void convertNumberstoJSON() {
 
         try {
 
-            //alContacts is our arraylist with all the phone numbers
-            for (int i = 0; i < alContacts.size(); i++)
+            //allPhonesofContacts is our arraylist with all the phone numbers
+            for (int i = 0; i < allPhonesofContacts.size(); i++)
             {
-                // make each contact in alContacts into an individual JSON object called jsonObjectContact
+                // make each contact in allPhonesofContacts into an individual JSON object called jsonObjectContact
                 JSONObject jsonObjectContact = new JSONObject();
                 // jsonObjectContact will be of the form {"phone_number":"123456789"}
-                jsonObjectContact.put("phone_number", alContacts.get(i));
+                jsonObjectContact.put("phone_number", allPhonesofContacts.get(i));
+                jsonObjectContact.put("name", allNamesofContacts.get(i));
 
                 //make all the Json Objects into a JsonArray
                 jsonArrayAllPhoneContacts.put(jsonObjectContact);
 
             }
-            System.out.println("the amount in alContacts :" + alContacts.size());
-            System.out.println("here is the list of alContacts :" + alContacts);
-            System.out.println("JSONarraycontacts: " + jsonArrayAllPhoneContacts.toString());
+            System.out.println("the amount in allPhonesofContacts :" + allPhonesofContacts.size());
+           // System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
+            System.out.println("JSONarrayAllPhonecontacts: " + jsonArrayAllPhoneContacts.toString());
             //System.out.println("JSON object datatoSend: " + dataToSend.toString());
 
 
@@ -544,13 +556,21 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                         // then start the next activity, PopulistoListView
                         Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
-                        //we want to send alContacts, all contacts in the user's phone book,
+                        //we want to send allPhonesofContacts, all contacts in the user's phone book,
                         //to the next activity
-                        myIntent.putExtra("allPhoneContacts", alContacts);
-                        //we want to send theMatchingContacts, all contacts in the user's phone book who
-                        // also use the app, to the next activity
+                        myIntent.putExtra("allPhonesofContacts", allPhonesofContacts);
+                        System.out.println("VerifyUserPhoneNumber: allPhonesofContacts are :" + allPhonesofContacts);
+
+                        //we want to send the JSON Array jsonArrayAllPhoneContacts, all names and phone numbers
+                        // of contacts in the user's phone book, to the next activity, PopulistoListView
+                        myIntent.putExtra("jsonArrayAllPhoneContacts", jsonArrayAllPhoneContacts.toString());
+
+                        //we want to send the JSON Array theMatchingContacts, all contacts in the user's phone book who
+                        // also use the app, to the next activity, PopulistoListView
                         myIntent.putExtra("JsonArrayMatchingContacts", theMatchingContacts);
+
                         System.out.println("phonenoofuser" + phoneNoofUser);
+                        System.out.println("all contacts on phone are " + jsonArrayAllPhoneContacts);
                         System.out.println("the matching contacts are " + theMatchingContacts);
 
                         VerifyUserPhoneNumber.this.startActivity(myIntent);

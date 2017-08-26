@@ -81,7 +81,10 @@ public class NewContact extends AppCompatActivity {
     //to remove duplicates phone numbers
     ArrayList hashMapsArrayList;
     String JsonArrayMatchingContacts;
+    String jsonArrayAllPhoneContacts;
     ArrayList allPhoneContacts;
+
+    JSONArray testtest;
 
 
     //*******************************
@@ -127,17 +130,23 @@ public class NewContact extends AppCompatActivity {
 //**************TESTING***********
         //get the names and numbers from VerifyPhoneNumber and bring them
         //over to this class
-        Intent i = this.getIntent();
+        Intent myIntent = getIntent();
 
-        //get the Array list of all contacts on user's phone, alContacts, from PopulistoListView
-        ArrayList<String> allPhoneContacts = i.getStringArrayListExtra("allPhoneContacts");
-        System.out.println("allphonecontacts from NewContact" + allPhoneContacts);
+        //get the Array list of all contacts on user's phone, allPhonesofContacts, from PopulistoListView
+        ArrayList<String> allPhonesofContacts = getIntent().getStringArrayListExtra("allPhonesofContacts");
+        System.out.println("allphonesofcontacts from NewContact" + allPhonesofContacts);
+        //get the JSON Array called the jsonArrayAllPhoneContacts from PopulistoListView,
+        // which in turn gets it from VerifyUserPhoneNumber. This JSON Array is all name and phone numbers
+        // of contacts in the user's phone book.
+        jsonArrayAllPhoneContacts = myIntent.getStringExtra("jsonArrayAllPhoneContacts");
+        System.out.println("all names and numbers from NewContact" + jsonArrayAllPhoneContacts);
+
         //get the JSON Array called the MatchingContacts from PopulistoListView,
         // which in turn gets it from VerifyUserPhoneNumber. This JSON Array is the matching contacts -
         // users of the app and contacts in the user's phone book. We will put them at the top
         //of the listview with a checkbox, distinguished from the other users not yet using the app.
-        JsonArrayMatchingContacts = i.getStringExtra("JsonArrayMatchingContacts");
-        System.out.println("here ya go from NewContact" + JsonArrayMatchingContacts);
+        JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
+        System.out.println("all matching contacts from NewContact" + JsonArrayMatchingContacts);
 
 
 
@@ -257,7 +266,7 @@ public class NewContact extends AppCompatActivity {
             selectPhoneContacts.clear();
 
 //          we have this here to avoid cursor errors
-            if (cursor != null) {
+         /*   if (cursor != null) {
                 cursor.moveToFirst();
 
             }
@@ -284,15 +293,15 @@ public class NewContact extends AppCompatActivity {
                 int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
 
-                //****************************
+                /*//****************************
                 int contactlookupkey = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY);
                 int Idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
-                //****************************
+                /*//****************************
 
-                cursor.moveToFirst();
+                cursor.moveToFirst();*/
 
 //              We make a new Hashset to hold all our contact_ids, including duplicates, if they come up
-                Set<String> ids = new HashSet<>();
+/*                Set<String> ids = new HashSet<>();
 
                 do {
 
@@ -302,7 +311,7 @@ public class NewContact extends AppCompatActivity {
                     name = cursor.getString(nameIdx);
 
 //                        get a handle on the phone number, which is a string
-                    phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
+                    phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);*/
 
 
                     //********************************
@@ -315,19 +324,19 @@ public class NewContact extends AppCompatActivity {
                     // get a handle on the phone number of contact, which is a string. Loop through all the phone numbers
 //                  if our Hashset doesn't already contain the phone number string,
 //                    then add it to the hashset
-                    if (!ids.contains(phoneNumberofContact)) {
-                        ids.add(phoneNumberofContact);
+                  //  if (!ids.contains(phoneNumberofContact)) {
+                  //      ids.add(phoneNumberofContact);
 
                         SelectPhoneContact selectContact = new SelectPhoneContact();
 
                         //make an arraylist so we can get the objects of JsonArrayMatchingContacts
-                        //which we import from VerifyUserPhoneNumber
-                        ArrayList<String> MatchingContacts = new ArrayList<String>();
+                        //which we import from PopulistoListView
+                       /* ArrayList<String> MatchingContacts = new ArrayList<String>();
                         try {
                             JSONArray Object = new JSONArray(JsonArrayMatchingContacts);
                             for (int x = 0; x < Object.length(); x++) {
                                 final JSONObject obj = Object.getJSONObject(x);
-                                MatchingContacts.add(obj.getString("contact_phonenumber"));
+                                MatchingContacts.add(obj.getString("phone_number"));
 
                             }
                             System.out.println("MatchingContacts :" + MatchingContacts);
@@ -336,8 +345,9 @@ public class NewContact extends AppCompatActivity {
                         } catch(Exception e) {
                             e.printStackTrace();
                         }
+
                         //if a phone number is in our array of matching contacts
-                        if (MatchingContacts.contains(phoneNumberofContact))/* check your condition here: is it the number you are looking for? */
+                        if (MatchingContacts.contains(phoneNumberofContact))*//* check your condition here: is it the number you are looking for? *//*
                         {
                             // insert the contact at the beginning
                              selectPhoneContacts.add(0, selectContact);
@@ -346,21 +356,22 @@ public class NewContact extends AppCompatActivity {
                         } else {
                             // insert it at the end (default)
                             selectPhoneContacts.add(selectContact);
-                        }
+                        }*/
 
 
                         selectContact.setName(name);
                         selectContact.setPhone(phoneNumberofContact);
-                        selectContact.setLookup(lookupkey);
+                        selectPhoneContacts.add(selectContact);
+                       // selectContact.setLookup(lookupkey);
 
                         System.out.println(" Name--->" + name);
                         System.out.println(" Phone number of contact--->" + phoneNumberofContact);
-                        System.out.println(" Look up key--->" + lookupkey);
-                        System.out.println(" contact id--->" + contact_id);
-
+                        //System.out.println(" Look up key--->" + lookupkey);
+                       // System.out.println(" contact id--->" + contact_id);
+                    return null;
                     }
 
-                } while (cursor.moveToNext());
+/*                } while (cursor.moveToNext());
 
 
             } catch (Exception e) {
@@ -372,7 +383,7 @@ public class NewContact extends AppCompatActivity {
             }
 
     return null;
-}
+}*/
 
 
         @Override
