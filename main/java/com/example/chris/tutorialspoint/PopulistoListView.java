@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +41,10 @@ public class PopulistoListView extends AppCompatActivity {
     //we are posting phoneNoofUser, the key is phonenumberofuser, which we see in php
     public static final String KEY_PHONENUMBER_USER = "phonenumberofuser";
 
-   // private static final String TAG = PopulistoListView.class.getSimpleName();
+    // private static final String TAG = PopulistoListView.class.getSimpleName();
 
 
-   // String phoneNoofUser;
+    // String phoneNoofUser;
     private ProgressDialog pDialog;
     private List<Review> reviewList = new ArrayList<Review>();
     private ListView listView;
@@ -52,8 +53,10 @@ public class PopulistoListView extends AppCompatActivity {
     //private String strphone;
 //private int reviewid;
     ArrayList allPhonesofContacts;
+    ArrayList allNamesofContacts;
     String JsonArrayMatchingContacts;
     String jsonArrayAllPhoneContacts;
+    String phoneNumberofContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +82,16 @@ public class PopulistoListView extends AppCompatActivity {
         pDialog.show();
 
         Intent myIntent = getIntent();
-        //get the Array list of all contacts on user's phone, allPhonesofContacts, from VerifyPhoneNumber
+        //get the Array list of all phone contacts on user's phone, allPhonesofContacts, from VerifyPhoneNumber
         allPhonesofContacts = getIntent().getStringArrayListExtra("allPhonesofContacts");
-       // allPhonesofContacts = myIntent.getStringExtra("allPhonesofContacts");
+        // allPhonesofContacts = myIntent.getStringExtra("allPhonesofContacts");
         //if (allPhonesofContacts != null) {
-            System.out.println("allPhonesofContacts fromPoplistvieww" + allPhonesofContacts);
+        System.out.println("allPhonesofContacts fromPoplistvieww" + allPhonesofContacts);
+
+        allNamesofContacts = getIntent().getStringArrayListExtra("allNamesofContacts");
+        // allPhonesofContacts = myIntent.getStringExtra("allPhonesofContacts");
+        //if (allPhonesofContacts != null) {
+        System.out.println("allNamesofContacts fromPoplistvieww" + allNamesofContacts);
         //}
         //get the JSONArray of all names and numbers on user's phone from VerifyPhoneNumber
         jsonArrayAllPhoneContacts = myIntent.getStringExtra("jsonArrayAllPhoneContacts");
@@ -92,21 +100,24 @@ public class PopulistoListView extends AppCompatActivity {
         //get the JSONArray of matching contacts from VerifyPhoneNumber
         JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
         System.out.println("matching contacts fromPoplistview" + JsonArrayMatchingContacts);
+
+     //   Intent myIntent1 = getIntent();
+     //   phoneNumberofContact = myIntent1.getStringExtra("PhoneNumberofContact");
+        // allPhonesofContacts = myIntent.getStringExtra("allPhonesofContacts");
+        //if (allPhonesofContacts != null) {
+      //  System.out.println("PhoneNumberofContact fromPoplistvieww" + phoneNumberofContact);
 /*
         Intent intent = getIntent();
         //pass the JSONArray  of matching contacts from VerifyPhoneNumber
         String JsonArrayMatchingContacts = intent.getStringExtra("JsonArrayMatchingContacts");
-
         try {
             JSONArray array = new JSONArray(JsonArrayMatchingContacts);
             System.out.println("here ya go" + array.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         //pass the Array List of matching contacts from VerifyPhoneNumber
         //ArrayList<String> message2 = getIntent().getStringArrayListExtra("message2");
-
         System.out.println("Transferred to PopulistoListView, the Populisto contacts of this user are :" + JsonArrayMatchingContacts);
        // System.out.println("Transferred to PopulistoListView, the Populisto contacts of this user are :" + message2);
 */
@@ -131,16 +142,16 @@ public class PopulistoListView extends AppCompatActivity {
                             JSONArray responseObject = new JSONArray(response);
 
 
-                                for
-                                        //get the number of objects in the Array
-                                        (int i = 0; i < responseObject.length(); i++) {
-                                    //for each object in the array, name it obj
-                                    //each obj will consist of reviewid, category, name, phone,comment
-                                    JSONObject obj = responseObject.getJSONObject(i);
+                            for
+                                //get the number of objects in the Array
+                                    (int i = 0; i < responseObject.length(); i++) {
+                                //for each object in the array, name it obj
+                                //each obj will consist of reviewid, category, name, phone,comment
+                                JSONObject obj = responseObject.getJSONObject(i);
                                 // and create a new review, getting details of user's reviews in the db
                                 Review review = new Review();
-                                    //we are getting the reviewid so we can pull extra matching info,
-                                    review.setReviewid(obj.getString("reviewid"));
+                                //we are getting the reviewid so we can pull extra matching info,
+                                review.setReviewid(obj.getString("reviewid"));
                                 //set the category part of the object to that matching reviewid
                                 review.setCategory(obj.getString("category"));
                                 //etc...
@@ -152,9 +163,9 @@ public class PopulistoListView extends AppCompatActivity {
                                 reviewList.add(review);
 
                             }} catch (JSONException e) {
-                                Log.e("MYAPP", "unexpected JSON exception", e);
-                                // Do something to recover ... or kill the app.
-                            }
+                            Log.e("MYAPP", "unexpected JSON exception", e);
+                            // Do something to recover ... or kill the app.
+                        }
 
                         // notifying list adapter about data changes
                         // so that it renders the list view with updated data
@@ -198,12 +209,12 @@ public class PopulistoListView extends AppCompatActivity {
                 //we want to pass the review_id of the review being clicked
                 //to the ViewContact activity, and from there post it and get more
                 //info for that review - address, comments etc
-                   Intent i = new Intent(PopulistoListView.this, ViewContact.class);
-                    //pass the review_id to ViewContact class
+                Intent i = new Intent(PopulistoListView.this, ViewContact.class);
+                //pass the review_id to ViewContact class
                 i.putExtra("review_id",  review.getReviewid());
-                    startActivity(i);
+                startActivity(i);
 
-                    Toast.makeText(PopulistoListView.this, review.getReviewid(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PopulistoListView.this, review.getReviewid(), Toast.LENGTH_SHORT).show();
 
             }
 
@@ -240,6 +251,9 @@ public class PopulistoListView extends AppCompatActivity {
                 //pass allPhonesofContacts Array to NewContact, so we can display in ListView
                 intent.putExtra("allPhonesofContacts", allPhonesofContacts);
 
+                //pass allNamesofContacts Array to NewContact, so we can display in ListView
+                intent.putExtra("allNamesofContacts", allNamesofContacts);
+
                 //also take the names and numbers of contacts, so they'll be displayed in the list view
                 intent.putExtra("jsonArrayAllPhoneContacts", jsonArrayAllPhoneContacts);
 
@@ -251,5 +265,4 @@ public class PopulistoListView extends AppCompatActivity {
         return false;
     }
 
-    }
-
+}

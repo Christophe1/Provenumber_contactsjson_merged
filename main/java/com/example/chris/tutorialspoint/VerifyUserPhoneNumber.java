@@ -157,7 +157,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             public void onClick(View v) {
 
                 Intent myIntent = new Intent(VerifyUserPhoneNumber.this, CountryCodes.class);
-               // myIntent.putExtra("key", value); //Optional parameters
+                // myIntent.putExtra("key", value); //Optional parameters
                 VerifyUserPhoneNumber.this.startActivity(myIntent);
             }
         });
@@ -313,7 +313,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                       // Toast.makeText(VerifyUserPhoneNumber.this, response, Toast.LENGTH_LONG).show();
+                        // Toast.makeText(VerifyUserPhoneNumber.this, response, Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -415,47 +415,47 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
 //                        get a handle on the display name, which is a string
-                        name = cursor.getString(nameIdx);
+                name = cursor.getString(nameIdx);
 
 //                        lookupkey = cursor.getString(contactlookupkey);
 //                        get a handle on the phone number, which is a string
-                        phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
+                phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
 
 
-                        //----------PUT INTO E164 FORMAT--------------------------------------
-                        //need to strip all characters except numbers and + (+ for the first character)
-                        phoneNumberofContact = phoneNumberofContact.replaceAll("[^+0-9]", "");
-                        //replace numbers starting with 00 with +
-                        if (phoneNumberofContact.startsWith("00")) {
-                            phoneNumberofContact = phoneNumberofContact.replaceFirst("00", "+");
-                        }
+                //----------PUT INTO E164 FORMAT--------------------------------------
+                //need to strip all characters except numbers and + (+ for the first character)
+                phoneNumberofContact = phoneNumberofContact.replaceAll("[^+0-9]", "");
+                //replace numbers starting with 00 with +
+                if (phoneNumberofContact.startsWith("00")) {
+                    phoneNumberofContact = phoneNumberofContact.replaceFirst("00", "+");
+                }
 
-                        //all phone numbers not starting with +, make them E.164 format,
-                        //for the country code the user has chosen.
-                        if (!phoneNumberofContact.startsWith("+")) {
-                            //CountryCode is the country code chosen by the user originally
-                            phoneNumberofContact = String.valueOf(CountryCode) + String.valueOf(phoneNumberofContact);
+                //all phone numbers not starting with +, make them E.164 format,
+                //for the country code the user has chosen.
+                if (!phoneNumberofContact.startsWith("+")) {
+                    //CountryCode is the country code chosen by the user originally
+                    phoneNumberofContact = String.valueOf(CountryCode) + String.valueOf(phoneNumberofContact);
 
-                            PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-                            try {
-                                //if phone number on user's phone is not in E.164 format,
-                                //precede the number with user's country code.
-                                Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, "");
-                                phoneNumberofContact = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
-                                //If an error happens :
-                            } catch (NumberParseException e) {
-                                System.err.println("NumberParseException was thrown: " + e.toString());
-                                // System.out.println(phoneNumberofContact);
-                            }
-                        }
+                    PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+                    try {
+                        //if phone number on user's phone is not in E.164 format,
+                        //precede the number with user's country code.
+                        Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, "");
+                        phoneNumberofContact = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
+                        //If an error happens :
+                    } catch (NumberParseException e) {
+                        System.err.println("NumberParseException was thrown: " + e.toString());
+                        // System.out.println(phoneNumberofContact);
+                    }
+                }
 
-                        //----------------------------------------------------------
+                //----------------------------------------------------------
 
 
                 // get a handle on the phone number of contact, which is a string. Loop through all the phone numbers
-            //    String phoneid = cursor.getString(phoneNumberofContactIdx);
+                //    String phoneid = cursor.getString(phoneNumberofContactIdx);
 //                  get a handle on the contactid, which is a string. Loop through all the contact_ids
-              //don't need this
+                //don't need this
 //                String contactid = cursor.getString(Idx);
 //                  if our Hashset doesn't already contain the phone number string,
 //                    then add it to the hashset
@@ -471,15 +471,22 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
 
-                        //allPhonesofContacts is a list of all the phone numbers in the user's contacts
-                        allPhonesofContacts.add(phoneNumberofContact);
-                        //allNamesofContacts is a list of all the names in the user's contacts
-                        allNamesofContacts.add(name);
+                    //allPhonesofContacts is a list of all the phone numbers in the user's contacts
+                    allPhonesofContacts.add(phoneNumberofContact);
+                    //allNamesofContacts is a list of all the names in the user's contacts
+                    allNamesofContacts.add(name);
 
 //                    System.out.println("Id--->"+contactid+"Name--->"+name);
-                        System.out.println(" Name--->" + name);
-                        System.out.println(" Phone number of contact--->" + phoneNumberofContact);
+                    System.out.println(" Name--->" + name);
+                    System.out.println(" Phone number of contact--->" + phoneNumberofContact);
 //                        System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
+
+
+                    // then start the next activity, PopulistoListView
+                    Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+                    myIntent1.putExtra("phoneNumberofContact", phoneNumberofContact);
+                    myIntent1.putExtra("phoneNameofContact", name);
+                    //VerifyUserPhoneNumber.this.startActivity(myIntent1);
 
 
                     //We want to make a JSON Array like [{"name":"Tom", "number":"+1234567"},....]
@@ -488,25 +495,25 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             }
 
 
-        while (cursor.moveToNext());
+            while (cursor.moveToNext());
             System.out.println("size of allPhonesofContacts :" + allPhonesofContacts.size());
             System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
             System.out.println("size of all names :" + allNamesofContacts.size());
             System.out.println("here is the list of names in contacts :" + allNamesofContacts);
 
-    } catch (Exception e) {
-        e.printStackTrace();
-        cursor.close();
-    } finally {
+        } catch (Exception e) {
+            e.printStackTrace();
+            cursor.close();
+        } finally {
 //                if (cursor != null) {
-        cursor.close();
+            cursor.close();
 //                }
+        }
+
     }
 
-}
 
-
-//CONVERT all phone contacts on the user's phone  - the allPhonesofContacts array, into JSON
+    //CONVERT all phone contacts on the user's phone  - the allPhonesofContacts array, into JSON
     //we will be using this array to see which numbers are already users of our app
     protected void convertNumberstoJSON() {
 
@@ -526,7 +533,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
             }
             System.out.println("the amount in allPhonesofContacts :" + allPhonesofContacts.size());
-           // System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
+            // System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
             System.out.println("JSONarrayAllPhonecontacts: " + jsonArrayAllPhoneContacts.toString());
             //System.out.println("JSON object datatoSend: " + dataToSend.toString());
 
@@ -538,7 +545,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         CheckifUserisContact();
     }
 
-//CHECK IF USER IS A CONTACT
+    //CHECK IF USER IS A CONTACT
 //this will have to be checked every so often as user's may add or delete contacts
 // it's not a static once off thing.
     private void CheckifUserisContact() {
@@ -551,15 +558,18 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
                         System.out.println("the Populisto contacts of this user are :" + response);
 
-                       String theMatchingContacts = response.toString();
+                        String theMatchingContacts = response.toString();
                         System.out.println("matching contacts of this user are :" + theMatchingContacts);
 
                         // then start the next activity, PopulistoListView
                         Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
                         //we want to send allPhonesofContacts, all contacts in the user's phone book,
-                        //to the next activity
+                        //to the next activity. "allPhonesofContacts" is the key to look out for, in the next activity
                         myIntent.putExtra("allPhonesofContacts", allPhonesofContacts);
                         System.out.println("VerifyUserPhoneNumber: allPhonesofContacts are :" + allPhonesofContacts);
+
+                        myIntent.putExtra("allNamesofContacts", allNamesofContacts);
+                        System.out.println("VerifyUserPhoneNumber: allNamesofContacts are :" + allNamesofContacts);
 
                         //we want to send the JSON Array jsonArrayAllPhoneContacts, all names and phone numbers
                         // of contacts in the user's phone book, to the next activity, PopulistoListView
@@ -585,8 +595,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                                 responseContacts.add(obj.getString("contact_phonenumber"));
                             }
                             System.out.println("2, the Populisto contacts of this user are :" + responseContacts);
-
-
                         } catch(Exception e) {
                             e.printStackTrace();
                         }*/

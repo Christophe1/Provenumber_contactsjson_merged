@@ -38,11 +38,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
+
+import static android.R.id.list;
+
 
 public class NewContact extends AppCompatActivity {
 
     //***TESTING
-    String name_test;
+ //   String name_test;
     //*********
 
     // this is the php file name where to save to.
@@ -77,16 +81,20 @@ public class NewContact extends AppCompatActivity {
     CharSequence nameofcontact;
     Cursor cursor;
     String CountryCode;
-     String phoneNumberofContact;
+    String [] phoneNumberofContactStringArray;
+    String [] phoneNameofContactStringArray;
     //to remove duplicates phone numbers
     ArrayList hashMapsArrayList;
     String JsonArrayMatchingContacts;
     String jsonArrayAllPhoneContacts;
     ArrayList allPhoneContacts;
 
-    JSONArray testtest;
+   // JSONArray testtest;
 
-
+    ArrayList <String> allPhonesofContacts;
+    ArrayList <String> allNamesofContacts;
+    String thestring;
+    //String phoneNumberofContact;
     //*******************************
 
     @Override
@@ -132,9 +140,16 @@ public class NewContact extends AppCompatActivity {
         //over to this class
         Intent myIntent = getIntent();
 
-        //get the Array list of all contacts on user's phone, allPhonesofContacts, from PopulistoListView
-        ArrayList<String> allPhonesofContacts = getIntent().getStringArrayListExtra("allPhonesofContacts");
+        //get the Array list of all contacts' numbers on user's phone, allPhonesofContacts, from PopulistoListView
+        allPhonesofContacts = getIntent().getStringArrayListExtra("allPhonesofContacts");
         System.out.println("allphonesofcontacts from NewContact" + allPhonesofContacts);
+
+        //get the Array list of all contacts' names on user's phone, allPhonesofContacts, from PopulistoListView
+        allNamesofContacts = getIntent().getStringArrayListExtra("allNamesofContacts");
+        System.out.println("allnamesofcontacts from NewContact" + allNamesofContacts);
+
+
+
         //get the JSON Array called the jsonArrayAllPhoneContacts from PopulistoListView,
         // which in turn gets it from VerifyUserPhoneNumber. This JSON Array is all name and phone numbers
         // of contacts in the user's phone book.
@@ -148,7 +163,12 @@ public class NewContact extends AppCompatActivity {
         JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
         System.out.println("all matching contacts from NewContact" + JsonArrayMatchingContacts);
 
-
+        //Intent myIntent3 = getIntent();
+        //get phoneNumberofContact from VerifyUserPhoneNumber
+        //phoneNumberofContacttest = myIntent3.getStringExtra("phoneNumberofContact");
+        //int occurrences = Collections.frequency("phoneNumberofContact");
+        //System.out.println(phoneNumberofContact);
+       // System.out.println("phoneNumberofContacttest from NewContact" + phoneNumberofContacttest);
 
 
         //for the save button ******************************
@@ -164,6 +184,7 @@ public class NewContact extends AppCompatActivity {
                 pDialog.setMessage("Saving...");
                 pDialog.show();
 
+                //When the user clicks save
                 //post phoneNoofUserCheck to NewContact.php and from that
                 //get the user_id in the user table, then post  category, name, phone etc...
                 //to the review table
@@ -294,17 +315,51 @@ public class NewContact extends AppCompatActivity {
 
 
                 /*//****************************
-                int contactlookupkey = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY);
-                int Idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
-                /*//****************************
+             int contactlookupkey = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY);
+             int Idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+             /*//****************************
 
-                cursor.moveToFirst();*/
+             cursor.moveToFirst();*/
 
 //              We make a new Hashset to hold all our contact_ids, including duplicates, if they come up
-/*                Set<String> ids = new HashSet<>();
+            //             Set<String> ids = new HashSet<>();
 
-                do {
+            //Instead of running through the cursor values again, let's just import them from
+            //earlier activities
 
+            //Make a string array, phoneNumberofContactStringArray, that will be the same size
+            //as the arraylist allPhonesofContacts, which has been imported from PopulistoListView
+            phoneNumberofContactStringArray = new String[allPhonesofContacts.size()];
+
+            //Make a string array, phoneNameofContactStringArray, that will be the same size
+            //as the arraylist allNamesofContacts, which has been imported from PopulistoListView
+            phoneNameofContactStringArray = new String[allNamesofContacts.size()];
+
+       /* String finalStr="";
+        for (int i = 0; i < allPhonesofContacts.size(); i++) {
+            phoneNumberofContact[i] = allPhonesofContacts.get(i);
+            System.out.println("finalstr=" +phoneNumberofContact);
+        }*/
+            // System.out.println("finalstr=" +phoneNumberofContact);
+
+
+
+            //phoneNumberofContactStringArray will contain all the values in allPhonesofContacts
+            phoneNumberofContactStringArray = allPhonesofContacts.toArray(phoneNumberofContactStringArray);
+
+            //phoneNameofContactStringArray will contain all the values in allNamesofContacts
+            phoneNameofContactStringArray = allNamesofContacts.toArray(phoneNameofContactStringArray);
+
+            //for each value in phoneNumberofContactStringArray make it into an individual string,
+            //called phoneNumberofContact
+            for(String phoneNumberofContact : phoneNumberofContactStringArray)
+
+            {
+                System.out.println("the phone numbers are" + phoneNumberofContact);
+
+
+                //  do {
+/*
                     System.out.println("=====>in while");
 
 //                        get a handle on the display name, which is a string
@@ -314,23 +369,37 @@ public class NewContact extends AppCompatActivity {
                     phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);*/
 
 
-                    //********************************
-                    //lookupkey = cursor.getString(contactlookupkey);
-                   // contact_id = cursor.getString(Idx);
+                //********************************
+                //lookupkey = cursor.getString(contactlookupkey);
+                // contact_id = cursor.getString(Idx);
 
-                    //*************************************
+                //*************************************
 
 
-                    // get a handle on the phone number of contact, which is a string. Loop through all the phone numbers
+                // get a handle on the phone number of contact, which is a string. Loop through all the phone numbers
 //                  if our Hashset doesn't already contain the phone number string,
 //                    then add it to the hashset
-                  //  if (!ids.contains(phoneNumberofContact)) {
-                  //      ids.add(phoneNumberofContact);
+                //  if (!ids.contains(phoneNumberofContact)) {
+                //      ids.add(phoneNumberofContact);
 
-                        SelectPhoneContact selectContact = new SelectPhoneContact();
 
-                        //make an arraylist so we can get the objects of JsonArrayMatchingContacts
-                        //which we import from PopulistoListView
+    /*            phoneNumberofContact = new String[allPhonesofContacts.size()];
+
+                phoneNumberofContact = allPhonesofContacts.toArray(phoneNumberofContact);
+
+                for (String thestring : phoneNumberofContact) {
+                    System.out.println("here it is boyo:" + thestring);*/
+
+                //  String finalStr="";
+                // for (int i = 0; i < allPhonesofContacts.size(); i++) {
+                //  phoneNumberofContact[i] = allPhonesofContacts.get(i);
+                // System.out.println("finalstr=" + phoneNumberofContact);
+
+
+                SelectPhoneContact selectContact = new SelectPhoneContact();
+
+                //make an arraylist so we can get the objects of JsonArrayMatchingContacts
+                //which we import from PopulistoListView
                        /* ArrayList<String> MatchingContacts = new ArrayList<String>();
                         try {
                             JSONArray Object = new JSONArray(JsonArrayMatchingContacts);
@@ -359,21 +428,27 @@ public class NewContact extends AppCompatActivity {
                         }*/
 
 
-                        selectContact.setName(name);
-                        selectContact.setPhone(phoneNumberofContact);
-                        selectPhoneContacts.add(selectContact);
-                       // selectContact.setLookup(lookupkey);
+                //    selectContact.setName(name);
+                //    selectContact.setPhone(phoneNumberofContact);
+                selectContact.setPhone(phoneNumberofContact);
+                //selectContact.setPhone(thestring);
 
-                        System.out.println(" Name--->" + name);
-                        System.out.println(" Phone number of contact--->" + phoneNumberofContact);
-                        //System.out.println(" Look up key--->" + lookupkey);
-                       // System.out.println(" contact id--->" + contact_id);
-                    return null;
-                    }
+                selectPhoneContacts.add(selectContact);
+                // selectContact.setLookup(lookupkey);
 
-/*                } while (cursor.moveToNext());
+                System.out.println(" Name--->" + name);
+                System.out.println(" Phone number of contact thestring--->" + phoneNumberofContact);
+
+                //   System.out.println(" Phone number of contact thestring--->" + thestring);
+                //System.out.println(" Look up key--->" + lookupkey);
+                // System.out.println(" contact id--->" + contact_id);
+            }
+                return null;
 
 
+            }
+
+/*
             } catch (Exception e) {
                 Toast.makeText(NewContact.this, "what the...", Toast.LENGTH_LONG).show();
                 e.printStackTrace();

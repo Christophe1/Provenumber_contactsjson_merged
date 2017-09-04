@@ -13,10 +13,13 @@ import android.widget.TextView;
 import com.example.tutorialspoint.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
+import static com.example.tutorialspoint.R.id.phone;
 
 /**
  * Created by Chris on 23/06/2017.
@@ -98,9 +101,10 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
 //        store the holder with the view
         final SelectPhoneContact data = (SelectPhoneContact) theContactsList.get(i);
-        v.title.setText(data.getName());
+      //  v.title.setText(data.getName());
         v.phone.setText(data.getPhone());
-        v.lookup.setText(data.getLookup());
+       // v.phone.setText(Arrays.toString(data.getPhone()));
+       // v.lookup.setText(data.getLookup());
 
         view.setTag(data);
 
