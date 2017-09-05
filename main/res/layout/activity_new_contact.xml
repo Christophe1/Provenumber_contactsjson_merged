@@ -105,7 +105,6 @@
                 android:id="@+id/listviewPhoneContacts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries = "@array/name_array"
                 android:scrollbars="none"
                 android:layout_weight="3"
                 >

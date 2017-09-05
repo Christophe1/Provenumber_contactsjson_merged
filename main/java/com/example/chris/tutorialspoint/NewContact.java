@@ -94,7 +94,8 @@ public class NewContact extends AppCompatActivity {
     ArrayList <String> allPhonesofContacts;
     ArrayList <String> allNamesofContacts;
     String thestring;
-    //String phoneNumberofContact;
+    String phoneNumberofContact;
+    String phoneNameofContact;
     //*******************************
 
     @Override
@@ -352,10 +353,18 @@ public class NewContact extends AppCompatActivity {
 
             //for each value in phoneNumberofContactStringArray make it into an individual string,
             //called phoneNumberofContact
-            for(String phoneNumberofContact : phoneNumberofContactStringArray)
+           // for(String phoneNumberofContact : phoneNumberofContactStringArray)
+
+            for ( int i = 0; i < phoneNumberofContactStringArray.length; i++) {
+
+                phoneNumberofContact = phoneNumberofContactStringArray[i];
+                phoneNameofContact = phoneNameofContactStringArray[i];
 
             {
-                System.out.println("the phone numbers are" + phoneNumberofContact);
+                System.out.println("the phone numbers are" + phoneNumberofContactStringArray[i]);
+                System.out.println("the phone names are" + phoneNameofContactStringArray[i]);
+            }
+                //System.out.println("the phone numbers are" + phoneNumberofContact);
 
 
                 //  do {
@@ -400,7 +409,7 @@ public class NewContact extends AppCompatActivity {
 
                 //make an arraylist so we can get the objects of JsonArrayMatchingContacts
                 //which we import from PopulistoListView
-                       /* ArrayList<String> MatchingContacts = new ArrayList<String>();
+                        ArrayList<String> MatchingContacts = new ArrayList<String>();
                         try {
                             JSONArray Object = new JSONArray(JsonArrayMatchingContacts);
                             for (int x = 0; x < Object.length(); x++) {
@@ -415,20 +424,22 @@ public class NewContact extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        //if a phone number is in our array of matching contacts
-                        if (MatchingContacts.contains(phoneNumberofContact))*//* check your condition here: is it the number you are looking for? *//*
+                        //if a phone number is in our array of matching contacts*/
+                        if (MatchingContacts.contains(phoneNumberofContact))
+
+                // check your condition here: is it the number you are looking for?
                         {
-                            // insert the contact at the beginning
+                            // insert the contact at the beginning of the listview
                              selectPhoneContacts.add(0, selectContact);
                            // phoneNumberofContact= phoneNumberofContact + "A a c";
                             selectPhoneContacts.add(selectContact);
                         } else {
                             // insert it at the end (default)
                             selectPhoneContacts.add(selectContact);
-                        }*/
+                        }
 
 
-                //    selectContact.setName(name);
+                    selectContact.setName(phoneNameofContact);
                 //    selectContact.setPhone(phoneNumberofContact);
                 selectContact.setPhone(phoneNumberofContact);
                 //selectContact.setPhone(thestring);
@@ -436,7 +447,8 @@ public class NewContact extends AppCompatActivity {
                 selectPhoneContacts.add(selectContact);
                 // selectContact.setLookup(lookupkey);
 
-                System.out.println(" Name--->" + name);
+               // System.out.println(" Name--->" + name);
+                System.out.println(" Name--->" + phoneNameofContact);
                 System.out.println(" Phone number of contact thestring--->" + phoneNumberofContact);
 
                 //   System.out.println(" Phone number of contact thestring--->" + thestring);

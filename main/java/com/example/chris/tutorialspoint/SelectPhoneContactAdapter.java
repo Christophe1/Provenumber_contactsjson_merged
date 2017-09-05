@@ -101,7 +101,9 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
 //        store the holder with the view
         final SelectPhoneContact data = (SelectPhoneContact) theContactsList.get(i);
-      //  v.title.setText(data.getName());
+        //in the listview for contacts, set the name
+        v.title.setText(data.getName());
+        //in the listview for contacts, set the number
         v.phone.setText(data.getPhone());
        // v.phone.setText(Arrays.toString(data.getPhone()));
        // v.lookup.setText(data.getLookup());
