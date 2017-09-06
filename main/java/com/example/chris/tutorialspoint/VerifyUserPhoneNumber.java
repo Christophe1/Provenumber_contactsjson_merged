@@ -72,7 +72,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     String name;
     String phoneNumberofContact;
 //    String lookupkey;
-//    String theMatchingContacts;
+
     //*************************************************************************************
 
     //related to SMS verification
@@ -89,7 +89,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     String CountryCode;
     String phoneNoofUserbeforeE164;
 
-    //TextView txtSMSMayApply;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,14 +109,15 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         //  when the form loads, check to see if CountryCode is in there,if the user is
         // already registered, by checking the MyData XML file
-        //We need this for putting phone contacts into E164
+        // We need this for putting phone contacts into E164
         SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
 
         Log.v("index value", phoneNoofUser);
         Log.v("index value", CountryCode);
 
-        //  if the user has not already registered then when they click the Send Message button
+        //  if the user has not already registered, if there is nothing in the SharedPreferences file,
+        // then when they click the Send Message button
         //call sendSMSMessage()
         if ( phoneNoofUser == null || phoneNoofUser.equals("") ) {
 
@@ -157,7 +157,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             public void onClick(View v) {
 
                 Intent myIntent = new Intent(VerifyUserPhoneNumber.this, CountryCodes.class);
-                // myIntent.putExtra("key", value); //Optional parameters
                 VerifyUserPhoneNumber.this.startActivity(myIntent);
             }
         });
@@ -230,8 +229,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     editor.commit();
                     editor2.commit();
 
-                    //txtSMSMayApply.setText(phoneNoofUser);
-
                     //Here we want to add the user's phone number to the user table
                     //using Volley. this is a once-off
                     registerUser();
@@ -263,6 +260,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         //this is the number the user enters in the Phone Number textbox
         //We need to parse this, to make it into E.164 format
         phoneNoofUserbeforeE164 = txtphoneNoofUser.getText().toString();
+        //add the country code onto the phone number, before we parse it
         phoneNoofUser = String.valueOf(CountryCode) +  String.valueOf(phoneNoofUserbeforeE164);
 
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
@@ -295,15 +293,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             e.printStackTrace();
         }
     }
-
- /*   @Override
-    public void onClick(View v) {
-        phoneNoofUser = txtphoneNoofUser.getText().toString();
-        if(v== buttonRegister){
-            System.out.println("you clicked it");
-            registerUser();
-        }
-    }*/
 
     // register the user's phone number in the user table, this is called
     //when the phone number is verified, when the originating number = sent to number
@@ -393,16 +382,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 //                 get the column number of the NUMBER column
             int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
-//                ****
-//            int contactlookupkey = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY);
-//                ****
-//                cursor.moveToFirst();
-//        String contactlookupkey2 = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY));
-
-
-//                int photoIdIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI);
-
-
             cursor.moveToFirst();
 
 //              We make a new Hashset to hold all our contact_ids, including duplicates, if they come up
@@ -417,10 +396,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 //                        get a handle on the display name, which is a string
                 name = cursor.getString(nameIdx);
 
-//                        lookupkey = cursor.getString(contactlookupkey);
 //                        get a handle on the phone number, which is a string
                 phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
-
 
                 //----------PUT INTO E164 FORMAT--------------------------------------
                 //need to strip all characters except numbers and + (+ for the first character)
@@ -451,36 +428,18 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                 //----------------------------------------------------------
 
-
-                // get a handle on the phone number of contact, which is a string. Loop through all the phone numbers
-                //    String phoneid = cursor.getString(phoneNumberofContactIdx);
-//                  get a handle on the contactid, which is a string. Loop through all the contact_ids
-                //don't need this
-//                String contactid = cursor.getString(Idx);
 //                  if our Hashset doesn't already contain the phone number string,
 //                    then add it to the hashset
                 if (!ids.contains(phoneNumberofContact)) {
                     ids.add(phoneNumberofContact);
-                    //   if our Hashset doesn't already contain the contactid string,
-//                    then add it to the hashset
-                    // if (!ids2.contains(contactid)) {
-                    //    ids2.add(contactid);
-
-                    // HashMap<String, String> hashMap = new HashMap<String, String>();
-
-
-
 
                     //allPhonesofContacts is a list of all the phone numbers in the user's contacts
                     allPhonesofContacts.add(phoneNumberofContact);
                     //allNamesofContacts is a list of all the names in the user's contacts
                     allNamesofContacts.add(name);
 
-//                    System.out.println("Id--->"+contactid+"Name--->"+name);
                     System.out.println(" Name--->" + name);
                     System.out.println(" Phone number of contact--->" + phoneNumberofContact);
-//                        System.out.println("Id--->" + contactid + " lookupkey--->" + lookupkey);
-
 
                     // then start the next activity, PopulistoListView
                     Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
@@ -488,8 +447,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     myIntent1.putExtra("phoneNameofContact", name);
                     //VerifyUserPhoneNumber.this.startActivity(myIntent1);
 
-
-                    //We want to make a JSON Array like [{"name":"Tom", "number":"+1234567"},....]
                 }
 
             }
@@ -524,7 +481,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             {
                 // make each contact in allPhonesofContacts into an individual JSON object called jsonObjectContact
                 JSONObject jsonObjectContact = new JSONObject();
-                // jsonObjectContact will be of the form {"phone_number":"123456789"}
+                // jsonObjectContact will be of the form {"name":"Bob", "phone_number":"123456789"}
                 jsonObjectContact.put("phone_number", allPhonesofContacts.get(i));
                 jsonObjectContact.put("name", allNamesofContacts.get(i));
 
@@ -554,7 +511,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //echo the phone contacts who are also app contacts
+                        //echo the phone contacts who are also app contacts, tis is done on the PHP side
                         Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
                         System.out.println("the Populisto contacts of this user are :" + response);
 
@@ -573,7 +530,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                         //we want to send the JSON Array jsonArrayAllPhoneContacts, all names and phone numbers
                         // of contacts in the user's phone book, to the next activity, PopulistoListView
-                        myIntent.putExtra("jsonArrayAllPhoneContacts", jsonArrayAllPhoneContacts.toString());
+                        //myIntent.putExtra("jsonArrayAllPhoneContacts", jsonArrayAllPhoneContacts.toString());
 
                         //we want to send the JSON Array theMatchingContacts, all contacts in the user's phone book who
                         // also use the app, to the next activity, PopulistoListView
@@ -585,27 +542,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                         VerifyUserPhoneNumber.this.startActivity(myIntent);
 
-                        //the above response of matching contacts is a JSON Array, let's
-                        //isolate the phone numbers
-             /*           final List<String> responseContacts = new ArrayList<String>();
-                        try {
-                            JSONArray responseObject = new JSONArray(response);
-                            for (int i = 0; i < responseObject.length(); i++) {
-                                final JSONObject obj = responseObject.getJSONObject(i);
-                                responseContacts.add(obj.getString("contact_phonenumber"));
-                            }
-                            System.out.println("2, the Populisto contacts of this user are :" + responseContacts);
-                        } catch(Exception e) {
-                            e.printStackTrace();
-                        }*/
-
-
-
-
-                        //pass the Array List of matching contacts as separate values to NewContact
-                        //Intent intent2 = new Intent(VerifyUserPhoneNumber.this, NewContact.class);
-                        //intent2.putStringArrayListExtra("message", (ArrayList<String>) responseContacts);
-                        //startActivity(intent2);
 
 
                     }

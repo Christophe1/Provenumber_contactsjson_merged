@@ -45,10 +45,6 @@ import static android.R.id.list;
 
 public class NewContact extends AppCompatActivity {
 
-    //***TESTING
- //   String name_test;
-    //*********
-
     // this is the php file name where to save to.
     // we will post the category, name, phone, address, comment etc into Php and
     // create a new review_id
@@ -74,22 +70,11 @@ public class NewContact extends AppCompatActivity {
     ArrayList<SelectPhoneContact> selectPhoneContacts;
     ListView listView;
     SelectPhoneContactAdapter adapter;
-    String name;
-    String phoneNumber;
-    String lookupkey;
-    String contact_id;
-    CharSequence nameofcontact;
     Cursor cursor;
     String CountryCode;
     String [] phoneNumberofContactStringArray;
     String [] phoneNameofContactStringArray;
-    //to remove duplicates phone numbers
-    ArrayList hashMapsArrayList;
     String JsonArrayMatchingContacts;
-    String jsonArrayAllPhoneContacts;
-    ArrayList allPhoneContacts;
-
-   // JSONArray testtest;
 
     ArrayList <String> allPhonesofContacts;
     ArrayList <String> allNamesofContacts;
@@ -108,8 +93,6 @@ public class NewContact extends AppCompatActivity {
         selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
-
-        //JSONArray jsonArrayAllPhoneContacts = [{"contact_phonenumber":"11111"}
 
         //*************************
 
@@ -150,13 +133,6 @@ public class NewContact extends AppCompatActivity {
         System.out.println("allnamesofcontacts from NewContact" + allNamesofContacts);
 
 
-
-        //get the JSON Array called the jsonArrayAllPhoneContacts from PopulistoListView,
-        // which in turn gets it from VerifyUserPhoneNumber. This JSON Array is all name and phone numbers
-        // of contacts in the user's phone book.
-        jsonArrayAllPhoneContacts = myIntent.getStringExtra("jsonArrayAllPhoneContacts");
-        System.out.println("all names and numbers from NewContact" + jsonArrayAllPhoneContacts);
-
         //get the JSON Array called the MatchingContacts from PopulistoListView,
         // which in turn gets it from VerifyUserPhoneNumber. This JSON Array is the matching contacts -
         // users of the app and contacts in the user's phone book. We will put them at the top
@@ -164,14 +140,7 @@ public class NewContact extends AppCompatActivity {
         JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
         System.out.println("all matching contacts from NewContact" + JsonArrayMatchingContacts);
 
-        //Intent myIntent3 = getIntent();
-        //get phoneNumberofContact from VerifyUserPhoneNumber
-        //phoneNumberofContacttest = myIntent3.getStringExtra("phoneNumberofContact");
-        //int occurrences = Collections.frequency("phoneNumberofContact");
-        //System.out.println(phoneNumberofContact);
-       // System.out.println("phoneNumberofContacttest from NewContact" + phoneNumberofContacttest);
-
-
+        //*******************************************************************
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
 
@@ -287,44 +256,6 @@ public class NewContact extends AppCompatActivity {
 //          like if the user adds new names and numbers to their phone contacts.
             selectPhoneContacts.clear();
 
-//          we have this here to avoid cursor errors
-         /*   if (cursor != null) {
-                cursor.moveToFirst();
-
-            }
-
-
-            try {
-
-//                get a handle on the Content Resolver, so we can query the provider,
-                cursor = getApplicationContext().getContentResolver()
-//                the table to query
-                 .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                null,
-                                null,
-                                null,
-//               display in ascending order
-                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC"
-                 );
-
-//                get the column number of the Contact_ID column, make it an integer.
-//                I think having it stored as a number makes for faster operations later on.
-//                get the column number of the DISPLAY_NAME column
-                int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-//                 get the column number of the NUMBER column
-                int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-
-
-                /*//****************************
-             int contactlookupkey = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY);
-             int Idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
-             /*//****************************
-
-             cursor.moveToFirst();*/
-
-//              We make a new Hashset to hold all our contact_ids, including duplicates, if they come up
-            //             Set<String> ids = new HashSet<>();
-
             //Instead of running through the cursor values again, let's just import them from
             //earlier activities
 
@@ -336,74 +267,21 @@ public class NewContact extends AppCompatActivity {
             //as the arraylist allNamesofContacts, which has been imported from PopulistoListView
             phoneNameofContactStringArray = new String[allNamesofContacts.size()];
 
-       /* String finalStr="";
-        for (int i = 0; i < allPhonesofContacts.size(); i++) {
-            phoneNumberofContact[i] = allPhonesofContacts.get(i);
-            System.out.println("finalstr=" +phoneNumberofContact);
-        }*/
-            // System.out.println("finalstr=" +phoneNumberofContact);
-
-
-
             //phoneNumberofContactStringArray will contain all the values in allPhonesofContacts
             phoneNumberofContactStringArray = allPhonesofContacts.toArray(phoneNumberofContactStringArray);
 
             //phoneNameofContactStringArray will contain all the values in allNamesofContacts
             phoneNameofContactStringArray = allNamesofContacts.toArray(phoneNameofContactStringArray);
 
-            //for each value in phoneNumberofContactStringArray make it into an individual string,
-            //called phoneNumberofContact
-           // for(String phoneNumberofContact : phoneNumberofContactStringArray)
-
             for ( int i = 0; i < phoneNumberofContactStringArray.length; i++) {
 
                 phoneNumberofContact = phoneNumberofContactStringArray[i];
                 phoneNameofContact = phoneNameofContactStringArray[i];
 
-            {
-                System.out.println("the phone numbers are" + phoneNumberofContactStringArray[i]);
-                System.out.println("the phone names are" + phoneNameofContactStringArray[i]);
-            }
-                //System.out.println("the phone numbers are" + phoneNumberofContact);
-
-
-                //  do {
-/*
-                    System.out.println("=====>in while");
-
-//                        get a handle on the display name, which is a string
-                    name = cursor.getString(nameIdx);
-
-//                        get a handle on the phone number, which is a string
-                    phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);*/
-
-
-                //********************************
-                //lookupkey = cursor.getString(contactlookupkey);
-                // contact_id = cursor.getString(Idx);
-
-                //*************************************
-
-
-                // get a handle on the phone number of contact, which is a string. Loop through all the phone numbers
-//                  if our Hashset doesn't already contain the phone number string,
-//                    then add it to the hashset
-                //  if (!ids.contains(phoneNumberofContact)) {
-                //      ids.add(phoneNumberofContact);
-
-
-    /*            phoneNumberofContact = new String[allPhonesofContacts.size()];
-
-                phoneNumberofContact = allPhonesofContacts.toArray(phoneNumberofContact);
-
-                for (String thestring : phoneNumberofContact) {
-                    System.out.println("here it is boyo:" + thestring);*/
-
-                //  String finalStr="";
-                // for (int i = 0; i < allPhonesofContacts.size(); i++) {
-                //  phoneNumberofContact[i] = allPhonesofContacts.get(i);
-                // System.out.println("finalstr=" + phoneNumberofContact);
-
+                {
+                    System.out.println("NewContact: the phone numbers are : " + phoneNumberofContactStringArray[i]);
+                    System.out.println("NewContact: the phone names are : " + phoneNameofContactStringArray[i]);
+                }
 
                 SelectPhoneContact selectContact = new SelectPhoneContact();
 
@@ -424,15 +302,15 @@ public class NewContact extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
+
+
                         //if a phone number is in our array of matching contacts*/
                         if (MatchingContacts.contains(phoneNumberofContact))
 
-                // check your condition here: is it the number you are looking for?
                         {
                             // insert the contact at the beginning of the listview
                              selectPhoneContacts.add(0, selectContact);
-                           // phoneNumberofContact= phoneNumberofContact + "A a c";
-                            selectPhoneContacts.add(selectContact);
+
                         } else {
                             // insert it at the end (default)
                             selectPhoneContacts.add(selectContact);
@@ -444,33 +322,12 @@ public class NewContact extends AppCompatActivity {
                 selectContact.setPhone(phoneNumberofContact);
                 //selectContact.setPhone(thestring);
 
-                selectPhoneContacts.add(selectContact);
-                // selectContact.setLookup(lookupkey);
-
-               // System.out.println(" Name--->" + name);
-                System.out.println(" Name--->" + phoneNameofContact);
-                System.out.println(" Phone number of contact thestring--->" + phoneNumberofContact);
-
-                //   System.out.println(" Phone number of contact thestring--->" + thestring);
-                //System.out.println(" Look up key--->" + lookupkey);
-                // System.out.println(" contact id--->" + contact_id);
             }
+
                 return null;
 
 
             }
-
-/*
-            } catch (Exception e) {
-                Toast.makeText(NewContact.this, "what the...", Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-                //   cursor.close();
-            } finally {
-
-            }
-
-    return null;
-}*/
 
 
         @Override
@@ -539,14 +396,5 @@ public class NewContact extends AppCompatActivity {
             cursor.close();
     }
     }
-
-/*    public void onStop(){
-        super.onDestroy();
-        if (cursor != null) {
-            cursor.close();
-        }
-
-    }*/
-
 
 }
