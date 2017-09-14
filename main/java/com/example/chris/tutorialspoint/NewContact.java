@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -41,6 +42,8 @@ import java.util.Set;
 import java.util.List;
 
 import static android.R.id.list;
+import static com.example.tutorialspoint.R.id.checkBoxContact;
+import static com.example.tutorialspoint.R.id.name;
 
 
 public class NewContact extends AppCompatActivity {
@@ -81,6 +84,7 @@ public class NewContact extends AppCompatActivity {
     String thestring;
     String phoneNumberofContact;
     String phoneNameofContact;
+    CheckBox checkBoxforContact;
     //*******************************
 
     @Override
@@ -93,6 +97,10 @@ public class NewContact extends AppCompatActivity {
         selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
+
+       // checkBoxforContact.setOnClickListener(this);
+
+
 
         //*************************
 
@@ -144,6 +152,8 @@ public class NewContact extends AppCompatActivity {
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
 
+
+
         save.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
@@ -153,6 +163,7 @@ public class NewContact extends AppCompatActivity {
                 // Showing progress dialog for the review being saved
                 pDialog.setMessage("Saving...");
                 pDialog.show();
+
 
                 //When the user clicks save
                 //post phoneNoofUserCheck to NewContact.php and from that
@@ -238,6 +249,18 @@ public class NewContact extends AppCompatActivity {
 
     }
 
+/*    @Override
+    public void onClick(View view) {
+    CheckBox t = (CheckBox) view;
+        if(t.isChecked())
+            Toast.makeText(this, "checked", Toast.LENGTH_LONG).show();
+
+        else
+            Toast.makeText(this, "unchecked", Toast.LENGTH_LONG).show();
+
+    }*/
+
+
 //******for the phone contacts in the listview
 
     // Load data in background
@@ -302,8 +325,6 @@ public class NewContact extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-
-
                         //if a phone number is in our array of matching contacts*/
                         if (MatchingContacts.contains(phoneNumberofContact))
 
@@ -320,7 +341,7 @@ public class NewContact extends AppCompatActivity {
                     selectContact.setName(phoneNameofContact);
                 //    selectContact.setPhone(phoneNumberofContact);
                 selectContact.setPhone(phoneNumberofContact);
-                //selectContact.setPhone(thestring);
+                //selectContact.setSelected(is);
 
             }
 
@@ -343,6 +364,28 @@ public class NewContact extends AppCompatActivity {
             adapter.notifyDataSetChanged();
 
             listView.setAdapter(adapter);
+
+            //*********************
+//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int i, long id){
+//
+//                 //   checkBoxforContact = (CheckBox) findViewById(checkBoxContact);
+//                  //  System.out.println("The position is :" + listView.getItemAtPosition(i).toString());
+//
+//
+//
+//                    //         SelectPhoneContact selectPhoneContact = (SelectPhoneContact) parent.getItemAtPosition(i);
+//           //         Toast.makeText(NewContact.this, "clicked on row" + selectPhoneContact.getName(), Toast.LENGTH_SHORT).show();
+//
+//
+//                }
+//
+//            }
+          //  );
+
+            //********************
 
             //this function measures the height of the listview, with all the contacts, and loads it to be that
             //size. We need to do this because there's a problem with a listview in a scrollview.
@@ -395,6 +438,8 @@ public class NewContact extends AppCompatActivity {
         if (cursor != null) {
             cursor.close();
     }
+
     }
+
 
 }
