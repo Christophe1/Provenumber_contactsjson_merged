@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -42,12 +43,12 @@ import java.util.Set;
 import java.util.List;
 
 import static android.R.id.list;
+import static com.example.tutorialspoint.R.id.cancel;
 import static com.example.tutorialspoint.R.id.checkBoxContact;
 import static com.example.tutorialspoint.R.id.name;
 
 
-public class NewContact extends AppCompatActivity {
-
+public class NewContact extends AppCompatActivity implements android.widget.CompoundButton.OnCheckedChangeListener {
     // this is the php file name where to save to.
     // we will post the category, name, phone, address, comment etc into Php and
     // create a new review_id
@@ -66,14 +67,14 @@ public class NewContact extends AppCompatActivity {
 
     //*******************
 
-   // Details in this comment are for the PHONE CONTACTS LISTVIEW, so
+    // Details in this comment are for the PHONE CONTACTS LISTVIEW, so
     //user can add,edit, delete contacts who can see a review
 
     // ArrayList called selectPhoneContacts that will contain SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
     ListView listView;
     SelectPhoneContactAdapter adapter;
-    Cursor cursor;
+  //  Cursor cursor;
     String CountryCode;
     String [] phoneNumberofContactStringArray;
     String [] phoneNameofContactStringArray;
@@ -81,6 +82,7 @@ public class NewContact extends AppCompatActivity {
 
     ArrayList <String> allPhonesofContacts;
     ArrayList <String> allNamesofContacts;
+    ArrayList<String> MatchingContacts;
     String thestring;
     String phoneNumberofContact;
     String phoneNameofContact;
@@ -98,16 +100,16 @@ public class NewContact extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
-       // checkBoxforContact.setOnClickListener(this);
+        // checkBoxforContact.setOnClickListener(this);
 
 
 
         //*************************
 
-       // pDialog = new ProgressDialog(this);
+        // pDialog = new ProgressDialog(this);
         // Showing progress dialog as soon as activity starts loading
-       // pDialog.setMessage("Loading...");
-       // pDialog.show();
+        // pDialog.setMessage("Loading...");
+        // pDialog.show();
 
         //first of all we want to get the phone number of the current user so we
         //can post it and then get the user_id in php
@@ -126,6 +128,9 @@ public class NewContact extends AppCompatActivity {
         phonename = (EditText) findViewById(R.id.textViewPhone);
         addressname = (EditText) findViewById(R.id.textViewAddress);
         commentname = (EditText) findViewById(R.id.textViewComment);
+
+        //for the checkbox
+        checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
 
 //**************TESTING***********
         //get the names and numbers from VerifyPhoneNumber and bring them
@@ -152,9 +157,8 @@ public class NewContact extends AppCompatActivity {
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
 
-
-
         save.setOnClickListener(new View.OnClickListener() {
+
 
             public void onClick(View view) {
                 System.out.println("you clicked it, save");
@@ -174,7 +178,7 @@ public class NewContact extends AppCompatActivity {
                             @Override
                             public void onResponse(String response) {
                                 //hide the dialogue box when page is saved
-                              //  pDialog.dismiss();
+                                //  pDialog.dismiss();
                                 //response, for testing purposes, is "$last_id"
                                 Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
                             }
@@ -230,7 +234,7 @@ public class NewContact extends AppCompatActivity {
 
         });
         //scroll is the same speed, be it fast scroll or not
-       // listView.setFastScrollEnabled(true);
+        // listView.setFastScrollEnabled(true);
 
 
         //listen for which radio button is clicked
@@ -239,8 +243,8 @@ public class NewContact extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(RadioGroup group, int SelectWho) {
-            // SelectWho is the RadioButton selected
-            Toast.makeText(NewContact.this, "Select Who", Toast.LENGTH_LONG).show();
+                // SelectWho is the RadioButton selected
+                Toast.makeText(NewContact.this, "Select Who", Toast.LENGTH_LONG).show();
 
 
             }
@@ -249,15 +253,27 @@ public class NewContact extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+        int pos = listView.getPositionForView(buttonView);
+        if(pos != listView.INVALID_POSITION) {
+            SelectPhoneContact data = selectPhoneContacts.get(pos);
+            data.setSelected(isChecked);
+
+            Toast.makeText(this, "Clicked on : " + data.getName() + isChecked,
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
 /*    @Override
     public void onClick(View view) {
     CheckBox t = (CheckBox) view;
         if(t.isChecked())
             Toast.makeText(this, "checked", Toast.LENGTH_LONG).show();
-
         else
             Toast.makeText(this, "unchecked", Toast.LENGTH_LONG).show();
-
     }*/
 
 
@@ -310,45 +326,49 @@ public class NewContact extends AppCompatActivity {
 
                 //make an arraylist so we can get the objects of JsonArrayMatchingContacts
                 //which we import from PopulistoListView
-                        ArrayList<String> MatchingContacts = new ArrayList<String>();
-                        try {
-                            JSONArray Object = new JSONArray(JsonArrayMatchingContacts);
-                            for (int x = 0; x < Object.length(); x++) {
-                                final JSONObject obj = Object.getJSONObject(x);
-                                MatchingContacts.add(obj.getString("phone_number"));
+                MatchingContacts = new ArrayList<String>();
+                try {
+                    JSONArray Object = new JSONArray(JsonArrayMatchingContacts);
+                    for (int x = 0; x < Object.length(); x++) {
+                        final JSONObject obj = Object.getJSONObject(x);
+                        MatchingContacts.add(obj.getString("phone_number"));
 
-                            }
-                            System.out.println("MatchingContacts :" + MatchingContacts);
-
-
-                        } catch(Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        //if a phone number is in our array of matching contacts*/
-                        if (MatchingContacts.contains(phoneNumberofContact))
-
-                        {
-                            // insert the contact at the beginning of the listview
-                             selectPhoneContacts.add(0, selectContact);
-
-                        } else {
-                            // insert it at the end (default)
-                            selectPhoneContacts.add(selectContact);
-                        }
+                    }
+                    System.out.println("MatchingContacts :" + MatchingContacts);
 
 
-                    selectContact.setName(phoneNameofContact);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+
+                //if a phone number is in our array of matching contacts*/
+                if (MatchingContacts.contains(phoneNumberofContact))
+
+                {
+                    // insert the contact at the beginning of the listview
+                    selectPhoneContacts.add(0, selectContact);
+                   // checkBoxforContact.setVisibility(View.VISIBLE);
+
+                }
+
+                else {
+                    // insert it at the end (default)
+                    selectPhoneContacts.add(selectContact);
+                    //makeinvisible();
+                }
+
+
+                selectContact.setName(phoneNameofContact);
                 //    selectContact.setPhone(phoneNumberofContact);
                 selectContact.setPhone(phoneNumberofContact);
                 //selectContact.setSelected(is);
 
             }
 
-                return null;
+            return null;
 
 
-            }
+        }
 
 
         @Override
@@ -356,12 +376,22 @@ public class NewContact extends AppCompatActivity {
             super.onPostExecute(aVoid);
 
             adapter = new SelectPhoneContactAdapter(selectPhoneContacts, NewContact.this);
-
 //                    we need to notify the listview that changes may have been made on
 //                    the background thread, doInBackground, like adding or deleting contacts,
 //                    and these changes need to be reflected visibly in the listview. It works
 //                    in conjunction with selectContacts.clear()
+
+            //if a phone number is in our array of matching contacts*/
+//            if (MatchingContacts.contains(phoneNumberofContact))
+//
+//            {
+//                checkBoxforContact.setVisibility(View.VISIBLE);
+//            }
+
             adapter.notifyDataSetChanged();
+
+
+
 
             listView.setAdapter(adapter);
 
@@ -383,7 +413,7 @@ public class NewContact extends AppCompatActivity {
 //                }
 //
 //            }
-          //  );
+            //  );
 
             //********************
 
@@ -432,14 +462,19 @@ public class NewContact extends AppCompatActivity {
         System.out.println("the height is " + par.height);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (cursor != null) {
-            cursor.close();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        if (cursor != null) {
+//            cursor.close();
+//        }
+//
+//    }
 
-    }
+/*    public void makeinvisible(){
 
+        checkBoxforContact.setVisibility(View.INVISIBLE);
+
+    }*/
 
 }

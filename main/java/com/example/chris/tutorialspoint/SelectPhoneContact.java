@@ -29,8 +29,8 @@ public class SelectPhoneContact {
     }
 
     //*****************************************
-
-    Boolean selected;
+    //this is for the checkbox
+    boolean selected = false;
 
     public boolean isSelected() {
         return selected;
