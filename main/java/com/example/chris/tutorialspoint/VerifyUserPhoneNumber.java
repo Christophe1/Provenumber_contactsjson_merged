@@ -214,11 +214,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 //sent to number
                 if (origNumber.equals(phoneNoofUser)) {
                     //save the phone number so this process is skipped in future
-                    SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+                    SharedPreferences sharedPreferencesphoneNoofUser = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                     //save the country code so this process is skipped in future
                     SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
 
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    SharedPreferences.Editor editor = sharedPreferencesphoneNoofUser.edit();
                     SharedPreferences.Editor editor2 = sharedPreferencesCountryCode.edit();
 
                     //phoneNoofUser String is unique, the username of this particular user
@@ -511,12 +511,26 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //echo the phone contacts who are also app contacts, tis is done on the PHP side
+                        //echo the phone contacts who are also app contacts, this is done on the PHP side
                         Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
                         System.out.println("the Populisto contacts of this user are :" + response);
 
-                        String theMatchingContacts = response.toString();
-                        System.out.println("matching contacts of this user are :" + theMatchingContacts);
+                        String MatchingContactsAsString = response.toString();
+                        System.out.println("matching contacts of this user are :" + MatchingContactsAsString);
+
+                        //save the matchingcontacts into shared preferences file. Intents don't work
+                        //in CustomAdapters. So we'll get the values of matchingContacts  into
+                        //the CustomAdapter by calling it from the SelectPhoneContactAdapter. With that we'll put our
+                        //matching contacts at the top of the listview, display check boxes beside them etc...
+                        SharedPreferences sharedPreferencetheMatchingContacts = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+
+                        SharedPreferences.Editor editortheMatchingContacts = sharedPreferencetheMatchingContacts.edit();
+
+                        //put in the matchingContacts String
+                        editortheMatchingContacts.putString("thematchingcontacts", MatchingContactsAsString);
+                        editortheMatchingContacts.commit();
+                        System.out.println("two, matching contacts of this user are :" + MatchingContactsAsString);
+
 
                         // then start the next activity, PopulistoListView
                         Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
@@ -534,11 +548,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                         //we want to send the JSON Array theMatchingContacts, all contacts in the user's phone book who
                         // also use the app, to the next activity, PopulistoListView
-                        myIntent.putExtra("JsonArrayMatchingContacts", theMatchingContacts);
+                        myIntent.putExtra("JsonArrayMatchingContacts", MatchingContactsAsString);
 
                         System.out.println("phonenoofuser" + phoneNoofUser);
                         System.out.println("all contacts on phone are " + jsonArrayAllPhoneContacts);
-                        System.out.println("the matching contacts are " + theMatchingContacts);
+                        System.out.println("the matching contacts are " + MatchingContactsAsString);
 
                         VerifyUserPhoneNumber.this.startActivity(myIntent);
 

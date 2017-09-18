@@ -336,6 +336,14 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
                     }
                     System.out.println("MatchingContacts :" + MatchingContacts);
 
+                    //pass MatchingContacts values along to the custom adapter,
+                    //so we can make checkboxes visible for matching contacts
+                    Intent intent = new Intent(NewContact.this, SelectPhoneContactAdapter.class);
+
+                    //pass MatchingContacts ArrayList to SelectPhoneContactAdapter, so we can
+                    // display checkboxes in ListView
+                    intent.putExtra("MatchingContacts", MatchingContacts);
+
 
                 } catch(Exception e) {
                     e.printStackTrace();
