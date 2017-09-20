@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tutorialspoint.R;
+import com.google.gson.Gson;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -36,6 +38,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,7 +74,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     public static final ArrayList<String> allNamesofContacts = new ArrayList<String>();
 
     // we will be making all phone contacts as a JsonArray
-    JSONArray jsonArrayAllPhoneContacts = new JSONArray();
+    JSONArray jsonArrayAllPhonesandNamesofContacts = new JSONArray();
 
     Cursor cursor;
     String name;
@@ -458,6 +466,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             System.out.println("size of all names :" + allNamesofContacts.size());
             System.out.println("here is the list of names in contacts :" + allNamesofContacts);
 
+
+
         } catch (Exception e) {
             e.printStackTrace();
             cursor.close();
@@ -486,12 +496,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 jsonObjectContact.put("name", allNamesofContacts.get(i));
 
                 //make all the Json Objects into a JsonArray
-                jsonArrayAllPhoneContacts.put(jsonObjectContact);
+                jsonArrayAllPhonesandNamesofContacts.put(jsonObjectContact);
 
             }
             System.out.println("the amount in allPhonesofContacts :" + allPhonesofContacts.size());
             // System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
-            System.out.println("JSONarrayAllPhonecontacts: " + jsonArrayAllPhoneContacts.toString());
+            System.out.println("JSONarrayAllPhonecontacts: " + jsonArrayAllPhonesandNamesofContacts.toString());
             //System.out.println("JSON object datatoSend: " + dataToSend.toString());
 
 
@@ -539,19 +549,30 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         myIntent.putExtra("allPhonesofContacts", allPhonesofContacts);
                         System.out.println("VerifyUserPhoneNumber: allPhonesofContacts are :" + allPhonesofContacts);
 
+
+                        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                        SharedPreferences.Editor editorallPhonesofContacts = sharedPreferencesallPhonesofContacts.edit();
+                        Gson gson = new Gson();
+
+                        String json = gson.toJson(allPhonesofContacts);
+
+                        editorallPhonesofContacts.putString("allPhonesofContacts", json);
+                        editorallPhonesofContacts.commit();
+
+
                         myIntent.putExtra("allNamesofContacts", allNamesofContacts);
                         System.out.println("VerifyUserPhoneNumber: allNamesofContacts are :" + allNamesofContacts);
 
-                        //we want to send the JSON Array jsonArrayAllPhoneContacts, all names and phone numbers
+                        //we want to send the JSON Array jsonArrayAllPhonesandNamesofContacts, all names and phone numbers
                         // of contacts in the user's phone book, to the next activity, PopulistoListView
-                        //myIntent.putExtra("jsonArrayAllPhoneContacts", jsonArrayAllPhoneContacts.toString());
+                        //myIntent.putExtra("jsonArrayAllPhonesandNamesofContacts", jsonArrayAllPhonesandNamesofContacts.toString());
 
                         //we want to send the JSON Array theMatchingContacts, all contacts in the user's phone book who
                         // also use the app, to the next activity, PopulistoListView
                         myIntent.putExtra("JsonArrayMatchingContacts", MatchingContactsAsString);
 
                         System.out.println("phonenoofuser" + phoneNoofUser);
-                        System.out.println("all contacts on phone are " + jsonArrayAllPhoneContacts);
+                        System.out.println("all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
                         System.out.println("the matching contacts are " + MatchingContactsAsString);
 
                         VerifyUserPhoneNumber.this.startActivity(myIntent);
@@ -580,12 +601,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 // In PHP we will have $_POST["phonenumberofuser"]
                 params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
                 //The KEY is php, KEY_PHONENUMBER_CONTACT = "phonenumberofcontact" . In PHP we will have $_POST["phonenumberofcontact"]
-                //The VALUE, jsonArrayAllPhoneContacts.toString, is Android side, it will be a sequence of phone numbers
+                //The VALUE, jsonArrayAllPhonesandNamesofContacts.toString, is Android side, it will be a sequence of phone numbers
                 // of the form "+12345678"
-                params.put(KEY_PHONENUMBER_CONTACT, jsonArrayAllPhoneContacts.toString());
+                params.put(KEY_PHONENUMBER_CONTACT, jsonArrayAllPhonesandNamesofContacts.toString());
 
                 System.out.println(Collections.singletonList(params));
-                //System.out.println("contact is : " + jsonArrayAllPhoneContacts);
+                //System.out.println("contact is : " + jsonArrayAllPhonesandNamesofContacts);
                 return params;
 
 
@@ -597,8 +618,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
     }
-
-
 
 
 }

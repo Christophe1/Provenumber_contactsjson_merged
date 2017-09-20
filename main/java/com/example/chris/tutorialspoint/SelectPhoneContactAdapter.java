@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -18,10 +19,13 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.tutorialspoint.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,12 +42,12 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     public List<SelectPhoneContact> theContactsList;
     //define an array list made out of SelectContacts and call it arraylist
     private ArrayList<SelectPhoneContact> arraylist;
-     Context _c;
+    Context _c;
     String MatchingContactsAsString;
     ArrayList<String> MatchingContactsAsArrayList;
 
-    ArrayList <String> allPhonesofContacts;
-    ArrayList <String> allNamesofContacts;
+    ArrayList<String> allPhonesofContacts;
+    ArrayList<String> allNamesofContacts;
 
     String phoneNumberofContact;
     String phoneNameofContact;
@@ -68,12 +72,23 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 //NEED TO SET UP SHAREDPREFERENCE FILES FOR THESE
 
         //get the Array list of all contacts' numbers on user's phone, allPhonesofContacts, from PopulistoListView
-        allPhonesofContacts = getIntent().getStringArrayListExtra("allPhonesofContacts");
-        System.out.println("allphonesofcontacts from NewContact" + allPhonesofContacts);
+       // allPhonesofContacts = ((SelectPhoneContactAdapter) _c).getIntent().getStringArrayListExtra("allPhonesofContacts");
+        //System.out.println("allphonesofcontacts from NewContact" + allPhonesofContacts);
+
+        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(_c);
+        Gson gson = new Gson();
+        String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
+        Type type = new TypeToken<ArrayList<String>>() {}.getType();
+        ArrayList<String> arrayList = gson.fromJson(json, type);
+        System.out.println("SelectPhoneContactAdapter allPhonesofContacts :" + arrayList);
+
+
+        //allPhonesofContacts = sharedPreferencetheMatchingContacts.getString("allPhonesofContacts", "");
+        //System.out.println("SelectPhoneContactAdapter allPhonesofContacts :" + allPhonesofContacts);
 
         //get the Array list of all contacts' names on user's phone, allPhonesofContacts, from PopulistoListView
-        allNamesofContacts = getIntent().getStringArrayListExtra("allNamesofContacts");
-        System.out.println("allnamesofcontacts from NewContact" + allNamesofContacts);
+        //allNamesofContacts = getIntent().getStringArrayListExtra("allNamesofContacts");
+       // System.out.println("allnamesofcontacts from NewContact" + allNamesofContacts);
 
 //        ***************************************
 
@@ -85,46 +100,47 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                 final JSONObject obj = Object.getJSONObject(x);
                 MatchingContactsAsArrayList.add(obj.getString("phone_number"));
 
+
+                System.out.println("MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+                // Log.v("index valuee", MatchingContacts);
+                //get the names and numbers from VerifyPhoneNumber and bring them
+                //over to this class
+                //Intent myIntent = ((NewContact) context).getIntent();
+                //get the Arraylist of all contacts' numbers on user's phone, allPhonesofContacts, from PopulistoListView
+                //MatchingContacts = ((NewContact) context).getIntent().getStringArrayListExtra("MatchingContacts");
+                //System.out.println("CustomAdapter : MatchingContacts from NewContact" + MatchingContacts);
+
+            }}catch(Exception e){
+                e.printStackTrace();
             }
-            System.out.println("MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
-            // Log.v("index valuee", MatchingContacts);
-            //get the names and numbers from VerifyPhoneNumber and bring them
-            //over to this class
-            //Intent myIntent = ((NewContact) context).getIntent();
-            //get the Arraylist of all contacts' numbers on user's phone, allPhonesofContacts, from PopulistoListView
-            //MatchingContacts = ((NewContact) context).getIntent().getStringArrayListExtra("MatchingContacts");
-            //System.out.println("CustomAdapter : MatchingContacts from NewContact" + MatchingContacts);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            SelectPhoneContact selectContact = new SelectPhoneContact();
+
+            //if a phone number is in our array of matching contacts
+            if (MatchingContactsAsArrayList.contains(phoneNumberofContact))
+
+            {
+                // insert the contact at the beginning of the listview
+                selectPhoneContacts.add(0, selectContact);
+                // checkBoxforContact.setVisibility(View.VISIBLE);
+
+            } else {
+                // insert it at the end (default)
+                selectPhoneContacts.add(selectContact);
+                //makeinvisible();
+            }
+
+
+            selectContact.setName(phoneNameofContact);
+            //    selectContact.setPhone(phoneNumberofContact);
+            selectContact.setPhone(phoneNumberofContact);
+            //selectContact.setSelected(is);
+
         }
 
-        //if a phone number is in our array of matching contacts
-        if (MatchingContactsAsArrayList.contains(phoneNumberofContact))
+   // return null;
 
-        {
-            // insert the contact at the beginning of the listview
-            selectPhoneContacts.add(0, selectContact);
-            // checkBoxforContact.setVisibility(View.VISIBLE);
-
-        }
-
-        else {
-            // insert it at the end (default)
-            selectPhoneContacts.add(selectContact);
-            //makeinvisible();
-        }
-
-
-        selectContact.setName(phoneNameofContact);
-        //    selectContact.setPhone(phoneNumberofContact);
-        selectContact.setPhone(phoneNumberofContact);
-        //selectContact.setSelected(is);
-
-    }
-
-    return null;
-    }
 
     @Override
     public int getCount() {
@@ -201,4 +217,4 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         return convertView;
 
     }
-}
+    }
