@@ -52,6 +52,8 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     String phoneNumberofContact;
     String phoneNameofContact;
 
+    String[] phoneNumberofContactStringArray;
+    String[] phoneNameofContactStringArray;
 
     public SelectPhoneContactAdapter(final List<SelectPhoneContact> selectPhoneContacts, Context context) {
         theContactsList = selectPhoneContacts;
@@ -60,10 +62,10 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         this.arraylist.addAll(theContactsList);
 
 
-        //  when the form loads, get the String MatchingContacts in the SharedPreferences file, created in
+        //  when the activity loads, get the String MatchingContacts in the SharedPreferences file, created in
         // VerifyUserPhoneNumber
         // it will be of the form of a JSONArray, like [{"phone_number":"+35312345"}, {"phone_number": etc...
-        // We get this string from our php file, checkcontact.php. Then we want to extract the phone nubers
+        // We get this string from our php file, checkcontact.php. Then we want to extract the phone numbers
         //and compare against the contacts on the user's phone.
         SharedPreferences sharedPreferencetheMatchingContacts = _c.getSharedPreferences("MyData", Context.MODE_PRIVATE);
         MatchingContactsAsString = sharedPreferencetheMatchingContacts.getString("thematchingcontacts", "");
@@ -72,15 +74,28 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 //NEED TO SET UP SHAREDPREFERENCE FILES FOR THESE
 
         //get the Array list of all contacts' numbers on user's phone, allPhonesofContacts, from PopulistoListView
-       // allPhonesofContacts = ((SelectPhoneContactAdapter) _c).getIntent().getStringArrayListExtra("allPhonesofContacts");
+        // allPhonesofContacts = ((SelectPhoneContactAdapter) _c).getIntent().getStringArrayListExtra("allPhonesofContacts");
         //System.out.println("allphonesofcontacts from NewContact" + allPhonesofContacts);
 
+        //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
+        //with this we will put all phone numbers of contacts on user's phone into our ListView in NewContact activity
         SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(_c);
         Gson gson = new Gson();
         String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
-        Type type = new TypeToken<ArrayList<String>>() {}.getType();
-        ArrayList<String> arrayList = gson.fromJson(json, type);
-        System.out.println("SelectPhoneContactAdapter allPhonesofContacts :" + arrayList);
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        allPhonesofContacts = gson.fromJson(json, type);
+        System.out.println("SelectPhoneContactAdapter allPhonesofContacts :" + allPhonesofContacts);
+
+        //we are fetching the array list allNamesofContacts, created in VerifyUserPhoneNumber.
+        //with this we will put all phone names of contacts on user's phone into our ListView in NewContact activity
+        SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(_c);
+        Gson gsonNames = new Gson();
+        String jsonNames = sharedPreferencesallNamesofContacts.getString("allNamesofContacts", "");
+        Type typeNames = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        allNamesofContacts = gson.fromJson(jsonNames, type);
+        System.out.println("SelectPhoneContactAdapter allNamesofContacts :" + allNamesofContacts);
 
 
         //allPhonesofContacts = sharedPreferencetheMatchingContacts.getString("allPhonesofContacts", "");
@@ -88,7 +103,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
         //get the Array list of all contacts' names on user's phone, allPhonesofContacts, from PopulistoListView
         //allNamesofContacts = getIntent().getStringArrayListExtra("allNamesofContacts");
-       // System.out.println("allnamesofcontacts from NewContact" + allNamesofContacts);
+        // System.out.println("allnamesofcontacts from NewContact" + allNamesofContacts);
 
 //        ***************************************
 
@@ -101,7 +116,6 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                 MatchingContactsAsArrayList.add(obj.getString("phone_number"));
 
 
-                System.out.println("MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
                 // Log.v("index valuee", MatchingContacts);
                 //get the names and numbers from VerifyPhoneNumber and bring them
                 //over to this class
@@ -110,8 +124,43 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                 //MatchingContacts = ((NewContact) context).getIntent().getStringArrayListExtra("MatchingContacts");
                 //System.out.println("CustomAdapter : MatchingContacts from NewContact" + MatchingContacts);
 
-            }}catch(Exception e){
-                e.printStackTrace();
+            }
+
+            System.out.println("MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        //Instead of running through the cursor values again, in VerifyUserPhoneNumber, let's just import them from
+        //there
+
+        //Make a string array, phoneNumberofContactStringArray, that will be the same size
+        //as the arraylist allPhonesofContacts, which has been imported from VerifyUserPhoneNumber
+        phoneNumberofContactStringArray = new String[allPhonesofContacts.size()];
+
+        //Make a string array, phoneNameofContactStringArray, that will be the same size
+        //as the arraylist allNamesofContacts, which has been imported from VerifyUserPhoneNumber
+        phoneNameofContactStringArray = new String[allNamesofContacts.size()];
+
+        //phoneNumberofContactStringArray will contain all the values in allPhonesofContacts
+        phoneNumberofContactStringArray = allPhonesofContacts.toArray(phoneNumberofContactStringArray);
+
+        //phoneNameofContactStringArray will contain all the values in allNamesofContacts
+        phoneNameofContactStringArray = allNamesofContacts.toArray(phoneNameofContactStringArray);
+
+        //for every string value in the two arrays Phone and Name(the two should be same size, as every name has a phone number)
+        //give them a respective name of phoneNumberofContact and phoneNameofContact
+        for (int i = 0; i < phoneNumberofContactStringArray.length; i++) {
+
+            phoneNumberofContact = phoneNumberofContactStringArray[i];
+            phoneNameofContact = phoneNameofContactStringArray[i];
+
+            {
+                System.out.println("SelectPhoneContactAdapter: the phone numbers are : " + phoneNumberofContactStringArray[i]);
+                System.out.println("SelectPhoneContactAdapter: the phone names are : " + phoneNameofContactStringArray[i]);
             }
 
 
@@ -138,6 +187,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             //selectContact.setSelected(is);
 
         }
+    }
 
    // return null;
 

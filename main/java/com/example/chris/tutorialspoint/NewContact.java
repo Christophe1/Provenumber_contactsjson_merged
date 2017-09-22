@@ -293,31 +293,33 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 //          we want to delete the old selectContacts from the listview when the Activity loads
 //          because it may need to be updated and we want the user to see the updated listview,
 //          like if the user adds new names and numbers to their phone contacts.
-            selectPhoneContacts.clear();
+//            selectPhoneContacts.clear();
 
             //Instead of running through the cursor values again, let's just import them from
             //earlier activities
 
             //Make a string array, phoneNumberofContactStringArray, that will be the same size
             //as the arraylist allPhonesofContacts, which has been imported from PopulistoListView
-            phoneNumberofContactStringArray = new String[allPhonesofContacts.size()];
+           // phoneNumberofContactStringArray = new String[allPhonesofContacts.size()];
 
             //Make a string array, phoneNameofContactStringArray, that will be the same size
             //as the arraylist allNamesofContacts, which has been imported from PopulistoListView
-            phoneNameofContactStringArray = new String[allNamesofContacts.size()];
+           // phoneNameofContactStringArray = new String[allNamesofContacts.size()];
 
             //phoneNumberofContactStringArray will contain all the values in allPhonesofContacts
-            phoneNumberofContactStringArray = allPhonesofContacts.toArray(phoneNumberofContactStringArray);
+           // phoneNumberofContactStringArray = allPhonesofContacts.toArray(phoneNumberofContactStringArray);
 
             //phoneNameofContactStringArray will contain all the values in allNamesofContacts
-            phoneNameofContactStringArray = allNamesofContacts.toArray(phoneNameofContactStringArray);
+           // phoneNameofContactStringArray = allNamesofContacts.toArray(phoneNameofContactStringArray);
 
-            for ( int i = 0; i < phoneNumberofContactStringArray.length; i++) {
+           // for ( int i = 0; i < phoneNumberofContactStringArray.length; i++) {
 
-                phoneNumberofContact = phoneNumberofContactStringArray[i];
-                phoneNameofContact = phoneNameofContactStringArray[i];
+              //  phoneNumberofContact = phoneNumberofContactStringArray[i];
+               // phoneNameofContact = phoneNameofContactStringArray[i];
 
-                {
+
+
+       /*         {
                     System.out.println("NewContact: the phone numbers are : " + phoneNumberofContactStringArray[i]);
                     System.out.println("NewContact: the phone names are : " + phoneNameofContactStringArray[i]);
                 }
@@ -349,7 +351,7 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
                     e.printStackTrace();
                 }
 
-                //if a phone number is in our array of matching contacts*/
+                //if a phone number is in our array of matching contacts*//*
                 if (MatchingContacts.contains(phoneNumberofContact))
 
                 {
@@ -372,7 +374,7 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
                 //selectContact.setSelected(is);
 
             }
-
+*/
             return null;
 
 

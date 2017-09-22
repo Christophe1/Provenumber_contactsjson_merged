@@ -528,15 +528,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         String MatchingContactsAsString = response.toString();
                         System.out.println("matching contacts of this user are :" + MatchingContactsAsString);
 
-                        //save the matchingcontacts into shared preferences file. Intents don't work
-                        //in CustomAdapters. So we'll get the values of matchingContacts  into
+                        //save the matchingcontacts string into shared preferences file. Intents don't work
+                        //in CustomAdapters. So we'll get the values of matchingContacts into
                         //the CustomAdapter by calling it from the SelectPhoneContactAdapter. With that we'll put our
                         //matching contacts at the top of the listview, display check boxes beside them etc...
                         SharedPreferences sharedPreferencetheMatchingContacts = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-
                         SharedPreferences.Editor editortheMatchingContacts = sharedPreferencetheMatchingContacts.edit();
 
-                        //put in the matchingContacts String
+                        //save the matchingContacts String in SharedPreferences
                         editortheMatchingContacts.putString("thematchingcontacts", MatchingContactsAsString);
                         editortheMatchingContacts.commit();
                         System.out.println("two, matching contacts of this user are :" + MatchingContactsAsString);
@@ -549,7 +548,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         myIntent.putExtra("allPhonesofContacts", allPhonesofContacts);
                         System.out.println("VerifyUserPhoneNumber: allPhonesofContacts are :" + allPhonesofContacts);
 
-
+                        //we want to bring the allPhonesofContacts array list to our adapter.It looks like Shared Preferences
+                        //only works easily with strings so best way to bring the array list in Shared Preferences is with
+                        //Gson.
                         SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
                         SharedPreferences.Editor editorallPhonesofContacts = sharedPreferencesallPhonesofContacts.edit();
                         Gson gson = new Gson();
@@ -558,6 +559,20 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                         editorallPhonesofContacts.putString("allPhonesofContacts", json);
                         editorallPhonesofContacts.commit();
+
+
+                        //we want to bring the allNamesofContacts array list to our adapter.It looks like Shared Preferences
+                        //only works easily with strings so best way to bring the array list in Shared Preferences is with
+                        //Gson.
+                        SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                        SharedPreferences.Editor editorallNamesofContacts = sharedPreferencesallNamesofContacts.edit();
+                        Gson gsonNames = new Gson();
+
+                        String jsonNames = gson.toJson(allNamesofContacts);
+
+                        editorallNamesofContacts.putString("allNamesofContacts", jsonNames);
+                        editorallNamesofContacts.commit();
+
 
 
                         myIntent.putExtra("allNamesofContacts", allNamesofContacts);
