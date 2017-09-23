@@ -110,12 +110,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
 
-        //  when the form loads, check to see if phoneNoofUser is using the App,if the user is
+        //  when the activity loads, check to see if phoneNoofUser is using the App,if the user is
         // already registered, by checking the MyData XML file
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
 
-        //  when the form loads, check to see if CountryCode is in there,if the user is
+        //  when the activity loads, check to see if CountryCode is in there,if the user is
         // already registered, by checking the MyData XML file
         // We need this for putting phone contacts into E164
         SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -538,15 +538,15 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         //save the matchingContacts String in SharedPreferences
                         editortheMatchingContacts.putString("thematchingcontacts", MatchingContactsAsString);
                         editortheMatchingContacts.commit();
-                        System.out.println("two, matching contacts of this user are :" + MatchingContactsAsString);
+                        System.out.println("VerifyUserPhoneNumber: matching contacts of this user are :" + MatchingContactsAsString);
 
 
                         // then start the next activity, PopulistoListView
-                        Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+                        //Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
                         //we want to send allPhonesofContacts, all contacts in the user's phone book,
                         //to the next activity. "allPhonesofContacts" is the key to look out for, in the next activity
-                        myIntent.putExtra("allPhonesofContacts", allPhonesofContacts);
-                        System.out.println("VerifyUserPhoneNumber: allPhonesofContacts are :" + allPhonesofContacts);
+                        //myIntent.putExtra("allPhonesofContacts", allPhonesofContacts);
+                        //System.out.println("VerifyUserPhoneNumber: allPhonesofContacts are :" + allPhonesofContacts);
 
                         //we want to bring the allPhonesofContacts array list to our adapter.It looks like Shared Preferences
                         //only works easily with strings so best way to bring the array list in Shared Preferences is with
@@ -575,7 +575,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
 
-                        myIntent.putExtra("allNamesofContacts", allNamesofContacts);
+                        //myIntent.putExtra("allNamesofContacts", allNamesofContacts);
                         System.out.println("VerifyUserPhoneNumber: allNamesofContacts are :" + allNamesofContacts);
 
                         //we want to send the JSON Array jsonArrayAllPhonesandNamesofContacts, all names and phone numbers
@@ -584,13 +584,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                         //we want to send the JSON Array theMatchingContacts, all contacts in the user's phone book who
                         // also use the app, to the next activity, PopulistoListView
-                        myIntent.putExtra("JsonArrayMatchingContacts", MatchingContactsAsString);
+                       // myIntent.putExtra("JsonArrayMatchingContacts", MatchingContactsAsString);
 
                         System.out.println("phonenoofuser" + phoneNoofUser);
                         System.out.println("all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
                         System.out.println("the matching contacts are " + MatchingContactsAsString);
 
-                        VerifyUserPhoneNumber.this.startActivity(myIntent);
+                        //VerifyUserPhoneNumber.this.startActivity(myIntent);
 
 
 

@@ -81,25 +81,25 @@ public class PopulistoListView extends AppCompatActivity {
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        Intent myIntent = getIntent();
+        //Intent myIntent = getIntent();
         //get the Array list of all phone contacts on user's phone, allPhonesofContacts, from VerifyPhoneNumber
-        allPhonesofContacts = getIntent().getStringArrayListExtra("allPhonesofContacts");
+        //allPhonesofContacts = getIntent().getStringArrayListExtra("allPhonesofContacts");
         // allPhonesofContacts = myIntent.getStringExtra("allPhonesofContacts");
         //if (allPhonesofContacts != null) {
-        System.out.println("allPhonesofContacts fromPoplistvieww" + allPhonesofContacts);
+        //System.out.println("allPhonesofContacts fromPoplistvieww" + allPhonesofContacts);
 
-        allNamesofContacts = getIntent().getStringArrayListExtra("allNamesofContacts");
+        //allNamesofContacts = getIntent().getStringArrayListExtra("allNamesofContacts");
         // allPhonesofContacts = myIntent.getStringExtra("allPhonesofContacts");
         //if (allPhonesofContacts != null) {
-        System.out.println("allNamesofContacts fromPoplistvieww" + allNamesofContacts);
+        //System.out.println("allNamesofContacts fromPoplistvieww" + allNamesofContacts);
         //}
         //get the JSONArray of all names and numbers on user's phone from VerifyPhoneNumber
         //jsonArrayAllPhonesandNamesofContacts = myIntent.getStringExtra("jsonArrayAllPhonesandNamesofContacts");
         //System.out.println("all contacts fromPoplistview" + jsonArrayAllPhonesandNamesofContacts);
 
         //get the JSONArray of matching contacts from VerifyPhoneNumber
-        JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
-        System.out.println("matching contacts fromPoplistview" + JsonArrayMatchingContacts);
+        //JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
+        //System.out.println("matching contacts fromPoplistview" + JsonArrayMatchingContacts);
 
      //   Intent myIntent1 = getIntent();
      //   phoneNumberofContact = myIntent1.getStringExtra("PhoneNumberofContact");
@@ -249,16 +249,16 @@ public class PopulistoListView extends AppCompatActivity {
                 Intent intent = new Intent(PopulistoListView.this, NewContact.class);
 
                 //pass allPhonesofContacts Array to NewContact, so we can display in ListView
-                intent.putExtra("allPhonesofContacts", allPhonesofContacts);
+                //intent.putExtra("allPhonesofContacts", allPhonesofContacts);
 
                 //pass allNamesofContacts Array to NewContact, so we can display in ListView
-                intent.putExtra("allNamesofContacts", allNamesofContacts);
+                //intent.putExtra("allNamesofContacts", allNamesofContacts);
 
                 //also take the names and numbers of contacts, so they'll be displayed in the list view
                 //intent.putExtra("jsonArrayAllPhonesandNamesofContacts", jsonArrayAllPhonesandNamesofContacts);
 
                 //also take the matching contacts, so they'll be displayed in the list view
-                intent.putExtra("JsonArrayMatchingContacts", JsonArrayMatchingContacts);
+                //intent.putExtra("JsonArrayMatchingContacts", JsonArrayMatchingContacts);
                 startActivity(intent);
                 return true;
         }
