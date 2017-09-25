@@ -46,8 +46,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     //define an array list made out of SelectContacts and call it arraylist
     private ArrayList<SelectPhoneContact> arraylist;
     Context _c;
-
-    ArrayList<String> allPhonesofContacts;
+    ArrayList<String> MatchingContactsAsArrayList;
     ArrayList <String> allNamesofContacts;
 
     String phoneNumberofContact;
@@ -60,65 +59,16 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         this.arraylist = new ArrayList<SelectPhoneContact>();
         this.arraylist.addAll(theContactsList);
 
-        //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
-        //with this we will put all phone numbers of contacts on user's phone into our ListView in NewContact activity
-//        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(_c);
-//        Gson gson = new Gson();
-//        String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
-//        Type type = new TypeToken<ArrayList<String>>() {
-//        }.getType();
-//        allPhonesofContacts = gson.fromJson(json, type);
-//        System.out.println("SelectPhoneContactAdapter allPhonesofContacts :" + allPhonesofContacts);
+        //we are fetching the array list MatchingContactsAsArrayList, created in NewContact.
+        //with this we will put a checkbox beside the matching contacts
+        SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(_c);
+        Gson gsonMatchingContactsAsArrayList = new Gson();
+        String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
+        Type type1 = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
+        System.out.println("SelectPhoneContactAdapter MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
-        //I think we have to set the size of the string array, first of all, before adding values to it
-        //phoneNumberofContactStringArray = new String[allPhonesofContacts.size()];
-
-        //phoneNumberofContactStringArray will contain all the values in allPhonesofContacts
-        //phoneNumberofContactStringArray = allPhonesofContacts.toArray(phoneNumberofContactStringArray);
-
-        //pass phoneNumberofContactStringArray to NewContact, so we can do a for loop:
-        //for every string value in the phoneNumberofContactStringArray we will call it phoneNumberofContact
-        //It looks like Shared Preferences only works easily with strings so best way to bring the
-        // string array in Shared Preferences is with Gson.
-//        SharedPreferences sharedPrefsphoneNumberofContactStringArray = PreferenceManager.getDefaultSharedPreferences(_c);
-//        SharedPreferences.Editor editorphoneNumberofContactStringArray = sharedPrefsphoneNumberofContactStringArray.edit();
-//        Gson gsonphoneNumberofContactStringArray = new Gson();
-//
-//        String jsonphoneNumberofContactStringArray = gsonphoneNumberofContactStringArray.toJson(phoneNumberofContactStringArray);
-//
-//        editorphoneNumberofContactStringArray.putString("phoneNumberofContactStringArray", jsonphoneNumberofContactStringArray);
-//        editorphoneNumberofContactStringArray.commit();
-//        System.out.println("SelectPhoneContactAdapter phoneNumberofContactStringArray :" + Arrays.toString(phoneNumberofContactStringArray));
-
-//        Bundle bundle=new Bundle();
-//        bundle.putStringArray("DATA", phoneNumberofContactStringArray);
-//        Intent sendIntent=new Intent(_c, NewContact.class);
-//        sendIntent.putExtras(bundle);
-       // _c.startActivity(sendIntent);
-
-
-       // saveArray(phoneNumberofContactStringArray,ContactsString,_c);
-        //System.out.println("SelectPhoneContactAdapter ContactsString :" + ContactsString);
-
-
-        //for every string value in the phoneNumberofContactStringArray call it phoneNumberofContact
-//        for (int i = 0; i < allPhonesofContacts.size(); i++) {
-//
-//            phoneNumberofContact = allPhonesofContacts.get(i);
-//
-//            {
-//                System.out.println("SelectPhoneContactAdapter: phoneNumberofContact : " + phoneNumberofContact);
-//
-//                System.out.println("SelectPhoneContactAdapter: the phone numbers are : " + phoneNumberofContactStringArray[i]);
-//            }
-//
-//
-//            SelectPhoneContact selectContact = new SelectPhoneContact();
-//
-//                selectPhoneContacts.add(selectContact);
-//
-//                selectContact.setPhone(phoneNumberofContact);
-//        }
     }
 
     @Override
@@ -162,7 +112,6 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             convertView = li.inflate(R.layout.phone_inflate_listview, null);
 
             viewHolder = new ViewHolder();
-
             //      So, for example, title is cast to the name id, in phone_inflate_listview,
             //      phone is cast to the id called no etc
             viewHolder.title = (TextView) convertView.findViewById(R.id.name);
@@ -188,7 +137,35 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         //in the listview for contacts, set the number
         viewHolder.phone.setText(data.getPhone());
 
+        ////*********************
+
+        //for every phone number in the MatchingContactsAsArrayList array list...
+        for (int number = 0; number < MatchingContactsAsArrayList.size(); number++) {
+
+            //if a phone number is in our array of matching contacts
+            if (MatchingContactsAsArrayList.contains(data.getPhone()))
+
+            {
+                viewHolder.check.setVisibility(View.VISIBLE);
+                System.out.println("it's a match: phoneNumberofContact is : " + data.getPhone());
+                //once a matching contact is found, no need to keep looping x number of time, move onto next contact
+                break;
+
+            }
+
+            else {
+
+                viewHolder.check.setVisibility(View.INVISIBLE);
+
+            }
+
+        }
+
+
         viewHolder.check.setChecked(data.isSelected());
+
+
+
         viewHolder.check.setTag(data);
 
         // Return the completed view to render on screen

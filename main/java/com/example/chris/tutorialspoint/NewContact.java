@@ -104,14 +104,6 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
-//        Bundle bundle=this.getIntent().getExtras();
-//        String[] array=bundle.getStringArray("DATA");
-//        System.out.println("NewContact array :" + array);
-
-        // checkBoxforContact.setOnClickListener(this);
-
-
-
         //*************************
 
         // pDialog = new ProgressDialog(this);
@@ -140,28 +132,6 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
         //for the checkbox
         checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
 
-//**************TESTING***********
-        //get the names and numbers from VerifyPhoneNumber and bring them
-        //over to this class
-        //Intent myIntent = getIntent();
-
-        //get the Array list of all contacts' numbers on user's phone, allPhonesofContacts, from PopulistoListView
-        //allPhonesofContacts = getIntent().getStringArrayListExtra("allPhonesofContacts");
-        //System.out.println("allphonesofcontacts from NewContact" + allPhonesofContacts);
-
-        //get the Array list of all contacts' names on user's phone, allPhonesofContacts, from PopulistoListView
-        //allNamesofContacts = getIntent().getStringArrayListExtra("allNamesofContacts");
-        //System.out.println("allnamesofcontacts from NewContact" + allNamesofContacts);
-
-
-        //get the JSON Array called the MatchingContacts from PopulistoListView,
-        // which in turn gets it from VerifyUserPhoneNumber. This JSON Array is the matching contacts -
-        // users of the app and contacts in the user's phone book. We will put them at the top
-        //of the listview with a checkbox, distinguished from the other users not yet using the app.
-        //JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
-       // System.out.println("all matching contacts from NewContact" + JsonArrayMatchingContacts);
-
-        //*******************************************************************
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
 
@@ -236,10 +206,6 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
             }
 
-
-
-
-
         });
         //scroll is the same speed, be it fast scroll or not
         // listView.setFastScrollEnabled(true);
@@ -275,15 +241,6 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
     }
 
-/*    @Override
-    public void onClick(View view) {
-    CheckBox t = (CheckBox) view;
-        if(t.isChecked())
-            Toast.makeText(this, "checked", Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(this, "unchecked", Toast.LENGTH_LONG).show();
-    }*/
-
 
 //******for the phone contacts in the listview
 
@@ -310,7 +267,7 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
             Type type = new TypeToken<ArrayList<String>>() {
             }.getType();
             allPhonesofContacts = gson.fromJson(json, type);
-            System.out.println("SelectPhoneContactAdapter allPhonesofContacts :" + allPhonesofContacts);
+            System.out.println("NewContact: allPhonesofContacts :" + allPhonesofContacts);
 
             //we are fetching the array list allNamesofContacts, created in VerifyUserPhoneNumber.
             //with this we will put all phone names of contacts on user's phone into our ListView in NewContact activity
@@ -320,12 +277,12 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
             Type typeNames = new TypeToken<ArrayList<String>>() {
             }.getType();
             allNamesofContacts = gson.fromJson(jsonNames, type);
-            System.out.println("SelectPhoneContactAdapter allNamesofContacts :" + allNamesofContacts);
+            System.out.println("NewContact: allNamesofContacts :" + allNamesofContacts);
 
             System.out.println("NewContact:the amount in allPhonesofContacts :" + allPhonesofContacts.size());
             System.out.println("NewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
 
-            //  when the form loads, get the String MatchingContacts in the SharedPreferences file, created in
+            //  when the activity loads, get the String MatchingContacts in the SharedPreferences file, created in
             // VerifyUserPhoneNumber
             // it will be of the form of a JSONArray, like [{"phone_number":"+35312345"}, {"phone_number": etc...
             // We get this string from our php file, checkcontact.php. Then we want to extract the phone numbers
@@ -344,6 +301,18 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
                 }
                 System.out.println("NewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
+                //we want to bring the MatchingContactsAsArrayList array list to our SelectPhoneContactAdapter.
+                // It looks like Shared Preferences
+                //only works easily with strings so best way to bring the array list in Shared Preferences is with
+                //Gson.
+                SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
+                Gson gsonMatchingContactsAsArrayList = new Gson();
+                String jsonMatchingContactsAsArrayList = gson.toJson(MatchingContactsAsArrayList);
+                editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
+                editorMatchingContactsAsArrayList.commit();
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -398,39 +367,17 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
             super.onPostExecute(aVoid);
 
             adapter = new SelectPhoneContactAdapter(selectPhoneContacts, NewContact.this);
-//                    we need to notify the listview that changes may have been made on
-//                    the background thread, doInBackground, like adding or deleting contacts,
-//                    and these changes need to be reflected visibly in the listview. It works
-//                    in conjunction with selectContacts.clear()
-
-
-            adapter.notifyDataSetChanged();
-
 
 
 
             listView.setAdapter(adapter);
 
+            //we need to notify the listview that changes may have been made on
+            //the background thread, doInBackground, like adding or deleting contacts,
+            //and these changes need to be reflected visibly in the listview. It works
+            //in conjunction with selectContacts.clear()
+            adapter.notifyDataSetChanged();
 
-            //*********************
-//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int i, long id){
-//
-//                 //   checkBoxforContact = (CheckBox) findViewById(checkBoxContact);
-//                  //  System.out.println("The position is :" + listView.getItemAtPosition(i).toString());
-//
-//
-//
-//                    //         SelectPhoneContact selectPhoneContact = (SelectPhoneContact) parent.getItemAtPosition(i);
-//           //         Toast.makeText(NewContact.this, "clicked on row" + selectPhoneContact.getName(), Toast.LENGTH_SHORT).show();
-//
-//
-//                }
-//
-//            }
-            //  );
 
             //********************
 

@@ -535,7 +535,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         SharedPreferences sharedPreferencetheMatchingContacts = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editortheMatchingContacts = sharedPreferencetheMatchingContacts.edit();
 
-                        //save the matchingContacts String in SharedPreferences
                         editortheMatchingContacts.putString("thematchingcontacts", MatchingContactsAsString);
                         editortheMatchingContacts.commit();
                         System.out.println("VerifyUserPhoneNumber: matching contacts of this user are :" + MatchingContactsAsString);
@@ -551,32 +550,32 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         //we want to bring the allPhonesofContacts array list to our adapter.It looks like Shared Preferences
                         //only works easily with strings so best way to bring the array list in Shared Preferences is with
                         //Gson.
-                        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                        SharedPreferences.Editor editorallPhonesofContacts = sharedPreferencesallPhonesofContacts.edit();
-                        Gson gson = new Gson();
-
-                        String json = gson.toJson(allPhonesofContacts);
-
-                        editorallPhonesofContacts.putString("allPhonesofContacts", json);
-                        editorallPhonesofContacts.commit();
+//                        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+//                        SharedPreferences.Editor editorallPhonesofContacts = sharedPreferencesallPhonesofContacts.edit();
+//                        Gson gson = new Gson();
+//
+//                        String json = gson.toJson(allPhonesofContacts);
+//
+//                        editorallPhonesofContacts.putString("allPhonesofContacts", json);
+//                        editorallPhonesofContacts.commit();
 
 
                         //we want to bring the allNamesofContacts array list to our adapter.It looks like Shared Preferences
                         //only works easily with strings so best way to bring the array list in Shared Preferences is with
                         //Gson.
-                        SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                        SharedPreferences.Editor editorallNamesofContacts = sharedPreferencesallNamesofContacts.edit();
-                        Gson gsonNames = new Gson();
-
-                        String jsonNames = gson.toJson(allNamesofContacts);
-
-                        editorallNamesofContacts.putString("allNamesofContacts", jsonNames);
-                        editorallNamesofContacts.commit();
-
-
-
-                        //myIntent.putExtra("allNamesofContacts", allNamesofContacts);
-                        System.out.println("VerifyUserPhoneNumber: allNamesofContacts are :" + allNamesofContacts);
+                      //  SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+//                        SharedPreferences.Editor editorallNamesofContacts = sharedPreferencesallNamesofContacts.edit();
+//                        Gson gsonNames = new Gson();
+//
+//                        String jsonNames = gson.toJson(allNamesofContacts);
+//
+//                        editorallNamesofContacts.putString("allNamesofContacts", jsonNames);
+//                        editorallNamesofContacts.commit();
+//
+//
+//
+//                        //myIntent.putExtra("allNamesofContacts", allNamesofContacts);
+//                        System.out.println("VerifyUserPhoneNumber: allNamesofContacts are :" + allNamesofContacts);
 
                         //we want to send the JSON Array jsonArrayAllPhonesandNamesofContacts, all names and phone numbers
                         // of contacts in the user's phone book, to the next activity, PopulistoListView

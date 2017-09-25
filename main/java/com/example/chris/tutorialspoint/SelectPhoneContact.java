@@ -40,25 +40,5 @@ public class SelectPhoneContact {
         this.selected=selected;
     }
 
-    //******************************************
-
-
-/*
-    Integer value;
-
-    public int getValue(){
-        return value;
-    }
-
-
-    String lookup;
-    public String getLookup() {
-        return lookup;
-    }
-    public void setLookup(String lookup) {
-        this.lookup = lookup;
-    }
-*/
-
 
 }
