@@ -73,6 +73,14 @@
             android:clickable="true"
  />
 
+        <Button
+            android:id="@+id/btnInvite"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/btnInvite"
+            android:layout_margin="20dp"
+            />
+
 
 
     </LinearLayout>

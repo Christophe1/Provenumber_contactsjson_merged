@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,13 +75,13 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        System.out.println("the amount in arraylist :" + theContactsList.size());
+        System.out.println("the amount in arraylist :" + arraylist.size());
         return arraylist.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return theContactsList.get(i);
+        return arraylist.get(i);
     }
 
     @Override
@@ -94,6 +96,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 //        Having a ViewHolder caches our ids, instead of having to call and load each one again and again
         TextView title, phone;
         CheckBox check;
+        Button invite;
     }
 
     //CONVERTVIEW IS NOT RECYCLING VIEWS AS INTENDED BECAUSE OF THE
@@ -116,7 +119,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             //      phone is cast to the id called no etc
             viewHolder.title = (TextView) convertView.findViewById(R.id.name);
             viewHolder.phone = (TextView) convertView.findViewById(R.id.no);
-
+            viewHolder.invite = (Button)  convertView.findViewById(R.id.btnInvite);
             viewHolder.check = (CheckBox) convertView.findViewById(R.id.checkBoxContact);
             // viewHolder.check.setVisibility(View.GONE);
 
@@ -131,7 +134,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
         }
 //        store the holder with the view
-        final SelectPhoneContact data = (SelectPhoneContact) theContactsList.get(i);
+        final SelectPhoneContact data = (SelectPhoneContact) arraylist.get(i);
         //in the listview for contacts, set the name
         viewHolder.title.setText(data.getName());
         //in the listview for contacts, set the number
@@ -146,7 +149,8 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             if (MatchingContactsAsArrayList.contains(data.getPhone()))
 
             {
-                viewHolder.check.setVisibility(View.VISIBLE);
+                //if a matching contact, no need to show the Invite button
+                viewHolder.invite.setVisibility(View.GONE);
                 System.out.println("it's a match: phoneNumberofContact is : " + data.getPhone());
                 //once a matching contact is found, no need to keep looping x number of time, move onto next contact
                 break;
@@ -154,8 +158,8 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             }
 
             else {
-
-                viewHolder.check.setVisibility(View.INVISIBLE);
+                //if not a matching contact, no need to show the check box
+                viewHolder.check.setVisibility(View.GONE);
 
             }
 

@@ -40,6 +40,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -102,6 +103,9 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
         //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
         selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
+        System.out.println("NewContact1: selectPhoneContacts " + selectPhoneContacts);
+
+
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
         //*************************
@@ -131,6 +135,8 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
         //for the checkbox
         checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
+
+        checkButtonClick();
 
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
@@ -240,6 +246,38 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
         }
 
     }
+
+    //************************
+
+    private void checkButtonClick() {
+
+
+        Button cancel = (Button) findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                StringBuffer responseText = new StringBuffer();
+                responseText.append("The following were selected...\n");
+
+                for(int i=0;i<selectPhoneContacts.size();i++){
+                    SelectPhoneContact data = selectPhoneContacts.get(i);
+                    if(data.isSelected()){
+                        responseText.append("\n" + data.getName());
+                    }
+                }
+
+                Toast.makeText(getApplicationContext(),
+                        responseText, Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+
+
+    //**************************
 
 
 //******for the phone contacts in the listview
