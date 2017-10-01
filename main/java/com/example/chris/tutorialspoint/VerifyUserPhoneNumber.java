@@ -56,16 +56,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     // this is the php file name where to insert into the database, the user's phone number
     private static final String REGISTER_URL = "http://www.populisto.com/insert.php";
 
-    //into insert.php we are posting phoneNoofUser, which in PHP is phonenumberofuser
-    public static final String KEY_PHONENUMBER_USER = "phonenumberofuser";
-
     //*************TO DO WITH COMPARING APP CONTACTS AND PHONE CONTACTS*******************
 
     // this is the php file we are contacting with Volley to see what contacts are using the App
     private static final String CHECKPHONENUMBER_URL = "http://www.populisto.com/checkcontact.php";
-
-    //into checkcontact.php we are posting phoneNoofContact, which in PHP is phonenumberofcontact
-    public static final String KEY_PHONENUMBER_CONTACT = "phonenumberofcontact";
 
     //allPhonesofContacts is a list of all the phone numbers in the user's contacts
     public static final ArrayList<String> allPhonesofContacts = new ArrayList<String>();
@@ -329,7 +323,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 //the key is "phonenumberofuser",
                 // When we see these in our php,  $_POST["phonenumberofuser"],
                 //put in the value from Android
-                params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
+                params.put("phonenumberofuser", phoneNoofUser);
                 return params;
 
             }
@@ -540,58 +534,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         System.out.println("VerifyUserPhoneNumber: matching contacts of this user are :" + MatchingContactsAsString);
 
 
-                        // then start the next activity, PopulistoListView
-                        //Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
-                        //we want to send allPhonesofContacts, all contacts in the user's phone book,
-                        //to the next activity. "allPhonesofContacts" is the key to look out for, in the next activity
-                        //myIntent.putExtra("allPhonesofContacts", allPhonesofContacts);
-                        //System.out.println("VerifyUserPhoneNumber: allPhonesofContacts are :" + allPhonesofContacts);
-
-                        //we want to bring the allPhonesofContacts array list to our adapter.It looks like Shared Preferences
-                        //only works easily with strings so best way to bring the array list in Shared Preferences is with
-                        //Gson.
-//                        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-//                        SharedPreferences.Editor editorallPhonesofContacts = sharedPreferencesallPhonesofContacts.edit();
-//                        Gson gson = new Gson();
-//
-//                        String json = gson.toJson(allPhonesofContacts);
-//
-//                        editorallPhonesofContacts.putString("allPhonesofContacts", json);
-//                        editorallPhonesofContacts.commit();
-
-
-                        //we want to bring the allNamesofContacts array list to our adapter.It looks like Shared Preferences
-                        //only works easily with strings so best way to bring the array list in Shared Preferences is with
-                        //Gson.
-                      //  SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-//                        SharedPreferences.Editor editorallNamesofContacts = sharedPreferencesallNamesofContacts.edit();
-//                        Gson gsonNames = new Gson();
-//
-//                        String jsonNames = gson.toJson(allNamesofContacts);
-//
-//                        editorallNamesofContacts.putString("allNamesofContacts", jsonNames);
-//                        editorallNamesofContacts.commit();
-//
-//
-//
-//                        //myIntent.putExtra("allNamesofContacts", allNamesofContacts);
-//                        System.out.println("VerifyUserPhoneNumber: allNamesofContacts are :" + allNamesofContacts);
-
-                        //we want to send the JSON Array jsonArrayAllPhonesandNamesofContacts, all names and phone numbers
-                        // of contacts in the user's phone book, to the next activity, PopulistoListView
-                        //myIntent.putExtra("jsonArrayAllPhonesandNamesofContacts", jsonArrayAllPhonesandNamesofContacts.toString());
-
-                        //we want to send the JSON Array theMatchingContacts, all contacts in the user's phone book who
-                        // also use the app, to the next activity, PopulistoListView
-                       // myIntent.putExtra("JsonArrayMatchingContacts", MatchingContactsAsString);
-
                         System.out.println("phonenoofuser" + phoneNoofUser);
                         System.out.println("all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
                         System.out.println("the matching contacts are " + MatchingContactsAsString);
-
-                        //VerifyUserPhoneNumber.this.startActivity(myIntent);
-
-
 
                     }
                 },
@@ -611,13 +556,16 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 Map<String, String> params = new HashMap<String, String>();
                 //We are  posting the user's phone number in this request, so we can get
                 //matching user_id for checking contacts
-                //The KEY is php, KEY_PHONENUMBER_USER = "phonenumberofuser" .
-                // In PHP we will have $_POST["phonenumberofuser"]
-                params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
-                //The KEY is php, KEY_PHONENUMBER_CONTACT = "phonenumberofcontact" . In PHP we will have $_POST["phonenumberofcontact"]
+                //the second value, phoneNoofUser
+                // is the value we get from Android.
+                //the key is "phonenumberofuser",
+                // When we see these in our php,  $_POST["phonenumberofuser"],
+                //put in the value from Android.
+                params.put("phonenumberofuser", phoneNoofUser);
+                //In PHP we will have $_POST["phonenumberofcontact"]
                 //The VALUE, jsonArrayAllPhonesandNamesofContacts.toString, is Android side, it will be a sequence of phone numbers
                 // of the form "+12345678"
-                params.put(KEY_PHONENUMBER_CONTACT, jsonArrayAllPhonesandNamesofContacts.toString());
+                params.put("phonenumberofcontact", jsonArrayAllPhonesandNamesofContacts.toString());
 
                 System.out.println(Collections.singletonList(params));
                 //System.out.println("contact is : " + jsonArrayAllPhonesandNamesofContacts);

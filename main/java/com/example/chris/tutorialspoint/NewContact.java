@@ -59,6 +59,10 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
     // create a new review_id
     private static final String NewContact_URL = "http://www.populisto.com/NewContact.php";
 
+    //in this JSONArray, checkedContacts, we will be storing each checkedContact JSON Object
+    //Then we're going to post it to our NewContact.php file
+    JSONArray checkedContacts = new JSONArray();
+
     private ProgressDialog pDialog;
 
     Button save;
@@ -152,6 +156,43 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
                 pDialog.setMessage("Saving...");
                 pDialog.show();
 
+                //see this link : http://bit.ly/2xzgNTw
+
+                try {
+
+                   // StringBuffer responseText = new StringBuffer();
+                   // responseText.append("The following were selected...\n");
+
+                    //for every contact in the selectPhoneContacts array list
+                    for (int i = 0; i < selectPhoneContacts.size(); i++) {
+
+                        SelectPhoneContact data = selectPhoneContacts.get(i);
+                        if (data.isSelected()) {
+
+                            // make each checked contact in selectPhoneContacts into an individual
+                            // JSON object called checkedContact
+                            JSONObject checkedContact = new JSONObject();
+                            // checkedContact will be of the form {"checkedContact":"+353123456"}
+                            checkedContact.put("checkedContact", data.getPhone());
+
+                            // Add checkedContact to checkedContacts jsonArray
+                            checkedContacts.put(checkedContact);
+                            //responseText.append("\n" + data.getPhone());
+                        }
+                    }
+
+                    Toast.makeText(getApplicationContext(),
+                            "checkedContacts JSON Array :" + checkedContacts, Toast.LENGTH_LONG).show();
+
+                    //responseText, Toast.LENGTH_LONG).show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+
 
                 //When the user clicks save
                 //post phoneNoofUserCheck to NewContact.php and from that
@@ -191,6 +232,9 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
                         params.put("phone", phonename.getText().toString());
                         params.put("address", addressname.getText().toString());
                         params.put("comment", commentname.getText().toString());
+
+                        params.put("checkedContacts", checkedContacts.toString());
+
                         return params;
 
                     }
@@ -258,24 +302,44 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
             @Override
             public void onClick(View v) {
 
-                StringBuffer responseText = new StringBuffer();
-                responseText.append("The following were selected...\n");
 
-                for(int i=0;i<selectPhoneContacts.size();i++){
-                    SelectPhoneContact data = selectPhoneContacts.get(i);
-                    if(data.isSelected()){
-                        responseText.append("\n" + data.getName());
+                try {
+
+                    // StringBuffer responseText = new StringBuffer();
+                    // responseText.append("The following were selected...\n");
+
+                    //for every contact in the selectPhoneContacts array list
+                    for (int i = 0; i < selectPhoneContacts.size(); i++) {
+
+                        SelectPhoneContact data = selectPhoneContacts.get(i);
+                        if (data.isSelected()) {
+
+                            // make each checked contact in selectPhoneContacts into an individual
+                            // JSON object called checkedContact
+                            JSONObject checkedContact = new JSONObject();
+                            // checkedContact will be of the form {"checkedContact":"+353123456"}
+                            checkedContact.put("checkedContact", data.getPhone());
+
+                            // Add checkedContact to checkedContacts jsonArray
+                            checkedContacts.put(checkedContact);
+                            //responseText.append("\n" + data.getPhone());
+                        }
                     }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 Toast.makeText(getApplicationContext(),
-                        responseText, Toast.LENGTH_LONG).show();
+                        "checkedContacts JSON Array :" + checkedContacts, Toast.LENGTH_LONG).show();
+
+                //responseText, Toast.LENGTH_LONG).show();
 
             }
+
         });
-
     }
-
 
     //**************************
 
