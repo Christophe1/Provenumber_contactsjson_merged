@@ -67,7 +67,7 @@
                 android:id="@+id/textViewSharedWith"
                 android:layout_width="match_parent"
                 android:layout_height="0px"
-                android:text="Shared With: "
+                android:text="Share With: "
                 android:layout_weight="1"
                 android:textSize="30dp" />
 

@@ -56,8 +56,8 @@ public class CustomPopulistoListAdapter extends BaseAdapter {
 
 //        if (imageLoader == null)
 //            imageLoader = AppController.getInstance().getImageLoader();
-        NetworkImageView thumbNail = (NetworkImageView) convertView
-                .findViewById(R.id.thumbnail);
+//        NetworkImageView thumbNail = (NetworkImageView) convertView
+//                .findViewById(R.id.thumbnail);
         TextView category = (TextView) convertView.findViewById(R.id.category);
         TextView name = (TextView) convertView.findViewById(R.id.name);
         TextView phone = (TextView) convertView.findViewById(R.id.phone);
@@ -73,16 +73,16 @@ public class CustomPopulistoListAdapter extends BaseAdapter {
 
         // category
         //set the category id in xml to the mysql value that getCategory gives to us etc....
-        category.setText(r.getCategory());
+        category.setText("Category: " + r.getCategory());
 
         // name
-        name.setText(r.getName());
+        name.setText("Name: " + r.getName());
 
         // phone
         phone.setText("Phone: " + r.getPhone());
 
         // comment
-        comment.setText("Bill says: " + r.getComment());
+        comment.setText("Your comment: " + r.getComment());
 
         // reviewid
         //reviewid.setText(r.getReviewid());

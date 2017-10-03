@@ -1,8 +1,11 @@
 package com.example.chris.tutorialspoint;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -30,13 +33,11 @@ public class ViewContact extends AppCompatActivity {
     // get the matching details - Category, name, phone, address etc...
     private static final String ViewContact_URL = "http://www.populisto.com/ViewContact.php";
 
-    // this is for the Save buton, the php file name where to select from.
+    // this is for the Delete button, the php file name where to select from.
     // we will post the review_id and delete associated fields - category, name, phone,
     // address and comment from the review table
     private static final String DeleteContact_URL = "http://www.populisto.com/DeleteContact.php";
 
-    //we are posting review_id, which in PHP is review_id
-    public static final String KEY_REVIEW_ID = "review_id";
     //the edit button, if the user wants to edit a review
     Button edit;
     Button delete;
@@ -160,7 +161,7 @@ public class ViewContact extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 //we are posting review_id into our ViewContact.php file,
                 //to get matching details
-                params.put(KEY_REVIEW_ID, review_id);
+                params.put("review_id", review_id);
                 return params;
 
             }
@@ -218,68 +219,93 @@ public class ViewContact extends AppCompatActivity {
         delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
-                Toast.makeText(ViewContact.this, "delete stuff", Toast.LENGTH_SHORT).show();
-
-                pDialog = new ProgressDialog(ViewContact.this);
-                // Showing progress dialog for the review being saved
-                pDialog.setMessage("Deleting...");
-                pDialog.show();
-
-                //post the review_id in the current activity to EditContact.php and from that
-                //get associated values - category, name, phone etc...
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, DeleteContact_URL,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                //hide the dialogue box when page is saved
-                                pDialog.dismiss();
-                                Toast.makeText(ViewContact.this, response, Toast.LENGTH_LONG).show();
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-
-                        }) {
-
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<String, String>();
-                        //we are posting review_id into our DeleteContact.php file,
-                        //the second value, review_id,
-                        // is the value we get from Android.
-                        //the key is KEY_REVIEW_ID
-                        // When we see this in our php,  $_POST["review_id"],
-                        //put in the value from Android
-                        params.put(KEY_REVIEW_ID, review_id);
-                        return params;
-                    }
-
-
-                };
-
-
-                AppController.getInstance().addToRequestQueue(stringRequest);
-
-                //when deleted, go back to the Populisto ListView class and update
-
-                Intent j = new Intent(ViewContact.this,PopulistoListView.class);
-//                j.putExtra("category", categoryname.getText().toString());
-//                j.putExtra("name", namename.getText().toString());
-//                j.putExtra("phone", phonename.getText().toString());
-//                j.putExtra("address", addressname.getText().toString());
-//                j.putExtra("comment", commentname.getText().toString());
-//
-                startActivity(j);
-//
-//                finish();
+                //add a dialogue box
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage("Are you sure you want to delete this?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
 
             }
 
         });
 
     }
+
+    //Are you sure you want to delete? dialogue
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    //Yes button clicked
+
+                    Toast.makeText(ViewContact.this, "delete stuff", Toast.LENGTH_SHORT).show();
+
+                    pDialog = new ProgressDialog(ViewContact.this);
+                    // Showing progress dialog for the review being saved
+                    pDialog.setMessage("Deleting...");
+                    pDialog.show();
+
+                    //post the review_id in the current activity to EditContact.php and from that
+                    //get associated values - category, name, phone etc...
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, DeleteContact_URL,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    //hide the dialogue box when page is saved
+                                    pDialog.dismiss();
+                                    Toast.makeText(ViewContact.this, response, Toast.LENGTH_LONG).show();
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(ViewContact.this, "problem here", Toast.LENGTH_LONG).show();
+
+                                }
+
+                            }) {
+
+                        @Override
+                        protected Map<String, String> getParams() {
+                            Map<String, String> params = new HashMap<String, String>();
+                            //we are posting review_id into our DeleteContact.php file,
+                            //the second value, review_id,
+                            // is the value we get from Android.
+                            // When we see this in our php,  $_POST["review_id"],
+                            //put in the value from Android
+                            params.put("review_id", review_id);
+                            return params;
+                        }
+
+
+                    };
+
+
+                    AppController.getInstance().addToRequestQueue(stringRequest);
+
+                    //when deleted, go back to the Populisto ListView class and update
+
+                    Intent j = new Intent(ViewContact.this,PopulistoListView.class);
+//                j.putExtra("category", categoryname.getText().toString());
+//                j.putExtra("name", namename.getText().toString());
+//                j.putExtra("phone", phonename.getText().toString());
+//                j.putExtra("address", addressname.getText().toString());
+//                j.putExtra("comment", commentname.getText().toString());
+//
+                    startActivity(j);
+//
+//                finish();
+
+
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //No button clicked
+                    break;
+            }
+        }
+    };
+
+
 
 }
