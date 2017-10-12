@@ -449,6 +449,24 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     myIntent1.putExtra("phoneNameofContact", name);
                     //VerifyUserPhoneNumber.this.startActivity(myIntent1);
 
+                    //save the array list allPhonesofContacts,
+                    //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
+                    SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                    SharedPreferences.Editor prefsEditor2 = sharedPreferencesallPhonesofContacts.edit();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(allPhonesofContacts);
+                    prefsEditor2.putString("allPhonesofContacts", json);
+                    prefsEditor2.commit();
+
+                    //save the array list allNamesofContacts,
+                    //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
+                    SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                    SharedPreferences.Editor prefsEditor = sharedPreferencesallNamesofContacts.edit();
+                    Gson gsonNames = new Gson();
+                    String jsonNames = gsonNames.toJson(allNamesofContacts);
+                    prefsEditor.putString("allNamesofContacts", jsonNames);
+                    prefsEditor.commit();
+
                 }
 
             }
@@ -462,7 +480,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
 
-        } catch (Exception e) {
+        }
+
+
+
+        catch (Exception e) {
             e.printStackTrace();
             cursor.close();
         } finally {

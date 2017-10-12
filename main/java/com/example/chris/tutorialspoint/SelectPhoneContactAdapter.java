@@ -124,7 +124,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             // viewHolder.check.setVisibility(View.GONE);
 
             //remember the state of the checkbox
-            viewHolder.check.setOnCheckedChangeListener((NewContact) _c);
+            viewHolder.check.setOnCheckedChangeListener((ViewContact) _c);
 
             convertView.setTag(viewHolder);
 

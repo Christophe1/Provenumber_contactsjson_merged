@@ -1,14 +1,23 @@
 package com.example.chris.tutorialspoint;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,14 +28,20 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tutorialspoint.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ViewContact extends AppCompatActivity {
+public class ViewContact extends AppCompatActivity  implements android.widget.CompoundButton.OnCheckedChangeListener {
 
     // this is the php file name where to select from.
     // we will post the review id of the review in ListView into Php and
@@ -48,7 +63,7 @@ public class ViewContact extends AppCompatActivity {
     private TextView addressname;
     private TextView commentname;
 
-    //for categoryiid we only need the value, don't need to cast it to anything
+    //for categoryid we only need the value, don't need to cast it to anything
     String categoryid;
     // temporary string to show the parsed response
     //private String jsonResponse;
@@ -57,10 +72,29 @@ public class ViewContact extends AppCompatActivity {
     String review_id;
     private ProgressDialog pDialog;
 
+    ArrayList<SelectPhoneContact> selectPhoneContacts;
+    ArrayList <String> allPhonesofContacts;
+    ArrayList <String> allNamesofContacts;
+    String MatchingContactsAsString;
+    ArrayList<String> MatchingContactsAsArrayList;
+    String phoneNumberofContact;
+    String phoneNameofContact;
+    ListView listView;
+    SelectPhoneContactAdapter adapter;
+    CheckBox checkBoxforContact;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_contact);
+
+        //********************
+        //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
+        selectPhoneContacts = new ArrayList<SelectPhoneContact>();
+
+        System.out.println("ViewContact: selectPhoneContacts " + selectPhoneContacts);
+
+        listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
         //********************
 
@@ -88,8 +122,38 @@ public class ViewContact extends AppCompatActivity {
 
         // textphonenumber.setText(phoneNoofUser);
 
-        //post the review_id that has been clicked in the ListView and send it to
-        // ContactView.php and from that get other review details, like name, address etc..
+        //for the checkbox
+        checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
+
+        //  when the activity loads, get the String MatchingContacts in the SharedPreferences file, created in
+        // VerifyUserPhoneNumber
+        // it will be of the form of a JSONArray, like [{"phone_number":"+35312345"}, {"phone_number": etc...
+        // We get this string from our php file, checkcontact.php. Then we want to extract the phone numbers
+        //and compare against ones that are checkedcontacts
+        SharedPreferences sharedPreferencetheMatchingContacts = getApplication().getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        MatchingContactsAsString = sharedPreferencetheMatchingContacts.getString("thematchingcontacts", "");
+        System.out.println("ViewContact: matchingcontacts :" + MatchingContactsAsString);
+
+
+        //make an arraylist which will hold the phone_number part of the MatchingContacts string
+        MatchingContactsAsArrayList = new ArrayList<String>();
+        try {
+            JSONArray Object = new JSONArray(MatchingContactsAsString);
+            for (int x = 0; x < Object.length(); x++) {
+                final JSONObject obj = Object.getJSONObject(x);
+                MatchingContactsAsArrayList.add(obj.getString("phone_number"));
+
+            }
+
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+            System.out.println("ViewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
+
+            //post the review_id that has been clicked in the ListView and send it to
+        // viewContact.php and from that get other review details, like name, address etc..
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ViewContact_URL,
                 new Response.Listener<String>() {
 
@@ -97,13 +161,13 @@ public class ViewContact extends AppCompatActivity {
                     public void onResponse(String response) {
                         //hide the 'loading' box when the page loads
                         pDialog.dismiss();
-                        //toast the response of ContactView.php, which has been converted to a
-                        //JSON object in the Php file with JSON encode
+                        //toast the response of ViewContact.php, which has been converted to a
+                        //JSON object by the Php file with JSON encode
                         Toast.makeText(ViewContact.this, response, Toast.LENGTH_LONG).show();
 
                         try {
 
-                            // Parsing json object response
+                            // Parsing json object response which we receive from PHP
                             // make a JSONObject called responseObject, break it down into
                             //respective parts
                             JSONObject responseObject = new JSONObject(response);
@@ -114,12 +178,7 @@ public class ViewContact extends AppCompatActivity {
                             String address = responseObject.getString("address");
                             String comment = responseObject.getString("comment");
 
-                /*            jsonResponse = "";
-                            jsonResponse += "Category: " + category + "\n\n";
-                            jsonResponse += "Name: " + name + "\n\n";
-                            jsonResponse += "Phone: " + phone + "\n\n";
-                            jsonResponse += "Address: " + address + "\n\n";
-                            jsonResponse += "Comment: " + comment + "\n\n";*/
+                           // ArrayList checkedcontacts = responseObject.getString("comment");
 
                             //assign a textview to each of the fields in the review
                             categoryname.setText(category);
@@ -128,6 +187,7 @@ public class ViewContact extends AppCompatActivity {
                             addressname.setText(address);
                             commentname.setText(comment);
 
+                            //we don't need to assign category id text to a textbox
                             categoryid = category_id;
 
                             //System.out.println("heree it is" + jsonResponse);
@@ -230,6 +290,8 @@ public class ViewContact extends AppCompatActivity {
 
     }
 
+
+
     //Are you sure you want to delete? dialogue
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
@@ -245,14 +307,15 @@ public class ViewContact extends AppCompatActivity {
                     pDialog.setMessage("Deleting...");
                     pDialog.show();
 
-                    //post the review_id in the current activity to EditContact.php and from that
-                    //get associated values - category, name, phone etc...
+                    //post the review_id in the current activity to DeleteContact.php and
+                    //delete the review
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, DeleteContact_URL,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    //hide the dialogue box when page is saved
+                                    //hide the dialogue saying 'Deleting...' when page is deleted
                                     pDialog.dismiss();
+                                    //the response in deleteContact.php is "deleted successfully"
                                     Toast.makeText(ViewContact.this, response, Toast.LENGTH_LONG).show();
                                 }
                             },
@@ -286,25 +349,221 @@ public class ViewContact extends AppCompatActivity {
                     //when deleted, go back to the Populisto ListView class and update
 
                     Intent j = new Intent(ViewContact.this,PopulistoListView.class);
-//                j.putExtra("category", categoryname.getText().toString());
-//                j.putExtra("name", namename.getText().toString());
-//                j.putExtra("phone", phonename.getText().toString());
-//                j.putExtra("address", addressname.getText().toString());
-//                j.putExtra("comment", commentname.getText().toString());
-//
+
                     startActivity(j);
-//
+
 //                finish();
 
 
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
-                    //No button clicked
+                    //No button clicked, just close the dialogue
                     break;
             }
         }
     };
+
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+        int pos = listView.getPositionForView(buttonView);
+        if(pos != listView.INVALID_POSITION) {
+            SelectPhoneContact data = selectPhoneContacts.get(pos);
+            data.setSelected(isChecked);
+
+            Toast.makeText(this, "Clicked on : " + data.getName() + isChecked,
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
+    //******for the phone contacts in the listview
+
+    // Load data in background
+    class LoadContact extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            //we want to delete the old selectContacts from the listview when the Activity loads
+            //because it may need to be updated and we want the user to see the updated listview,
+            //like if the user adds new names and numbers to their phone contacts.
+            //selectPhoneContacts.clear();
+
+            //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
+            //with this we will put all phone numbers of contacts on user's phone into our ListView in ViewContact activity
+            SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+            Gson gson = new Gson();
+            String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
+            Type type = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            allPhonesofContacts = gson.fromJson(json, type);
+            System.out.println("ViewContact: allPhonesofContacts :" + allPhonesofContacts);
+
+            //we are fetching the array list allNamesofContacts, created in VerifyUserPhoneNumber.
+            //with this we will put all phone names of contacts on user's phone into our ListView in ViewContact activity
+            SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+            Gson gsonNames = new Gson();
+            String jsonNames = sharedPreferencesallNamesofContacts.getString("allNamesofContacts", "");
+            Type typeNames = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            allNamesofContacts = gsonNames.fromJson(jsonNames, typeNames);
+            System.out.println("ViewContact: allNamesofContacts :" + allNamesofContacts);
+
+            System.out.println("ViewContact:the amount in allPhonesofContacts :" + allPhonesofContacts.size());
+            System.out.println("ViewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
+
+            //  when the activity loads, get the String MatchingContacts in the SharedPreferences file, created in
+            // VerifyUserPhoneNumber
+            // it will be of the form of a JSONArray, like [{"phone_number":"+35312345"}, {"phone_number": etc...
+            // We get this string from our php file, checkcontact.php. Then we want to extract the phone numbers
+            //and compare against the contacts on the user's phone.
+            SharedPreferences sharedPreferencetheMatchingContacts = getApplication().getSharedPreferences("MyData", Context.MODE_PRIVATE);
+            MatchingContactsAsString = sharedPreferencetheMatchingContacts.getString("thematchingcontacts", "");
+            System.out.println("NewContact: matchingcontacts :" + MatchingContactsAsString);
+
+            //make an arraylist which will hold the phone_number part of the MatchingContacts string
+            MatchingContactsAsArrayList = new ArrayList<String>();
+            try {
+                JSONArray Object = new JSONArray(MatchingContactsAsString);
+                for (int x = 0; x < Object.length(); x++) {
+                    final JSONObject obj = Object.getJSONObject(x);
+                    MatchingContactsAsArrayList.add(obj.getString("phone_number"));
+
+                }
+                System.out.println("NewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
+                //we want to bring the MatchingContactsAsArrayList array list to our SelectPhoneContactAdapter.
+                // It looks like Shared Preferences
+                //only works easily with strings so best way to bring the array list in Shared Preferences is with
+                //Gson.
+                SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
+                Gson gsonMatchingContactsAsArrayList = new Gson();
+                String jsonMatchingContactsAsArrayList = gson.toJson(MatchingContactsAsArrayList);
+                editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
+                editorMatchingContactsAsArrayList.commit();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
+            for (int i = 0; i < allPhonesofContacts.size(); i++) {
+
+                phoneNumberofContact = allPhonesofContacts.get(i);
+                phoneNameofContact = allNamesofContacts.get(i);
+
+                System.out.println("SelectPhoneContactAdapter: phoneNumberofContact : " + phoneNumberofContact);
+                System.out.println("SelectPhoneContactAdapter: phoneNameofContact : " + phoneNameofContact);
+
+                SelectPhoneContact selectContact = new SelectPhoneContact();
+
+                //if a phone number is in our array of matching contacts
+                if (MatchingContactsAsArrayList.contains(phoneNumberofContact))
+
+                {
+                    // insert the contact at the beginning of the listview
+                    selectPhoneContacts.add(0, selectContact);
+                    // checkBoxforContact.setVisibility(View.VISIBLE);
+
+                }
+
+                else {
+                    // insert it at the end (default)
+                    selectPhoneContacts.add(selectContact);
+                    //makeinvisible();
+                }
+
+
+                selectContact.setName(phoneNameofContact);
+                //    selectContact.setPhone(phoneNumberofContact);
+                selectContact.setPhone(phoneNumberofContact);
+                //selectContact.setSelected(is);
+
+            }
+
+
+
+
+            return null;
+
+
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this);
+
+
+
+            listView.setAdapter(adapter);
+
+            //we need to notify the listview that changes may have been made on
+            //the background thread, doInBackground, like adding or deleting contacts,
+            //and these changes need to be reflected visibly in the listview. It works
+            //in conjunction with selectContacts.clear()
+            adapter.notifyDataSetChanged();
+
+
+            //********************
+
+            //this function measures the height of the listview, with all the contacts, and loads it to be that
+            //size. We need to do this because there's a problem with a listview in a scrollview.
+            justifyListViewHeightBasedOnChildren(listView);
+
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+        loadContact.execute();
+    }
+
+
+
+    //this is the function we call to measure the height of the listview
+    //we need this because there are problems with a listview within a scrollview
+    public static void justifyListViewHeightBasedOnChildren (ListView listView) {
+
+        ListAdapter adapter = listView.getAdapter();
+
+        if (adapter == null) {
+            return;
+        }
+        ViewGroup vg = listView;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, vg);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams par = listView.getLayoutParams();
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(par);
+        listView.requestLayout();
+
+        System.out.println("the getcount is " + adapter.getCount());
+        System.out.println("the height is " + par.height);
+    }
+
 
 
 
