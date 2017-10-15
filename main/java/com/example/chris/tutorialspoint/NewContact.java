@@ -348,10 +348,11 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
                 // It looks like Shared Preferences
                 //only works easily with strings so best way to bring the array list in Shared Preferences is with
                 //Gson.
+                //Here, we PUT the arraylist into the sharedPreferences
                 SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
                 SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
                 Gson gsonMatchingContactsAsArrayList = new Gson();
-                String jsonMatchingContactsAsArrayList = gson.toJson(MatchingContactsAsArrayList);
+                String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
                 editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
                 editorMatchingContactsAsArrayList.commit();
 
@@ -425,7 +426,8 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
             //this function measures the height of the listview, with all the contacts, and loads it to be that
             //size. We need to do this because there's a problem with a listview in a scrollview.
-            justifyListViewHeightBasedOnChildren(listView);
+            //The function is in GlobalFunctions
+            GlobalFunctions.justifyListViewHeightBasedOnChildren(NewContact.this,listView);
 
         }
     }
@@ -441,32 +443,6 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
     }
 
 
-
-    //this is the function we call to measure the height of the listview
-    //we need this because there are problems with a listview within a scrollview
-    public static void justifyListViewHeightBasedOnChildren (ListView listView) {
-
-        ListAdapter adapter = listView.getAdapter();
-
-        if (adapter == null) {
-            return;
-        }
-        ViewGroup vg = listView;
-        int totalHeight = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View listItem = adapter.getView(i, null, vg);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams par = listView.getLayoutParams();
-        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
-        listView.setLayoutParams(par);
-        listView.requestLayout();
-
-        System.out.println("the getcount is " + adapter.getCount());
-        System.out.println("the height is " + par.height);
-    }
 
 //    @Override
 //    protected void onDestroy() {

@@ -99,6 +99,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
 
+       // GlobalFunctions simplemessage = new GlobalFunctions();
+        GlobalFunctions.simpleMessage(VerifyUserPhoneNumber.this,"buddy buddy");
+
+        GlobalFunctions simplemessage2 = new GlobalFunctions();
+        simplemessage2.simpleMessage2();
+
 
         txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
 

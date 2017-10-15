@@ -49,7 +49,9 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     private ArrayList<SelectPhoneContact> arraylist;
     Context _c;
     ArrayList<String> MatchingContactsAsArrayList;
+    ArrayList<String> checkedContactsAsArrayList;
     ArrayList <String> allNamesofContacts;
+    String contactToCheck;
 
     String phoneNumberofContact;
     String[] phoneNumberofContactStringArray;
@@ -71,7 +73,25 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
         System.out.println("SelectPhoneContactAdapter MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
-    }
+        //we are fetching the array list checkedContactsAsArrayList, created in ViewContact.
+        //with this we will put a tick in the checkboxes of contacts the review is being shared with
+        SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(_c);
+        Gson gsoncheckedContactsAsArrayList = new Gson();
+        String jsoncheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.getString("checkedContactsAsArrayList", "");
+        Type type2 = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        checkedContactsAsArrayList = gsoncheckedContactsAsArrayList.fromJson(jsoncheckedContactsAsArrayList, type2);
+        System.out.println("SelectPhoneContactAdapter checkedContactsAsArrayList :" + checkedContactsAsArrayList);
+
+        //for every value in the checkedContactsAsArrayList array list, call it contactToCheck
+        //We will be checking which values of contactToCheck are in the MatchingContactsAsArrayList,
+        //further down
+        for (int i = 0; i < checkedContactsAsArrayList.size(); i++) {
+            contactToCheck = checkedContactsAsArrayList.get(i);
+            System.out.println("SelectPhoneContactAdapter contactToCheck :" + contactToCheck);
+
+                                        }
+                                 }
 
     @Override
     public int getCount() {
@@ -124,7 +144,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             // viewHolder.check.setVisibility(View.GONE);
 
             //remember the state of the checkbox
-            viewHolder.check.setOnCheckedChangeListener((ViewContact) _c);
+            viewHolder.check.setOnCheckedChangeListener((CompoundButton.OnCheckedChangeListener) _c);
 
             convertView.setTag(viewHolder);
 
@@ -146,9 +166,16 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         for (int number = 0; number < MatchingContactsAsArrayList.size(); number++) {
 
             //if a phone number is in our array of matching contacts
-            if (MatchingContactsAsArrayList.contains(data.getPhone()))
+           // if (MatchingContactsAsArrayList.contains(data.getPhone()))
 
-            {
+           // {
+
+                if (MatchingContactsAsArrayList.contains(contactToCheck))
+                {
+                 //   data.setPhone("wwww");
+
+                //}
+
                 //if a matching contact, no need to show the Invite button
                 viewHolder.invite.setVisibility(View.GONE);
                 System.out.println("it's a match: phoneNumberofContact is : " + data.getPhone());

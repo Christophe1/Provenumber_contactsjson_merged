@@ -8,8 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,6 +72,10 @@ public class PopulistoListView extends AppCompatActivity {
         adapter = new CustomPopulistoListAdapter(this, reviewList);
         listView.setAdapter(adapter);
 
+        //always show the overflow menu. Some devices don't show it by default
+        //This function is in the GlobalFunctions class
+        GlobalFunctions.makeActionOverflowMenuShown(PopulistoListView.this);
+
         //get the phone number value from shared preferences file instead
         //of from the VerifiedUserPhoneNumber class because we might not
         //be coming from that class, for example on Edit, New etc. The phone
@@ -101,11 +108,11 @@ public class PopulistoListView extends AppCompatActivity {
         //JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
         //System.out.println("matching contacts fromPoplistview" + JsonArrayMatchingContacts);
 
-     //   Intent myIntent1 = getIntent();
-     //   phoneNumberofContact = myIntent1.getStringExtra("PhoneNumberofContact");
+        //   Intent myIntent1 = getIntent();
+        //   phoneNumberofContact = myIntent1.getStringExtra("PhoneNumberofContact");
         // allPhonesofContacts = myIntent.getStringExtra("allPhonesofContacts");
         //if (allPhonesofContacts != null) {
-      //  System.out.println("PhoneNumberofContact fromPoplistvieww" + phoneNumberofContact);
+        //  System.out.println("PhoneNumberofContact fromPoplistvieww" + phoneNumberofContact);
 /*
         Intent intent = getIntent();
         //pass the JSONArray  of matching contacts from VerifyPhoneNumber
@@ -121,7 +128,6 @@ public class PopulistoListView extends AppCompatActivity {
         System.out.println("Transferred to PopulistoListView, the Populisto contacts of this user are :" + JsonArrayMatchingContacts);
        // System.out.println("Transferred to PopulistoListView, the Populisto contacts of this user are :" + message2);
 */
-
 
 
         //post the phone number of the logged in user to SelectUserReviews.php and from that
@@ -162,7 +168,8 @@ public class PopulistoListView extends AppCompatActivity {
                                 //add the review to the reviewList
                                 reviewList.add(review);
 
-                            }} catch (JSONException e) {
+                            }
+                        } catch (JSONException e) {
                             Log.e("MYAPP", "unexpected JSON exception", e);
                             // Do something to recover ... or kill the app.
                         }
@@ -211,7 +218,7 @@ public class PopulistoListView extends AppCompatActivity {
                 //info for that review - address, comments etc
                 Intent i = new Intent(PopulistoListView.this, ViewContact.class);
                 //pass the review_id to ViewContact class
-                i.putExtra("review_id",  review.getReviewid());
+                i.putExtra("review_id", review.getReviewid());
                 startActivity(i);
 
                 Toast.makeText(PopulistoListView.this, review.getReviewid(), Toast.LENGTH_SHORT).show();
@@ -237,13 +244,15 @@ public class PopulistoListView extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch(item.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.new_contact:
                 //start the NewContact class
                 Intent intent = new Intent(PopulistoListView.this, NewContact.class);

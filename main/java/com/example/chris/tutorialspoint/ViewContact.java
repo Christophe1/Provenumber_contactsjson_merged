@@ -38,13 +38,15 @@ import org.json.JSONObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ViewContact extends AppCompatActivity  implements android.widget.CompoundButton.OnCheckedChangeListener {
 
     // this is the php file name where to select from.
-    // we will post the review id of the review in ListView into Php and
+    // we will post the review id of the review in ListView (in PopulistoListView.java) into Php and
     // get the matching details - Category, name, phone, address etc...
     private static final String ViewContact_URL = "http://www.populisto.com/ViewContact.php";
 
@@ -57,6 +59,7 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
     Button edit;
     Button delete;
 
+    //use TextViews instead of EditViews, so they can't be edited unless 'Edit' is selected
     private TextView categoryname;
     private TextView namename;
     private TextView phonename;
@@ -65,23 +68,26 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
 
     //for categoryid we only need the value, don't need to cast it to anything
     String categoryid;
-    // temporary string to show the parsed response
-    //private String jsonResponse;
 
-    //this is the review that has been clicked in the ListView
+    //this is the review that has been clicked in the ListView in PopulistoListView.java
     String review_id;
     private ProgressDialog pDialog;
 
+    //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
+    //an arraylist of all contacts phone numbers, which we will get from VerifyUserPhoneNumber
     ArrayList <String> allPhonesofContacts;
+    //an arraylist of all contacts names, which we will get from VerifyUserPhoneNumber
     ArrayList <String> allNamesofContacts;
     String MatchingContactsAsString;
     ArrayList<String> MatchingContactsAsArrayList;
+    ArrayList<String> checkedContactsAsArrayList;
     String phoneNumberofContact;
     String phoneNameofContact;
     ListView listView;
     SelectPhoneContactAdapter adapter;
     CheckBox checkBoxforContact;
+    String checkedContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,22 +102,24 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
 
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
+        pDialog = new ProgressDialog(this);
+        // Showing progress dialog before making http request
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
         //********************
 
         Intent i = this.getIntent();
         //we want review_id of the review clicked in the ListView,
         // get it from PopulistoListView activity
-        //this is the review_id we are posting to php
+        //this is the review_id we will be posting to php with Volley, below
         review_id = i.getStringExtra("review_id");
         //Toast.makeText(ContactView.this, review_id, Toast.LENGTH_SHORT).show();
 
 
 
 
-        pDialog = new ProgressDialog(this);
-        // Showing progress dialog before making http request
-        pDialog.setMessage("Loading...");
-        pDialog.show();
+
 
         //cast a TextView for each of the field ids in activity_view_contact.xml
          categoryname = (TextView) findViewById(R.id.textViewCategory);
@@ -125,31 +133,6 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
         //for the checkbox
         checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
 
-        //  when the activity loads, get the String MatchingContacts in the SharedPreferences file, created in
-        // VerifyUserPhoneNumber
-        // it will be of the form of a JSONArray, like [{"phone_number":"+35312345"}, {"phone_number": etc...
-        // We get this string from our php file, checkcontact.php. Then we want to extract the phone numbers
-        //and compare against ones that are checkedcontacts
-        SharedPreferences sharedPreferencetheMatchingContacts = getApplication().getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        MatchingContactsAsString = sharedPreferencetheMatchingContacts.getString("thematchingcontacts", "");
-        System.out.println("ViewContact: matchingcontacts :" + MatchingContactsAsString);
-
-
-        //make an arraylist which will hold the phone_number part of the MatchingContacts string
-        MatchingContactsAsArrayList = new ArrayList<String>();
-        try {
-            JSONArray Object = new JSONArray(MatchingContactsAsString);
-            for (int x = 0; x < Object.length(); x++) {
-                final JSONObject obj = Object.getJSONObject(x);
-                MatchingContactsAsArrayList.add(obj.getString("phone_number"));
-
-            }
-
-
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-            System.out.println("ViewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
 
             //post the review_id that has been clicked in the ListView and send it to
@@ -159,13 +142,14 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
 
             @Override
                     public void onResponse(String response) {
-                        //hide the 'loading' box when the page loads
-                        pDialog.dismiss();
+
                         //toast the response of ViewContact.php, which has been converted to a
                         //JSON object by the Php file with JSON encode
                         Toast.makeText(ViewContact.this, response, Toast.LENGTH_LONG).show();
+                        System.out.println("And the response is " + response);
 
-                        try {
+
+                try {
 
                             // Parsing json object response which we receive from PHP
                             // make a JSONObject called responseObject, break it down into
@@ -178,7 +162,7 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
                             String address = responseObject.getString("address");
                             String comment = responseObject.getString("comment");
 
-                           // ArrayList checkedcontacts = responseObject.getString("comment");
+                            checkedContacts = responseObject.getString("checkedcontacts");
 
                             //assign a textview to each of the fields in the review
                             categoryname.setText(category);
@@ -190,9 +174,38 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
                             //we don't need to assign category id text to a textbox
                             categoryid = category_id;
 
+                    System.out.println("here are the checkedcontacts" + checkedContacts);
+
+                    //convert the checkedContacts string to an arraylist
+                    //then we will pass this on to the SelectPhoneContactAdapter  and put a tick
+                    //in the checkbox of the checkedContacts
+                    //First, take out the double quotes,
+                    String replace = checkedContacts.replace("\"","");
+                    //take out the starting [
+                    String replace1 = replace.replace("[","");
+                    //and then the ending ]
+                    String replace2 = replace1.replace("]","");
+                    System.out.println("here is replace2 "+ replace2);
+                    //convert the checkedContacts string to an arraylist
+                    checkedContactsAsArrayList = new ArrayList<String>(Arrays.asList(replace2.split(",")));
+                    System.out.println("ViewContact: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+
+
+                    //we want to bring the checkedContactsAsArrayList array list to our SelectPhoneContactAdapter.
+                    // It looks like Shared Preferences
+                    //only works easily with strings so best way to bring the array list in Shared Preferences is with
+                    //Gson.
+                    //Here, we PUT the arraylist into the sharedPreferences
+                    SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                    SharedPreferences.Editor editorcheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.edit();
+                    Gson gsoncheckedContactsAsArrayList = new Gson();
+                    String jsoncheckedContactsAsArrayList = gsoncheckedContactsAsArrayList.toJson(checkedContactsAsArrayList);
+                    editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
+                    editorcheckedContactsAsArrayList.commit();
+
                             //System.out.println("heree it is" + jsonResponse);
                             //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
-
+                            hidePDialog();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -200,6 +213,8 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
                                     "Error: " + e.getMessage(),
                                     Toast.LENGTH_LONG).show();
                         }
+
+
 
                     }
 
@@ -256,7 +271,6 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
             }
         });
 
-        pDialog.dismiss();
 
         //update the class with new values from EditView
         Intent j = getIntent();
@@ -346,7 +360,7 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
 
                     AppController.getInstance().addToRequestQueue(stringRequest);
 
-                    //when deleted, go back to the Populisto ListView class and update
+                    //when deleted, go back to the PopulistoListView class and update
 
                     Intent j = new Intent(ViewContact.this,PopulistoListView.class);
 
@@ -395,7 +409,9 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
             //we want to delete the old selectContacts from the listview when the Activity loads
             //because it may need to be updated and we want the user to see the updated listview,
             //like if the user adds new names and numbers to their phone contacts.
-            //selectPhoneContacts.clear();
+            selectPhoneContacts.clear();
+
+
 
             //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
             //with this we will put all phone numbers of contacts on user's phone into our ListView in ViewContact activity
@@ -420,14 +436,16 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
             System.out.println("ViewContact:the amount in allPhonesofContacts :" + allPhonesofContacts.size());
             System.out.println("ViewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
 
+
             //  when the activity loads, get the String MatchingContacts in the SharedPreferences file, created in
             // VerifyUserPhoneNumber
             // it will be of the form of a JSONArray, like [{"phone_number":"+35312345"}, {"phone_number": etc...
-            // We get this string from our php file, checkcontact.php. Then we want to extract the phone numbers
-            //and compare against the contacts on the user's phone.
+            // We got this string from our php file, checkcontact.php. Then we want to extract the phone numbers
+            //and compare against ones that are checkedcontacts, contacts that are checked for that particular review
+
             SharedPreferences sharedPreferencetheMatchingContacts = getApplication().getSharedPreferences("MyData", Context.MODE_PRIVATE);
             MatchingContactsAsString = sharedPreferencetheMatchingContacts.getString("thematchingcontacts", "");
-            System.out.println("NewContact: matchingcontacts :" + MatchingContactsAsString);
+            System.out.println("ViewContact: matchingcontacts :" + MatchingContactsAsString);
 
             //make an arraylist which will hold the phone_number part of the MatchingContacts string
             MatchingContactsAsArrayList = new ArrayList<String>();
@@ -438,23 +456,26 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
                     MatchingContactsAsArrayList.add(obj.getString("phone_number"));
 
                 }
-                System.out.println("NewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
-
-                //we want to bring the MatchingContactsAsArrayList array list to our SelectPhoneContactAdapter.
-                // It looks like Shared Preferences
-                //only works easily with strings so best way to bring the array list in Shared Preferences is with
-                //Gson.
-                SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
-                Gson gsonMatchingContactsAsArrayList = new Gson();
-                String jsonMatchingContactsAsArrayList = gson.toJson(MatchingContactsAsArrayList);
-                editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
-                editorMatchingContactsAsArrayList.commit();
 
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            System.out.println("ViewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
+
+            //we want to bring the MatchingContactsAsArrayList array list to our SelectPhoneContactAdapter.
+            // It looks like Shared Preferences
+            //only works easily with strings so best way to bring the array list in Shared Preferences is with
+            //Gson.
+            SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+            SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
+            Gson gsonMatchingContactsAsArrayList = new Gson();
+            String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
+            editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
+            editorMatchingContactsAsArrayList.commit();
+
+               System.out.println("ViewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
             for (int i = 0; i < allPhonesofContacts.size(); i++) {
@@ -492,8 +513,6 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
             }
 
 
-
-
             return null;
 
 
@@ -521,7 +540,8 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
 
             //this function measures the height of the listview, with all the contacts, and loads it to be that
             //size. We need to do this because there's a problem with a listview in a scrollview.
-            justifyListViewHeightBasedOnChildren(listView);
+            //The function is in GlobalFunctions
+            GlobalFunctions.justifyListViewHeightBasedOnChildren(ViewContact.this,listView);
 
         }
     }
@@ -538,33 +558,12 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
 
 
 
-    //this is the function we call to measure the height of the listview
-    //we need this because there are problems with a listview within a scrollview
-    public static void justifyListViewHeightBasedOnChildren (ListView listView) {
 
-        ListAdapter adapter = listView.getAdapter();
-
-        if (adapter == null) {
-            return;
+    public void hidePDialog() {
+        if (pDialog != null) {
+            pDialog.dismiss();
+            pDialog = null;
         }
-        ViewGroup vg = listView;
-        int totalHeight = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View listItem = adapter.getView(i, null, vg);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams par = listView.getLayoutParams();
-        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
-        listView.setLayoutParams(par);
-        listView.requestLayout();
-
-        System.out.println("the getcount is " + adapter.getCount());
-        System.out.println("the height is " + par.height);
     }
-
-
-
 
 }
