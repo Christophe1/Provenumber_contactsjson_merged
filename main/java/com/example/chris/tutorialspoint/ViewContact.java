@@ -43,8 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ViewContact extends AppCompatActivity  implements android.widget.CompoundButton.OnCheckedChangeListener {
-
+public class ViewContact extends AppCompatActivity implements android.widget.CompoundButton.OnCheckedChangeListener  {
+   //
     // this is the php file name where to select from.
     // we will post the review id of the review in ListView (in PopulistoListView.java) into Php and
     // get the matching details - Category, name, phone, address etc...
@@ -382,16 +382,12 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-        int pos = listView.getPositionForView(buttonView);
-        if(pos != listView.INVALID_POSITION) {
-            SelectPhoneContact data = selectPhoneContacts.get(pos);
-            data.setSelected(isChecked);
+        //checkBoxforContact.setChecked(true);
 
-            Toast.makeText(this, "Clicked on : " + data.getName() + isChecked,
-                    Toast.LENGTH_SHORT).show();
-        }
 
     }
+
+
 
 
     //******for the phone contacts in the listview
@@ -483,8 +479,8 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
                 phoneNumberofContact = allPhonesofContacts.get(i);
                 phoneNameofContact = allNamesofContacts.get(i);
 
-                System.out.println("SelectPhoneContactAdapter: phoneNumberofContact : " + phoneNumberofContact);
-                System.out.println("SelectPhoneContactAdapter: phoneNameofContact : " + phoneNameofContact);
+                System.out.println("ViewContact: phoneNumberofContact : " + phoneNumberofContact);
+                System.out.println("ViewContact: phoneNameofContact : " + phoneNameofContact);
 
                 SelectPhoneContact selectContact = new SelectPhoneContact();
 
@@ -534,6 +530,7 @@ public class ViewContact extends AppCompatActivity  implements android.widget.Co
             //and these changes need to be reflected visibly in the listview. It works
             //in conjunction with selectContacts.clear()
             adapter.notifyDataSetChanged();
+
 
 
             //********************

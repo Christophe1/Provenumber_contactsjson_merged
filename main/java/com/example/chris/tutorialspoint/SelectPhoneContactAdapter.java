@@ -86,11 +86,11 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         //for every value in the checkedContactsAsArrayList array list, call it contactToCheck
         //We will be checking which values of contactToCheck are in the MatchingContactsAsArrayList,
         //further down
-        for (int i = 0; i < checkedContactsAsArrayList.size(); i++) {
-            contactToCheck = checkedContactsAsArrayList.get(i);
-            System.out.println("SelectPhoneContactAdapter contactToCheck :" + contactToCheck);
-
-                                        }
+//        for (int i = 0; i < checkedContactsAsArrayList.size(); i++) {
+//            contactToCheck = checkedContactsAsArrayList.get(i);
+//            System.out.println("SelectPhoneContactAdapter contactToCheck :" + contactToCheck);
+//
+//                                        }
                                  }
 
     @Override
@@ -124,8 +124,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         System.out.println("getView number is :" + i + "convertView is : " + convertView);
-        //we're naming our convertView as view
-        //  View view = convertView;
+
         ViewHolder viewHolder = null;
 
         if (convertView == null) {
@@ -141,8 +140,6 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             viewHolder.phone = (TextView) convertView.findViewById(R.id.no);
             viewHolder.invite = (Button)  convertView.findViewById(R.id.btnInvite);
             viewHolder.check = (CheckBox) convertView.findViewById(R.id.checkBoxContact);
-            // viewHolder.check.setVisibility(View.GONE);
-
             //remember the state of the checkbox
             viewHolder.check.setOnCheckedChangeListener((CompoundButton.OnCheckedChangeListener) _c);
 
@@ -151,7 +148,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         } else {
 
             viewHolder = (ViewHolder) convertView.getTag();
-
+            //viewHolder.check.setChecked(true);
         }
 //        store the holder with the view
         final SelectPhoneContact data = (SelectPhoneContact) arraylist.get(i);
@@ -159,49 +156,66 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         viewHolder.title.setText(data.getName());
         //in the listview for contacts, set the number
         viewHolder.phone.setText(data.getPhone());
-
+        //viewHolder.check.setChecked(true);
         ////*********************
 
-        //for every phone number in the MatchingContactsAsArrayList array list...
-        for (int number = 0; number < MatchingContactsAsArrayList.size(); number++) {
+//        //for every phone number in the MatchingContactsAsArrayList array list...
+        for (int number = 0; number < checkedContactsAsArrayList.size(); number++) {
+//
+//            //if a phone number is in our array of matching contacts
+            if (checkedContactsAsArrayList.contains(data.getPhone())) {
 
-            //if a phone number is in our array of matching contacts
-           // if (MatchingContactsAsArrayList.contains(data.getPhone()))
-
-           // {
-
-                if (MatchingContactsAsArrayList.contains(contactToCheck))
-                {
-                 //   data.setPhone("wwww");
-
-                //}
-
-                //if a matching contact, no need to show the Invite button
-                viewHolder.invite.setVisibility(View.GONE);
-                System.out.println("it's a match: phoneNumberofContact is : " + data.getPhone());
-                //once a matching contact is found, no need to keep looping x number of time, move onto next contact
-                break;
-
+                viewHolder.check.setChecked(true);
             }
-
-            else {
-                //if not a matching contact, no need to show the check box
-                viewHolder.check.setVisibility(View.GONE);
-
-            }
-
         }
+        //disable the checkbox
+        viewHolder.check.setEnabled(false);
+//
+//            {
+//
+//               // if (MatchingContactsAsArrayList.contains(contactToCheck))
+//                //{
+//                 //   data.setPhone("wwww");
+//
+//                //}
+//
+//                //if a matching contact, no need to show the Invite button
+//                viewHolder.invite.setVisibility(View.GONE);
+//               // viewHolder.check.setChecked(true);
+//
+//               // System.out.println("it's a match: phoneNumberofContact is : " + data.getPhone() + "    " + contactToCheck);
+//                //once a matching contact is found, no need to keep looping x number of time, move onto next contact
+//                //break;
+//
+//            }
+//
+//            else {
+//                //if not a matching contact, no need to show the check box
+//                viewHolder.check.setVisibility(View.GONE);
+//
+//            }
+//
+//        }
 
 
-        viewHolder.check.setChecked(data.isSelected());
+
+        //this is for NewContact
+        //viewHolder.check.setChecked(data.isSelected());
 
 
+
+        //if (convertView != null) {
+            //make checkboxes in the listview ticked by default
+
+        //}
 
         viewHolder.check.setTag(data);
+
 
         // Return the completed view to render on screen
 
         return convertView;
 
-    }
+
+}
 }
