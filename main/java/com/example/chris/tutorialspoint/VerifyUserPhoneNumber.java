@@ -69,6 +69,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
     // we will be making all phone contacts as a JsonArray
     JSONArray jsonArrayAllPhonesandNamesofContacts = new JSONArray();
+    ArrayList<String> MatchingContactsAsArrayList;
+
 
     Cursor cursor;
     String name;
@@ -535,7 +537,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     }
 
     //CHECK IF USER IS A CONTACT
-//this will have to be checked every so often as user's may add or delete contacts
+//this will have to be verified every so often as user may add or delete contacts
 // it's not a static once off thing.
     private void CheckifUserisContact() {
 //CHECKPHONENUMBER_URL is checkcontact.php
@@ -543,28 +545,48 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //echo the phone contacts who are also app contacts, this is done on the PHP side
+                        //toast the phone contacts who are also app contacts, this is done on the PHP side
+                        // it will be a JSONArray of the form [{"phone_number":"+35312345"}, {"phone_number": etc...
+                        // We get this from our php file, checkcontact.php. Then we will convert to a string
+                        // and extract the phone numbers and compare against the contacts on the user's phone.
                         Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
                         System.out.println("the Populisto contacts of this user are :" + response);
-
+                        //convert the JSONArray, the response, to a string
                         String MatchingContactsAsString = response.toString();
-                        System.out.println("matching contacts of this user are :" + MatchingContactsAsString);
+                        System.out.println("VerifyUserPhoneNumber1: matching contacts of this user are :" + MatchingContactsAsString);
 
-                        //save the matchingcontacts string into shared preferences file. Intents don't work
-                        //in CustomAdapters. So we'll get the values of matchingContacts into
-                        //the CustomAdapter by calling it from the SelectPhoneContactAdapter. With that we'll put our
-                        //matching contacts at the top of the listview, display check boxes beside them etc...
-                        SharedPreferences sharedPreferencetheMatchingContacts = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editortheMatchingContacts = sharedPreferencetheMatchingContacts.edit();
+                        //make an arraylist which will hold the phone_number part of the MatchingContacts string
+                        MatchingContactsAsArrayList = new ArrayList<String>();
+                        try {
+                            JSONArray Object = new JSONArray(MatchingContactsAsString);
+                            for (int x = 0; x < Object.length(); x++) {
+                                final JSONObject obj = Object.getJSONObject(x);
+                                MatchingContactsAsArrayList.add(obj.getString("phone_number"));
 
-                        editortheMatchingContacts.putString("thematchingcontacts", MatchingContactsAsString);
-                        editortheMatchingContacts.commit();
-                        System.out.println("VerifyUserPhoneNumber: matching contacts of this user are :" + MatchingContactsAsString);
+                            }
+                            System.out.println("NewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
+                            //save MatchingContactsAsArrayList into sharedpreferences so we can use it elsewhere
+                            //in our project. It looks like Shared Preferences
+                            //only works easily with strings so best way to bring the array list in Shared Preferences is with
+                            //Gson. Here, we PUT the arraylist into the sharedPreferences
+                            SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                            SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
+                            Gson gsonMatchingContactsAsArrayList = new Gson();
+                            String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
+                            editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
+                            editorMatchingContactsAsArrayList.commit();
+
 
 
                         System.out.println("phonenoofuser" + phoneNoofUser);
                         System.out.println("all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
                         System.out.println("the matching contacts are " + MatchingContactsAsString);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
 
                     }
                 },

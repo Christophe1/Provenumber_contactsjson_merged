@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -64,7 +65,7 @@ public class EditContact extends AppCompatActivity {
         addressname = (EditText) findViewById(R.id.textViewAddress);
         commentname = (EditText) findViewById(R.id.textViewComment);
 
-        //get the intent we created in ViewContact class, to bring the changes over
+        //get the intent we created in ViewContact class, to bring the details over
         //to this class
         Intent i = this.getIntent();
         //we need to get review_id to ensure changes made are saved to correct review_id
@@ -90,86 +91,107 @@ public class EditContact extends AppCompatActivity {
         categoryname.setSelection(categoryname.getText().length());
 
 
-
-
-
-
-
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
 
-       save.setOnClickListener(new View.OnClickListener() {
+        save.setOnClickListener(new View.OnClickListener() {
 
-           public void onClick(View view) {
-               System.out.println("you clicked it, save");
+            public void onClick(View view) {
+                System.out.println("you clicked it, save");
 
-               pDialog = new ProgressDialog(EditContact.this);
-               // Showing progress dialog for the review being saved
-               pDialog.setMessage("Saving...");
-               pDialog.show();
+                pDialog = new ProgressDialog(EditContact.this);
+                // Showing progress dialog for the review being saved
+                pDialog.setMessage("Saving...");
+                pDialog.show();
 
-               //post the review_id in the current activity to EditContact.php and from that
-               //get associated values - category, name, phone etc...
-               StringRequest stringRequest = new StringRequest(Request.Method.POST, EditContact_URL,
-                       new Response.Listener<String>() {
-                           @Override
-                           public void onResponse(String response) {
-                               //hide the dialogue box when page is saved
-                               pDialog.dismiss();
-                               Toast.makeText(EditContact.this, response, Toast.LENGTH_LONG).show();
-                           }
-                       },
-                       new Response.ErrorListener() {
-                           @Override
-                           public void onErrorResponse(VolleyError error) {
+                //post the review_id in the current activity to EditContact.php and from that
+                //get associated values - category, name, phone etc...
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, EditContact_URL,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //hide the dialogue box when page is saved
+                                pDialog.dismiss();
+                                Toast.makeText(EditContact.this, response, Toast.LENGTH_LONG).show();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(EditContact.this, "there's a problem saving this page", Toast.LENGTH_LONG).show();
 
-                           }
+                            }
 
-                       }) {
+                        }) {
 
-                   protected Map<String, String> getParams() {
-                       Map<String, String> params = new HashMap<String, String>();
-                       //post the phone number to php get the user_id in the user table
-                       //params.put("phonenumberofuser", phoneNoofUserCheck);
-                       params.put("review_id", review_id);
-                       //the second value, categoryname.getText().toString() etc...
-                       // is the value we get from Android.
-                       //the key is "category", "name" etc.
-                       // When we see these in our php,  $_POST["category"],
-                       //put in the value from Android
-                       params.put("category", categoryname.getText().toString());
-                       params.put("name", namename.getText().toString());
-                       params.put("phone", phonename.getText().toString());
-                       params.put("address", addressname.getText().toString());
-                       params.put("comment", commentname.getText().toString());
-                       return params;
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<String, String>();
+                        //post the phone number to php get the user_id in the user table
+                        //params.put("phonenumberofuser", phoneNoofUserCheck);
+                        params.put("review_id", review_id);
+                        //the second value, categoryname.getText().toString() etc...
+                        // is the value we get from Android.
+                        //the key is "category", "name" etc.
+                        // When we see these in our php,  $_POST["category"],
+                        //put in the value from Android
+                        params.put("category", categoryname.getText().toString());
+                        params.put("name", namename.getText().toString());
+                        params.put("phone", phonename.getText().toString());
+                        params.put("address", addressname.getText().toString());
+                        params.put("comment", commentname.getText().toString());
+                        return params;
 
-                   }
-
-
-
-               };
+                    }
 
 
-           AppController.getInstance().addToRequestQueue(stringRequest);
+                };
+
+
+                AppController.getInstance().addToRequestQueue(stringRequest);
 
                 //when saved, go back to the ViewContact class and update with
-               //the edited values
-               Intent j = new Intent(EditContact.this,ViewContact.class);
+                //the edited values
+                Intent j = new Intent(EditContact.this, PopulistoListView.class);
                 j.putExtra("category", categoryname.getText().toString());
-               j.putExtra("name", namename.getText().toString());
-               j.putExtra("phone", phonename.getText().toString());
-               j.putExtra("address", addressname.getText().toString());
-               j.putExtra("comment", commentname.getText().toString());
+                j.putExtra("name", namename.getText().toString());
+                j.putExtra("phone", phonename.getText().toString());
+                j.putExtra("address", addressname.getText().toString());
+                j.putExtra("comment", commentname.getText().toString());
 
-               startActivity(j);
+                EditContact.this.startActivity(j);
 
-               finish();
+                finish();
 
-       }
+            }
 
 
-
-       });
+        });
     }
+
+
+    // Load data in background
+    class LoadContact extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+
+            super.onPreExecute();
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+
+
+        }
+}
+
 }

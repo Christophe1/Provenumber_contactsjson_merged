@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tutorialspoint.R;
 import com.google.gson.Gson;
@@ -52,18 +53,21 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     ArrayList<String> checkedContactsAsArrayList;
     ArrayList <String> allNamesofContacts;
     String contactToCheck;
+    //we will run through different logic in this custom adapter based on the activity that is passed to it
+    private int whichactivity;
 
     String phoneNumberofContact;
     String[] phoneNumberofContactStringArray;
     String ContactsString;
 
-    public SelectPhoneContactAdapter(final List<SelectPhoneContact> selectPhoneContacts, Context context) {
+    public SelectPhoneContactAdapter(final List<SelectPhoneContact> selectPhoneContacts, Context context, int activity) {
         theContactsList = selectPhoneContacts;
         _c = context;
         this.arraylist = new ArrayList<SelectPhoneContact>();
         this.arraylist.addAll(theContactsList);
+        whichactivity = activity;
 
-        //we are fetching the array list MatchingContactsAsArrayList, created in NewContact.
+        //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
         //with this we will put a checkbox beside the matching contacts
         SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(_c);
         Gson gsonMatchingContactsAsArrayList = new Gson();
@@ -123,6 +127,9 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     //justifyListViewHeightBasedOnChildren FUNCTION IN NEWCONTACT
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
+
+
+
         System.out.println("getView number is :" + i + "convertView is : " + convertView);
 
         ViewHolder viewHolder = null;
@@ -159,49 +166,56 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         //viewHolder.check.setChecked(true);
         ////*********************
 
-//        //for every phone number in the MatchingContactsAsArrayList array list...
-        for (int number = 0; number < checkedContactsAsArrayList.size(); number++) {
-//
-//            //if a phone number is in our array of matching contacts
-            if (checkedContactsAsArrayList.contains(data.getPhone())) {
+        //for every phone number in the MatchingContactsAsArrayList array list...
+        for (int number = 0; number < MatchingContactsAsArrayList.size(); number++) {
 
-                viewHolder.check.setChecked(true);
+            //if a phone number is in our array of matching contacts
+            if (MatchingContactsAsArrayList.contains(data.getPhone()))
+
+            {
+                //if a matching contact, no need to show the Invite button
+                viewHolder.invite.setVisibility(View.GONE);
+                System.out.println("it's a match: phoneNumberofContact is : " + data.getPhone());
+                //once a matching contact is found, no need to keep looping x number of time, move onto next contact
+                break;
+
             }
+
+            else {
+                //if not a matching contact, no need to show the check box
+                viewHolder.check.setVisibility(View.GONE);
+
+            }
+
         }
-        //disable the checkbox
-        viewHolder.check.setEnabled(false);
-//
-//            {
-//
-//               // if (MatchingContactsAsArrayList.contains(contactToCheck))
-//                //{
-//                 //   data.setPhone("wwww");
-//
-//                //}
-//
-//                //if a matching contact, no need to show the Invite button
-//                viewHolder.invite.setVisibility(View.GONE);
-//               // viewHolder.check.setChecked(true);
-//
-//               // System.out.println("it's a match: phoneNumberofContact is : " + data.getPhone() + "    " + contactToCheck);
-//                //once a matching contact is found, no need to keep looping x number of time, move onto next contact
-//                //break;
-//
-//            }
-//
-//            else {
-//                //if not a matching contact, no need to show the check box
-//                viewHolder.check.setVisibility(View.GONE);
-//
-//            }
-//
+
+
+
+
+       // For the ViewContact, which has int activity = 0
+        if(whichactivity == 0) {
+            //This is for ViewContact, to display the contact the review is shared with
+            //for every phone number in the checkedContactsAsArrayList array list...
+            for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
+
+                //if a phone number is in our array of checked contacts
+                if (checkedContactsAsArrayList.contains(data.getPhone())) {
+                    //check the box
+                    viewHolder.check.setChecked(true);
+                }
+            }
+            //disable the checkbox
+            viewHolder.check.setEnabled(false);
+        }
+
+
+
+
+        //this is for NewContact, the user can select contacts to check
+        //which has int activity = 1
+//        if(whichactivity == 0) {
+//            viewHolder.check.setChecked(data.isSelected());
 //        }
-
-
-
-        //this is for NewContact
-        //viewHolder.check.setChecked(data.isSelected());
-
 
 
         //if (convertView != null) {

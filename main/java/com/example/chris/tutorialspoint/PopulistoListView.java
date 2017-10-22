@@ -88,48 +88,6 @@ public class PopulistoListView extends AppCompatActivity {
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        //Intent myIntent = getIntent();
-        //get the Array list of all phone contacts on user's phone, allPhonesofContacts, from VerifyPhoneNumber
-        //allPhonesofContacts = getIntent().getStringArrayListExtra("allPhonesofContacts");
-        // allPhonesofContacts = myIntent.getStringExtra("allPhonesofContacts");
-        //if (allPhonesofContacts != null) {
-        //System.out.println("allPhonesofContacts fromPoplistvieww" + allPhonesofContacts);
-
-        //allNamesofContacts = getIntent().getStringArrayListExtra("allNamesofContacts");
-        // allPhonesofContacts = myIntent.getStringExtra("allPhonesofContacts");
-        //if (allPhonesofContacts != null) {
-        //System.out.println("allNamesofContacts fromPoplistvieww" + allNamesofContacts);
-        //}
-        //get the JSONArray of all names and numbers on user's phone from VerifyPhoneNumber
-        //jsonArrayAllPhonesandNamesofContacts = myIntent.getStringExtra("jsonArrayAllPhonesandNamesofContacts");
-        //System.out.println("all contacts fromPoplistview" + jsonArrayAllPhonesandNamesofContacts);
-
-        //get the JSONArray of matching contacts from VerifyPhoneNumber
-        //JsonArrayMatchingContacts = myIntent.getStringExtra("JsonArrayMatchingContacts");
-        //System.out.println("matching contacts fromPoplistview" + JsonArrayMatchingContacts);
-
-        //   Intent myIntent1 = getIntent();
-        //   phoneNumberofContact = myIntent1.getStringExtra("PhoneNumberofContact");
-        // allPhonesofContacts = myIntent.getStringExtra("allPhonesofContacts");
-        //if (allPhonesofContacts != null) {
-        //  System.out.println("PhoneNumberofContact fromPoplistvieww" + phoneNumberofContact);
-/*
-        Intent intent = getIntent();
-        //pass the JSONArray  of matching contacts from VerifyPhoneNumber
-        String JsonArrayMatchingContacts = intent.getStringExtra("JsonArrayMatchingContacts");
-        try {
-            JSONArray array = new JSONArray(JsonArrayMatchingContacts);
-            System.out.println("here ya go" + array.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //pass the Array List of matching contacts from VerifyPhoneNumber
-        //ArrayList<String> message2 = getIntent().getStringArrayListExtra("message2");
-        System.out.println("Transferred to PopulistoListView, the Populisto contacts of this user are :" + JsonArrayMatchingContacts);
-       // System.out.println("Transferred to PopulistoListView, the Populisto contacts of this user are :" + message2);
-*/
-
-
         //post the phone number of the logged in user to SelectUserReviews.php and from that
         //get the logged in user's reviews
         StringRequest stringRequest = new StringRequest(Request.Method.POST, SelectUserReviews_URL,
@@ -221,7 +179,7 @@ public class PopulistoListView extends AppCompatActivity {
                 i.putExtra("review_id", review.getReviewid());
                 startActivity(i);
 
-                Toast.makeText(PopulistoListView.this, review.getReviewid(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PopulistoListView.this, "PopulistoListView: the review id is " + review.getReviewid(), Toast.LENGTH_SHORT).show();
 
             }
 

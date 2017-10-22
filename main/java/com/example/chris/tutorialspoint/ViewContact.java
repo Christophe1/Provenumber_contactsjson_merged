@@ -114,7 +114,9 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         // get it from PopulistoListView activity
         //this is the review_id we will be posting to php with Volley, below
         review_id = i.getStringExtra("review_id");
-        //Toast.makeText(ContactView.this, review_id, Toast.LENGTH_SHORT).show();
+        System.out.println("ViewContact: review id is " + review_id);
+
+        //Toast.makeText(ViewContact.this, review_id, Toast.LENGTH_SHORT).show();
 
 
 
@@ -145,8 +147,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
                         //toast the response of ViewContact.php, which has been converted to a
                         //JSON object by the Php file with JSON encode
-                        Toast.makeText(ViewContact.this, response, Toast.LENGTH_LONG).show();
-                        System.out.println("And the response is " + response);
+                        Toast.makeText(ViewContact.this, "OnResponse is" + response, Toast.LENGTH_LONG).show();
+                        System.out.println("ViewContact: And the response is " + response);
 
 
                 try {
@@ -162,6 +164,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             String address = responseObject.getString("address");
                             String comment = responseObject.getString("comment");
 
+                            //checkedContacts is a String
                             checkedContacts = responseObject.getString("checkedcontacts");
 
                             //assign a textview to each of the fields in the review
@@ -175,9 +178,11 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             categoryid = category_id;
 
                     System.out.println("here are the checkedcontacts" + checkedContacts);
+                  //  Toast.makeText(ViewContact.this, "here are the checkedcontacts" + checkedContacts, Toast.LENGTH_SHORT).show();
+
 
                     //convert the checkedContacts string to an arraylist
-                    //then we will pass this on to the SelectPhoneContactAdapter  and put a tick
+                    //then we will pass this on to the SelectPhoneContactAdapter and put a tick
                     //in the checkbox of the checkedContacts
                     //First, take out the double quotes,
                     String replace = checkedContacts.replace("\"","");
@@ -188,8 +193,10 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     System.out.println("here is replace2 "+ replace2);
                     //convert the checkedContacts string to an arraylist
                     checkedContactsAsArrayList = new ArrayList<String>(Arrays.asList(replace2.split(",")));
-                    System.out.println("ViewContact: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+                    System.out.println("ViewContact1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
+
+                  //  getPrefs();
 
                     //we want to bring the checkedContactsAsArrayList array list to our SelectPhoneContactAdapter.
                     // It looks like Shared Preferences
@@ -202,6 +209,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     String jsoncheckedContactsAsArrayList = gsoncheckedContactsAsArrayList.toJson(checkedContactsAsArrayList);
                     editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
                     editorcheckedContactsAsArrayList.commit();
+
+                    System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
                             //System.out.println("heree it is" + jsonResponse);
                             //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
@@ -433,45 +442,18 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             System.out.println("ViewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
 
 
-            //  when the activity loads, get the String MatchingContacts in the SharedPreferences file, created in
-            // VerifyUserPhoneNumber
-            // it will be of the form of a JSONArray, like [{"phone_number":"+35312345"}, {"phone_number": etc...
-            // We got this string from our php file, checkcontact.php. Then we want to extract the phone numbers
-            //and compare against ones that are checkedcontacts, contacts that are checked for that particular review
-
-            SharedPreferences sharedPreferencetheMatchingContacts = getApplication().getSharedPreferences("MyData", Context.MODE_PRIVATE);
-            MatchingContactsAsString = sharedPreferencetheMatchingContacts.getString("thematchingcontacts", "");
-            System.out.println("ViewContact: matchingcontacts :" + MatchingContactsAsString);
-
-            //make an arraylist which will hold the phone_number part of the MatchingContacts string
-            MatchingContactsAsArrayList = new ArrayList<String>();
-            try {
-                JSONArray Object = new JSONArray(MatchingContactsAsString);
-                for (int x = 0; x < Object.length(); x++) {
-                    final JSONObject obj = Object.getJSONObject(x);
-                    MatchingContactsAsArrayList.add(obj.getString("phone_number"));
-
-                }
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.out.println("ViewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
-
-
-            //we want to bring the MatchingContactsAsArrayList array list to our SelectPhoneContactAdapter.
-            // It looks like Shared Preferences
-            //only works easily with strings so best way to bring the array list in Shared Preferences is with
-            //Gson.
+            //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
+            //With that we'll put our
+            //matching contacts at the top of the listview, display check boxes beside them etc...
             SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
-            SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
             Gson gsonMatchingContactsAsArrayList = new Gson();
-            String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
-            editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
-            editorMatchingContactsAsArrayList.commit();
+            String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
+            Type type1 = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
+            System.out.println("ViewContact MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
-               System.out.println("ViewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
 
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
             for (int i = 0; i < allPhonesofContacts.size(); i++) {
@@ -519,7 +501,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this);
+            adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this,0);
 
 
 
@@ -549,8 +531,16 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
         super.onResume();
 
+       // getPrefs();
+
         ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+
+
         loadContact.execute();
+
+         Toast.makeText(ViewContact.this, "resuming!", Toast.LENGTH_SHORT).show();
+
+
     }
 
 
@@ -562,5 +552,15 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             pDialog = null;
         }
     }
+
+    private void getPrefs() {
+
+
+
+
+
+    }
+
+
 
 }
