@@ -48,6 +48,8 @@ import java.util.Set;
 import java.util.List;
 
 import static android.R.id.list;
+import static com.example.chris.tutorialspoint.GlobalFunctions.checkAllChildrenCascade;
+import static com.example.chris.tutorialspoint.GlobalFunctions.uncheckAllChildrenCascade;
 import static com.example.tutorialspoint.R.id.cancel;
 import static com.example.tutorialspoint.R.id.checkBoxContact;
 import static com.example.tutorialspoint.R.id.name;
@@ -96,6 +98,7 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
     String phoneNumberofContact;
     String phoneNameofContact;
     CheckBox checkBoxforContact;
+    Button clearAllCheckBoxes;
     //*******************************
 
     @Override
@@ -112,12 +115,9 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
-      //  showPDialog();
+        clearAllCheckBoxes = (Button) findViewById(R.id.clearAll);
 
-
-
-
-
+        //  showPDialog();
 
 
         //*************************
@@ -144,6 +144,8 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
         //for the checkbox
         checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
 
+
+
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
 
@@ -160,8 +162,8 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
                 try {
 
-                   // StringBuffer responseText = new StringBuffer();
-                   // responseText.append("The following were selected...\n");
+                    // StringBuffer responseText = new StringBuffer();
+                    // responseText.append("The following were selected...\n");
 
                     //for every contact in the selectPhoneContacts array list
                     for (int i = 0; i < selectPhoneContacts.size(); i++) {
@@ -262,25 +264,45 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
         //listen for which radio button is clicked
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int SelectWho) {
-                // SelectWho is the RadioButton selected
-                Toast.makeText(NewContact.this, "Select Who", Toast.LENGTH_LONG).show();
-
-
+                // find which radio button is selected
+                if (SelectWho == R.id.Public) {
+                    Toast.makeText(NewContact.this, "Public", Toast.LENGTH_LONG).show();
+                } else if (SelectWho == R.id.PhoneContacts) {
+                    Toast.makeText(NewContact.this, "Phone Contacts", Toast.LENGTH_LONG).show();
+                }
             }
         });
-
-
     }
+
+    //the is the 'Clear All' button, unchecks the checkboxes of
+    // matching contacts in NewContact
+    public void clearAllCheckBoxes(View v)
+    {
+        if (clearAllCheckBoxes.getText().toString().equals("Clear All"))
+        {
+            clearAllCheckBoxes.setText("Select All");
+
+            //call the function to uncheck all checkboxes in NewContact
+            uncheckAllChildrenCascade(listView);
+        }
+         else //(clearAllCheckBoxes.getText().toString().equals("Select All"));
+        {
+            clearAllCheckBoxes.setText("Clear All");
+            //call the function to uncheck all checkboxes in NewContact
+            checkAllChildrenCascade(listView);
+        }
+    }
+
+
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
         int pos = listView.getPositionForView(buttonView);
-        if(pos != listView.INVALID_POSITION) {
+       if(pos != listView.INVALID_POSITION) {
             SelectPhoneContact data = selectPhoneContacts.get(pos);
             data.setSelected(isChecked);
 
@@ -402,6 +424,7 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
             adapter = new SelectPhoneContactAdapter(selectPhoneContacts, NewContact.this,1);
 
+            //checkBoxforContact.setChecked(true);
 
 
             listView.setAdapter(adapter);

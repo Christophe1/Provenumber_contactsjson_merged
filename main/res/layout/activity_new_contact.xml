@@ -85,65 +85,82 @@
                     android:text="Public"
                     />
 
-                <RadioButton
-                    android:id="@+id/AllContacts"
+   <!--             <LinearLayout
+                    android:id="@+id/selectPhoneContacts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="All Phone Contacts"
-                    android:checked="true"/>
+                    android:orientation="horizontal" >-->
 
                 <RadioButton
-                    android:id="@+id/SelectWho"
-                    android:layout_width="match_parent"
+                    android:id="@+id/PhoneContacts"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Select Who" />
+                    android:text="Phone Contacts"
+                    android:checked="true"/>
+
+ <!--                   <Button
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="Clear All"
+                        android:id="@+id/clearAll"/>
+
+                </LinearLayout>-->
+
 
             </RadioGroup>
 
-
-            <ListView
-                android:id="@+id/listviewPhoneContacts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:layout_weight="3"
-                >
-            </ListView>
-
-        </LinearLayout>
-
-    </ScrollView>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-
-        >
-
-        <Button
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:text="SAVE"
-            android:id="@+id/save"
+            <Button
+                       android:layout_height="wrap_content"
+                       android:layout_width="wrap_content"
+                       android:text="Clear All"
+                       android:id="@+id/clearAll"
+                       android:onClick="clearAllCheckBoxes"
+                                                />
 
 
-            />
+           <ListView
+               android:id="@+id/listviewPhoneContacts"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:scrollbars="none"
+               android:layout_weight="3"
+               >
+           </ListView>
 
-        <Button
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:text="CANCEL"
-            android:id="@+id/cancel"
+       </LinearLayout>
+
+   </ScrollView>
+
+   <RelativeLayout
+       android:layout_width="wrap_content"
+       android:layout_height="40dp"
+
+       >
+
+       <Button
+           android:layout_height="wrap_content"
+           android:layout_width="wrap_content"
+           android:layout_alignParentBottom="true"
+           android:layout_alignParentLeft="true"
+           android:text="SAVE"
+           android:id="@+id/save"
 
 
-            />
+           />
+
+       <Button
+           android:layout_height="wrap_content"
+           android:layout_width="wrap_content"
+           android:layout_alignParentBottom="true"
+           android:layout_alignParentRight="true"
+           android:text="CANCEL"
+           android:id="@+id/cancel"
 
 
-    </RelativeLayout>
+           />
+
+
+   </RelativeLayout>
 
 </LinearLayout>
 

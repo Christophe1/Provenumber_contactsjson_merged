@@ -132,7 +132,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
         System.out.println("getView number is :" + i + "convertView is : " + convertView);
 
-        ViewHolder viewHolder = null;
+        ViewHolder holder = null;
 
         if (convertView == null) {
 
@@ -140,29 +140,34 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             LayoutInflater li = (LayoutInflater) _c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = li.inflate(R.layout.phone_inflate_listview, null);
 
-            viewHolder = new ViewHolder();
+            holder = new ViewHolder();
             //      So, for example, title is cast to the name id, in phone_inflate_listview,
             //      phone is cast to the id called no etc
-            viewHolder.title = (TextView) convertView.findViewById(R.id.name);
-            viewHolder.phone = (TextView) convertView.findViewById(R.id.no);
-            viewHolder.invite = (Button)  convertView.findViewById(R.id.btnInvite);
-            viewHolder.check = (CheckBox) convertView.findViewById(R.id.checkBoxContact);
+            holder.title = (TextView) convertView.findViewById(R.id.name);
+            holder.phone = (TextView) convertView.findViewById(R.id.no);
+            holder.invite = (Button)  convertView.findViewById(R.id.btnInvite);
+            holder.check = (CheckBox) convertView.findViewById(R.id.checkBoxContact);
+            // For the NewContact, which has int activity = 1
+            if(whichactivity == 1) {
+                //check the checkboxes by default, phoneContacts
+                holder.check.setChecked(true);
+            }
             //remember the state of the checkbox
-            viewHolder.check.setOnCheckedChangeListener((CompoundButton.OnCheckedChangeListener) _c);
+            holder.check.setOnCheckedChangeListener((CompoundButton.OnCheckedChangeListener) _c);
 
-            convertView.setTag(viewHolder);
+            convertView.setTag(holder);
 
         } else {
 
-            viewHolder = (ViewHolder) convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
             //viewHolder.check.setChecked(true);
         }
 //        store the holder with the view
         final SelectPhoneContact data = (SelectPhoneContact) arraylist.get(i);
         //in the listview for contacts, set the name
-        viewHolder.title.setText(data.getName());
+        holder.title.setText(data.getName());
         //in the listview for contacts, set the number
-        viewHolder.phone.setText(data.getPhone());
+        holder.phone.setText(data.getPhone());
         //viewHolder.check.setChecked(true);
         ////*********************
 
@@ -174,16 +179,18 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
             {
                 //if a matching contact, no need to show the Invite button
-                viewHolder.invite.setVisibility(View.GONE);
+                holder.invite.setVisibility(View.GONE);
                 System.out.println("it's a match: phoneNumberofContact is : " + data.getPhone());
-                //once a matching contact is found, no need to keep looping x number of time, move onto next contact
+               // check matching contacts by default
+                //viewHolder.check.setChecked(true);
+                //once a matching contact is found, no need to keep looping x number of times, move onto next contact
                 break;
 
             }
 
             else {
                 //if not a matching contact, no need to show the check box
-                viewHolder.check.setVisibility(View.GONE);
+                holder.check.setVisibility(View.GONE);
 
             }
 
@@ -201,11 +208,11 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                 //if a phone number is in our array of checked contacts
                 if (checkedContactsAsArrayList.contains(data.getPhone())) {
                     //check the box
-                    viewHolder.check.setChecked(true);
+                    holder.check.setChecked(true);
                 }
             }
             //disable the checkbox
-            viewHolder.check.setEnabled(false);
+            holder.check.setEnabled(false);
         }
 
 
@@ -223,7 +230,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
         //}
 
-        viewHolder.check.setTag(data);
+        holder.check.setTag(data);
 
 
         // Return the completed view to render on screen

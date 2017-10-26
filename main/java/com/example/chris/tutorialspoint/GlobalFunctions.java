@@ -6,6 +6,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -70,6 +71,31 @@ public class GlobalFunctions {
         System.out.println("the getcount is " + adapter.getCount());
         System.out.println("the height is " + par.height);
     }
+
+    //this is the function that clears all checkboxes in a viewgroup, the listview
+    public static void uncheckAllChildrenCascade(ViewGroup vg) {
+        for (int i = 0; i < vg.getChildCount(); i++) {
+            View v = vg.getChildAt(i);
+            if (v instanceof CheckBox) {
+                ((CheckBox) v).setChecked(false);
+            } else if (v instanceof ViewGroup) {
+                uncheckAllChildrenCascade((ViewGroup) v);
+            }
+        }
+    }
+
+    //this is the function that clears all checkboxes in a viewgroup, the listview
+    public static void checkAllChildrenCascade(ViewGroup vg) {
+        for (int i = 0; i < vg.getChildCount(); i++) {
+            View v = vg.getChildAt(i);
+            if (v instanceof CheckBox) {
+                ((CheckBox) v).setChecked(true);
+            } else if (v instanceof ViewGroup) {
+                checkAllChildrenCascade((ViewGroup) v);
+            }
+        }
+    }
+
 }
 
 
