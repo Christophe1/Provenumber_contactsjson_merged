@@ -48,14 +48,13 @@ import java.util.Set;
 import java.util.List;
 
 import static android.R.id.list;
-import static com.example.chris.tutorialspoint.GlobalFunctions.checkAllChildrenCascade;
-import static com.example.chris.tutorialspoint.GlobalFunctions.uncheckAllChildrenCascade;
 import static com.example.tutorialspoint.R.id.cancel;
 import static com.example.tutorialspoint.R.id.checkBoxContact;
 import static com.example.tutorialspoint.R.id.name;
+import static com.example.tutorialspoint.R.id.parent;
 
 
-public class NewContact extends AppCompatActivity implements android.widget.CompoundButton.OnCheckedChangeListener {
+public class NewContact extends AppCompatActivity {
     // this is the php file name where to save to.
     // we will post the category, name, phone, address, comment etc into Php and
     // create a new review_id
@@ -68,6 +67,7 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
     private ProgressDialog pDialog;
 
     Button save;
+    Button cancel;
 
     //thse are the fields in the xml
     private EditText categoryname;
@@ -85,7 +85,7 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
     ArrayList<SelectPhoneContact> selectPhoneContacts;
     ListView listView;
     SelectPhoneContactAdapter adapter;
-  //  Cursor cursor;
+    //  Cursor cursor;
     String CountryCode;
     String [] phoneNumberofContactStringArray;
     String [] phoneNameofContactStringArray;
@@ -94,11 +94,10 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
     ArrayList <String> allPhonesofContacts;
     ArrayList <String> allNamesofContacts;
     ArrayList<String> MatchingContactsAsArrayList;
-    String thestring;
+    String phoneNoofUserCheck;
     String phoneNumberofContact;
     String phoneNameofContact;
     CheckBox checkBoxforContact;
-    Button clearAllCheckBoxes;
     //*******************************
 
     @Override
@@ -115,9 +114,12 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
-        clearAllCheckBoxes = (Button) findViewById(R.id.clearAll);
-
         //  showPDialog();
+
+
+
+
+
 
 
         //*************************
@@ -127,7 +129,8 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
         //can post it and then get the user_id in php
         //get the phone number, stored in an XML file, when the user first registered the app
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        final String phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
+        phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
+        System.out.println("phone number of user is " + phoneNoofUserCheck);
 
         //get the CountryCode, stored in an XML file, when the user first registered the app
         //We need this for putting phone contacts into E164 and comparing against the app db
@@ -142,173 +145,35 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
         commentname = (EditText) findViewById(R.id.textViewComment);
 
         //for the checkbox
-        checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
+       // checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
+
+        //cancel button, testing save
+        cancel = (Button) findViewById(R.id.cancel);
 
 
 
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
 
-        save.setOnClickListener(new View.OnClickListener() {
+        saveContactButton();
 
-
-            public void onClick(View view) {
-                System.out.println("you clicked it, save");
-
-                pDialog = new ProgressDialog(NewContact.this);
-                // Showing progress dialog for the review being saved
-                pDialog.setMessage("Saving...");
-                pDialog.show();
-
-                try {
-
-                    // StringBuffer responseText = new StringBuffer();
-                    // responseText.append("The following were selected...\n");
-
-                    //for every contact in the selectPhoneContacts array list
-                    for (int i = 0; i < selectPhoneContacts.size(); i++) {
-
-                        SelectPhoneContact data = selectPhoneContacts.get(i);
-                        if (data.isSelected()) {
-                            //if a contact is checked
-                            // make each checked contact in selectPhoneContacts into an individual
-                            // JSON object called checkedContact
-                            JSONObject checkedContact = new JSONObject();
-                            // checkedContact will be of the form {"checkedContact":"+353123456"}
-                            checkedContact.put("checkedContact", data.getPhone());
-
-                            // Add checkedContact to checkedContacts jsonArray
-                            //The JSON Array will be of the form
-                            // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-                            //we will be posting this JSON Array to Php, below
-                            checkedContacts.put(checkedContact);
-                            System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
-                        }
-                    }
-                    System.out.println("checkedContacts JSON Array " + checkedContacts);
-
-                    //responseText, Toast.LENGTH_LONG).show();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                //When the user clicks save
-                //post phoneNoofUserCheck to NewContact.php and from that
-                //get the user_id in the user table, then post  category, name, phone etc...
-                //to the review table
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, NewContact_URL,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                //hide the dialogue box when page is saved
-                                //  pDialog.dismiss();
-                                //response, for testing purposes, is "$last_id"
-                                Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-
-                        }) {
-
-                    //post these details to the NewContact.php file and do
-                    //stuff with it
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<String, String>();
-                        //post the phone number to php to get the user_id in the user table
-                        params.put("phonenumberofuser", phoneNoofUserCheck);
-                        //the second value, categoryname.getText().toString() etc...
-                        // is the value we get from Android.
-                        //the key is "category", "name" etc.
-                        // When we see these in our php,  $_POST["category"],
-                        //put in the value from Android
-                        params.put("category", categoryname.getText().toString());
-                        params.put("name", namename.getText().toString());
-                        params.put("phone", phonename.getText().toString());
-                        params.put("address", addressname.getText().toString());
-                        params.put("comment", commentname.getText().toString());
-                        //this is the JSON Array of checked contacts
-                        //it will be of the form
-                        //[{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-                        params.put("checkedContacts", checkedContacts.toString());
-
-                        return params;
-
-                    }
-
-
-                };
-
-                // Adding request to request queue
-                AppController.getInstance().addToRequestQueue(stringRequest);
-
-                //when saved, go back to the PopulistoListView class and update with
-                //the new entry
-                Intent j = new Intent(NewContact.this, PopulistoListView.class);
-                j.putExtra("phonenumberofuser", phoneNoofUserCheck);
-
-                NewContact.this.startActivity(j);
-
-                finish();
-
-            }
-
-        });
         //scroll is the same speed, be it fast scroll or not
         // listView.setFastScrollEnabled(true);
 
 
         //listen for which radio button is clicked
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
             @Override
             public void onCheckedChanged(RadioGroup group, int SelectWho) {
-                // find which radio button is selected
-                if (SelectWho == R.id.Public) {
-                    Toast.makeText(NewContact.this, "Public", Toast.LENGTH_LONG).show();
-                } else if (SelectWho == R.id.PhoneContacts) {
-                    Toast.makeText(NewContact.this, "Phone Contacts", Toast.LENGTH_LONG).show();
-                }
+                // SelectWho is the RadioButton selected
+                Toast.makeText(NewContact.this, "Select Who", Toast.LENGTH_LONG).show();
+
+
             }
         });
-    }
 
-    //the is the 'Clear All' button, unchecks the checkboxes of
-    // matching contacts in NewContact
-    public void clearAllCheckBoxes(View v)
-    {
-        if (clearAllCheckBoxes.getText().toString().equals("Clear All"))
-        {
-            clearAllCheckBoxes.setText("Select All");
-
-            //call the function to uncheck all checkboxes in NewContact
-            uncheckAllChildrenCascade(listView);
-        }
-         else //(clearAllCheckBoxes.getText().toString().equals("Select All"));
-        {
-            clearAllCheckBoxes.setText("Clear All");
-            //call the function to uncheck all checkboxes in NewContact
-            checkAllChildrenCascade(listView);
-        }
-    }
-
-
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-        int pos = listView.getPositionForView(buttonView);
-       if(pos != listView.INVALID_POSITION) {
-            SelectPhoneContact data = selectPhoneContacts.get(pos);
-            data.setSelected(isChecked);
-
-            Toast.makeText(this, "Clicked on : " + data.getName() + isChecked,
-                    Toast.LENGTH_SHORT).show();
-        }
 
     }
 
@@ -320,10 +185,10 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
         @Override
         protected void onPreExecute() {
 
-                    pDialog = new ProgressDialog(NewContact.this);
-                    // Showing progress dialog before making http request
-                    pDialog.setMessage("Loading...");
-                    pDialog.show();
+            pDialog = new ProgressDialog(NewContact.this);
+            // Showing progress dialog before making http request
+            pDialog.setMessage("Loading...");
+            pDialog.show();
 
             super.onPreExecute();
         }
@@ -424,11 +289,21 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 
             adapter = new SelectPhoneContactAdapter(selectPhoneContacts, NewContact.this,1);
 
-            //checkBoxforContact.setChecked(true);
 
 
             listView.setAdapter(adapter);
 
+//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            SelectPhoneContact contact = (SelectPhoneContact) parent.getPositionForView(view);
+//                Toast.makeText(getApplicationContext(),"clicked on row"+ contact.getName(),Toast.LENGTH_SHORT).show();
+//                                                }
+//
+//
+//
+//
+//                                            });
             //we need to notify the listview that changes may have been made on
             //the background thread, doInBackground, like adding or deleting contacts,
             //and these changes need to be reflected visibly in the listview. It works
@@ -470,9 +345,7 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 //    }
 
 /*    public void makeinvisible(){
-
         checkBoxforContact.setVisibility(View.INVISIBLE);
-
     }*/
 
 //    public void showPDialog() {
@@ -496,10 +369,132 @@ public class NewContact extends AppCompatActivity implements android.widget.Comp
 //            };}
 
 
-public void hidePDialog() {
-    if (pDialog != null) {
-        pDialog.dismiss();
-        pDialog = null;
+    public void hidePDialog() {
+        if (pDialog != null) {
+            pDialog.dismiss();
+            pDialog = null;
+        }
     }
+
+    private void saveContactButton() {
+
+        save.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                System.out.println("you clicked it, save");
+
+                pDialog = new ProgressDialog(NewContact.this);
+                // Showing progress dialog for the review being saved
+                pDialog.setMessage("Saving...");
+                pDialog.show();
+
+                StringBuffer responseText = new StringBuffer();
+                responseText.append("The following were selected...\n");
+
+                try {
+                    System.out.println("we're in the try part");
+                    ArrayList<SelectPhoneContact> possiblecheckedContacts = selectPhoneContacts;
+
+                    //for every phone contact
+                    for(int i=0;i<possiblecheckedContacts.size();i++){
+
+                        SelectPhoneContact contact = possiblecheckedContacts.get(i);
+                        //if the contact is checked
+                        if(contact.isSelected()){
+                            // make each checked contact in selectPhoneContacts
+                            // into an individual
+                            // JSON object called checkedContact
+                            JSONObject checkedContact = new JSONObject();
+                            // checkedContact will be of the form {"checkedContact":"+353123456"}
+                            checkedContact.put("checkedContact", contact.getPhone());
+
+                            // Add checkedContact JSON Object to checkedContacts jsonArray
+                            //The JSON Array will be of the form
+                            // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                            //we will be posting this JSON Array to Php, further down below
+                            checkedContacts.put(checkedContact);
+                            System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+                        }
+                    }
+                    System.out.println("checkedContacts JSON Array " + checkedContacts);
+
+                    //responseText, Toast.LENGTH_LONG).show();
+
+                } catch (Exception e) {
+                    System.out.println("there's a problem here unfortunately");
+                    e.printStackTrace();
+                }
+
+
+                //When the user clicks save
+                //post phoneNoofUserCheck to NewContact.php and from that
+                //get the user_id in the user table, then post category, name, phone etc...
+                //to the review table
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, NewContact_URL,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //hide the dialogue box when page is saved
+                                //  pDialog.dismiss();
+                                //response, for testing purposes, is "$last_id"
+                                Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+
+                        }) {
+
+                    //post these details to the NewContact.php file and do
+                    //stuff with it
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<String, String>();
+                        //post the phone number to php to get the user_id in the user table
+                        params.put("phonenumberofuser", phoneNoofUserCheck);
+                        //the second value, categoryname.getText().toString() etc...
+                        // is the value we get from Android.
+                        //the key is "category", "name" etc.
+                        // When we see these in our php,  $_POST["category"],
+                        //put in the value from Android
+                        params.put("category", categoryname.getText().toString());
+                        params.put("name", namename.getText().toString());
+                        params.put("phone", phonename.getText().toString());
+                        params.put("address", addressname.getText().toString());
+                        params.put("comment", commentname.getText().toString());
+                        //this is the JSON Array of checked contacts
+                        //it will be of the form
+                        //[{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                        params.put("checkedContacts", checkedContacts.toString());
+
+                        return params;
+
+                    }
+
+
+                };
+
+                // Adding request to request queue
+                AppController.getInstance().addToRequestQueue(stringRequest);
+
+                //when saved, go back to the PopulistoListView class and update with
+                //the new entry
+                Intent j = new Intent(NewContact.this, PopulistoListView.class);
+                j.putExtra("phonenumberofuser", phoneNoofUserCheck);
+
+                NewContact.this.startActivity(j);
+
+                finish();
+
+
+        }
+    });
+
 }
+
+
 }

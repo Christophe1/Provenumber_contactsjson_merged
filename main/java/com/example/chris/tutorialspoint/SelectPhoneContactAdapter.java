@@ -1,5 +1,4 @@
 
-
 package com.example.chris.tutorialspoint;
 
 import android.annotation.TargetApi;
@@ -95,7 +94,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 //            System.out.println("SelectPhoneContactAdapter contactToCheck :" + contactToCheck);
 //
 //                                        }
-                                 }
+    }
 
     @Override
     public int getCount() {
@@ -126,9 +125,10 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     //CONVERTVIEW IS NOT RECYCLING VIEWS AS INTENDED BECAUSE OF THE
     //justifyListViewHeightBasedOnChildren FUNCTION IN NEWCONTACT
     @Override
-    public View getView(int i, View convertView, ViewGroup viewGroup) {
+    public View getView(final int i, View convertView, ViewGroup viewGroup) {
 
-
+        //this is the SelectPhoneContact object; consists of textboxes, buttons, checkbox
+        final SelectPhoneContact data = (SelectPhoneContact) arraylist.get(i);
 
         System.out.println("getView number is :" + i + "convertView is : " + convertView);
 
@@ -147,13 +147,35 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             holder.phone = (TextView) convertView.findViewById(R.id.no);
             holder.invite = (Button)  convertView.findViewById(R.id.btnInvite);
             holder.check = (CheckBox) convertView.findViewById(R.id.checkBoxContact);
-            // For the NewContact, which has int activity = 1
             if(whichactivity == 1) {
-                //check the checkboxes by default, phoneContacts
-                holder.check.setChecked(true);
+                holder.check.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CheckBox cb = (CheckBox) v ;
+                        SelectPhoneContact data = (SelectPhoneContact) cb.getTag();
+                        Toast.makeText(_c,
+                                "Clicked on Checkbox: " + data.getPhone() +
+                                        " is " + cb.isChecked(),
+                                Toast.LENGTH_LONG).show();
+                        data.setSelected(cb.isChecked());
+                      //  public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                       // if (data.setSelected(isChecked);) {
+                         //   Toast.makeText(_c, "True ", Toast.LENGTH_LONG).show();
+                       // }
+                       // else {
+                        //String phone_no = data.get
+                        //System.out.println("Custom adapter pos " + i);
+                       // Toast.makeText(_c, "phone number " + data.getPhone(), Toast.LENGTH_LONG).show();
+                           // Toast.makeText(_c, "False ", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
+           // if(whichactivity == 1) {
+               // check the checkboxes by default, phoneContacts
+             //   viewHolder.check.setChecked(true);
+           // }
             //remember the state of the checkbox
-            holder.check.setOnCheckedChangeListener((CompoundButton.OnCheckedChangeListener) _c);
+           // viewHolder.check.setOnCheckedChangeListener((CompoundButton.OnCheckedChangeListener) _c);
 
             convertView.setTag(holder);
 
@@ -162,8 +184,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
             //viewHolder.check.setChecked(true);
         }
-//        store the holder with the view
-        final SelectPhoneContact data = (SelectPhoneContact) arraylist.get(i);
+
         //in the listview for contacts, set the name
         holder.title.setText(data.getName());
         //in the listview for contacts, set the number
@@ -181,9 +202,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                 //if a matching contact, no need to show the Invite button
                 holder.invite.setVisibility(View.GONE);
                 System.out.println("it's a match: phoneNumberofContact is : " + data.getPhone());
-               // check matching contacts by default
-                //viewHolder.check.setChecked(true);
-                //once a matching contact is found, no need to keep looping x number of times, move onto next contact
+                //once a matching contact is found, no need to keep looping x number of time, move onto next contact
                 break;
 
             }
@@ -199,8 +218,10 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
 
 
-       // For the ViewContact, which has int activity = 0
+        // For the ViewContact, which has int activity = 0
         if(whichactivity == 0) {
+
+
             //This is for ViewContact, to display the contact the review is shared with
             //for every phone number in the checkedContactsAsArrayList array list...
             for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
@@ -226,17 +247,18 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
 
         //if (convertView != null) {
-            //make checkboxes in the listview ticked by default
+        //make checkboxes in the listview ticked by default
 
         //}
 
         holder.check.setTag(data);
 
-
-        // Return the completed view to render on screen
-
         return convertView;
 
+        }
+        // Return the completed view to render on screen
 
-}
-}
+
+
+    }
+

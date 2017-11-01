@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 /**
  * Created by Chris on 14/10/2017.
@@ -73,6 +74,7 @@ public class GlobalFunctions {
     }
 
     //this is the function that clears all checkboxes in a viewgroup, the listview
+    //would be better if it just cleared MatchingContacts rather than everything
     public static void uncheckAllChildrenCascade(ViewGroup vg) {
         for (int i = 0; i < vg.getChildCount(); i++) {
             View v = vg.getChildAt(i);
@@ -84,7 +86,9 @@ public class GlobalFunctions {
         }
     }
 
-    //this is the function that clears all checkboxes in a viewgroup, the listview
+    //this is the function that checks all checkboxes in a viewgroup, the listview
+    //would be better if it just checked MatchingContacts rather than everything
+
     public static void checkAllChildrenCascade(ViewGroup vg) {
         for (int i = 0; i < vg.getChildCount(); i++) {
             View v = vg.getChildAt(i);

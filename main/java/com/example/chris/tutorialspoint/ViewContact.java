@@ -87,7 +87,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     ListView listView;
     SelectPhoneContactAdapter adapter;
     CheckBox checkBoxforContact;
-    String checkedContacts;
+   // String checkedContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,10 +165,10 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             String comment = responseObject.getString("comment");
 
                             //checkedContacts is a String
-                            checkedContacts = responseObject.getString("checkedcontacts");
+                            String checkedContacts = responseObject.getString("checkedcontacts");
 
                             //assign a textview to each of the fields in the review
-                            categoryname.setText(category);
+                            categoryname.setText(category + "fff");
                             namename.setText(name);
                             phonename.setText(phone);
                             addressname.setText(address);
@@ -195,8 +195,23 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     checkedContactsAsArrayList = new ArrayList<String>(Arrays.asList(replace2.split(",")));
                     System.out.println("ViewContact1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
+                   // ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
 
-                  //  getPrefs();
+
+                    //This is for ViewContact, to display the contact the review is shared with
+                    //for every phone number in the checkedContactsAsArrayList array list...
+            /*        for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
+                        System.out.println("ViewContact: in the try " + checkedContactsAsArrayList);
+
+                        SelectPhoneContact contact = checkedContactsAsArrayList.get(number2);
+                        //if a phone number is in our array of checked contacts
+                        if (checkedContactsAsArrayList.contains(contact.getPhone())) {
+                            //check the box
+                            contact.setSelected(checkBoxforContact.isChecked());
+                            System.out.println("ViewContact:checked contacts in the array are " + contact.getPhone());
+                        }
+                    }*/
+
 
                     //we want to bring the checkedContactsAsArrayList array list to our SelectPhoneContactAdapter.
                     // It looks like Shared Preferences
@@ -209,6 +224,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     String jsoncheckedContactsAsArrayList = gsoncheckedContactsAsArrayList.toJson(checkedContactsAsArrayList);
                     editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
                     editorcheckedContactsAsArrayList.commit();
+                    System.out.println("ViewContact: jsoncheckedContactsAsArrayList is " + jsoncheckedContactsAsArrayList);
+
 
                     System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
@@ -537,7 +554,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
 
         loadContact.execute();
-
+//        adapter.notifyDataSetChanged();
          Toast.makeText(ViewContact.this, "resuming!", Toast.LENGTH_SHORT).show();
 
 
