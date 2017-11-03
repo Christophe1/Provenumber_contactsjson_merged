@@ -59,12 +59,18 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     String[] phoneNumberofContactStringArray;
     String ContactsString;
 
+    Intent intent;
+
     public SelectPhoneContactAdapter(final List<SelectPhoneContact> selectPhoneContacts, Context context, int activity) {
         theContactsList = selectPhoneContacts;
         _c = context;
         this.arraylist = new ArrayList<SelectPhoneContact>();
         this.arraylist.addAll(theContactsList);
         whichactivity = activity;
+        //Intent intent = ((ViewContact) context).getIntent();
+        //stock_list = intent.getStringArrayListExtra("stock_list");
+
+
 
         //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
         //with this we will put a checkbox beside the matching contacts
@@ -78,6 +84,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
         //we are fetching the array list checkedContactsAsArrayList, created in ViewContact.
         //with this we will put a tick in the checkboxes of contacts the review is being shared with
+/*
         SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(_c);
         Gson gsoncheckedContactsAsArrayList = new Gson();
         String jsoncheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.getString("checkedContactsAsArrayList", "");
@@ -85,6 +92,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         }.getType();
         checkedContactsAsArrayList = gsoncheckedContactsAsArrayList.fromJson(jsoncheckedContactsAsArrayList, type2);
         System.out.println("SelectPhoneContactAdapter checkedContactsAsArrayList :" + checkedContactsAsArrayList);
+*/
 
         //for every value in the checkedContactsAsArrayList array list, call it contactToCheck
         //We will be checking which values of contactToCheck are in the MatchingContactsAsArrayList,
@@ -147,7 +155,8 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             holder.phone = (TextView) convertView.findViewById(R.id.no);
             holder.invite = (Button)  convertView.findViewById(R.id.btnInvite);
             holder.check = (CheckBox) convertView.findViewById(R.id.checkBoxContact);
-            if(whichactivity == 1) {
+           // holder.check.setTag(arraylist.get(i).getPhone());
+           /* if(whichactivity == 1) {
                 holder.check.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -169,7 +178,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                            // Toast.makeText(_c, "False ", Toast.LENGTH_LONG).show();
                     }
                 });
-            }
+            }*/
            // if(whichactivity == 1) {
                // check the checkboxes by default, phoneContacts
              //   viewHolder.check.setChecked(true);
@@ -219,7 +228,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
 
         // For the ViewContact, which has int activity = 0
-        if(whichactivity == 0) {
+/*        if(whichactivity == 0) {
 
 
             //This is for ViewContact, to display the contact the review is shared with
@@ -234,7 +243,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             }
             //disable the checkbox
             holder.check.setEnabled(false);
-        }
+        }*/
 
 
 

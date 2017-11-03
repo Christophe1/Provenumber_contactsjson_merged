@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -99,6 +100,7 @@ public class NewContact extends AppCompatActivity {
     String phoneNameofContact;
     CheckBox checkBoxforContact;
     //*******************************
+    ArrayList<SelectPhoneContact> possiblecheckedContacts = selectPhoneContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,8 +176,53 @@ public class NewContact extends AppCompatActivity {
             }
         });
 
+        //Check All
+        Button btnCheckAll = (Button) findViewById(R.id.btnCheckAll);
+        btnCheckAll.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //loop through the Matching Contacts
+                int count = MatchingContactsAsArrayList.size();
+                for (int i = 0; i < count; i++) {
+                    LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                    CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                    checkbox.setChecked(true);
+                }}});
 
-    }
+        //Clear All
+        Button btnClearAll = (Button) findViewById(R.id.btnClearAll);
+        btnClearAll.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //loop through the Matching Contacts
+                int count = MatchingContactsAsArrayList.size();
+                for (int i = 0; i < count; i++) {
+                    LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                    CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                    checkbox.setChecked(false);
+                }}});
+
+        //Get item
+        Button btnGetItem = (Button) findViewById(R.id.btnGetItem);
+        btnGetItem.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //loop through the Matching Contacts
+                int count = MatchingContactsAsArrayList.size();
+
+                for (int i = 0; i < count; i++) {
+                    //for each Matching Contacts row in the listview
+                    LinearLayout itemLayout = (LinearLayout)listView.getChildAt(i); // Find by under LinearLayout
+                    //for each Matching Contacts checkbox in the listview
+                    CheckBox checkbox = (CheckBox)itemLayout.findViewById(R.id.checkBoxContact);
+                    //get the other data related to the selected contact - name and number
+                    SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
+                    //if that checkbox is checked, then get the phone number
+                    if(checkbox.isChecked()) {
+                        Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
+                        Toast.makeText(NewContact.this, data.getPhone(), Toast.LENGTH_LONG).show();
+                    }}}});
+
+
+
+                    }
 
 
 //******for the phone contacts in the listview
@@ -293,17 +340,6 @@ public class NewContact extends AppCompatActivity {
 
             listView.setAdapter(adapter);
 
-//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            SelectPhoneContact contact = (SelectPhoneContact) parent.getPositionForView(view);
-//                Toast.makeText(getApplicationContext(),"clicked on row"+ contact.getName(),Toast.LENGTH_SHORT).show();
-//                                                }
-//
-//
-//
-//
-//                                            });
             //we need to notify the listview that changes may have been made on
             //the background thread, doInBackground, like adding or deleting contacts,
             //and these changes need to be reflected visibly in the listview. It works
@@ -390,34 +426,43 @@ public class NewContact extends AppCompatActivity {
                 pDialog.setMessage("Saving...");
                 pDialog.show();
 
-                StringBuffer responseText = new StringBuffer();
-                responseText.append("The following were selected...\n");
+               // StringBuffer responseText = new StringBuffer();
+               // responseText.append("The following were selected...\n");
 
                 try {
                     System.out.println("we're in the try part");
-                    ArrayList<SelectPhoneContact> possiblecheckedContacts = selectPhoneContacts;
 
-                    //for every phone contact
-                    for(int i=0;i<possiblecheckedContacts.size();i++){
+                    //select from matching contacts
+                 int count = MatchingContactsAsArrayList.size();
 
-                        SelectPhoneContact contact = possiblecheckedContacts.get(i);
-                        //if the contact is checked
-                        if(contact.isSelected()){
-                            // make each checked contact in selectPhoneContacts
-                            // into an individual
-                            // JSON object called checkedContact
-                            JSONObject checkedContact = new JSONObject();
-                            // checkedContact will be of the form {"checkedContact":"+353123456"}
-                            checkedContact.put("checkedContact", contact.getPhone());
+                    for (int i = 0; i < count; i++) {
+                    //for each Matching Contacts row in the listview
+                    LinearLayout itemLayout = (LinearLayout)listView.getChildAt(i); // Find by under LinearLayout
+                    //for each Matching Contacts checkbox in the listview
+                    CheckBox checkbox = (CheckBox)itemLayout.findViewById(R.id.checkBoxContact);
+                    //get the other data related to the selected contact - name and number
+                    SelectPhoneContact contact = (SelectPhoneContact) checkbox.getTag();
+                        //if that checkbox is checked, then get the phone number
+                        if(checkbox.isChecked()) {
+                        Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
+                        Toast.makeText(NewContact.this, contact.getPhone(), Toast.LENGTH_LONG).show();
 
-                            // Add checkedContact JSON Object to checkedContacts jsonArray
-                            //The JSON Array will be of the form
-                            // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-                            //we will be posting this JSON Array to Php, further down below
-                            checkedContacts.put(checkedContact);
-                            System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
-                        }
-                    }
+                        // make each checked contact in selectPhoneContacts
+                        // into an individual
+                        // JSON object called checkedContact
+                        JSONObject checkedContact = new JSONObject();
+                        // checkedContact will be of the form {"checkedContact":"+353123456"}
+                        checkedContact.put("checkedContact", contact.getPhone());
+
+                        // Add checkedContact JSON Object to checkedContacts jsonArray
+                        //The JSON Array will be of the form
+                        // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                        //we will be posting this JSON Array to Php, further down below
+                        checkedContacts.put(checkedContact);
+                        System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+                                }
+                            }
+
                     System.out.println("checkedContacts JSON Array " + checkedContacts);
 
                     //responseText, Toast.LENGTH_LONG).show();
@@ -438,7 +483,7 @@ public class NewContact extends AppCompatActivity {
                             public void onResponse(String response) {
                                 //hide the dialogue box when page is saved
                                 //  pDialog.dismiss();
-                                //response, for testing purposes, is "$last_id"
+                                //response, this will show the checked numbers being posted
                                 Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
                             }
                         },

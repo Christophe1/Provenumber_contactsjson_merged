@@ -109,13 +109,41 @@
 
             </RadioGroup>
 
+            <RelativeLayout
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
             <Button
-                       android:layout_height="wrap_content"
-                       android:layout_width="wrap_content"
-                       android:text="Clear All"
-                       android:id="@+id/clearAll"
-                       android:onClick="clearAllCheckBoxes"
-                                                />
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="Check All"
+                android:id="@+id/btnCheckAll"/>
+                <!--android:onClick="clearAllCheckBoxes"-->
+
+                <Button
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/btnCheckAll"
+                    android:text="Clear All"
+                    android:id="@+id/btnClearAll"/>
+                <!--android:onClick="clearAllCheckBoxes"-->
+
+            <Button
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="Get item"
+                android:id="@+id/btnGetItem"
+                android:layout_toRightOf="@+id/btnClearAll"/>
+                <!--android:onClick="clearAllCheckBoxes"-->
+
+
+            </RelativeLayout>
 
 
            <ListView

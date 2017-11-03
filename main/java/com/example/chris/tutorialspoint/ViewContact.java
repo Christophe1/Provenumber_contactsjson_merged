@@ -195,6 +195,9 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     checkedContactsAsArrayList = new ArrayList<String>(Arrays.asList(replace2.split(",")));
                     System.out.println("ViewContact1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
+
+
+
                    // ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
 
 
@@ -434,7 +437,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             selectPhoneContacts.clear();
 
 
-
             //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
             //with this we will put all phone numbers of contacts on user's phone into our ListView in ViewContact activity
             SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
@@ -518,11 +520,46 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+
+            ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
+           // checkedContactsAsArrayList.add("+353858716422");
+            System.out.println("ViewContact3 checkedContactsAsArrayList :" + checkedContactsAsArrayList);
+
+            //This is for ViewContact, to display the contact the review is shared with
+            //for every phone number in the checkedContactsAsArrayList array list...
+            for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
+                SelectPhoneContact contact = checkedContactsAsArrayList.get(number2);
+
+                //if a phone number is in our array of checked contacts
+                if (checkedContactsAsArrayList.contains(contact.getPhone())) {
+                    //check the box
+                    contact.setSelected(true);
+                }
+            }
+
+
             adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this,0);
 
+            //Intent intent = getIntent();
+           // intent = intent.putStringArrayListExtra("checked_array", checkedContactsAsArrayList);
+            //startActivity(intent);
+            //break;
 
+            // For the ViewContact, which has int activity = 0
+           // if(whichactivity == 0) {
+
+
+                //disable the checkbox
+                //holder.check.setEnabled(false);
+         //   }
 
             listView.setAdapter(adapter);
+
+
+
+
+
+
 
             //we need to notify the listview that changes may have been made on
             //the background thread, doInBackground, like adding or deleting contacts,
