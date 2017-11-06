@@ -564,7 +564,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                                 MatchingContactsAsArrayList.add(obj.getString("phone_number"));
 
                             }
-                            System.out.println("NewContact: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+                            System.out.println("VerifyUserPhoneNumber: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
                             //save MatchingContactsAsArrayList into sharedpreferences so we can use it elsewhere
                             //in our project. It looks like Shared Preferences

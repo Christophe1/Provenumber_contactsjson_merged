@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -520,22 +521,35 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+            System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+            int count = checkedContactsAsArrayList.size();
 
-            ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
+            for (int i = 0; i < count; i++) {
+                //for each Matching Contacts row in the listview
+                LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                //for each Matching Contacts checkbox in the listview
+                CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                //get the other data related to the selected contact - name and number
+                SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
+                checkbox.setChecked(true);
+
+            }
+          //  ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
            // checkedContactsAsArrayList.add("+353858716422");
-            System.out.println("ViewContact3 checkedContactsAsArrayList :" + checkedContactsAsArrayList);
-
+         //   System.out.println("ViewContact3 checkedContactsAsArrayList :" + checkedContactsAsArrayList);
+         //   SelectPhoneContact data;
             //This is for ViewContact, to display the contact the review is shared with
             //for every phone number in the checkedContactsAsArrayList array list...
-            for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
-                SelectPhoneContact contact = checkedContactsAsArrayList.get(number2);
+           // for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
+           //     if (checkedContactsAsArrayList.contains(data.getPhone()))
+               // SelectPhoneContact contact = checkedContactsAsArrayList.get(number2);
 
                 //if a phone number is in our array of checked contacts
-                if (checkedContactsAsArrayList.contains(contact.getPhone())) {
+/*                if (checkedContactsAsArrayList.contains(contact.getPhone())) {
                     //check the box
                     contact.setSelected(true);
                 }
-            }
+            }*/
 
 
             adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this,0);

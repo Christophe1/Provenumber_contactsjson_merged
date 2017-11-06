@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ import java.util.Set;
 import java.util.List;
 
 import static android.R.id.list;
+import static com.example.tutorialspoint.R.id.btnClearAll;
 import static com.example.tutorialspoint.R.id.cancel;
 import static com.example.tutorialspoint.R.id.checkBoxContact;
 import static com.example.tutorialspoint.R.id.name;
@@ -77,6 +79,8 @@ public class NewContact extends AppCompatActivity {
     private EditText addressname;
     private EditText commentname;
 
+    //depends on radio button selected
+    int public_or_private;
     //*******************
 
     // Details in this comment are for the PHONE CONTACTS LISTVIEW, so
@@ -99,8 +103,9 @@ public class NewContact extends AppCompatActivity {
     String phoneNumberofContact;
     String phoneNameofContact;
     CheckBox checkBoxforContact;
+
     //*******************************
-    ArrayList<SelectPhoneContact> possiblecheckedContacts = selectPhoneContacts;
+   // ArrayList<SelectPhoneContact> possiblecheckedContacts = selectPhoneContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +162,11 @@ public class NewContact extends AppCompatActivity {
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
 
+        final Button btnCheckAll = (Button) findViewById(R.id.btnCheckAll);
+
+        final Button btnClearAll = (Button) findViewById(R.id.btnClearAll);
+
+
         saveContactButton();
 
         //scroll is the same speed, be it fast scroll or not
@@ -165,40 +175,87 @@ public class NewContact extends AppCompatActivity {
 
         //listen for which radio button is clicked
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+          radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
             public void onCheckedChanged(RadioGroup group, int SelectWho) {
-                // SelectWho is the RadioButton selected
-                Toast.makeText(NewContact.this, "Select Who", Toast.LENGTH_LONG).show();
+                // find which radio button is selected
+                if (SelectWho == R.id.Public) {
+                    Toast.makeText(NewContact.this, "Public", Toast.LENGTH_LONG).show();
+                    //call the function to check all checkboxes in NewContact
+                    //loop through the Matching Contacts
+                    int count = MatchingContactsAsArrayList.size();
+                    for (int i = 0; i < count; i++) {
+                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                        CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                        checkbox.setChecked(true);
+                        btnCheckAll.setText("Clear All");
+                    }
 
+            }}});
 
-            }
-        });
-
-        //Check All
-        Button btnCheckAll = (Button) findViewById(R.id.btnCheckAll);
+        //Select All / Clear All Button
+        //Check all or clear all checkboxes
         btnCheckAll.setOnClickListener(new View.OnClickListener() {
+
             public void onClick(View v) {
-                //loop through the Matching Contacts
+                boolean toCheck=true;
+
+                //THE CONDITION SHOULD BE OUTSIDE THE LOOP!
+
+                if(btnCheckAll.getText().toString().equalsIgnoreCase("Select All")) {
+                    toCheck=true;
+                    btnCheckAll.setText("Clear All");
+                }
+
+                else if (btnCheckAll.getText().toString().equalsIgnoreCase("Clear All")){
+                    toCheck=false;
+                    RadioButton rbu1 =(RadioButton)findViewById(R.id.PhoneContacts);
+                    rbu1.setChecked(true);
+                    btnCheckAll.setText("Select All");
+
+
+                }
+
                 int count = MatchingContactsAsArrayList.size();
                 for (int i = 0; i < count; i++) {
                     LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
                     CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
-                    checkbox.setChecked(true);
-                }}});
+                    checkbox.setChecked(toCheck);
+                }}
+        });
+
+
+
+
 
         //Clear All
-        Button btnClearAll = (Button) findViewById(R.id.btnClearAll);
-        btnClearAll.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        //Button btnClearAll = (Button) findViewById(R.id.btnClearAll);
+       // btnClearAll.setOnClickListener(new View.OnClickListener() {
+       //     public void onClick(View v) {
                 //loop through the Matching Contacts
-                int count = MatchingContactsAsArrayList.size();
+     /*           int count = MatchingContactsAsArrayList.size();
                 for (int i = 0; i < count; i++) {
                     LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
                     CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
                     checkbox.setChecked(false);
-                }}});
+
+                }*/
+
+/*
+                RadioGroup rg1 =(RadioGroup)findViewById(R.id.SharedWith);
+                if (rg1.getCheckedRadioButtonId()==R.id.Public){
+                    System.out.println("It is public");
+                    public_or_private =1;
+                }
+                if (rg1.getCheckedRadioButtonId()==R.id.PhoneContacts){
+                    System.out.println("It is private");
+                    public_or_private =0;
+                }
+
+            }});*/
+
+
 
         //Get item
         Button btnGetItem = (Button) findViewById(R.id.btnGetItem);
@@ -214,11 +271,13 @@ public class NewContact extends AppCompatActivity {
                     CheckBox checkbox = (CheckBox)itemLayout.findViewById(R.id.checkBoxContact);
                     //get the other data related to the selected contact - name and number
                     SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
+
+                    checkbox.setChecked(true);
                     //if that checkbox is checked, then get the phone number
-                    if(checkbox.isChecked()) {
-                        Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
-                        Toast.makeText(NewContact.this, data.getPhone(), Toast.LENGTH_LONG).show();
-                    }}}});
+                   // if(checkbox.isChecked()) {
+                    //    Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
+                    //    Toast.makeText(NewContact.this, data.getPhone(), Toast.LENGTH_LONG).show();
+                    }}});
 
 
 
@@ -426,13 +485,27 @@ public class NewContact extends AppCompatActivity {
                 pDialog.setMessage("Saving...");
                 pDialog.show();
 
-               // StringBuffer responseText = new StringBuffer();
-               // responseText.append("The following were selected...\n");
-
                 try {
                     System.out.println("we're in the try part");
 
+                    //if the public radio button is selected
+                    //then in the public_or_private column of the review
+                    //table put 1. The review is for public view.
+                    //otherwise, if PhoneContacts is selected,
+                    //put 0. The review is for private view.
+                    RadioGroup rg1 =(RadioGroup)findViewById(R.id.SharedWith);
+                    if (rg1.getCheckedRadioButtonId()==R.id.Public){
+                        System.out.println("It is public");
+                        public_or_private =1;
+                    }
+                    if (rg1.getCheckedRadioButtonId()==R.id.PhoneContacts){
+                        System.out.println("It is private");
+                        public_or_private =0;
+                    }
+
                     //select from matching contacts
+                    //the user will be able to check contacts who to share the review
+                    // with, from their matching contacts
                  int count = MatchingContactsAsArrayList.size();
 
                     for (int i = 0; i < count; i++) {
@@ -442,15 +515,17 @@ public class NewContact extends AppCompatActivity {
                     CheckBox checkbox = (CheckBox)itemLayout.findViewById(R.id.checkBoxContact);
                     //get the other data related to the selected contact - name and number
                     SelectPhoneContact contact = (SelectPhoneContact) checkbox.getTag();
-                        //if that checkbox is checked, then get the phone number
-                        if(checkbox.isChecked()) {
-                        Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
-                        Toast.makeText(NewContact.this, contact.getPhone(), Toast.LENGTH_LONG).show();
 
                         // make each checked contact in selectPhoneContacts
                         // into an individual
                         // JSON object called checkedContact
                         JSONObject checkedContact = new JSONObject();
+
+                        //if that checkbox is checked, then get the phone number
+                        if(checkbox.isChecked()) {
+                        Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
+                        Toast.makeText(NewContact.this, contact.getPhone(), Toast.LENGTH_LONG).show();
+
                         // checkedContact will be of the form {"checkedContact":"+353123456"}
                         checkedContact.put("checkedContact", contact.getPhone());
 
@@ -461,7 +536,18 @@ public class NewContact extends AppCompatActivity {
                         checkedContacts.put(checkedContact);
                         System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
                                 }
+
                             }
+
+                    //add phone owner's number to the checkedContacts JSON Array
+                    //new JSON Object called phoneOwner
+                    JSONObject phoneOwner = new JSONObject();
+
+                    //add the phone number
+                    phoneOwner.put("checkedContact", phoneNoofUserCheck);
+
+                    //add it to the Array
+                    checkedContacts.put(phoneOwner);
 
                     System.out.println("checkedContacts JSON Array " + checkedContacts);
 
@@ -511,6 +597,10 @@ public class NewContact extends AppCompatActivity {
                         params.put("phone", phonename.getText().toString());
                         params.put("address", addressname.getText().toString());
                         params.put("comment", commentname.getText().toString());
+
+                        params.put("public_or_private", String.valueOf(public_or_private));
+                        System.out.println("public_or_private is " + String.valueOf(public_or_private));
+
                         //this is the JSON Array of checked contacts
                         //it will be of the form
                         //[{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
