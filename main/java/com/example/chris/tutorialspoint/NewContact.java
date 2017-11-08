@@ -10,7 +10,9 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -50,14 +52,16 @@ import java.util.Set;
 import java.util.List;
 
 import static android.R.id.list;
+import static android.support.design.R.id.checkbox;
 import static com.example.tutorialspoint.R.id.btnClearAll;
 import static com.example.tutorialspoint.R.id.cancel;
 import static com.example.tutorialspoint.R.id.checkBoxContact;
 import static com.example.tutorialspoint.R.id.name;
 import static com.example.tutorialspoint.R.id.parent;
+import static com.example.tutorialspoint.R.menu.main;
 
 
-public class NewContact extends AppCompatActivity {
+public class NewContact extends AppCompatActivity  {
     // this is the php file name where to save to.
     // we will post the category, name, phone, address, comment etc into Php and
     // create a new review_id
@@ -102,7 +106,7 @@ public class NewContact extends AppCompatActivity {
     String phoneNoofUserCheck;
     String phoneNumberofContact;
     String phoneNameofContact;
-    CheckBox checkBoxforContact;
+    CheckBox checkBox2;
 
     //*******************************
    // ArrayList<SelectPhoneContact> possiblecheckedContacts = selectPhoneContacts;
@@ -122,11 +126,6 @@ public class NewContact extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
         //  showPDialog();
-
-
-
-
-
 
 
         //*************************
@@ -151,12 +150,18 @@ public class NewContact extends AppCompatActivity {
         addressname = (EditText) findViewById(R.id.textViewAddress);
         commentname = (EditText) findViewById(R.id.textViewComment);
 
-        //for the checkbox
-       // checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
+
+
+
+
+
+
+
+
+
 
         //cancel button, testing save
         cancel = (Button) findViewById(R.id.cancel);
-
 
 
         //for the save button ******************************
@@ -168,15 +173,14 @@ public class NewContact extends AppCompatActivity {
 
 
         saveContactButton();
-
+        addListenerToCheckBox();
         //scroll is the same speed, be it fast scroll or not
         // listView.setFastScrollEnabled(true);
 
 
         //listen for which radio button is clicked
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
-          radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int SelectWho) {
                 // find which radio button is selected
@@ -192,25 +196,25 @@ public class NewContact extends AppCompatActivity {
                         btnCheckAll.setText("Clear All");
                     }
 
-            }}});
+                }
+            }
+        });
 
         //Select All / Clear All Button
         //Check all or clear all checkboxes
         btnCheckAll.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                boolean toCheck=true;
+                boolean toCheck = true;
 
                 //THE CONDITION SHOULD BE OUTSIDE THE LOOP!
 
-                if(btnCheckAll.getText().toString().equalsIgnoreCase("Select All")) {
-                    toCheck=true;
+                if (btnCheckAll.getText().toString().equalsIgnoreCase("Select All")) {
+                    toCheck = true;
                     btnCheckAll.setText("Clear All");
-                }
-
-                else if (btnCheckAll.getText().toString().equalsIgnoreCase("Clear All")){
-                    toCheck=false;
-                    RadioButton rbu1 =(RadioButton)findViewById(R.id.PhoneContacts);
+                } else if (btnCheckAll.getText().toString().equalsIgnoreCase("Clear All")) {
+                    toCheck = false;
+                    RadioButton rbu1 = (RadioButton) findViewById(R.id.PhoneContacts);
                     rbu1.setChecked(true);
                     btnCheckAll.setText("Select All");
 
@@ -222,18 +226,16 @@ public class NewContact extends AppCompatActivity {
                     LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
                     CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
                     checkbox.setChecked(toCheck);
-                }}
+                }
+            }
         });
-
-
-
 
 
         //Clear All
         //Button btnClearAll = (Button) findViewById(R.id.btnClearAll);
-       // btnClearAll.setOnClickListener(new View.OnClickListener() {
-       //     public void onClick(View v) {
-                //loop through the Matching Contacts
+        // btnClearAll.setOnClickListener(new View.OnClickListener() {
+        //     public void onClick(View v) {
+        //loop through the Matching Contacts
      /*           int count = MatchingContactsAsArrayList.size();
                 for (int i = 0; i < count; i++) {
                     LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
@@ -254,6 +256,44 @@ public class NewContact extends AppCompatActivity {
                 }
 
             }});*/
+        //for the checkbox
+  /*      checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
+
+
+       // Button btnGetItem = (Button) findViewById(R.id.btnGetItem);
+        checkBoxforContact.setOnItemClickListener(
+                new View.OnClickListener() {
+            public void onClick(View v) {
+
+                int count = MatchingContactsAsArrayList.size();
+                for (int i = 0; i < count; i++) {
+                    LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                    CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);*/
+
+
+                    // public void addListenerToCheckBox() {
+
+
+                    //checkBoxforContact.setOnClickListener(
+                    //   new View.OnClickListener() {
+
+                    //@Override
+                    // public void onClick(View v) {
+                    //is chkIos checked?
+       /*             if (((checkbox) v).isChecked()) {
+                        //Case 1
+                        Toast.makeText(NewContact.this, "checked", Toast.LENGTH_LONG).show();
+                    } else
+                        //case 2
+                        Toast.makeText(NewContact.this, "not checked", Toast.LENGTH_LONG).show();
+
+
+                        }}
+                    });*/
+
+
+
+
 
 
 
@@ -266,23 +306,107 @@ public class NewContact extends AppCompatActivity {
 
                 for (int i = 0; i < count; i++) {
                     //for each Matching Contacts row in the listview
-                    LinearLayout itemLayout = (LinearLayout)listView.getChildAt(i); // Find by under LinearLayout
+                    LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
                     //for each Matching Contacts checkbox in the listview
-                    CheckBox checkbox = (CheckBox)itemLayout.findViewById(R.id.checkBoxContact);
+                    CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
                     //get the other data related to the selected contact - name and number
                     SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
 
-                    checkbox.setChecked(true);
+                    //checkbox.setChecked(true);
                     //if that checkbox is checked, then get the phone number
-                   // if(checkbox.isChecked()) {
-                    //    Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
-                    //    Toast.makeText(NewContact.this, data.getPhone(), Toast.LENGTH_LONG).show();
-                    }}});
+                    if (checkbox.isChecked()) {
+                        Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
+                        Toast.makeText(NewContact.this, data.getPhone(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
 
 
+/*        CheckBox checktheBox = (CheckBox) findViewById(R.id.checkBoxContact);
+
+        checktheBox.setOnClickListener(new View.OnClickListener()  {
+
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((checktheBox) v).isChecked()) {
+                    //Case 1
+                    Toast.makeText(NewContact.this, "checked", Toast.LENGTH_LONG).show();
+                }
+                else
+                //case 2
+                    Toast.makeText(NewContact.this, "not checked", Toast.LENGTH_LONG).show();
+
+
+            }
+        });*/
+
+
+/*        checkBoxforContact.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                Toast.makeText(getApplicationContext(), isChecked ? "ON" : "OFF",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+
+        });*/
+
+
+
+    }
+
+    public void addListenerToCheckBox() {
+        //for the checkbox
+
+        View view = null;
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        view = inflater.inflate(R.layout.phone_inflate_listview, null);
+        //main.addView(view);
+        checkBox2 = (CheckBox)findViewById(R.id.checkBoxContact);
+
+
+        checkBox2.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        CheckBox cb = (CheckBox) v ;
+                        SelectPhoneContact data = (SelectPhoneContact) cb.getTag();
+
+                        //loop through the Matching Contacts
+                        //  int count = MatchingContactsAsArrayList.size();
+
+                        //for (int i = 0; i < count; i++) {
+                        //for each Matching Contacts row in the listview
+                        //    LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                        //for each Matching Contacts checkbox in the listview
+                        //    CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                        //get the other data related to the selected contact - name and number
+                        //   SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
+
+                        Toast.makeText(NewContact.this,
+                                "Clicked on Checkbox: " + data.getPhone() +
+                                        " is " + cb.isChecked(),
+                                Toast.LENGTH_LONG).show();
+                        data.setSelected(cb.isChecked());
+
+                        //is chkIos checked?
+                        //  if (((data) v).isChecked()) {
+                        //Case 1
+                        //     Toast.makeText(NewContact.this, "checked", Toast.LENGTH_LONG).show();
+                        //  } else
+                        //case 2
+                        //      Toast.makeText(NewContact.this, "not checked", Toast.LENGTH_LONG).show();
 
                     }
+                    // }
+                });
 
+    }
 
 //******for the phone contacts in the listview
 
@@ -393,9 +517,12 @@ public class NewContact extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+
+
+
+
+
             adapter = new SelectPhoneContactAdapter(selectPhoneContacts, NewContact.this,1);
-
-
 
             listView.setAdapter(adapter);
 

@@ -156,7 +156,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             holder.invite = (Button)  convertView.findViewById(R.id.btnInvite);
             holder.check = (CheckBox) convertView.findViewById(R.id.checkBoxContact);
            // holder.check.setTag(arraylist.get(i).getPhone());
-           /* if(whichactivity == 1) {
+    /*        if(whichactivity == 1) {
                 holder.check.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

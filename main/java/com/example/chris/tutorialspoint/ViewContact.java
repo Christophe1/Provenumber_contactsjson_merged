@@ -169,7 +169,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             String checkedContacts = responseObject.getString("checkedcontacts");
 
                             //assign a textview to each of the fields in the review
-                            categoryname.setText(category + "fff");
+                            categoryname.setText(category);
                             namename.setText(name);
                             phonename.setText(phone);
                             addressname.setText(address);
@@ -183,9 +183,9 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
 
                     //convert the checkedContacts string to an arraylist
-                    //then we will pass this on to the SelectPhoneContactAdapter and put a tick
-                    //in the checkbox of the checkedContacts
-                    //First, take out the double quotes,
+                    //then we will search through the arraylist and check the associated
+                    //check boxes
+                    //First, take out the double quotes in the string,
                     String replace = checkedContacts.replace("\"","");
                     //take out the starting [
                     String replace1 = replace.replace("[","");
@@ -222,6 +222,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     //only works easily with strings so best way to bring the array list in Shared Preferences is with
                     //Gson.
                     //Here, we PUT the arraylist into the sharedPreferences
+/*
                     SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
                     SharedPreferences.Editor editorcheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.edit();
                     Gson gsoncheckedContactsAsArrayList = new Gson();
@@ -230,8 +231,30 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     editorcheckedContactsAsArrayList.commit();
                     System.out.println("ViewContact: jsoncheckedContactsAsArrayList is " + jsoncheckedContactsAsArrayList);
 
+*/
 
                     System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+
+                    //we are going to loop through the checked contacts and check the boxes
+                    //(we could just set them as checked without a loop but User Phone Number,
+                    //which isn't in the Contacts list, is problematic)
+                    int count = checkedContactsAsArrayList.size();
+
+                    for (int i = 0; i < count; i++) {
+                        //for each listview row, id it
+                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                        //associate it with a checkbox
+                        CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                        //get the other data related to that checkbox - name and number of contact
+                        SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
+                        //if the contact is in the checked array
+                        if (checkedContactsAsArrayList.contains(data.getPhone())) {
+                            //check the box
+                            checkbox.setChecked(true);
+                        }
+                    }
+
+
 
                             //System.out.println("heree it is" + jsonResponse);
                             //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
@@ -320,7 +343,18 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         //for the delete button
         delete = (Button) findViewById(R.id.delete);
 
+        //call the delete review function
+        deleteContactButton();
+
+
+
+    }
+
+    private void deleteContactButton() {
+
         delete.setOnClickListener(new View.OnClickListener() {
+
+            @Override
             public void onClick(View view) {
 
                 //add a dialogue box
@@ -332,9 +366,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
         });
 
+
     }
-
-
 
     //Are you sure you want to delete? dialogue
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -522,7 +555,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             super.onPostExecute(aVoid);
 
             System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
-            int count = checkedContactsAsArrayList.size();
+ /*           int count = checkedContactsAsArrayList.size();
 
             for (int i = 0; i < count; i++) {
                 //for each Matching Contacts row in the listview
@@ -533,7 +566,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                 SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
                 checkbox.setChecked(true);
 
-            }
+            }*/
           //  ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
            // checkedContactsAsArrayList.add("+353858716422");
          //   System.out.println("ViewContact3 checkedContactsAsArrayList :" + checkedContactsAsArrayList);
