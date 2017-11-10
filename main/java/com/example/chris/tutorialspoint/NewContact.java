@@ -4,24 +4,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -34,31 +26,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.tutorialspoint.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.List;
-
-import static android.R.id.list;
-import static android.support.design.R.id.checkbox;
-import static com.example.tutorialspoint.R.id.btnClearAll;
-import static com.example.tutorialspoint.R.id.cancel;
-import static com.example.tutorialspoint.R.id.checkBoxContact;
-import static com.example.tutorialspoint.R.id.name;
-import static com.example.tutorialspoint.R.id.parent;
-import static com.example.tutorialspoint.R.menu.main;
 
 
 public class NewContact extends AppCompatActivity  {
@@ -75,6 +50,10 @@ public class NewContact extends AppCompatActivity  {
 
     Button save;
     Button cancel;
+
+    //rbu1 is the radio button for Phone Contacts
+    RadioButton rbu1;
+
 
     //thse are the fields in the xml
     private EditText categoryname;
@@ -106,7 +85,8 @@ public class NewContact extends AppCompatActivity  {
     String phoneNoofUserCheck;
     String phoneNumberofContact;
     String phoneNameofContact;
-    CheckBox checkBox2;
+   // CheckBox checkBox2;
+
 
     //*******************************
    // ArrayList<SelectPhoneContact> possiblecheckedContacts = selectPhoneContacts;
@@ -158,7 +138,7 @@ public class NewContact extends AppCompatActivity  {
 
 
 
-
+        rbu1 = (RadioButton) findViewById(R.id.PhoneContacts);
 
         //cancel button, testing save
         cancel = (Button) findViewById(R.id.cancel);
@@ -173,7 +153,7 @@ public class NewContact extends AppCompatActivity  {
 
 
         saveContactButton();
-        addListenerToCheckBox();
+       // addListenerToCheckBox();
         //scroll is the same speed, be it fast scroll or not
         // listView.setFastScrollEnabled(true);
 
@@ -214,11 +194,8 @@ public class NewContact extends AppCompatActivity  {
                     btnCheckAll.setText("Clear All");
                 } else if (btnCheckAll.getText().toString().equalsIgnoreCase("Clear All")) {
                     toCheck = false;
-                    RadioButton rbu1 = (RadioButton) findViewById(R.id.PhoneContacts);
                     rbu1.setChecked(true);
                     btnCheckAll.setText("Select All");
-
-
                 }
 
                 int count = MatchingContactsAsArrayList.size();
@@ -359,34 +336,53 @@ public class NewContact extends AppCompatActivity  {
 
     }
 
-    public void addListenerToCheckBox() {
+/*    public void addListenerToCheckBox() {
         //for the checkbox
 
-        View view = null;
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.phone_inflate_listview, null);
-        //main.addView(view);
-        checkBox2 = (CheckBox)findViewById(R.id.checkBoxContact);
+            LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(R.layout.phone_inflate_listview, null);
+            final CheckBox checkBox2 = (CheckBox)view.findViewById(R.id.checkBoxContact);
+
+        checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {  @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if ( isChecked )
+                {
+                    // perform logic
+                    Toast.makeText(NewContact.this, "isChecked - " + checkBox2.isChecked(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });}*/
 
 
-        checkBox2.setOnClickListener(
+  /*          checkBox2.setOnClickListener(
+
+
                 new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
+
+                        Toast.makeText(NewContact.this, "checked", Toast.LENGTH_LONG).show();
+
+                    }});}*/
+
+                        /*
                         CheckBox cb = (CheckBox) v ;
                         SelectPhoneContact data = (SelectPhoneContact) cb.getTag();
 
                         //loop through the Matching Contacts
-                        //  int count = MatchingContactsAsArrayList.size();
+                          int count = MatchingContactsAsArrayList.size();
 
-                        //for (int i = 0; i < count; i++) {
+                        for (int i = 0; i < count; i++) {
                         //for each Matching Contacts row in the listview
-                        //    LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                            LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
                         //for each Matching Contacts checkbox in the listview
-                        //    CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                            CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
                         //get the other data related to the selected contact - name and number
-                        //   SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
+                          // SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
 
                         Toast.makeText(NewContact.this,
                                 "Clicked on Checkbox: " + data.getPhone() +
@@ -404,9 +400,9 @@ public class NewContact extends AppCompatActivity  {
 
                     }
                     // }
-                });
+                }
 
-    }
+    });}*/
 
 //******for the phone contacts in the listview
 
@@ -525,6 +521,13 @@ public class NewContact extends AppCompatActivity  {
             adapter = new SelectPhoneContactAdapter(selectPhoneContacts, NewContact.this,1);
 
             listView.setAdapter(adapter);
+
+            adapter.radioButtontoPhoneContacts = new changeRadioButtontoPhoneContacts() {
+                //@Override
+                public void update() {
+                    NewContact.this.rbu1.setChecked(true);
+                }
+            };
 
             //we need to notify the listview that changes may have been made on
             //the background thread, doInBackground, like adding or deleting contacts,
@@ -757,6 +760,11 @@ public class NewContact extends AppCompatActivity  {
     });
 
 }
-
+    //need this to change radio button to Phone Contacts,
+    //if a checkbox is changed to false
+    public abstract class changeRadioButtontoPhoneContacts
+    {
+        public void update() {}
+    }
 
 }

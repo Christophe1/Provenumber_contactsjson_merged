@@ -1,5 +1,7 @@
 package com.example.chris.tutorialspoint;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 import static android.R.attr.value;
@@ -37,7 +39,9 @@ public class SelectPhoneContact {
     }
 
     public void setSelected(boolean selected){
-        this.selected=selected;
+
+            this.selected = selected;
+
     }
 
 

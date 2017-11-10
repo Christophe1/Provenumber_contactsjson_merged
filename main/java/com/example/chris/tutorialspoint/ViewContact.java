@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -44,6 +45,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.tutorialspoint.R.layout.activity_view_contact;
+import static com.example.tutorialspoint.R.menu.main;
+
 public class ViewContact extends AppCompatActivity implements android.widget.CompoundButton.OnCheckedChangeListener  {
    //
     // this is the php file name where to select from.
@@ -66,6 +70,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     private TextView phonename;
     private TextView addressname;
     private TextView commentname;
+    private TextView publicorprivate;
 
     //for categoryid we only need the value, don't need to cast it to anything
     String categoryid;
@@ -93,7 +98,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_contact);
+        setContentView(activity_view_contact);
 
         //********************
         //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
@@ -130,11 +135,11 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
          phonename = (TextView) findViewById(R.id.textViewPhone);
          addressname = (TextView) findViewById(R.id.textViewAddress);
          commentname = (TextView) findViewById(R.id.textViewComment);
-
+         publicorprivate = (TextView) findViewById(R.id.textPublicorPrivate);
         // textphonenumber.setText(phoneNoofUser);
 
         //for the checkbox
-        checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
+       // checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
 
 
 
@@ -164,6 +169,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             String phone = responseObject.getString("phone");
                             String address = responseObject.getString("address");
                             String comment = responseObject.getString("comment");
+                            String public_or_private = responseObject.getString("publicorprivate");
 
                             //checkedContacts is a String
                             String checkedContacts = responseObject.getString("checkedcontacts");
@@ -174,6 +180,9 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             phonename.setText(phone);
                             addressname.setText(address);
                             commentname.setText(comment);
+                            publicorprivate.setText(public_or_private);
+                    //if(responseObject.getString("publicorprivate")==0)
+
 
                             //we don't need to assign category id text to a textbox
                             categoryid = category_id;
@@ -241,8 +250,15 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     int count = checkedContactsAsArrayList.size();
 
                     for (int i = 0; i < count; i++) {
+                     //    LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                     //     View view = layoutInflater.inflate(R.layout.phone_inflate_listview, null);
+                      //  listView.addView(view);
                         //for each listview row, id it
                         LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+
+                        //inflate the layout that contains the checkbox or else we can get errors
+                       // LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                      //  View view = layoutInflater.inflate(R.layout.phone_inflate_listview, null);
                         //associate it with a checkbox
                         CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
                         //get the other data related to that checkbox - name and number of contact
@@ -287,7 +303,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                //we are posting review_id into our ViewContact.php file,
+                //we are posting review_id into our ViewContact.php file, which
+                //we get when a row is clicked in populistolistview
                 //to get matching details
                 params.put("review_id", review_id);
                 return params;
@@ -311,8 +328,9 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                 //associated fields
                 Intent i = new Intent(ViewContact.this, EditContact.class);
                 i.putExtra("review_id",  review_id);
-                //"category" is the key, categoryname.getText() is the
-                // content to pass. etc....
+                //"category" is the key
+                // which we will be looking for from EditContact.class, categoryname.getText() is the
+                // content to pass from ViewContact.class etc....
                 i.putExtra("category",  categoryname.getText());
                 i.putExtra("category_id",  categoryid);
                 i.putExtra("name", namename.getText());
@@ -325,7 +343,12 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         });
 
 
-        //update the class with new values from EditView
+        //This is for when we are coming back to ViewContact class,
+        //after user has finished editing in EditContact
+        //get the "category" key,make it into a string called
+        //new_category_value, and then set it into the categoryname
+        //text box.
+        //update the class with all these new values from EditView
         Intent j = getIntent();
         String new_category_value = j.getStringExtra("category");
         String new_name_value = j.getStringExtra("name");

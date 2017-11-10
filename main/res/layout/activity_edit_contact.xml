@@ -55,6 +55,57 @@
         android:background="@drawable/back"
         android:textSize="30dp" />
 
+
+    <TextView
+        android:id="@+id/textViewSharedWith"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewComment"
+        android:text="Shared With: "
+        android:textSize="30dp" />
+
+    <RadioGroup
+        android:id="@+id/SharedWith"
+        android:layout_width="match_parent"
+        android:layout_below="@id/textViewSharedWith"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        >
+
+        <RadioButton
+            android:id="@+id/Public"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Public"
+            />
+
+        <!--             <LinearLayout
+                         android:id="@+id/selectPhoneContacts"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal" >-->
+
+        <RadioButton
+            android:id="@+id/PhoneContacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone Contacts"
+            android:checked="true"/>
+
+        <!--                   <Button
+                               android:layout_height="wrap_content"
+                               android:layout_width="wrap_content"
+                               android:text="Clear All"
+                               android:id="@+id/clearAll"/>
+
+                       </LinearLayout>-->
+
+
+    </RadioGroup>
+
+
+
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

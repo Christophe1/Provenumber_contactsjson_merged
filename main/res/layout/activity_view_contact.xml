@@ -69,10 +69,19 @@
     <TextView
         android:id="@+id/textViewSharedWith"
         android:layout_width="match_parent"
-        android:layout_height="0px"
+        android:layout_below="@id/textViewComment"
+        android:layout_height="wrap_content"
         android:text="Shared With: "
         android:layout_weight="1"
         android:textSize="30dp" />
+
+        <TextView
+            android:id="@+id/textPublicorPrivate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewComment"
+            android:layout_weight="1"
+            android:textSize="30dp" />
 
         <ListView
             android:id="@+id/listviewPhoneContacts"
