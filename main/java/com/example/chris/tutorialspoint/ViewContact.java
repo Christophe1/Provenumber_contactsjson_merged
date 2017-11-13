@@ -49,7 +49,7 @@ import static com.example.tutorialspoint.R.layout.activity_view_contact;
 import static com.example.tutorialspoint.R.menu.main;
 
 public class ViewContact extends AppCompatActivity implements android.widget.CompoundButton.OnCheckedChangeListener  {
-   //
+    //
     // this is the php file name where to select from.
     // we will post the review id of the review in ListView (in PopulistoListView.java) into Php and
     // get the matching details - Category, name, phone, address etc...
@@ -93,7 +93,11 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     ListView listView;
     SelectPhoneContactAdapter adapter;
     CheckBox checkBoxforContact;
-   // String checkedContacts;
+    // String checkedContacts;
+
+    //this is for public or private groups
+    //amonst other things, we'll be bringing the intent over to EditContact.
+    int pub_or_priv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,25 +134,25 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
 
         //cast a TextView for each of the field ids in activity_view_contact.xml
-         categoryname = (TextView) findViewById(R.id.textViewCategory);
-         namename = (TextView) findViewById(R.id.textViewName);
-         phonename = (TextView) findViewById(R.id.textViewPhone);
-         addressname = (TextView) findViewById(R.id.textViewAddress);
-         commentname = (TextView) findViewById(R.id.textViewComment);
-         publicorprivate = (TextView) findViewById(R.id.textPublicorPrivate);
+        categoryname = (TextView) findViewById(R.id.textViewCategory);
+        namename = (TextView) findViewById(R.id.textViewName);
+        phonename = (TextView) findViewById(R.id.textViewPhone);
+        addressname = (TextView) findViewById(R.id.textViewAddress);
+        commentname = (TextView) findViewById(R.id.textViewComment);
+        publicorprivate = (TextView) findViewById(R.id.textPublicorPrivate);
         // textphonenumber.setText(phoneNoofUser);
 
         //for the checkbox
-       // checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
+        // checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
 
 
 
-            //post the review_id that has been clicked in the ListView and send it to
+        //post the review_id that has been clicked in the ListView and send it to
         // viewContact.php and from that get other review details, like name, address etc..
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ViewContact_URL,
                 new Response.Listener<String>() {
 
-            @Override
+                    @Override
                     public void onResponse(String response) {
 
                         //toast the response of ViewContact.php, which has been converted to a
@@ -157,7 +161,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                         System.out.println("ViewContact: And the response is " + response);
 
 
-                try {
+                        try {
 
                             // Parsing json object response which we receive from PHP
                             // make a JSONObject called responseObject, break it down into
@@ -180,39 +184,47 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             phonename.setText(phone);
                             addressname.setText(address);
                             commentname.setText(comment);
-                            publicorprivate.setText(public_or_private);
-                    //if(responseObject.getString("publicorprivate")==0)
+
+                            //convert public_or_private to an integer
+                            pub_or_priv = Integer.parseInt(public_or_private);
+                            //If pub_or_priv in mySQL is 0 then
+                            if(pub_or_priv==0)
+                                publicorprivate.setText("Phone Contacts");
+                             //If pub_or_priv in mySQL is 1 then
+                            else
+                                publicorprivate.setText("Public");
+                            System.out.println("ViewContact: public or private value :" + pub_or_priv);
 
 
                             //we don't need to assign category id text to a textbox
                             categoryid = category_id;
 
-                    System.out.println("here are the checkedcontacts" + checkedContacts);
-                  //  Toast.makeText(ViewContact.this, "here are the checkedcontacts" + checkedContacts, Toast.LENGTH_SHORT).show();
+                            System.out.println("here are the checkedcontacts" + checkedContacts);
+                            //  Toast.makeText(ViewContact.this, "here are the checkedcontacts" + checkedContacts, Toast.LENGTH_SHORT).show();
 
 
-                    //convert the checkedContacts string to an arraylist
-                    //then we will search through the arraylist and check the associated
-                    //check boxes
-                    //First, take out the double quotes in the string,
-                    String replace = checkedContacts.replace("\"","");
-                    //take out the starting [
-                    String replace1 = replace.replace("[","");
-                    //and then the ending ]
-                    String replace2 = replace1.replace("]","");
-                    System.out.println("here is replace2 "+ replace2);
-                    //convert the checkedContacts string to an arraylist
-                    checkedContactsAsArrayList = new ArrayList<String>(Arrays.asList(replace2.split(",")));
-                    System.out.println("ViewContact1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+                            //convert the checkedContacts string to an arraylist
+                            //then we will search through the arraylist and check the associated
+                            //check boxes
+                            //First, take out the double quotes in the string,
+                            String replace = checkedContacts.replace("\"","");
+                            //take out the starting [
+                            String replace1 = replace.replace("[","");
+                            //and then the ending ]
+                            String replace2 = replace1.replace("]","");
+                            System.out.println("here is replace2 "+ replace2);
+                            //convert the checkedContacts string to an arraylist
+                            checkedContactsAsArrayList = new ArrayList<String>(Arrays.asList(replace2.split(",")));
+                            System.out.println("ViewContact1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
 
 
 
-                   // ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
+                            // ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
 
 
-                    //This is for ViewContact, to display the contact the review is shared with
-                    //for every phone number in the checkedContactsAsArrayList array list...
+                            //This is for ViewContact, to display the contact the review is shared with
+                            //for every phone number in the checkedContactsAsArrayList array list...
             /*        for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
                         System.out.println("ViewContact: in the try " + checkedContactsAsArrayList);
 
@@ -226,11 +238,11 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     }*/
 
 
-                    //we want to bring the checkedContactsAsArrayList array list to our SelectPhoneContactAdapter.
-                    // It looks like Shared Preferences
-                    //only works easily with strings so best way to bring the array list in Shared Preferences is with
-                    //Gson.
-                    //Here, we PUT the arraylist into the sharedPreferences
+                            //we want to bring the checkedContactsAsArrayList array list to our SelectPhoneContactAdapter.
+                            // It looks like Shared Preferences
+                            //only works easily with strings so best way to bring the array list in Shared Preferences is with
+                            //Gson.
+                            //Here, we PUT the arraylist into the sharedPreferences
 /*
                     SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
                     SharedPreferences.Editor editorcheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.edit();
@@ -242,33 +254,37 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
 */
 
-                    System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+                            System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
-                    //we are going to loop through the checked contacts and check the boxes
-                    //(we could just set them as checked without a loop but User Phone Number,
-                    //which isn't in the Contacts list, is problematic)
-                    int count = checkedContactsAsArrayList.size();
+                            //we are going to loop through the checked contacts and check the boxes
+                            //(we could just set them as checked without a loop but User Phone Number,
+                            //which isn't in the Contacts list, is problematic)
+                            //int count = checkedContactsAsArrayList.size();
 
-                    for (int i = 0; i < count; i++) {
-                     //    LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                     //     View view = layoutInflater.inflate(R.layout.phone_inflate_listview, null);
-                      //  listView.addView(view);
-                        //for each listview row, id it
-                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                            int num_of_visible_view=listView.getLastVisiblePosition() -
+                                    listView.getFirstVisiblePosition();
 
-                        //inflate the layout that contains the checkbox or else we can get errors
-                       // LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                      //  View view = layoutInflater.inflate(R.layout.phone_inflate_listview, null);
-                        //associate it with a checkbox
-                        CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
-                        //get the other data related to that checkbox - name and number of contact
-                        SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
-                        //if the contact is in the checked array
-                        if (checkedContactsAsArrayList.contains(data.getPhone())) {
-                            //check the box
-                            checkbox.setChecked(true);
-                        }
-                    }
+                            for (int i = 0; i < num_of_visible_view; i++) {
+                                //for (int i = 0; i < count; i++) {
+
+                                LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+
+                                //inflate the layout that contains the checkbox or else we can get errors
+                             //   LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                              //  View view = itemLayout.inflate(R.layout.phone_inflate_listview, null);
+                                //associate it with a checkbox
+                                CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+
+                                //get the other data related to that checkbox - name and number of contact
+                                SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
+                                //if the contact is in the checked array
+                                if (checkedContactsAsArrayList.contains(data.getPhone())) {
+
+                                    //check the box, make it disabled
+                                    checkbox.setChecked(true);
+                                    checkbox.setEnabled(false);
+                                }
+                            }
 
 
 
@@ -287,8 +303,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
                     }
 
-                        // System.out.println("size of reviewlist " + reviewList.size());
-                        //System.out.println("heree it is" + reviewList.toString());
+                    // System.out.println("size of reviewlist " + reviewList.size());
+                    //System.out.println("heree it is" + reviewList.toString());
 
 
                 },
@@ -324,7 +340,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         edit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 System.out.println("you clicked it, edit");
-            //open the Edit Activity, pass over the review_id so we can get that reviews
+                //open the Edit Activity, pass over the review_id so we can get that reviews
                 //associated fields
                 Intent i = new Intent(ViewContact.this, EditContact.class);
                 i.putExtra("review_id",  review_id);
@@ -337,6 +353,11 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                 i.putExtra("phone",  phonename.getText());
                 i.putExtra("address",  addressname.getText());
                 i.putExtra("comment",  commentname.getText());
+
+                //bring the pub_or_private value to EditContact.class, for the radio button to be
+                // appropriately checked
+                i.putExtra("publicorprivate",  pub_or_priv);
+
                 startActivity(i);
 
             }
@@ -590,17 +611,17 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                 checkbox.setChecked(true);
 
             }*/
-          //  ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
-           // checkedContactsAsArrayList.add("+353858716422");
-         //   System.out.println("ViewContact3 checkedContactsAsArrayList :" + checkedContactsAsArrayList);
-         //   SelectPhoneContact data;
+            //  ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
+            // checkedContactsAsArrayList.add("+353858716422");
+            //   System.out.println("ViewContact3 checkedContactsAsArrayList :" + checkedContactsAsArrayList);
+            //   SelectPhoneContact data;
             //This is for ViewContact, to display the contact the review is shared with
             //for every phone number in the checkedContactsAsArrayList array list...
-           // for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
-           //     if (checkedContactsAsArrayList.contains(data.getPhone()))
-               // SelectPhoneContact contact = checkedContactsAsArrayList.get(number2);
+            // for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
+            //     if (checkedContactsAsArrayList.contains(data.getPhone()))
+            // SelectPhoneContact contact = checkedContactsAsArrayList.get(number2);
 
-                //if a phone number is in our array of checked contacts
+            //if a phone number is in our array of checked contacts
 /*                if (checkedContactsAsArrayList.contains(contact.getPhone())) {
                     //check the box
                     contact.setSelected(true);
@@ -611,17 +632,17 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this,0);
 
             //Intent intent = getIntent();
-           // intent = intent.putStringArrayListExtra("checked_array", checkedContactsAsArrayList);
+            // intent = intent.putStringArrayListExtra("checked_array", checkedContactsAsArrayList);
             //startActivity(intent);
             //break;
 
             // For the ViewContact, which has int activity = 0
-           // if(whichactivity == 0) {
+            // if(whichactivity == 0) {
 
 
-                //disable the checkbox
-                //holder.check.setEnabled(false);
-         //   }
+            //disable the checkbox
+            //holder.check.setEnabled(false);
+            //   }
 
             listView.setAdapter(adapter);
 
@@ -655,14 +676,14 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
         super.onResume();
 
-       // getPrefs();
+        // getPrefs();
 
         ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
 
 
         loadContact.execute();
 //        adapter.notifyDataSetChanged();
-         Toast.makeText(ViewContact.this, "resuming!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ViewContact.this, "resuming!", Toast.LENGTH_SHORT).show();
 
 
     }
@@ -683,6 +704,16 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
 
 
+    }
+
+    //for the backbutton, remove the saved checkbox state
+    //@Override
+    public void onBackPressed() {
+        // your code.
+        Integer i = null;
+        SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
+        preferences.edit().clear().commit();
+        finish();
     }
 
 

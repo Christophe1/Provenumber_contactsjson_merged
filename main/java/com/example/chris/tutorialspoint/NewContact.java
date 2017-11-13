@@ -767,4 +767,15 @@ public class NewContact extends AppCompatActivity  {
         public void update() {}
     }
 
+    //for the backbutton, remove the saved checkbox state
+    //@Override
+    public void onBackPressed() {
+        // your code.
+        Integer i = null;
+        SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
+        preferences.edit().clear().commit();
+        finish();
+    }
+
+
 }

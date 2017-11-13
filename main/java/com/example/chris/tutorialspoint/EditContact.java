@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -35,6 +36,7 @@ public class EditContact extends AppCompatActivity {
     String review_id;
 
     Button save;
+    Button cancel;
 
     private EditText categoryname;
     private EditText namename;
@@ -45,10 +47,20 @@ public class EditContact extends AppCompatActivity {
     //string for getting intent info from ContactView class
     String categoryid, category, name, phone, address, comment;
 
+    //String for getting intent info for the check radio button, will be 0 or 1
+    int pub_or_priv;
+
+    //for the radio buttons
+    RadioButton rbu1;
+    RadioButton rbu2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_contact);
+
+        rbu1 = (RadioButton) findViewById(R.id.PhoneContacts);
+        rbu2 = (RadioButton) findViewById(R.id.Public);
 
         //(getting user_id a different way)
         //first of all we want to get the phone number of the current user so we
@@ -57,6 +69,7 @@ public class EditContact extends AppCompatActivity {
         //SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         //final String phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
 
+
         //cast an EditText for each of the field ids in activity_edit_contact.xmlxml
         //can be edited and changed by the user
         categoryname = (EditText) findViewById(R.id.textViewCategory);
@@ -64,6 +77,8 @@ public class EditContact extends AppCompatActivity {
         phonename = (EditText) findViewById(R.id.textViewPhone);
         addressname = (EditText) findViewById(R.id.textViewAddress);
         commentname = (EditText) findViewById(R.id.textViewComment);
+
+
 
         //get the intent we created in ViewContact class, to bring the details over
         //to this class
@@ -79,6 +94,10 @@ public class EditContact extends AppCompatActivity {
         address = i.getStringExtra("address");
         comment = i.getStringExtra("comment");
 
+        pub_or_priv = i.getIntExtra("publicorprivate",pub_or_priv);
+        System.out.println("EditContact: public or private value :" + pub_or_priv);
+
+
         //set the EditText to display the pair value of key "category"
         categoryname.setText(category);
         //etc
@@ -89,6 +108,14 @@ public class EditContact extends AppCompatActivity {
 
         //make the cursor appear at the end of the categoryname
         categoryname.setSelection(categoryname.getText().length());
+
+        //If pub_or_priv in mySQL is 0 then
+        if(pub_or_priv==0)
+        //set the radio button to phone contacts
+            rbu1.setChecked(true);
+        else
+        //otherwise make it public
+            rbu2.setChecked(true);
 
 
         //for the save button ******************************
@@ -165,6 +192,28 @@ public class EditContact extends AppCompatActivity {
             }
 
 
+        });
+
+
+        //*****************************************
+        //for the cancel button
+        cancel = (Button) findViewById(R.id.cancel);
+
+        //call the cancel function
+        cancelButton();
+
+
+    }
+
+    private void cancelButton() {
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+        finish();
+            }
         });
     }
 
