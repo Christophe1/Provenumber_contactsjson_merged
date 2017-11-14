@@ -242,17 +242,23 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             // It looks like Shared Preferences
                             //only works easily with strings so best way to bring the array list in Shared Preferences is with
                             //Gson.
-                            //Here, we PUT the arraylist into the sharedPreferences
-/*
+                            //Here, we PUT the arraylist into the sharedPreferences/*
                     SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
                     SharedPreferences.Editor editorcheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.edit();
                     Gson gsoncheckedContactsAsArrayList = new Gson();
                     String jsoncheckedContactsAsArrayList = gsoncheckedContactsAsArrayList.toJson(checkedContactsAsArrayList);
                     editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
                     editorcheckedContactsAsArrayList.commit();
+
+                     //load the asyncTask straight after the checked Arraylist has been created
+                            //so the acustom adapter will pick up the changes
+                     ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+
+                            loadContact.execute();
+
                     System.out.println("ViewContact: jsoncheckedContactsAsArrayList is " + jsoncheckedContactsAsArrayList);
 
-*/
+
 
                             System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 

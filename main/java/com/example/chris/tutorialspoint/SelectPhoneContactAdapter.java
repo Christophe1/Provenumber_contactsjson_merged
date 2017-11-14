@@ -71,9 +71,9 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
         System.out.println("SelectPhoneContactAdapter MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
+
         //we are fetching the array list checkedContactsAsArrayList, created in ViewContact.
         //with this we will put a tick in the checkboxes of contacts the review is being shared with
-/*
         SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(_c);
         Gson gsoncheckedContactsAsArrayList = new Gson();
         String jsoncheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.getString("checkedContactsAsArrayList", "");
@@ -81,7 +81,8 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         }.getType();
         checkedContactsAsArrayList = gsoncheckedContactsAsArrayList.fromJson(jsoncheckedContactsAsArrayList, type2);
         System.out.println("SelectPhoneContactAdapter checkedContactsAsArrayList :" + checkedContactsAsArrayList);
-*/
+
+
 
         //for every value in the checkedContactsAsArrayList array list, call it contactToCheck
         //We will be checking which values of contactToCheck are in the MatchingContactsAsArrayList,
@@ -124,6 +125,10 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     @Override
     public View getView(final int i, View convertView, ViewGroup viewGroup) {
 
+
+
+
+
         //initialize a sharedpreferences file called "sharedPrefs", which will be private, for our app only
         //we are doing this so the checkbox state in the listview will be saved, so user can come back to it if the phone sleeps
         SharedPreferences sharedPrefs = _c.getSharedPreferences("sharedPrefsFile", Context.MODE_PRIVATE);
@@ -136,6 +141,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
         ViewHolder holder = null;
 
+
         if (convertView == null) {
 
             //if there is nothing there (if it's null) inflate the view with the layout
@@ -143,6 +149,8 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             convertView = li.inflate(R.layout.phone_inflate_listview, null);
 
             holder = new ViewHolder();
+
+
             //So, for example, title is cast to the name id, in phone_inflate_listview,
             //phone is cast to the id called no etc
             holder.title = (TextView) convertView.findViewById(R.id.name);
@@ -282,7 +290,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
 
         // For the ViewContact, which has int activity = 0
-/*        if(whichactivity == 0) {
+        if(whichactivity == 0) {
 
 
             //This is for ViewContact, to display the contact the review is shared with
@@ -297,7 +305,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             }
             //disable the checkbox
             holder.check.setEnabled(false);
-        }*/
+        }
 
 
 
