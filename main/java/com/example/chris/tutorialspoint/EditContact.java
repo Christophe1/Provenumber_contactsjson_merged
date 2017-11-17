@@ -5,12 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -18,7 +23,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.tutorialspoint.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,12 +40,27 @@ public class EditContact extends AppCompatActivity {
 
     private ProgressDialog pDialog;
 
+    //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
+    ArrayList<SelectPhoneContact> selectPhoneContacts;
+    //an arraylist of all contacts phone numbers, which we will get from VerifyUserPhoneNumber
+    ArrayList <String> allPhonesofContacts;
+    //an arraylist of all contacts names, which we will get from VerifyUserPhoneNumber
+    ArrayList <String> allNamesofContacts;
+    String MatchingContactsAsString;
+    ArrayList<String> MatchingContactsAsArrayList;
+    ArrayList<String> checkedContactsAsArrayList;
+    String phoneNumberofContact;
+    String phoneNameofContact;
+    ListView listView;
+    SelectPhoneContactAdapter adapter;
+
 
     //this is the review of the current activity
     String review_id;
 
     Button save;
     Button cancel;
+
 
     private EditText categoryname;
     private EditText namename;
@@ -54,13 +78,25 @@ public class EditContact extends AppCompatActivity {
     RadioButton rbu1;
     RadioButton rbu2;
 
+    //depends on radio button selected
+    int public_or_private;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_contact);
 
+        //********************
+        //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
+        selectPhoneContacts = new ArrayList<SelectPhoneContact>();
+
+        listView = (ListView) findViewById(R.id.listviewPhoneContacts);
+
         rbu1 = (RadioButton) findViewById(R.id.PhoneContacts);
         rbu2 = (RadioButton) findViewById(R.id.Public);
+
+        final Button btnCheckAll = (Button) findViewById(R.id.btnCheckAll);
+
 
         //(getting user_id a different way)
         //first of all we want to get the phone number of the current user so we
@@ -118,6 +154,59 @@ public class EditContact extends AppCompatActivity {
             rbu2.setChecked(true);
 
 
+        //If Public radio button is selected then check all the boxes
+        //and change the button text to 'Clear All'
+        //listen for which radio button is clicked
+         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int SelectWho) {
+                // find which radio button is selected
+                if (SelectWho == R.id.Public) {
+                    Toast.makeText(EditContact.this, "Public", Toast.LENGTH_LONG).show();
+                    //call the function to check all checkboxes in NewContact
+                    //loop through the Matching Contacts
+                    int count = MatchingContactsAsArrayList.size();
+                    for (int i = 0; i < count; i++) {
+                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                        CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                        checkbox.setChecked(true);
+                        btnCheckAll.setText("Clear All");
+                    }
+
+                }
+            }
+        });
+
+        //Select All / Clear All Button
+        //Check all or clear all checkboxes
+        btnCheckAll.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                boolean toCheck = true;
+
+                //THE CONDITION SHOULD BE OUTSIDE THE LOOP!
+
+                if (btnCheckAll.getText().toString().equalsIgnoreCase("Select All")) {
+                    toCheck = true;
+                    btnCheckAll.setText("Clear All");
+                } else if (btnCheckAll.getText().toString().equalsIgnoreCase("Clear All")) {
+                    toCheck = false;
+                    rbu1.setChecked(true);
+                    btnCheckAll.setText("Select All");
+                }
+
+                int count = MatchingContactsAsArrayList.size();
+                for (int i = 0; i < count; i++) {
+                    LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                    CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                    checkbox.setChecked(toCheck);
+                }
+            }
+        });
+
+
+
         //for the save button ******************************
         save = (Button) findViewById(R.id.save);
 
@@ -153,7 +242,7 @@ public class EditContact extends AppCompatActivity {
 
                     protected Map<String, String> getParams() {
                         Map<String, String> params = new HashMap<String, String>();
-                        //post the phone number to php get the user_id in the user table
+                        //post the phone number to php to get the user_id in the user table
                         //params.put("phonenumberofuser", phoneNoofUserCheck);
                         params.put("review_id", review_id);
                         //the second value, categoryname.getText().toString() etc...
@@ -218,29 +307,184 @@ public class EditContact extends AppCompatActivity {
     }
 
 
+    //******for the phone contacts in the listview
+
     // Load data in background
     class LoadContact extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
-
             super.onPreExecute();
         }
-
 
         @Override
         protected Void doInBackground(Void... voids) {
 
+            //we want to delete the old selectContacts from the listview when the Activity loads
+            //because it may need to be updated and we want the user to see the updated listview,
+            //like if the user adds new names and numbers to their phone contacts.
+            selectPhoneContacts.clear();
+
+
+            //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
+            //with this we will put all phone numbers of contacts on user's phone into our ListView in ViewContact activity
+            SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+            Gson gson = new Gson();
+            String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
+            Type type = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            allPhonesofContacts = gson.fromJson(json, type);
+            System.out.println("ViewContact: allPhonesofContacts :" + allPhonesofContacts);
+
+            //we are fetching the array list allNamesofContacts, created in VerifyUserPhoneNumber.
+            //with this we will put all phone names of contacts on user's phone into our ListView in ViewContact activity
+            SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+            Gson gsonNames = new Gson();
+            String jsonNames = sharedPreferencesallNamesofContacts.getString("allNamesofContacts", "");
+            Type typeNames = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            allNamesofContacts = gsonNames.fromJson(jsonNames, typeNames);
+            System.out.println("ViewContact: allNamesofContacts :" + allNamesofContacts);
+
+            System.out.println("ViewContact:the amount in allPhonesofContacts :" + allPhonesofContacts.size());
+            System.out.println("ViewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
+
+
+            //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
+            //With that we'll put our
+            //matching contacts at the top of the listview, display check boxes beside them etc...
+            SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+            Gson gsonMatchingContactsAsArrayList = new Gson();
+            String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
+            Type type1 = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
+            System.out.println("ViewContact MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
+
+
+            //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
+            for (int i = 0; i < allPhonesofContacts.size(); i++) {
+
+                phoneNumberofContact = allPhonesofContacts.get(i);
+                phoneNameofContact = allNamesofContacts.get(i);
+
+                System.out.println("ViewContact: phoneNumberofContact : " + phoneNumberofContact);
+                System.out.println("ViewContact: phoneNameofContact : " + phoneNameofContact);
+
+                SelectPhoneContact selectContact = new SelectPhoneContact();
+
+                //if a phone number is in our array of matching contacts
+                if (MatchingContactsAsArrayList.contains(phoneNumberofContact))
+
+                {
+                    // insert the contact at the beginning of the listview
+                    selectPhoneContacts.add(0, selectContact);
+                    // checkBoxforContact.setVisibility(View.VISIBLE);
+
+                }
+
+                else {
+                    // insert it at the end (default)
+                    selectPhoneContacts.add(selectContact);
+                    //makeinvisible();
+                }
+
+
+                selectContact.setName(phoneNameofContact);
+                //    selectContact.setPhone(phoneNumberofContact);
+                selectContact.setPhone(phoneNumberofContact);
+                //selectContact.setSelected(is);
+
+            }
+
+
             return null;
 
+
         }
+
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+            System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
+
+            adapter = new SelectPhoneContactAdapter(selectPhoneContacts, EditContact.this,2);
+
+            listView.setAdapter(adapter);
+
+            adapter.radioButtontoPhoneContactsEdit = new EditContact.radioButtontoPhoneContactsEdit() {
+                //@Override
+                public void update() {
+                    EditContact.this.rbu1.setChecked(true);
+                }
+            };
+
+
+            //we need to notify the listview that changes may have been made on
+            //the background thread, doInBackground, like adding or deleting contacts,
+            //and these changes need to be reflected visibly in the listview. It works
+            //in conjunction with selectContacts.clear()
+            adapter.notifyDataSetChanged();
+
+
+
+            //********************
+
+            //this function measures the height of the listview, with all the contacts, and loads it to be that
+            //size. We need to do this because there's a problem with a listview in a scrollview.
+            //The function is in GlobalFunctions
+            GlobalFunctions.justifyListViewHeightBasedOnChildren(EditContact.this,listView);
 
         }
-}
+    }
+
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        selectPhoneContacts.clear();
+
+        EditContact.LoadContact loadContact = new EditContact.LoadContact();
+
+
+        loadContact.execute();
+//        adapter.notifyDataSetChanged();
+        Toast.makeText(EditContact.this, "resuming!", Toast.LENGTH_SHORT).show();
+
+
+    }
+
+    //need this to change radio button to Phone Contacts,
+    //if a checkbox is changed to false
+    public abstract class radioButtontoPhoneContactsEdit
+    {
+        public void update() {}
+    }
+
+
+
+
+    public void hidePDialog() {
+        if (pDialog != null) {
+            pDialog.dismiss();
+            pDialog = null;
+        }
+    }
+
+
+    //for the backbutton, remove the saved checkbox state
+    //@Override
+    public void onBackPressed() {
+        // your code.
+        Integer i = null;
+        SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
+        preferences.edit().clear().commit();
+        finish();
+    }
 
 }

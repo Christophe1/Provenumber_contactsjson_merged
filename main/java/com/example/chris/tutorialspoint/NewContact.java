@@ -157,7 +157,8 @@ public class NewContact extends AppCompatActivity  {
         //scroll is the same speed, be it fast scroll or not
         // listView.setFastScrollEnabled(true);
 
-
+        //If Public radio button is selected then check all the boxes
+        //and change the button text to 'Clear All'
         //listen for which radio button is clicked
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

@@ -51,8 +51,11 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
     SharedPreferences.Editor editor;
 
-    //so we can set the radio button to Phone Contacts, when a checkbox is unchecked
+    //so we can set the radio button to Phone Contacts in NewContact, when a checkbox is unchecked
     public NewContact.changeRadioButtontoPhoneContacts radioButtontoPhoneContacts;
+
+    //so we can set the radio button to Phone Contacts in EditContact, when a checkbox is unchecked
+    public EditContact.radioButtontoPhoneContactsEdit radioButtontoPhoneContactsEdit;
 
     public SelectPhoneContactAdapter(final List<SelectPhoneContact> selectPhoneContacts, Context context, int activity) {
         theContactsList = selectPhoneContacts;
@@ -83,15 +86,6 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         System.out.println("SelectPhoneContactAdapter checkedContactsAsArrayList :" + checkedContactsAsArrayList);
 
 
-
-        //for every value in the checkedContactsAsArrayList array list, call it contactToCheck
-        //We will be checking which values of contactToCheck are in the MatchingContactsAsArrayList,
-        //further down
-//        for (int i = 0; i < checkedContactsAsArrayList.size(); i++) {
-//            contactToCheck = checkedContactsAsArrayList.get(i);
-//            System.out.println("SelectPhoneContactAdapter contactToCheck :" + contactToCheck);
-//
-//                                        }
     }
 
     @Override
@@ -126,9 +120,6 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     public View getView(final int i, View convertView, ViewGroup viewGroup) {
 
 
-
-
-
         //initialize a sharedpreferences file called "sharedPrefs", which will be private, for our app only
         //we are doing this so the checkbox state in the listview will be saved, so user can come back to it if the phone sleeps
         SharedPreferences sharedPrefs = _c.getSharedPreferences("sharedPrefsFile", Context.MODE_PRIVATE);
@@ -155,24 +146,25 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             //phone is cast to the id called no etc
             holder.title = (TextView) convertView.findViewById(R.id.name);
             holder.phone = (TextView) convertView.findViewById(R.id.no);
-            holder.invite = (Button)  convertView.findViewById(R.id.btnInvite);
+            holder.invite = (Button) convertView.findViewById(R.id.btnInvite);
             holder.check = (CheckBox) convertView.findViewById(R.id.checkBoxContact);
             // holder.check.setTag(arraylist.get(i).getPhone());
 
             //if the activity is NewContact
-            if(whichactivity == 1) {
+            if (whichactivity == 1) {
                 holder.check.setOnClickListener(new View.OnClickListener() {
                     @Override
                     //when a checkbox in the Listview is clicked
                     public void onClick(View v) {
-                        CheckBox cb = (CheckBox) v ;
+                        CheckBox cb = (CheckBox) v;
                         SelectPhoneContact data = (SelectPhoneContact) cb.getTag();
                         //if it is set to unchecked
-                        if(cb.isChecked()==false)
+                        if (cb.isChecked() == false)
                         //need this to change radio button to Phone Contacts,
                         //if a checkbox is changed to false
                         {
-                            radioButtontoPhoneContacts.update();}
+                            radioButtontoPhoneContacts.update();
+                        }
                         Toast.makeText(_c,
                                 "Clicked on Checkbox: " + data.getPhone() +
                                         " is " + cb.isChecked(),
@@ -191,6 +183,34 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                 });
 
             }
+
+            //if the activity is EditContact
+            if (whichactivity == 2) {
+                holder.check.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    //when a checkbox in the Listview is clicked
+                    public void onClick(View v) {
+                        CheckBox cb = (CheckBox) v;
+                        SelectPhoneContact data = (SelectPhoneContact) cb.getTag();
+                        //if it is set to unchecked
+                        if (cb.isChecked() == false)
+                        //need this to change radio button to Phone Contacts,
+                        //if a checkbox is changed to false
+                        {
+                            radioButtontoPhoneContactsEdit.update();
+                        }
+                        Toast.makeText(_c,
+                                "Clicked on Checkbox: " + data.getPhone() +
+                                        " is " + cb.isChecked(),
+                                Toast.LENGTH_LONG).show();
+                        data.setSelected(cb.isChecked());
+
+                    }
+                });
+
+            }
+
+
             // if(whichactivity == 1) {
             // check the checkboxes by default, phoneContacts
             //   viewHolder.check.setChecked(true);
@@ -213,9 +233,10 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         //in the listview for contacts, set the number
         holder.phone.setText(data.getPhone());
 
-
+        //this is to remember the checked boxes, so if the phone goes to sleep
+        //we'll still see the boxes checked by the user on resume
         //if the activity is NewContact
-        if(whichactivity == 1) {
+        if (whichactivity == 1) {
 
             //initialize the SharedPreferences editor
             editor = sharedPrefs.edit();
@@ -238,16 +259,16 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         }
 
         //if the activity is ViewContact
-      //  if(whichactivity == 0) {
+        //  if(whichactivity == 0) {
 
-            //initialize the SharedPreferences editor
-           // editor = sharedPrefs.edit();
+        //initialize the SharedPreferences editor
+        // editor = sharedPrefs.edit();
 
-            //in the listview for checkboxes, get the checkbox values from the sharedpreferences file
-           // holder.check.setChecked(sharedPrefs.getBoolean("viewContactCheckValue" + i, false));
-           // holder.check.setEnabled(false);
+        //in the listview for checkboxes, get the checkbox values from the sharedpreferences file
+        // holder.check.setChecked(sharedPrefs.getBoolean("viewContactCheckValue" + i, false));
+        // holder.check.setEnabled(false);
 
-            //when the checkbox changes, edit those changes and commit,
+        //when the checkbox changes, edit those changes and commit,
 /*            holder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -259,7 +280,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                 }
             });*/
 
-       // }
+        // }
 
         ///*************************
 
@@ -276,9 +297,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                 //once a matching contact is found, no need to keep looping x number of time, move onto next contact
                 break;
 
-            }
-
-            else {
+            } else {
                 //if not a matching contact, no need to show the check box
                 holder.check.setVisibility(View.GONE);
 
@@ -287,10 +306,8 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         }
 
 
-
-
         // For the ViewContact, which has int activity = 0
-        if(whichactivity == 0) {
+        if (whichactivity == 0) {
 
 
             //This is for ViewContact, to display the contact the review is shared with
@@ -307,6 +324,55 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             holder.check.setEnabled(false);
         }
 
+        // For the EditContact, which has int activity = 2
+        //pretty much the same as the ViewContact code above, except we
+        //don't disable the checkboxes in the listview, they can be edited
+        if (whichactivity == 2) {
+
+
+            //This is for ViewContact, to display the contact the review is shared with
+            //for every phone number in the checkedContactsAsArrayList array list...
+            for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
+
+                //if a phone number is in our array of checked contacts
+                if (checkedContactsAsArrayList.contains(data.getPhone())) {
+                    //check the box
+                    holder.check.setChecked(true);
+                }
+            }
+
+            //this is to remember the checked boxes, so if the phone goes to sleep
+            //we'll still see the boxes checked by the user on resume
+
+            //initialize the SharedPreferences editor
+            editor = sharedPrefs.edit();
+
+            //in the listview for checkboxes, get the checkbox values from the sharedpreferences file
+            //When the checkbox changes to checked it will committed, at the bottom of this code.
+            //If it has been checked, show it as checked
+            if (holder.check.isChecked()) {
+                holder.check.setChecked(sharedPrefs.getBoolean("CheckValueEdit" + i, true));
+            } else {
+            //if not, show it as unchecked
+                holder.check.setChecked(sharedPrefs.getBoolean("CheckValueEdit" + i, false));
+            }
+
+
+            //when the checkbox changes, edit those changes and commit,
+            holder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    //edit and commit the checkbox status to the sharedpreferences file
+                    //"CheckValue"+1 is the key, isChecked is the value
+                    editor.putBoolean("CheckValueEdit" + i, isChecked);
+                    editor.commit();
+                }
+            });
+
+
+
+        }
 
 
 

@@ -92,7 +92,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     String phoneNameofContact;
     ListView listView;
     SelectPhoneContactAdapter adapter;
-    CheckBox checkBoxforContact;
+    //CheckBox checkBoxforContact;
     // String checkedContacts;
 
     //this is for public or private groups
@@ -604,6 +604,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+
+
             System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
  /*           int count = checkedContactsAsArrayList.size();
 
@@ -682,7 +684,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
         super.onResume();
 
-        // getPrefs();
+        selectPhoneContacts.clear();
 
         ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
 
@@ -703,25 +705,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             pDialog = null;
         }
     }
-
-    private void getPrefs() {
-
-
-
-
-
-    }
-
-    //for the backbutton, remove the saved checkbox state
-    //@Override
-    public void onBackPressed() {
-        // your code.
-        Integer i = null;
-        SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
-        preferences.edit().clear().commit();
-        finish();
-    }
-
 
 
 }
