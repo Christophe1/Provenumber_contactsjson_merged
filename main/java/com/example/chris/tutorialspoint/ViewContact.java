@@ -77,7 +77,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
     //this is the review that has been clicked in the ListView in PopulistoListView.java
     String review_id;
-    private ProgressDialog pDialog;
+    public ProgressDialog pDialog;
 
     //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
@@ -99,6 +99,9 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     //amonst other things, we'll be bringing the intent over to EditContact.
     int pub_or_priv;
 
+    //When we are coming back from EditContact, we have a value for this
+    String new_public_or_private;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,10 +115,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
-        pDialog = new ProgressDialog(this);
-        // Showing progress dialog before making http request
-        pDialog.setMessage("Loading...");
-        pDialog.show();
+
+        System.out.println("ViewContact: new_public_or_private : " + new_public_or_private);
 
         //********************
 
@@ -152,8 +153,13 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ViewContact_URL,
                 new Response.Listener<String>() {
 
+                    // Showing progress dialog before making http request
+
+
                     @Override
                     public void onResponse(String response) {
+
+                        showDialog();
 
                         //toast the response of ViewContact.php, which has been converted to a
                         //JSON object by the Php file with JSON encode
@@ -293,9 +299,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             }
 
 
-
-                            //System.out.println("heree it is" + jsonResponse);
-                            //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
                             hidePDialog();
 
                         } catch (JSONException e) {
@@ -382,12 +385,26 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         String new_phone_value = j.getStringExtra("phone");
         String new_address_value = j.getStringExtra("address");
         String new_comment_value = j.getStringExtra("comment");
+        new_public_or_private = j.getStringExtra("public_or_private");
         categoryname.setText(new_category_value);
         namename.setText(new_name_value);
         phonename.setText(new_phone_value);
         addressname.setText(new_address_value);
         commentname.setText(new_comment_value);
+        commentname.setText(new_comment_value);
 
+        //if new_public_or_private from EditContact is 0 then...
+        if(new_public_or_private=="0")
+            //set the text to Phone Contacts
+            publicorprivate.setText("Phone Contacts");
+            //If new_public_or_private  is 1 then...
+        else
+            //set the text to Public
+            publicorprivate.setText("Public");
+
+
+        //hide the 'loading' dialog
+       // hidePDialog();
 
         //*****************************************
         //for the delete button
@@ -698,6 +715,12 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
 
 
+public void showDialog() {
+    pDialog = new ProgressDialog(this);
+    pDialog.setMessage("Loading...");
+    pDialog.show();
+
+}
 
     public void hidePDialog() {
         if (pDialog != null) {

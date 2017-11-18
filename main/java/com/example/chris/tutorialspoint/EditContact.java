@@ -74,6 +74,10 @@ public class EditContact extends AppCompatActivity {
     //String for getting intent info for the check radio button, will be 0 or 1
     int pub_or_priv;
 
+    //String for getting the new, edited value of the checked radio button,
+    // onCheckChange. It will be 0 or 1
+    int new_pub_or_priv;
+
     //for the radio buttons
     RadioButton rbu1;
     RadioButton rbu2;
@@ -145,12 +149,13 @@ public class EditContact extends AppCompatActivity {
         //make the cursor appear at the end of the categoryname
         categoryname.setSelection(categoryname.getText().length());
 
-        //If pub_or_priv in mySQL is 0 then
+        //Set the radio button to be 'public' or 'phone contacts'
+        //If pub_or_priv value from ViewContact is 0 then
         if(pub_or_priv==0)
         //set the radio button to phone contacts
             rbu1.setChecked(true);
         else
-        //otherwise make it public
+        //otherwise, if it's 1, make it public
             rbu2.setChecked(true);
 
 
@@ -161,9 +166,15 @@ public class EditContact extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int SelectWho) {
+
                 // find which radio button is selected
                 if (SelectWho == R.id.Public) {
                     Toast.makeText(EditContact.this, "Public", Toast.LENGTH_LONG).show();
+
+                    //new_pub_or_priv=1;
+                    pub_or_priv=1;
+                    System.out.println("EditContact, after onCheckChange, should be 1: " + new_pub_or_priv);
+
                     //call the function to check all checkboxes in NewContact
                     //loop through the Matching Contacts
                     int count = MatchingContactsAsArrayList.size();
@@ -175,8 +186,14 @@ public class EditContact extends AppCompatActivity {
                     }
 
                 }
+                else //new_pub_or_priv =0;
+                    pub_or_priv=0;
+                System.out.println("EditContact, after onCheckChange, should be 0: " + new_pub_or_priv);
+
             }
+
         });
+
 
         //Select All / Clear All Button
         //Check all or clear all checkboxes
@@ -255,24 +272,31 @@ public class EditContact extends AppCompatActivity {
                         params.put("phone", phonename.getText().toString());
                         params.put("address", addressname.getText().toString());
                         params.put("comment", commentname.getText().toString());
+                        params.put("public_or_private", String.valueOf(pub_or_priv));
                         return params;
+
 
                     }
 
 
                 };
+                System.out.println("EditContact, after Volley put : " + new_pub_or_priv);
 
 
                 AppController.getInstance().addToRequestQueue(stringRequest);
 
                 //when saved, go back to the ViewContact class and update with
                 //the edited values
-                Intent j = new Intent(EditContact.this, PopulistoListView.class);
+                Intent j = new Intent(EditContact.this, ViewContact.class);
                 j.putExtra("category", categoryname.getText().toString());
                 j.putExtra("name", namename.getText().toString());
                 j.putExtra("phone", phonename.getText().toString());
                 j.putExtra("address", addressname.getText().toString());
                 j.putExtra("comment", commentname.getText().toString());
+                j.putExtra("public_or_private", String.valueOf(pub_or_priv));
+
+                System.out.println("EditContact, after intent:" + new_pub_or_priv);
+
 
                 EditContact.this.startActivity(j);
 

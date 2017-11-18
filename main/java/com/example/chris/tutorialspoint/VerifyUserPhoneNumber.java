@@ -557,6 +557,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                         //make an arraylist which will hold the phone_number part of the MatchingContacts string
                         MatchingContactsAsArrayList = new ArrayList<String>();
+
                         try {
                             JSONArray Object = new JSONArray(MatchingContactsAsString);
                             for (int x = 0; x < Object.length(); x++) {
