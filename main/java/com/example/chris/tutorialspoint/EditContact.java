@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,6 +27,9 @@ import com.example.tutorialspoint.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +44,10 @@ public class EditContact extends AppCompatActivity {
 
     private ProgressDialog pDialog;
 
+    //in this JSONArray, checkedContacts, we will be storing each checkedContact JSON Object
+    //Then we're going to post it to our EditContact.php file
+    JSONArray checkedContacts = new JSONArray();
+
     //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
     //an arraylist of all contacts phone numbers, which we will get from VerifyUserPhoneNumber
@@ -53,6 +61,7 @@ public class EditContact extends AppCompatActivity {
     String phoneNameofContact;
     ListView listView;
     SelectPhoneContactAdapter adapter;
+    String phoneNoofUserCheck;
 
 
     //this is the review of the current activity
@@ -71,12 +80,8 @@ public class EditContact extends AppCompatActivity {
     //string for getting intent info from ContactView class
     String categoryid, category, name, phone, address, comment;
 
-    //String for getting intent info for the check radio button, will be 0 or 1
+    //int for getting intent info for the check radio button, will be 0 or 1
     int pub_or_priv;
-
-    //String for getting the new, edited value of the checked radio button,
-    // onCheckChange. It will be 0 or 1
-    int new_pub_or_priv;
 
     //for the radio buttons
     RadioButton rbu1;
@@ -134,8 +139,8 @@ public class EditContact extends AppCompatActivity {
         address = i.getStringExtra("address");
         comment = i.getStringExtra("comment");
 
-        pub_or_priv = i.getIntExtra("publicorprivate",pub_or_priv);
-        System.out.println("EditContact: public or private value :" + pub_or_priv);
+        public_or_private = i.getIntExtra("publicorprivate",pub_or_priv);
+        System.out.println("EditContact: public or private value :" + public_or_private);
 
 
         //set the EditText to display the pair value of key "category"
@@ -149,32 +154,28 @@ public class EditContact extends AppCompatActivity {
         //make the cursor appear at the end of the categoryname
         categoryname.setSelection(categoryname.getText().length());
 
-        //Set the radio button to be 'public' or 'phone contacts'
-        //If pub_or_priv value from ViewContact is 0 then
-        if(pub_or_priv==0)
-        //set the radio button to phone contacts
+        //If pub_or_priv in mySQL is 0 then
+        if(public_or_private==0)
+            //set the radio button to phone contacts
             rbu1.setChecked(true);
         else
-        //otherwise, if it's 1, make it public
+            //otherwise make it public
             rbu2.setChecked(true);
 
 
         //If Public radio button is selected then check all the boxes
         //and change the button text to 'Clear All'
         //listen for which radio button is clicked
-         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int SelectWho) {
-
                 // find which radio button is selected
                 if (SelectWho == R.id.Public) {
                     Toast.makeText(EditContact.this, "Public", Toast.LENGTH_LONG).show();
-
-                    //new_pub_or_priv=1;
-                    pub_or_priv=1;
-                    System.out.println("EditContact, after onCheckChange, should be 1: " + new_pub_or_priv);
-
+                    //If 'public' is selected, set pub_or_priv = 1
+                    //this will save the review as public
+                   // public_or_private=1;
                     //call the function to check all checkboxes in NewContact
                     //loop through the Matching Contacts
                     int count = MatchingContactsAsArrayList.size();
@@ -186,14 +187,13 @@ public class EditContact extends AppCompatActivity {
                     }
 
                 }
-                else //new_pub_or_priv =0;
-                    pub_or_priv=0;
-                System.out.println("EditContact, after onCheckChange, should be 0: " + new_pub_or_priv);
-
+              //  else
+                    //If 'phone contacts' is selected, set pub_or_priv = 0
+                    //this will save the review as private
+                   // public_or_private=0;
+                //System.out.println("EditContact, after onCheckChange, should be 0: " + public_or_private);
             }
-
         });
-
 
         //Select All / Clear All Button
         //Check all or clear all checkboxes
@@ -237,14 +237,85 @@ public class EditContact extends AppCompatActivity {
                 pDialog.setMessage("Saving...");
                 pDialog.show();
 
+                try {
+                    System.out.println("we're in the try part");
+
+                    //if the public radio button is selected
+                    //then in the public_or_private column of the review
+                    //table put 1, t make it public
+                    //otherwise, if PhoneContacts is selected,
+                    //put 0, to make it private
+                    RadioGroup rg1 =(RadioGroup)findViewById(R.id.SharedWith);
+                    if (rg1.getCheckedRadioButtonId()==R.id.Public){
+                        System.out.println("It is public");
+                        public_or_private =1;
+                    }
+                    if (rg1.getCheckedRadioButtonId()==R.id.PhoneContacts){
+                        System.out.println("It is private");
+                        public_or_private =0;
+                    }
+
+                    //the user will be able to check contacts who to share the review
+                    // with, from their matching contacts list
+                    int count = MatchingContactsAsArrayList.size();
+
+                    for (int i = 0; i < count; i++) {
+                        //for each Matching Contacts row in the listview
+                        LinearLayout itemLayout = (LinearLayout)listView.getChildAt(i); // Find by under LinearLayout
+                        //for each Matching Contacts checkbox in the listview
+                        CheckBox checkbox = (CheckBox)itemLayout.findViewById(R.id.checkBoxContact);
+                        //get the other data related to the selected contact - name and number
+                        SelectPhoneContact contact = (SelectPhoneContact) checkbox.getTag();
+
+                        // make each checked contact in selectPhoneContacts
+                        // into an individual
+                        // JSON object called checkedContact
+                        JSONObject checkedContact = new JSONObject();
+
+                        //if that checkbox is checked, then get the phone number
+                        if(checkbox.isChecked()) {
+                            Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
+                            Toast.makeText(EditContact.this, contact.getPhone(), Toast.LENGTH_LONG).show();
+
+                            // checkedContact will be of the form {"checkedContact":"+353123456"}
+                            checkedContact.put("checkedContact", contact.getPhone());
+
+                            // Add checkedContact JSON Object to checkedContacts jsonArray
+                            //The JSON Array will be of the form
+                            // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                            //we will be posting this JSON Array to Php, further down below
+                            checkedContacts.put(checkedContact);
+                            System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+                        }
+
+                    }
+
+                    //add phone owner's number to the checkedContacts JSON Array
+                    //new JSON Object called phoneOwner
+                    JSONObject phoneOwner = new JSONObject();
+
+                    //add the phone number
+                    phoneOwner.put("checkedContact", phoneNoofUserCheck);
+
+                    //add it to the Array
+                    checkedContacts.put(phoneOwner);
+
+                    System.out.println("checkedContacts JSON Array: " + checkedContacts);
+
+                    //responseText, Toast.LENGTH_LONG).show();
+
+                } catch (Exception e) {
+                    System.out.println("EditContact: there's a problem here unfortunately");
+                    e.printStackTrace();
+                }
+
                 //post the review_id in the current activity to EditContact.php and from that
                 //get associated values - category, name, phone etc...
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, EditContact_URL,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                //hide the dialogue box when page is saved
-                                pDialog.dismiss();
+
                                 Toast.makeText(EditContact.this, response, Toast.LENGTH_LONG).show();
                             }
                         },
@@ -272,36 +343,37 @@ public class EditContact extends AppCompatActivity {
                         params.put("phone", phonename.getText().toString());
                         params.put("address", addressname.getText().toString());
                         params.put("comment", commentname.getText().toString());
-                        params.put("public_or_private", String.valueOf(pub_or_priv));
-                        return params;
+                        params.put("public_or_private", String.valueOf(public_or_private));
 
+                        //this is the JSON Array of checked contacts
+                        //it will be of the form
+                        //[{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                        params.put("checkedContacts", checkedContacts.toString());
+
+                        return params;
 
                     }
 
 
                 };
-                System.out.println("EditContact, after Volley put : " + new_pub_or_priv);
 
 
                 AppController.getInstance().addToRequestQueue(stringRequest);
 
                 //when saved, go back to the ViewContact class and update with
                 //the edited values
-                Intent j = new Intent(EditContact.this, ViewContact.class);
+                Intent j = new Intent(EditContact.this, PopulistoListView.class);
                 j.putExtra("category", categoryname.getText().toString());
                 j.putExtra("name", namename.getText().toString());
                 j.putExtra("phone", phonename.getText().toString());
                 j.putExtra("address", addressname.getText().toString());
                 j.putExtra("comment", commentname.getText().toString());
-                j.putExtra("public_or_private", String.valueOf(pub_or_priv));
-
-                System.out.println("EditContact, after intent:" + new_pub_or_priv);
-
 
                 EditContact.this.startActivity(j);
 
                 finish();
-
+                //hide the dialogue box when page is saved
+                hidePDialog();
             }
 
 
@@ -325,7 +397,7 @@ public class EditContact extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-        finish();
+                finish();
             }
         });
     }

@@ -77,7 +77,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
     //this is the review that has been clicked in the ListView in PopulistoListView.java
     String review_id;
-    public ProgressDialog pDialog;
+    private ProgressDialog pDialog;
 
     //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
@@ -99,9 +99,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     //amonst other things, we'll be bringing the intent over to EditContact.
     int pub_or_priv;
 
-    //When we are coming back from EditContact, we have a value for this
-    String new_public_or_private;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,8 +112,10 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
         listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
-
-        System.out.println("ViewContact: new_public_or_private : " + new_public_or_private);
+        pDialog = new ProgressDialog(this);
+        // Showing progress dialog before making http request
+        pDialog.setMessage("Loading...");
+        pDialog.show();
 
         //********************
 
@@ -153,13 +152,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ViewContact_URL,
                 new Response.Listener<String>() {
 
-                    // Showing progress dialog before making http request
-
-
                     @Override
                     public void onResponse(String response) {
-
-                        showDialog();
 
                         //toast the response of ViewContact.php, which has been converted to a
                         //JSON object by the Php file with JSON encode
@@ -196,8 +190,9 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             //If pub_or_priv in mySQL is 0 then
                             if(pub_or_priv==0)
                                 publicorprivate.setText("Phone Contacts");
-                             //If pub_or_priv in mySQL is 1 then
+                                //If pub_or_priv in mySQL is 1 then
                             else
+
                                 publicorprivate.setText("Public");
                             System.out.println("ViewContact: public or private value :" + pub_or_priv);
 
@@ -233,7 +228,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             //for every phone number in the checkedContactsAsArrayList array list...
             /*        for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
                         System.out.println("ViewContact: in the try " + checkedContactsAsArrayList);
-
                         SelectPhoneContact contact = checkedContactsAsArrayList.get(number2);
                         //if a phone number is in our array of checked contacts
                         if (checkedContactsAsArrayList.contains(contact.getPhone())) {
@@ -249,20 +243,20 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             //only works easily with strings so best way to bring the array list in Shared Preferences is with
                             //Gson.
                             //Here, we PUT the arraylist into the sharedPreferences/*
-                    SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                    SharedPreferences.Editor editorcheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.edit();
-                    Gson gsoncheckedContactsAsArrayList = new Gson();
-                    String jsoncheckedContactsAsArrayList = gsoncheckedContactsAsArrayList.toJson(checkedContactsAsArrayList);
-                    editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
-                    editorcheckedContactsAsArrayList.commit();
+                            SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                            SharedPreferences.Editor editorcheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.edit();
+                            Gson gsoncheckedContactsAsArrayList = new Gson();
+                            String jsoncheckedContactsAsArrayList = gsoncheckedContactsAsArrayList.toJson(checkedContactsAsArrayList);
+                            editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
+                            editorcheckedContactsAsArrayList.commit();
 
-                     //load the asyncTask straight after the checked Arraylist has been created
-                            //so the acustom adapter will pick up the changes
-                     ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+                            //load the asyncTask straight after the checked Arraylist has been created
+                            //so the custom adapter will pick up the changes
+                            ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
 
                             loadContact.execute();
 
-                    System.out.println("ViewContact: jsoncheckedContactsAsArrayList is " + jsoncheckedContactsAsArrayList);
+                            System.out.println("ViewContact: jsoncheckedContactsAsArrayList is " + jsoncheckedContactsAsArrayList);
 
 
 
@@ -273,21 +267,21 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             //which isn't in the Contacts list, is problematic)
                             //int count = checkedContactsAsArrayList.size();
 
-                            int num_of_visible_view=listView.getLastVisiblePosition() -
-                                    listView.getFirstVisiblePosition();
+                           // int num_of_visible_view=listView.getLastVisiblePosition() -
+                           //         listView.getFirstVisiblePosition();
 
-                            for (int i = 0; i < num_of_visible_view; i++) {
+                           // for (int i = 0; i < num_of_visible_view; i++) {
                                 //for (int i = 0; i < count; i++) {
 
-                                LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                             //   LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
 
                                 //inflate the layout that contains the checkbox or else we can get errors
-                             //   LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                              //  View view = itemLayout.inflate(R.layout.phone_inflate_listview, null);
+                                //   LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                //  View view = itemLayout.inflate(R.layout.phone_inflate_listview, null);
                                 //associate it with a checkbox
-                                CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                            //    CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
 
-                                //get the other data related to that checkbox - name and number of contact
+                     /*           //get the other data related to that checkbox - name and number of contact
                                 SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
                                 //if the contact is in the checked array
                                 if (checkedContactsAsArrayList.contains(data.getPhone())) {
@@ -296,16 +290,21 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                                     checkbox.setChecked(true);
                                     checkbox.setEnabled(false);
                                 }
-                            }
+                            }*/
 
 
-                            hidePDialog();
+
+                            //System.out.println("heree it is" + jsonResponse);
+                            //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(),
-                                    "Error: " + e.getMessage(),
+                                    "And the Error is: " + e.getMessage(),
                                     Toast.LENGTH_LONG).show();
+                            System.out.println("SelectPhoneContactAdapter: error here ");
+
                         }
 
 
@@ -321,6 +320,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(ViewContact.this, error.toString(), Toast.LENGTH_LONG).show();
+                        System.out.println("SelectPhoneContactAdapter: error here also");
 
                     }
 
@@ -385,26 +385,12 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         String new_phone_value = j.getStringExtra("phone");
         String new_address_value = j.getStringExtra("address");
         String new_comment_value = j.getStringExtra("comment");
-        new_public_or_private = j.getStringExtra("public_or_private");
         categoryname.setText(new_category_value);
         namename.setText(new_name_value);
         phonename.setText(new_phone_value);
         addressname.setText(new_address_value);
         commentname.setText(new_comment_value);
-        commentname.setText(new_comment_value);
 
-        //if new_public_or_private from EditContact is 0 then...
-        if(new_public_or_private=="0")
-            //set the text to Phone Contacts
-            publicorprivate.setText("Phone Contacts");
-            //If new_public_or_private  is 1 then...
-        else
-            //set the text to Public
-            publicorprivate.setText("Public");
-
-
-        //hide the 'loading' dialog
-       // hidePDialog();
 
         //*****************************************
         //for the delete button
@@ -625,7 +611,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
             System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
  /*           int count = checkedContactsAsArrayList.size();
-
             for (int i = 0; i < count; i++) {
                 //for each Matching Contacts row in the listview
                 LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
@@ -634,7 +619,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                 //get the other data related to the selected contact - name and number
                 SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
                 checkbox.setChecked(true);
-
             }*/
             //  ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
             // checkedContactsAsArrayList.add("+353858716422");
@@ -691,7 +675,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             //size. We need to do this because there's a problem with a listview in a scrollview.
             //The function is in GlobalFunctions
             GlobalFunctions.justifyListViewHeightBasedOnChildren(ViewContact.this,listView);
-
+            hidePDialog();
         }
     }
 
@@ -715,12 +699,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
 
 
-public void showDialog() {
-    pDialog = new ProgressDialog(this);
-    pDialog.setMessage("Loading...");
-    pDialog.show();
-
-}
 
     public void hidePDialog() {
         if (pDialog != null) {

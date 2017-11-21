@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -457,10 +458,16 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     myIntent1.putExtra("phoneNameofContact", name);
                     //VerifyUserPhoneNumber.this.startActivity(myIntent1);
 
-                    //save the array list allPhonesofContacts,
+
+                    //we will save the array list allPhonesofContacts,
                     //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
                     SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
                     SharedPreferences.Editor prefsEditor2 = sharedPreferencesallPhonesofContacts.edit();
+                    //first of all, clear what is already in prefsEditor2
+                    //because I was getting repeats of phone numbers
+                    //prefsEditor2.clear();
+                    //prefsEditor2.commit();
+                    //now, let's put in the string of phone numbers
                     Gson gson = new Gson();
                     String json = gson.toJson(allPhonesofContacts);
                     prefsEditor2.putString("allPhonesofContacts", json);
@@ -470,6 +477,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
                     SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
                     SharedPreferences.Editor prefsEditor = sharedPreferencesallNamesofContacts.edit();
+                    //first of all, clear what is already in prefsEditor2
+                    //because I was getting repeats of names
+                    //prefsEditor2.clear();
+                    //prefsEditor2.commit();
+                    //now, let's put in the string of names
                     Gson gsonNames = new Gson();
                     String jsonNames = gsonNames.toJson(allNamesofContacts);
                     prefsEditor.putString("allNamesofContacts", jsonNames);
@@ -577,11 +589,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                             String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
                             editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
                             editorMatchingContactsAsArrayList.commit();
-
+                            System.out.println("VerifyUserPhoneNumber2: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
 
                         System.out.println("phonenoofuser" + phoneNoofUser);
-                        System.out.println("all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
+                        System.out.println("VerifyUserPhoneNumber: all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
                         System.out.println("the matching contacts are " + MatchingContactsAsString);
 
                         } catch (Exception e) {
@@ -626,6 +638,16 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
             }
         };
+        //Hopefully this takes care of a bug in Volley(?)
+        //it stops the data being sent twice if internet connection is slow
+        //and the list being shown twice
+        stringRequest.setShouldCache(false);
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
+        // Adding request to request queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 

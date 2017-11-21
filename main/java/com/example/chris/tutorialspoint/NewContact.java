@@ -698,8 +698,7 @@ public class NewContact extends AppCompatActivity  {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                //hide the dialogue box when page is saved
-                                //  pDialog.dismiss();
+
                                 //response, this will show the checked numbers being posted
                                 Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
                             }
