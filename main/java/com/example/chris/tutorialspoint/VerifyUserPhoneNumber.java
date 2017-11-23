@@ -102,7 +102,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
 
-       // GlobalFunctions simplemessage = new GlobalFunctions();
+        // GlobalFunctions simplemessage = new GlobalFunctions();
         GlobalFunctions.simpleMessage(VerifyUserPhoneNumber.this,"buddy buddy");
 
         GlobalFunctions simplemessage2 = new GlobalFunctions();
@@ -462,30 +462,37 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     //we will save the array list allPhonesofContacts,
                     //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
                     SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                    SharedPreferences.Editor prefsEditor2 = sharedPreferencesallPhonesofContacts.edit();
-                    //first of all, clear what is already in prefsEditor2
-                    //because I was getting repeats of phone numbers
-                    //prefsEditor2.clear();
-                    //prefsEditor2.commit();
-                    //now, let's put in the string of phone numbers
+                    SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
+
+                   // prefsEditor.clear();
+                   // prefsEditor.commit();
+
                     Gson gson = new Gson();
                     String json = gson.toJson(allPhonesofContacts);
-                    prefsEditor2.putString("allPhonesofContacts", json);
-                    prefsEditor2.commit();
+                    prefsEditor.putString("allPhonesofContacts", json);
+                    prefsEditor.commit();
 
+
+                    //now, let's put in the string of phone numbers
                     //save the array list allNamesofContacts,
                     //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
                     SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                    SharedPreferences.Editor prefsEditor = sharedPreferencesallNamesofContacts.edit();
+                    SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
+
+                   // prefsEditor2.clear();
+                    //prefsEditor2.commit();
+
+
+
                     //first of all, clear what is already in prefsEditor2
-                    //because I was getting repeats of names
+                    //because I was getting repeats of names and phone numbers
                     //prefsEditor2.clear();
                     //prefsEditor2.commit();
                     //now, let's put in the string of names
                     Gson gsonNames = new Gson();
                     String jsonNames = gsonNames.toJson(allNamesofContacts);
-                    prefsEditor.putString("allNamesofContacts", jsonNames);
-                    prefsEditor.commit();
+                    prefsEditor2.putString("allNamesofContacts", jsonNames);
+                    prefsEditor2.commit();
 
                 }
 
@@ -592,9 +599,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                             System.out.println("VerifyUserPhoneNumber2: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
 
-                        System.out.println("phonenoofuser" + phoneNoofUser);
-                        System.out.println("VerifyUserPhoneNumber: all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
-                        System.out.println("the matching contacts are " + MatchingContactsAsString);
+                            System.out.println("phonenoofuser" + phoneNoofUser);
+                            System.out.println("VerifyUserPhoneNumber: all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
+                            System.out.println("the matching contacts are " + MatchingContactsAsString);
 
                         } catch (Exception e) {
                             e.printStackTrace();

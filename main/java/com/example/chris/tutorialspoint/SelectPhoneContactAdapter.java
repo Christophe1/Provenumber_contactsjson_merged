@@ -272,7 +272,6 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 /*            holder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                     //edit and commit the checkbox status to the sharedpreferences file
                     //"CheckValue"+1 is the key, isChecked is the value
                     editor.putBoolean("viewContactCheckValue" + i, isChecked);
@@ -309,7 +308,6 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         // For the ViewContact, which has int activity = 0
         if (whichactivity == 0) {
 
-
             //This is for ViewContact, to display the contact the review is shared with
             //for every phone number in the checkedContactsAsArrayList array list...
             for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
@@ -330,7 +328,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
         if (whichactivity == 2) {
 
 
-            //This is for ViewContact, to display the contact the review is shared with
+            //This is for EditContact, to display the contact the review is shared with
             //for every phone number in the checkedContactsAsArrayList array list...
             for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
 
@@ -348,12 +346,12 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             editor = sharedPrefs.edit();
 
             //in the listview for checkboxes, get the checkbox values from the sharedpreferences file
-            //When the checkbox changes to checked it will be committed, at the bottom of this code.
+            //When the checkbox changes to checked it will committed, at the bottom of this code.
             //If it has been checked, show it as checked
             if (holder.check.isChecked()) {
                 holder.check.setChecked(sharedPrefs.getBoolean("CheckValueEdit" + i, true));
             } else {
-            //if not, show it as unchecked
+                //if not, show it as unchecked
                 holder.check.setChecked(sharedPrefs.getBoolean("CheckValueEdit" + i, false));
             }
 
@@ -392,10 +390,9 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
         return convertView;
 
-        }
-        // Return the completed view to render on screen
-
-
-
     }
+    // Return the completed view to render on screen
 
+
+
+}

@@ -88,7 +88,7 @@ public class EditContact extends AppCompatActivity {
     RadioButton rbu2;
 
     //depends on radio button selected
-    int public_or_private;
+    //int public_or_private;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,8 +139,8 @@ public class EditContact extends AppCompatActivity {
         address = i.getStringExtra("address");
         comment = i.getStringExtra("comment");
 
-        public_or_private = i.getIntExtra("publicorprivate",pub_or_priv);
-        System.out.println("EditContact: public or private value :" + public_or_private);
+        pub_or_priv = i.getIntExtra("publicorprivate",pub_or_priv);
+        System.out.println("EditContact: public or private value :" + pub_or_priv);
 
 
         //set the EditText to display the pair value of key "category"
@@ -154,14 +154,21 @@ public class EditContact extends AppCompatActivity {
         //make the cursor appear at the end of the categoryname
         categoryname.setSelection(categoryname.getText().length());
 
-        //If pub_or_priv in mySQL is 0 then
-        if(public_or_private==0)
+        //we get this from ViewContact, with an intent
+        //Set the radio button to be 'public' or 'phone contacts'
+        //If pub_or_priv value from ViewContact is 0 then
+        if(pub_or_priv==0)
             //set the radio button to phone contacts
             rbu1.setChecked(true);
         else
-            //otherwise make it public
+            //otherwise, if it's 1, make it public
             rbu2.setChecked(true);
 
+        //load the asynctask stuff here
+        EditContact.LoadContact loadContact = new EditContact.LoadContact();
+
+        //execute asynctask
+        loadContact.execute();
 
         //If Public radio button is selected then check all the boxes
         //and change the button text to 'Clear All'
@@ -248,11 +255,11 @@ public class EditContact extends AppCompatActivity {
                     RadioGroup rg1 =(RadioGroup)findViewById(R.id.SharedWith);
                     if (rg1.getCheckedRadioButtonId()==R.id.Public){
                         System.out.println("It is public");
-                        public_or_private =1;
+                        pub_or_priv =1;
                     }
                     if (rg1.getCheckedRadioButtonId()==R.id.PhoneContacts){
                         System.out.println("It is private");
-                        public_or_private =0;
+                        pub_or_priv =0;
                     }
 
                     //the user will be able to check contacts who to share the review
@@ -343,7 +350,7 @@ public class EditContact extends AppCompatActivity {
                         params.put("phone", phonename.getText().toString());
                         params.put("address", addressname.getText().toString());
                         params.put("comment", commentname.getText().toString());
-                        params.put("public_or_private", String.valueOf(public_or_private));
+                        params.put("public_or_private", String.valueOf(pub_or_priv));
 
                         //this is the JSON Array of checked contacts
                         //it will be of the form
@@ -360,7 +367,7 @@ public class EditContact extends AppCompatActivity {
 
                 AppController.getInstance().addToRequestQueue(stringRequest);
 
-                //when saved, go back to the ViewContact class and update with
+                //when saved, go back to the PopulistoListView class and update with
                 //the edited values
                 Intent j = new Intent(EditContact.this, PopulistoListView.class);
                 j.putExtra("category", categoryname.getText().toString());
@@ -519,6 +526,7 @@ public class EditContact extends AppCompatActivity {
             };
 
 
+
             //we need to notify the listview that changes may have been made on
             //the background thread, doInBackground, like adding or deleting contacts,
             //and these changes need to be reflected visibly in the listview. It works
@@ -543,12 +551,12 @@ public class EditContact extends AppCompatActivity {
 
         super.onResume();
 
-        selectPhoneContacts.clear();
+      //  selectPhoneContacts.clear();
 
-        EditContact.LoadContact loadContact = new EditContact.LoadContact();
+      //  EditContact.LoadContact loadContact = new EditContact.LoadContact();
 
 
-        loadContact.execute();
+      //  loadContact.execute();
 //        adapter.notifyDataSetChanged();
         Toast.makeText(EditContact.this, "resuming!", Toast.LENGTH_SHORT).show();
 

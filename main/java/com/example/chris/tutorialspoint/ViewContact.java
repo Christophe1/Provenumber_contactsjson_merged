@@ -92,7 +92,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     String phoneNameofContact;
     ListView listView;
     SelectPhoneContactAdapter adapter;
-    //CheckBox checkBoxforContact;
+    CheckBox checkBoxforContact;
     // String checkedContacts;
 
     //this is for public or private groups
@@ -120,9 +120,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         //********************
 
         Intent i = this.getIntent();
-        //we want review_id of the review clicked in the ListView,
-        // get it from PopulistoListView activity
-        //this is the review_id we will be posting to php with Volley, below
+        //we'll be getting this from the cell clicked in the listview
+        //then posting to ViewContact.php to get associated details
         review_id = i.getStringExtra("review_id");
         System.out.println("ViewContact: review id is " + review_id);
 
@@ -160,6 +159,14 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                         Toast.makeText(ViewContact.this, "OnResponse is" + response, Toast.LENGTH_LONG).show();
                         System.out.println("ViewContact: And the response is " + response);
 
+                        //load the asyncTask straight after we have got the response and
+                        // the checked Arraylist has been created
+                        //so the custom adapter will pick up the changes
+                        ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+
+                        loadContact.execute();
+
+
 
                         try {
 
@@ -192,13 +199,13 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                                 publicorprivate.setText("Phone Contacts");
                                 //If pub_or_priv in mySQL is 1 then
                             else
-
                                 publicorprivate.setText("Public");
                             System.out.println("ViewContact: public or private value :" + pub_or_priv);
 
 
-                            //we don't need to assign category id text to a textbox
-                            categoryid = category_id;
+                            //for categoryid we only need the value, don't need to cast it to anything
+                            //we'll be sending this to EditContact with an intent
+                             categoryid = category_id;
 
                             System.out.println("here are the checkedcontacts" + checkedContacts);
                             //  Toast.makeText(ViewContact.this, "here are the checkedcontacts" + checkedContacts, Toast.LENGTH_SHORT).show();
@@ -250,11 +257,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
                             editorcheckedContactsAsArrayList.commit();
 
-                            //load the asyncTask straight after the checked Arraylist has been created
-                            //so the custom adapter will pick up the changes
-                            ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
-
-                            loadContact.execute();
 
                             System.out.println("ViewContact: jsoncheckedContactsAsArrayList is " + jsoncheckedContactsAsArrayList);
 
@@ -267,21 +269,21 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             //which isn't in the Contacts list, is problematic)
                             //int count = checkedContactsAsArrayList.size();
 
-                           // int num_of_visible_view=listView.getLastVisiblePosition() -
-                           //         listView.getFirstVisiblePosition();
+                           /* int num_of_visible_view=listView.getLastVisiblePosition() -
+                                    listView.getFirstVisiblePosition();
 
-                           // for (int i = 0; i < num_of_visible_view; i++) {
+                            for (int i = 0; i < num_of_visible_view; i++) {
                                 //for (int i = 0; i < count; i++) {
 
-                             //   LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
+                                LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
 
                                 //inflate the layout that contains the checkbox or else we can get errors
                                 //   LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                                 //  View view = itemLayout.inflate(R.layout.phone_inflate_listview, null);
                                 //associate it with a checkbox
-                            //    CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
+                                CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
 
-                     /*           //get the other data related to that checkbox - name and number of contact
+                                //get the other data related to that checkbox - name and number of contact
                                 SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
                                 //if the contact is in the checked array
                                 if (checkedContactsAsArrayList.contains(data.getPhone())) {
@@ -290,21 +292,19 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                                     checkbox.setChecked(true);
                                     checkbox.setEnabled(false);
                                 }
-                            }*/
+                            }
 
-
+*/
 
                             //System.out.println("heree it is" + jsonResponse);
                             //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
-
+                            hidePDialog();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(),
-                                    "And the Error is: " + e.getMessage(),
+                                    "Error: " + e.getMessage(),
                                     Toast.LENGTH_LONG).show();
-                            System.out.println("SelectPhoneContactAdapter: error here ");
-
                         }
 
 
@@ -320,7 +320,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(ViewContact.this, error.toString(), Toast.LENGTH_LONG).show();
-                        System.out.println("SelectPhoneContactAdapter: error here also");
 
                     }
 
@@ -607,8 +606,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-
-
             System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
  /*           int count = checkedContactsAsArrayList.size();
             for (int i = 0; i < count; i++) {
@@ -675,7 +672,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             //size. We need to do this because there's a problem with a listview in a scrollview.
             //The function is in GlobalFunctions
             GlobalFunctions.justifyListViewHeightBasedOnChildren(ViewContact.this,listView);
-            hidePDialog();
+
         }
     }
 
@@ -685,12 +682,12 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
         super.onResume();
 
-        selectPhoneContacts.clear();
+        // getPrefs();
 
-        ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+    //    ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
 
 
-        loadContact.execute();
+    //    loadContact.execute();
 //        adapter.notifyDataSetChanged();
         Toast.makeText(ViewContact.this, "resuming!", Toast.LENGTH_SHORT).show();
 
@@ -706,6 +703,25 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             pDialog = null;
         }
     }
+
+    private void getPrefs() {
+
+
+
+
+
+    }
+
+    //for the backbutton, remove the saved checkbox state
+    //@Override
+    public void onBackPressed() {
+        // your code.
+        Integer i = null;
+        SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
+        preferences.edit().clear().commit();
+        finish();
+    }
+
 
 
 }
