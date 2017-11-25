@@ -346,7 +346,9 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
             editor = sharedPrefs.edit();
 
             //in the listview for checkboxes, get the checkbox values from the sharedpreferences file
-            //When the checkbox changes to checked it will committed, at the bottom of this code.
+
+            //When the checkbox changes to checked it will be committed to the sharedpreferences file
+            // at the bottom of this code.
             //If it has been checked, show it as checked
             if (holder.check.isChecked()) {
                 holder.check.setChecked(sharedPrefs.getBoolean("CheckValueEdit" + i, true));

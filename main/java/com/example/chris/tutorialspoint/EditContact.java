@@ -378,6 +378,10 @@ public class EditContact extends AppCompatActivity {
 
                 EditContact.this.startActivity(j);
 
+                // clear the checkbox state, we only want to keep it when the app resumes
+                SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
+                preferences.edit().clear().commit();
+
                 finish();
                 //hide the dialogue box when page is saved
                 hidePDialog();
@@ -403,6 +407,9 @@ public class EditContact extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                //for the cancel button, clear the checkbox state
+                SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
+                preferences.edit().clear().commit();
 
                 finish();
             }

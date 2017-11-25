@@ -712,11 +712,11 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
     }
 
-    //for the backbutton, remove the saved checkbox state
+    //for the backbutton, clear the checkbox state
     //@Override
     public void onBackPressed() {
         // your code.
-        Integer i = null;
+        //Integer i = null;
         SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
         preferences.edit().clear().commit();
         finish();
