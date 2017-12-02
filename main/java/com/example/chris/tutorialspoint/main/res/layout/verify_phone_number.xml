@@ -1,0 +1,110 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.chris.tutorialspoint.VerifyUserPhoneNumber">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Populisto"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Populisto will send an SMS message to verify your phone number. Enter your country and phone number. "
+        android:textColor="#ff87ff09"
+        android:textSize="20dp"
+        android:layout_below="@+id/textView1"
+ />
+
+    <!--<ImageButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/imageButton"-->
+        <!--android:layout_below="@+id/textView2"-->
+        <!--android:layout_centerHorizontal="true" />-->
+    <!--android:src="@drawable/abc"-->
+
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/btnSendSMS"
+        android:layout_alignEnd="@+id/btnSendSMS"
+        android:layout_marginBottom="11dp"
+        android:id="@+id/editText2" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send Sms"
+        android:id="@+id/btnSendSMS"
+        android:layout_above="@+id/txtSMSMayApply"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="26dp" />
+
+    <TextView
+        android:hint = "Code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/txtphoneNoofUser"
+        android:layout_alignLeft="@+id/txtSMSMayApply"
+        android:layout_alignStart="@+id/txtSMSMayApply"
+        android:layout_marginBottom="11dp"
+        android:id="@+id/txtCountryCode" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtphoneNoofUser"
+        android:hint="Enter Phone Number"
+        android:phoneNumber="true"
+        android:textColorHint="#ff87ff09"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="57dp"
+        android:layout_alignLeft="@+id/textView1"
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="14dp"
+        android:id="@+id/txtSelectCountry"
+        android:text="Select Country"
+        android:layout_alignRight="@+id/txtphoneNoofUser"
+        android:layout_alignEnd="@+id/txtphoneNoofUser"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignStart="@+id/textView1" />
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtSMSMayApply"
+        android:hint="Carrier SMS Charges may apply."
+        android:textColorHint="#ff87ff09"
+        android:layout_alignBaseline="@+id/editText2"
+        android:layout_alignBottom="@+id/editText2"
+        android:layout_alignRight="@+id/txtphoneNoofUser"
+        android:layout_alignEnd="@+id/txtphoneNoofUser"
+        android:layout_below="@+id/txtphoneNoofUser"
+        />
+
+
+</RelativeLayout>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_edit_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.chris.tutorialspoint.EditContact">
+
+    <ScrollView android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:fillViewport="true"
+        android:gravity="top"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/listview1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/textViewCategory"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/back"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/textViewName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewCategory"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/back"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/textViewPhone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewName"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/back"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/textViewAddress"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewPhone"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/back"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/textViewComment"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewAddress"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/back"
+        android:textSize="30dp" />
+
+
+    <TextView
+        android:id="@+id/textViewSharedWith"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewComment"
+        android:text="Shared With: "
+        android:textSize="30dp" />
+
+    <RadioGroup
+        android:id="@+id/SharedWith"
+        android:layout_width="match_parent"
+        android:layout_below="@id/textViewSharedWith"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        >
+
+        <RadioButton
+            android:id="@+id/Public"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Public"
+            />
+
+        <!--             <LinearLayout
+                         android:id="@+id/selectPhoneContacts"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal" >-->
+
+        <RadioButton
+            android:id="@+id/PhoneContacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone Contacts"
+            android:checked="true"/>
+
+        <!--                   <Button
+                               android:layout_height="wrap_content"
+                               android:layout_width="wrap_content"
+                               android:text="Clear All"
+                               android:id="@+id/clearAll"/>
+
+                       </LinearLayout>-->
+
+
+    </RadioGroup>
+
+        <RelativeLayout
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="Select All"
+            android:id="@+id/btnCheckAll"/>
+
+        </RelativeLayout>
+
+
+        <ListView
+            android:id="@+id/listviewPhoneContacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_weight="3"
+            >
+        </ListView>
+
+    </LinearLayout>
+
+    </ScrollView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+
+        >
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:id="@+id/save"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CANCEL"
+        android:id="@+id/cancel"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

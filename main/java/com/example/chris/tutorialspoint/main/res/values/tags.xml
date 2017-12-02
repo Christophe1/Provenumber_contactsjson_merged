@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+ <string name="getthename" type="id"/>
+    <string name="getthenumber" type="id"/>
+    <string name="getthelookup" type="id"/>
+
+</resources>
+
+<!--<item type="id" name="imageURI" />-->
