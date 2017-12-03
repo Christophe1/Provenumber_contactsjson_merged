@@ -1,5 +1,6 @@
 package com.example.chris.tutorialspoint;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -61,6 +62,11 @@ public class PopulistoListView extends AppCompatActivity {
     String jsonArrayAllPhoneContacts;
     String phoneNumberofContact;
 
+    //declare an activity object so we can
+    //call populistolistview and shut it down in ViewContact
+    //so that we will only have one instance of populistolistview
+    public static Activity fa;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +74,8 @@ public class PopulistoListView extends AppCompatActivity {
 
         // textphonenumber = (TextView) findViewById(R.id.textView3);
 
+        //populistolistview is the activity object
+        fa = this;
         listView = (ListView) findViewById(R.id.list);
         adapter = new CustomPopulistoListAdapter(this, reviewList);
         listView.setAdapter(adapter);
@@ -180,7 +188,7 @@ public class PopulistoListView extends AppCompatActivity {
                 startActivity(i);
 
                 Toast.makeText(PopulistoListView.this, "PopulistoListView: the review id is " + review.getReviewid(), Toast.LENGTH_SHORT).show();
-
+               // finish();
             }
 
 
@@ -230,6 +238,14 @@ public class PopulistoListView extends AppCompatActivity {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+        adapter.notifyDataSetChanged();
+
     }
 
 }

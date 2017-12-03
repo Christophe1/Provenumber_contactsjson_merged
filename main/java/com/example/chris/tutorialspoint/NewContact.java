@@ -676,6 +676,8 @@ public class NewContact extends AppCompatActivity  {
 
                     //add the phone number
                     phoneOwner.put("checkedContact", phoneNoofUserCheck);
+                    System.out.println("NewContact: phoneOwner: " + phoneOwner);
+
 
                     //add it to the Array
                     checkedContacts.put(phoneOwner);

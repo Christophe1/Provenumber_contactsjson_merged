@@ -106,13 +106,13 @@ public class EditContact extends AppCompatActivity {
 
         final Button btnCheckAll = (Button) findViewById(R.id.btnCheckAll);
 
+        //we want to get the phone number of the current user for posting
+        //as a checkedcontact, phoneOwner.put("checkedContact", phoneNoofUserCheck);
+        //so, they will always see their own reviews
 
-        //(getting user_id a different way)
-        //first of all we want to get the phone number of the current user so we
-        //can post it and then get the user_id in php
         //get the phone number, stored in an XML file, when the user first registered the app
-        //SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        //final String phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        final String phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
 
 
         //cast an EditText for each of the field ids in activity_edit_contact.xmlxml
@@ -182,7 +182,7 @@ public class EditContact extends AppCompatActivity {
                     Toast.makeText(EditContact.this, "Public", Toast.LENGTH_LONG).show();
                     //If 'public' is selected, set pub_or_priv = 1
                     //this will save the review as public
-                   // public_or_private=1;
+                    // public_or_private=1;
                     //call the function to check all checkboxes in NewContact
                     //loop through the Matching Contacts
                     int count = MatchingContactsAsArrayList.size();
@@ -194,10 +194,10 @@ public class EditContact extends AppCompatActivity {
                     }
 
                 }
-              //  else
-                    //If 'phone contacts' is selected, set pub_or_priv = 0
-                    //this will save the review as private
-                   // public_or_private=0;
+                //  else
+                //If 'phone contacts' is selected, set pub_or_priv = 0
+                //this will save the review as private
+                // public_or_private=0;
                 //System.out.println("EditContact, after onCheckChange, should be 0: " + public_or_private);
             }
         });
@@ -238,6 +238,10 @@ public class EditContact extends AppCompatActivity {
 
             public void onClick(View view) {
                 System.out.println("you clicked it, save");
+
+                //close the populistolistview class
+                //(we'll be opening it again, will close now so it will be refreshed)
+                PopulistoListView.fa.finish();
 
                 pDialog = new ProgressDialog(EditContact.this);
                 // Showing progress dialog for the review being saved
@@ -303,11 +307,14 @@ public class EditContact extends AppCompatActivity {
 
                     //add the phone number
                     phoneOwner.put("checkedContact", phoneNoofUserCheck);
+                    System.out.println("EditContact: phoneNoofUserCheck: " + phoneNoofUserCheck);
+                    System.out.println("EditContact: phoneOwner: " + phoneOwner);
+
 
                     //add it to the Array
                     checkedContacts.put(phoneOwner);
 
-                    System.out.println("checkedContacts JSON Array: " + checkedContacts);
+                    System.out.println("EditContact: checkedContacts JSON Array: " + checkedContacts);
 
                     //responseText, Toast.LENGTH_LONG).show();
 
@@ -370,15 +377,21 @@ public class EditContact extends AppCompatActivity {
                 //when saved, go back to the PopulistoListView class and update with
                 //the edited values
                 Intent j = new Intent(EditContact.this, PopulistoListView.class);
-                j.putExtra("category", categoryname.getText().toString());
+/*                j.putExtra("category", categoryname.getText().toString());
                 j.putExtra("name", namename.getText().toString());
                 j.putExtra("phone", phonename.getText().toString());
                 j.putExtra("address", addressname.getText().toString());
-                j.putExtra("comment", commentname.getText().toString());
+                j.putExtra("comment", commentname.getText().toString());*/
+
+            //    j.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//startactivity only once with intent
+                // android:launchMode="singleInstance"
+                // android:launchMode="singleInstance"
+                //https://stackoverflow.com/questions/8132939/how-to-keep-a-single-activity-instance-but-be-able-to-update-the-view
 
                 EditContact.this.startActivity(j);
 
-                // clear the checkbox state, we only want to keep it when the app resumes
+                // clear the checkbox state of checked contacts, we only want to keep it when the app resumes
                 SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
                 preferences.edit().clear().commit();
 
@@ -558,12 +571,12 @@ public class EditContact extends AppCompatActivity {
 
         super.onResume();
 
-      //  selectPhoneContacts.clear();
+        //  selectPhoneContacts.clear();
 
-      //  EditContact.LoadContact loadContact = new EditContact.LoadContact();
+        //  EditContact.LoadContact loadContact = new EditContact.LoadContact();
 
 
-      //  loadContact.execute();
+        //  loadContact.execute();
 //        adapter.notifyDataSetChanged();
         Toast.makeText(EditContact.this, "resuming!", Toast.LENGTH_SHORT).show();
 
@@ -597,5 +610,8 @@ public class EditContact extends AppCompatActivity {
         preferences.edit().clear().commit();
         finish();
     }
+
+
+
 
 }

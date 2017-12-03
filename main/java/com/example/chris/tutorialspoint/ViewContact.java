@@ -368,6 +368,9 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
                 startActivity(i);
 
+                //close this activity, ViewContact
+                finish();
+
             }
         });
 

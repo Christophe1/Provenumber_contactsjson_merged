@@ -40,7 +40,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.chris.tutorialspoint.PopulistoListView" />
+        <activity android:name="com.example.chris.tutorialspoint.PopulistoListView"
+            android:launchMode="singleInstance"
+            />
         <activity android:name="com.example.chris.tutorialspoint.CountryCodes" />
         <activity android:name="com.example.chris.tutorialspoint.ViewContact"
             android:noHistory="true"
