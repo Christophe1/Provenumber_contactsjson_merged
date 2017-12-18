@@ -14,7 +14,8 @@ public class Review {
     //public static String reviewidtoString;
    // public static String reviewid;
 
-
+    //this needs to be here even though it is empty,
+    //otherwise I get an error
     public Review() {
     }
 

@@ -70,6 +70,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
     // we will be making all phone contacts as a JsonArray
     JSONArray jsonArrayAllPhonesandNamesofContacts = new JSONArray();
+
+    //matching contacts, those on phone and populisto users
     ArrayList<String> MatchingContactsAsArrayList;
 
 
@@ -126,6 +128,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         Log.v("index value", phoneNoofUser);
         Log.v("index value", CountryCode);
+
+        //clear these arraylists when the app starts
+        //because I was getting repeats of names and phone numbers
+        allPhonesofContacts.clear();
+        allNamesofContacts.clear();
 
         //  if the user has not already registered, if there is nothing in the SharedPreferences file,
         // then when they click the Send Message button
@@ -446,6 +453,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                     //allPhonesofContacts is a list of all the phone numbers in the user's contacts
                     allPhonesofContacts.add(phoneNumberofContact);
+
                     //allNamesofContacts is a list of all the names in the user's contacts
                     allNamesofContacts.add(name);
 
@@ -464,9 +472,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
                     SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
 
-                   // prefsEditor.clear();
-                   // prefsEditor.commit();
-
                     Gson gson = new Gson();
                     String json = gson.toJson(allPhonesofContacts);
                     prefsEditor.putString("allPhonesofContacts", json);
@@ -479,15 +484,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
                     SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
 
-                   // prefsEditor2.clear();
-                    //prefsEditor2.commit();
-
-
-
-                    //first of all, clear what is already in prefsEditor2
-                    //because I was getting repeats of names and phone numbers
-                    //prefsEditor2.clear();
-                    //prefsEditor2.commit();
                     //now, let's put in the string of names
                     Gson gsonNames = new Gson();
                     String jsonNames = gsonNames.toJson(allNamesofContacts);
@@ -564,6 +560,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        //AppController.getInstance().getRequestQueue().getCache().remove(CHECKPHONENUMBER_URL);
+
                         //toast the phone contacts who are also app contacts, this is done on the PHP side
                         // it will be a JSONArray of the form [{"phone_number":"+35312345"}, {"phone_number": etc...
                         // We get this from our php file, checkcontact.php. Then we will convert to a string
@@ -648,18 +646,21 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         //Hopefully this takes care of a bug in Volley(?)
         //it stops the data being sent twice if internet connection is slow
         //and the list being shown twice
-        stringRequest.setShouldCache(false);
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                0,0,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //stringRequest.setShouldCache(false);
+        //stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+        //  0,0,
+        //  DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 
         // Adding request to request queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 
+        // Adding request to request queue
+        //AppController.getInstance().addToRequestQueue(stringRequest);
 
     }
+
 
 
 }
