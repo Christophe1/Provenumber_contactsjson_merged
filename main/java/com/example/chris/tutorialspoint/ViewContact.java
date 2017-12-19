@@ -707,13 +707,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         }
     }
 
-    private void getPrefs() {
-
-
-
-
-
-    }
 
     //for the backbutton, clear the checkbox state
     //@Override
@@ -723,6 +716,16 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
         preferences.edit().clear().commit();
         finish();
+    }
+
+
+    protected void onDestroy() {
+
+        super.onDestroy();
+        //make sure that when the activity dies the load dialogue dies
+        //with it, otherwise we get a memory leak error and app can crash
+        hidePDialog();
+
     }
 
 

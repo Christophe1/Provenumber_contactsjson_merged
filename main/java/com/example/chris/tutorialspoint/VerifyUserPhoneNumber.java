@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -57,8 +58,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     // this is the php file name where to insert into the database, the user's phone number
     private static final String REGISTER_URL = "http://www.populisto.com/insert.php";
 
-    //*************TO DO WITH COMPARING APP CONTACTS AND PHONE CONTACTS*******************
-
     // this is the php file we are contacting with Volley to see what contacts are using the App
     private static final String CHECKPHONENUMBER_URL = "http://www.populisto.com/checkcontact.php";
 
@@ -70,6 +69,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
     // we will be making all phone contacts as a JsonArray
     JSONArray jsonArrayAllPhonesandNamesofContacts = new JSONArray();
+
+    //matching contacts, those on phone and populisto users
     ArrayList<String> MatchingContactsAsArrayList;
 
 
@@ -98,6 +99,85 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //execute the AsyncTask, do stuff in the background
+        VerifyUserPhoneNumber.StartUpInfo startUpInfo = new VerifyUserPhoneNumber.StartUpInfo();
+        startUpInfo.execute();
+
+    }
+
+    //AsyncTask
+    private class StartUpInfo extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            //  when the activity loads, check to see if phoneNoofUser is using the App,if the user is
+            // already registered, by checking the MyData XML file
+            SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+            phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
+
+            //  when the activity loads, check to see if CountryCode is in there,if the user is
+            // already registered, by checking the MyData XML file
+            // We need this for putting phone contacts into E164
+            SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+            CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
+
+            Log.v("index value", phoneNoofUser);
+            Log.v("index value", CountryCode);
+
+            //clear these arraylists when the app starts
+            //because I was getting repeats of names and phone numbers
+            allPhonesofContacts.clear();
+            allNamesofContacts.clear();
+
+            //  if the user has not already registered, if there is nothing in the SharedPreferences file,
+            // then start the sendSMSandRegisterUser function
+            if ( phoneNoofUser == null || phoneNoofUser.equals("") ) {
+
+                sendSMSandRegisterUser();
+
+            }
+            else {
+                // if it is registered then
+                //get all the contacts on the user's phone
+                getPhoneContacts();
+
+                //convert all contacts on the user's phone to JSON
+                convertNumberstoJSON();
+
+                // then start the next activity, PopulistoListView
+                Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+                //we need phoneNoofUser so we can get user_id and corresponding
+                //reviews in the next activity
+                myIntent.putExtra("keyName", phoneNoofUser);
+                VerifyUserPhoneNumber.this.startActivity(myIntent);
+
+
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+
+        }
+    }
+
+
+    protected void sendSMSandRegisterUser() {
+
+        //if the user has not yet registered then start the verify number xml
         setContentView(R.layout.verify_phone_number);
 
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
@@ -113,59 +193,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
 
-        //  when the activity loads, check to see if phoneNoofUser is using the App,if the user is
-        // already registered, by checking the MyData XML file
-        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
-
-        //  when the activity loads, check to see if CountryCode is in there,if the user is
-        // already registered, by checking the MyData XML file
-        // We need this for putting phone contacts into E164
-        SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
-
-        Log.v("index value", phoneNoofUser);
-        Log.v("index value", CountryCode);
-
-        //clear these arraylists when the app starts
-        //because I was getting repeats of names and phone numbers
-        allPhonesofContacts.clear();
-        allNamesofContacts.clear();
-
-        //  if the user has not already registered, if there is nothing in the SharedPreferences file,
-        // then when they click the Send Message button
-        //call sendSMSMessage()
-        if ( phoneNoofUser == null || phoneNoofUser.equals("") ) {
-
-            btnSendSMS.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    System.out.println("you clicked it, send message");
-                    sendSMSMessage();
-
-                }
-            });
-
-
-        }
-        else {
-            // if it is registered then
-            //get all the contacts on the user's phone
-            getPhoneContacts();
-
-            //convert all contacts on the user's phone to JSON
-            convertNumberstoJSON();
-
-            // then start the next activity, PopulistoListView
-            Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
-            //we need phoneNoofUser so we can get user_id and corresponding
-            //reviews in the next activity
-            myIntent.putExtra("keyName", phoneNoofUser);
-            VerifyUserPhoneNumber.this.startActivity(myIntent);
-
-
-        }
-
-        //...back to if the user is registering, has not yet used the App
         //when 'Select Country' Text is clicked
         //load the new activity CountryCodes showing the list of all countries
         txtSelectCountry.setOnClickListener(new View.OnClickListener() {
@@ -178,10 +205,22 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         });
 
         txtCountryCode =(TextView) findViewById(R.id.txtCountryCode);
-        Intent myIntent =this.getIntent();
-        //coming back to this activity, put in the Country code selected by the user in CountryCodes.java
+        Intent myIntent = VerifyUserPhoneNumber.this.getIntent();
+
+        //coming back to this activity, put in the Country code selected
+        //by the user in CountryCodes.java
         CountryCode = myIntent.getStringExtra("CountryCode");
         txtCountryCode.setText(CountryCode);
+
+
+        btnSendSMS.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                System.out.println("you clicked it, send message");
+                sendSMSMessage();
+
+            }
+        });
+
     }
 
 
@@ -212,16 +251,15 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
                     smsMessage = msgs[0];
                     origNumber = smsMessage.getOriginatingAddress();
-                } else {
+                }
+
+                //or else for older phones
+                else {
                     Object pdus[] = (Object[]) extras.get("pdus");
                     smsMessage = SmsMessage.createFromPdu((byte[]) pdus[0]);
                     origNumber = smsMessage.getOriginatingAddress();
 
                 }
-
-//                Object[] pdus = (Object[]) extras.get("pdus");
-//                SmsMessage msg = SmsMessage.createFromPdu((byte[]) pdus[0]);
-//                origNumber = msg.getOriginatingAddress();
 
                 Toast.makeText(getApplicationContext(), "Originating number" + origNumber, Toast.LENGTH_LONG).show();
                 Toast.makeText(getApplicationContext(), "Sent to number" + phoneNoofUser, Toast.LENGTH_LONG).show();
@@ -229,8 +267,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 //when the text message is received, see if originating number matches the
                 //sent to number
                 if (origNumber.equals(phoneNoofUser)) {
+
                     //save the phone number so this process is skipped in future
                     SharedPreferences sharedPreferencesphoneNoofUser = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+
                     //save the country code so this process is skipped in future
                     SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
 
@@ -239,6 +279,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                     //phoneNoofUser String is unique, the username of this particular user
                     editor.putString("phonenumberofuser", phoneNoofUser);
+
                     //we need the Country code as it is needed for determining phone contacts in E164 format
                     editor2.putString("countrycode", CountryCode);
 
@@ -270,12 +311,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         };
         registerReceiver(receiver, filter);
 
-
-
-
         //this is the number the user enters in the Phone Number textbox
         //We need to parse this, to make it into E.164 format
         phoneNoofUserbeforeE164 = txtphoneNoofUser.getText().toString();
+
         //add the country code onto the phone number, before we parse it
         phoneNoofUser = String.valueOf(CountryCode) +  String.valueOf(phoneNoofUserbeforeE164);
 
@@ -287,9 +326,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
             //phoneNoofUser in the format of E164
             phoneNoofUser = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
-            //Since you know the country you can format it as follows:
-            //System.out.println(phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164));
-        } catch (NumberParseException e) {
+
+          } catch (NumberParseException e) {
             System.err.println("NumberParseException was thrown: " + e.toString());
         }
 
@@ -313,7 +351,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     // register the user's phone number in the user table, this is called
     //when the phone number is verified, when the originating number = sent to number
     private void registerUser() {
-//REGISTER_URL is insert.php
+        //REGISTER_URL is insert.php
         StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -641,21 +679,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
             }
         };
-        //Hopefully this takes care of a bug in Volley(?)
-        //it stops the data being sent twice if internet connection is slow
-        //and the list being shown twice
-        //stringRequest.setShouldCache(false);
-        //stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-        //  0,0,
-        //  DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 
         // Adding request to request queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
-
-        // Adding request to request queue
-        //AppController.getInstance().addToRequestQueue(stringRequest);
 
     }
 

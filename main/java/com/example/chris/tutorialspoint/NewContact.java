@@ -479,7 +479,7 @@ public class NewContact extends AppCompatActivity  {
                 //if a phone number is in our array of matching contacts
                 if (MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
-                {
+                {   //add the selectContacts to the selectPhoneContacts array
                     // insert the contact at the beginning of the listview
                     selectPhoneContacts.add(0, selectContact);
                     // checkBoxforContact.setVisibility(View.VISIBLE);
@@ -608,6 +608,10 @@ public class NewContact extends AppCompatActivity  {
 
             @Override
             public void onClick(View v) {
+
+                //close the populistolistview class
+                //(we'll be opening it again, will close now so it will be refreshed)
+                PopulistoListView.fa.finish();
 
                 System.out.println("you clicked it, save");
 
