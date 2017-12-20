@@ -58,6 +58,9 @@ public class CountryCodes extends AppCompatActivity {
                 Intent myIntent = new Intent(CountryCodes.this, VerifyUserPhoneNumber.class);
                 myIntent.putExtra("CountryCode", parts[0]);
                 CountryCodes.this.startActivity(myIntent);
+
+                //close the Country Codes activity
+                finish();
             }
         });
 

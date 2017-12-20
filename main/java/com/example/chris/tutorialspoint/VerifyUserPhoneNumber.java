@@ -100,6 +100,22 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+       // setContentView(R.layout.verify_phone_number);
+
+       // btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
+
+        // GlobalFunctions simplemessage = new GlobalFunctions();
+        //GlobalFunctions.simpleMessage(VerifyUserPhoneNumber.this,"buddy buddy");
+
+        //GlobalFunctions simplemessage2 = new GlobalFunctions();
+        //simplemessage2.simpleMessage2();
+
+
+       // txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
+
+       // txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
+
+
         //execute the AsyncTask, do stuff in the background
         VerifyUserPhoneNumber.StartUpInfo startUpInfo = new VerifyUserPhoneNumber.StartUpInfo();
         startUpInfo.execute();
@@ -150,7 +166,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 getPhoneContacts();
 
                 //convert all contacts on the user's phone to JSON
-                convertNumberstoJSON();
+                //convertNumberstoJSON();
 
                 // then start the next activity, PopulistoListView
                 Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
@@ -176,54 +192,61 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
     protected void sendSMSandRegisterUser() {
-
-        //if the user has not yet registered then start the verify number xml
-        setContentView(R.layout.verify_phone_number);
-
-        btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
-
-        // GlobalFunctions simplemessage = new GlobalFunctions();
-        GlobalFunctions.simpleMessage(VerifyUserPhoneNumber.this,"buddy buddy");
-
-        GlobalFunctions simplemessage2 = new GlobalFunctions();
-        simplemessage2.simpleMessage2();
-
-
-        txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
-
-        txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
-
-        //when 'Select Country' Text is clicked
-        //load the new activity CountryCodes showing the list of all countries
-        txtSelectCountry.setOnClickListener(new View.OnClickListener() {
+    //we are loading the xml so we need to run a UI Thread
+        runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
 
-                Intent myIntent = new Intent(VerifyUserPhoneNumber.this, CountryCodes.class);
-                VerifyUserPhoneNumber.this.startActivity(myIntent);
+                //if the user has not yet registered then start the verify number xml
+
+                setContentView(R.layout.verify_phone_number);
+
+                btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
+
+                // GlobalFunctions simplemessage = new GlobalFunctions();
+                //GlobalFunctions.simpleMessage(VerifyUserPhoneNumber.this,"buddy buddy");
+
+                //GlobalFunctions simplemessage2 = new GlobalFunctions();
+                //simplemessage2.simpleMessage2();
+
+                txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
+
+                txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
+
+                txtCountryCode =(TextView) findViewById(R.id.txtCountryCode);
+
+                //when 'Select Country' Text is clicked
+                //load the new activity CountryCodes showing the list of all countries
+                txtSelectCountry.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent myIntent = new Intent(VerifyUserPhoneNumber.this, CountryCodes.class);
+                        VerifyUserPhoneNumber.this.startActivity(myIntent);
+                    }
+                });
+
+                //coming back to this activity, put in the Country code selected
+                //by the user in CountryCodes.java
+                Intent myIntent = VerifyUserPhoneNumber.this.getIntent();
+                CountryCode = myIntent.getStringExtra("CountryCode");
+                txtCountryCode.setText(CountryCode);
+
+
+                btnSendSMS.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View view) {
+                        System.out.println("you clicked it, send message");
+                        sendSMSMessage();
+
+                    }
+                });
+
             }
         });
 
-        txtCountryCode =(TextView) findViewById(R.id.txtCountryCode);
-        Intent myIntent = VerifyUserPhoneNumber.this.getIntent();
 
-        //coming back to this activity, put in the Country code selected
-        //by the user in CountryCodes.java
-        CountryCode = myIntent.getStringExtra("CountryCode");
-        txtCountryCode.setText(CountryCode);
-
-
-        btnSendSMS.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                System.out.println("you clicked it, send message");
-                sendSMSMessage();
-
-            }
-        });
 
     }
-
-
 
 
     protected void sendSMSMessage() {
@@ -445,8 +468,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             do {
                 System.out.println("=====>in while");
 
-
-
 //                        get a handle on the display name, which is a string
                 name = cursor.getString(nameIdx);
 
@@ -496,11 +517,19 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     System.out.println(" Name--->" + name);
                     System.out.println(" Phone number of contact--->" + phoneNumberofContact);
 
+
                     // then start the next activity, PopulistoListView
                     Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
-                    myIntent1.putExtra("phoneNumberofContact", phoneNumberofContact);
-                    myIntent1.putExtra("phoneNameofContact", name);
-                    //VerifyUserPhoneNumber.this.startActivity(myIntent1);
+
+                    //it looks like the putExtra info here is not needed,
+                    //there's no phoneNumberofContact or phoneNameofContact
+                    //in populistolistview
+
+                    // myIntent1.putExtra("phoneNumberofContact", phoneNumberofContact);
+                    //myIntent1.putExtra("phoneNameofContact", name);
+                    VerifyUserPhoneNumber.this.startActivity(myIntent1);
+
+
 
 
                     //we will save the array list allPhonesofContacts,
@@ -527,7 +556,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     prefsEditor2.commit();
 
                 }
-
             }
 
 
@@ -538,12 +566,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             System.out.println("here is the list of names in contacts :" + allNamesofContacts);
 
 
-
-        }
-
-
-
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             cursor.close();
         } finally {
@@ -552,8 +575,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 //                }
         }
 
-    }
+        //convert all contacts on the user's phone to JSON
+        convertNumberstoJSON();
 
+    }
 
     //CONVERT all phone contacts on the user's phone  - the allPhonesofContacts array, into JSON
     //we will be using this array to see which numbers are already users of our app
