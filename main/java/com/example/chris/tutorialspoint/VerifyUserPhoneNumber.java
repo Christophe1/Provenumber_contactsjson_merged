@@ -192,7 +192,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
     protected void sendSMSandRegisterUser() {
-    //we are loading the xml so we need to run a UI Thread
+    //we are loading the xml so we need to run a UI Thread. This is necessary
+    //when showing xml from the doInBackground
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

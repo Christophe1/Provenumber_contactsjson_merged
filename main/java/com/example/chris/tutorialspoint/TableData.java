@@ -6,13 +6,15 @@ import android.provider.BaseColumns;
  * Created by Chris on 26/12/2017.
  */
 
-public class TableData {
+public final class TableData {
 
     public TableData(){
 
     }
 
-    public static abstract class TableInfo implements BaseColumns{
+    public static abstract class TableInfo {
+
+        //These are column names inside the Table
 
         public static final String CAT_NAME = "cat_name";
         public static final String NAME = "name";
