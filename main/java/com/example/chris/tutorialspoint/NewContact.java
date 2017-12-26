@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -64,6 +65,10 @@ public class NewContact extends AppCompatActivity  {
 
     //depends on radio button selected
     int public_or_private;
+
+    //these are strings for cat name, name etc..
+    //we will be putting these values into our sqlLite db
+    String cat_name, name;
     //*******************
 
     // Details in this comment are for the PHONE CONTACTS LISTVIEW, so
@@ -87,7 +92,8 @@ public class NewContact extends AppCompatActivity  {
     String phoneNameofContact;
    // CheckBox checkBox2;
 
-
+    //for DatabaseOperations
+    Context ctx = this;
     //*******************************
    // ArrayList<SelectPhoneContact> possiblecheckedContacts = selectPhoneContacts;
 
@@ -96,6 +102,8 @@ public class NewContact extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
 
+        //hide keyboard on activity start up
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
         selectPhoneContacts = new ArrayList<SelectPhoneContact>();
@@ -129,13 +137,6 @@ public class NewContact extends AppCompatActivity  {
         phonename = (EditText) findViewById(R.id.textViewPhone);
         addressname = (EditText) findViewById(R.id.textViewAddress);
         commentname = (EditText) findViewById(R.id.textViewComment);
-
-
-
-
-
-
-
 
 
         rbu1 = (RadioButton) findViewById(R.id.PhoneContacts);
@@ -615,6 +616,22 @@ public class NewContact extends AppCompatActivity  {
 
                 System.out.println("you clicked it, save");
 
+                //we want to save category
+                //name
+                //phone
+                //address
+                //comment
+                //and contacts with whom review is shared with
+                //into a SQLlite db
+                cat_name = categoryname.getText().toString();
+                name = namename.getText().toString();
+
+                //put cat and name into the table
+                DatabaseOperations DB = new DatabaseOperations(ctx);
+                DB.putInformation(DB, cat_name, name);
+                Toast.makeText(NewContact.this, "cat and name put into SQLLite", Toast.LENGTH_LONG).show();
+
+
                 pDialog = new ProgressDialog(NewContact.this);
                 // Showing progress dialog for the review being saved
                 pDialog.setMessage("Saving...");
@@ -759,6 +776,7 @@ public class NewContact extends AppCompatActivity  {
 
                 NewContact.this.startActivity(j);
 
+                //finish this activity
                 finish();
 
 

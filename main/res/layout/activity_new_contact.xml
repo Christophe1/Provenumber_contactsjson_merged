@@ -24,43 +24,49 @@
 
             <EditText
                 android:id="@+id/textViewCategory"
+                android:hint="Category"
                 android:layout_width="match_parent"
                 android:layout_height="0px"
-                android:background="@drawable/back"
+                android:background="@drawable/edit_text_design"
                 android:layout_weight="1"
-                android:textSize="30dp" />
+                android:textSize="18dp" />
 
             <EditText
                 android:id="@+id/textViewName"
-                android:layout_width="match_parent"
+                android:drawablePadding="5dp"
+                android:hint="Name"
+                android:layout_width="50dp"
                 android:layout_height="0px"
                 android:background="@drawable/back"
                 android:layout_weight="1"
-                android:textSize="30dp" />
+                android:textSize="18dp" />
 
             <EditText
                 android:id="@+id/textViewPhone"
+                android:hint="Phone number"
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:background="@drawable/back"
                 android:layout_weight="1"
-                android:textSize="30dp" />
+                android:textSize="18dp" />
 
             <EditText
                 android:id="@+id/textViewAddress"
+                android:hint="Address"
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:background="@drawable/back"
                 android:layout_weight="1"
-                android:textSize="30dp" />
+                android:textSize="18dp" />
 
             <EditText
                 android:id="@+id/textViewComment"
+                android:hint="Comment"
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:background="@drawable/back"
                 android:layout_weight="1"
-                android:textSize="30dp" />
+                android:textSize="18dp" />
 
 
             <TextView
@@ -69,7 +75,7 @@
                 android:layout_height="0px"
                 android:text="Share With: "
                 android:layout_weight="1"
-                android:textSize="30dp" />
+                android:textSize="18dp" />
 
             <RadioGroup
                 android:id="@+id/SharedWith"
