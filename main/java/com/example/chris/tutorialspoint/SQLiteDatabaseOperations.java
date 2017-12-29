@@ -63,16 +63,16 @@ public class SQLiteDatabaseOperations extends SQLiteOpenHelper {
 
     }
 
-    public Cursor getInformation(SQLiteDatabaseOperations dop) {
+    public Cursor getInformation(SQLiteDatabase db) {
 
-        SQLiteDatabase SQ = dop.getReadableDatabase();
+        //SQLiteDatabase SQ = dop.getReadableDatabase();
         {
             //make an array of the column names in the table
             String[] columns = {CAT_NAME, NAME};
 
-            Cursor CR = SQ.query(TABLE_NAME, columns, null, null, null, null, null);
+            Cursor cursor = db.query(TABLE_NAME, columns, null, null, null, null, null);
 
-            return CR;
+            return cursor;
 
         }
 

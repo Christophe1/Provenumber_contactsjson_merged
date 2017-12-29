@@ -10,7 +10,7 @@ public class Review {
     //int reviewid;
   //  private int year;
   //  private double rating;
-    private ArrayList<String> genre;
+    //private ArrayList<String> genre;
     //public static String reviewidtoString;
    // public static String reviewid;
 
@@ -19,9 +19,16 @@ public class Review {
     public Review() {
     }
 
-    public Review(String category, String thumbnailUrl, String name, String phone, String address,
-                  String comment, String reviewid, double rating,
-                  ArrayList<String> genre) {
+    public Review(String category,
+                 // String thumbnailUrl,
+                  String name,
+                  String phone,
+                  String address,
+                  String comment,
+                  String reviewid
+                 // double rating,
+                  //ArrayList<String> genre
+    ) {
         this.category = category;
        // this.thumbnailUrl = thumbnailUrl;
         this.name = name;

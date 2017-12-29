@@ -100,7 +100,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       // setContentView(R.layout.verify_phone_number);
+
+
+        // setContentView(R.layout.verify_phone_number);
 
        // btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
 
@@ -133,6 +135,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         @Override
         protected Void doInBackground(Void... params) {
+
 
             //  when the activity loads, check to see if phoneNoofUser is using the App,if the user is
             // already registered, by checking the MyData XML file
@@ -169,7 +172,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 //convertNumberstoJSON();
 
                 // then start the next activity, PopulistoListView
-                Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+                Intent myIntent = new Intent(VerifyUserPhoneNumber.this, DisplayMyPopulistoListView.class);
                 //we need phoneNoofUser so we can get user_id and corresponding
                 //reviews in the next activity
                 myIntent.putExtra("keyName", phoneNoofUser);
@@ -192,7 +195,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
     protected void sendSMSandRegisterUser() {
-    //we are loading the xml so we need to run a UI Thread. This is necessary
+    //we are loading the xml for first registering so we need to run a UI Thread. This is necessary
     //when showing xml from the doInBackground
         runOnUiThread(new Runnable() {
             @Override
@@ -319,7 +322,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     convertNumberstoJSON();
 
                     //start next activity, taking the phone number
-                    Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+                    Intent myIntent = new Intent(VerifyUserPhoneNumber.this, DisplayMyPopulistoListView.class);
                     myIntent.putExtra("keyName", phoneNoofUser);
                     VerifyUserPhoneNumber.this.startActivity(myIntent);
 
@@ -520,7 +523,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
                     // then start the next activity, PopulistoListView
-                    Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+                    Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, DisplayMyPopulistoListView.class);
 
                     //it looks like the putExtra info here is not needed,
                     //there's no phoneNumberofContact or phoneNameofContact

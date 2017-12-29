@@ -620,7 +620,10 @@ public class NewContact extends AppCompatActivity  {
                 cat_name = categoryname.getText().toString();
                 name = namename.getText().toString();
 
-
+                //execute the AsyncTask, do stuff in the background
+                BackGroundTask backGroundTask = new BackGroundTask(ctx);
+                //pass a string, add info, for data insertion
+                backGroundTask.execute("add info",cat_name,name);
 
                 try {
                     System.out.println("we're in the try part");
@@ -703,8 +706,8 @@ public class NewContact extends AppCompatActivity  {
 
 
                 //execute the AsyncTask, do stuff in the background
-                NewContact.SaveNewContact saveNewContact = new NewContact.SaveNewContact();
-                saveNewContact.execute();
+                //NewContact.SaveNewContact saveNewContact = new NewContact.SaveNewContact();
+                //saveNewContact.execute();
 
 
 
@@ -716,7 +719,7 @@ public class NewContact extends AppCompatActivity  {
 
 
 
-
+//THIS IS NOT USED
     private class SaveNewContact extends AsyncTask<Void, Void, Void>
     {
 
