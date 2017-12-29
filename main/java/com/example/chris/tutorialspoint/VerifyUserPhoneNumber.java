@@ -120,7 +120,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         //execute the AsyncTask, do stuff in the background
         VerifyUserPhoneNumber.StartUpInfo startUpInfo = new VerifyUserPhoneNumber.StartUpInfo();
-        startUpInfo.execute();
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            startUpInfo.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        else
+            startUpInfo.execute();
 
     }
 

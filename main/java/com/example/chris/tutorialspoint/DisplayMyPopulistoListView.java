@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
@@ -29,7 +30,7 @@ import java.util.Map;
 
 public class DisplayMyPopulistoListView extends AppCompatActivity {
 //just for testing
-    ListView listView ;
+   // ListView listView ;
 
     //for SQLiteDatabaseOperations
     Context ctx = this;
@@ -39,8 +40,8 @@ public class DisplayMyPopulistoListView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.phone_listview_contacts);
 
-        listView = (ListView) findViewById(R.id.list);
-
+        //listView = (ListView) findViewById(R.id.list);
+/*
         String[] values = new String[] { "Android List View",
                 "Adapter implementation",
                 "Simple List View In Android",
@@ -55,12 +56,17 @@ public class DisplayMyPopulistoListView extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, values);
 
-        listView.setAdapter(adapter);
+        listView.setAdapter(adapter);*/
 
         //execute the AsyncTask, do stuff in the background
 
-       // BackGroundTask backGroundTask = new BackGroundTask(this);
-       // backGroundTask.execute("get info");
+        BackGroundTask backGroundTask = new BackGroundTask(this);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            backGroundTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "get info");
+        else
+
+        backGroundTask.execute("get info");
 
         //DisplayMyPopulistoListView.ShowMyPopulisto showMyPopulisto = new DisplayMyPopulistoListView.ShowMyPopulisto();
         //showMyPopulisto.execute();
