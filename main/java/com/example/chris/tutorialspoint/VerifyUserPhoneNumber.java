@@ -120,13 +120,16 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
         //execute the AsyncTask, do stuff in the background
         VerifyUserPhoneNumber.StartUpInfo startUpInfo = new VerifyUserPhoneNumber.StartUpInfo();
+        startUpInfo.execute();
 
+/*
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
             startUpInfo.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         else
             startUpInfo.execute();
-
+*/
     }
+
 
     //AsyncTask
     private class StartUpInfo extends AsyncTask<Void, Void, Void> {
@@ -176,7 +179,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 //convertNumberstoJSON();
 
                 // then start the next activity, PopulistoListView
-                Intent myIntent = new Intent(VerifyUserPhoneNumber.this, DisplayMyPopulistoListView.class);
+                Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
                 //we need phoneNoofUser so we can get user_id and corresponding
                 //reviews in the next activity
                 myIntent.putExtra("keyName", phoneNoofUser);
@@ -326,9 +329,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     convertNumberstoJSON();
 
                     //start next activity, taking the phone number
-                    Intent myIntent = new Intent(VerifyUserPhoneNumber.this, DisplayMyPopulistoListView.class);
+/*                    Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
                     myIntent.putExtra("keyName", phoneNoofUser);
-                    VerifyUserPhoneNumber.this.startActivity(myIntent);
+                    VerifyUserPhoneNumber.this.startActivity(myIntent);*/
 
 
                 }
@@ -527,7 +530,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
                     // then start the next activity, PopulistoListView
-                    Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, DisplayMyPopulistoListView.class);
+                    Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
 
                     //it looks like the putExtra info here is not needed,
                     //there's no phoneNumberofContact or phoneNameofContact
@@ -635,7 +638,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         // it will be a JSONArray of the form [{"phone_number":"+35312345"}, {"phone_number": etc...
                         // We get this from our php file, checkcontact.php. Then we will convert to a string
                         // and extract the phone numbers and compare against the contacts on the user's phone.
-                        Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
+
+                        //Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
                         System.out.println("the Populisto contacts of this user are :" + response);
                         //convert the JSONArray, the response, to a string
                         String MatchingContactsAsString = response.toString();

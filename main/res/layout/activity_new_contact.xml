@@ -33,9 +33,8 @@
 
             <EditText
                 android:id="@+id/textViewName"
-                android:drawablePadding="5dp"
                 android:hint="Name"
-                android:layout_width="50dp"
+                android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:background="@drawable/back"
                 android:layout_weight="1"

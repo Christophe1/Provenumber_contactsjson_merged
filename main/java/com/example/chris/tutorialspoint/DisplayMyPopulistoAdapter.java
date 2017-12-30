@@ -15,8 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
+
+/*************************
  * Created by Chris on 28/12/2017.
+ * THIS IS USED FOR SQLITE INSERTION. Not using it for the time being,
+ * sticking with getting the details from server and see how fast it is.
+ *
+ * IT WORKS IN CONJUNCTION WITH :
+ * displayMyPopulistoListView.java
+ * TableData.java
+ * SQLiteDatabaseOperations.java
+ * BackGroundTask.java
  */
 
 public class DisplayMyPopulistoAdapter extends ArrayAdapter {

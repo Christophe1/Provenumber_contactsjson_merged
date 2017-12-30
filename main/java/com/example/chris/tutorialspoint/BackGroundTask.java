@@ -16,12 +16,16 @@ import com.example.tutorialspoint.R;
 
 public class BackGroundTask extends AsyncTask<String, Review, String> {
 
+    //define a context object
     Context ctx;
+
     DisplayMyPopulistoAdapter displayMyPopulistoAdapter;
     Activity activity;
     ListView listView;
-    BackGroundTask(Context ctx) {
 
+    //create a constructor using the Context argument
+    BackGroundTask(Context ctx) {
+        //initialise
         this.ctx = ctx;
         activity = (Activity) ctx;
     }
@@ -43,16 +47,18 @@ public class BackGroundTask extends AsyncTask<String, Review, String> {
         if (method.equals("add info"))
 
         {
-
+            //give the values we want to insert into the table params values
             String cat_name = params[1];
             String name = params[2];
+
             SQLiteDatabase db = sQLiteDatabaseOperations.getWritableDatabase();
+
+            //call the putInformation method from sQLiteDatabaseOperations
             sQLiteDatabaseOperations.putInformation(db, cat_name, name);
 
+            //toast the result in onPostExecute
             return cat_name + " + " + name + " are inserted";
         }
-
-        //SQLiteDatabaseOperations sqLiteDatabaseOperations = new SQLiteDatabaseOperations(ctx);
 
         //if the method name is "get info"
         else if (method.equals("get info"))
@@ -65,6 +71,7 @@ public class BackGroundTask extends AsyncTask<String, Review, String> {
 
             //Now call this method using the sQLiteDatabaseOperations object,
             //and pass the SQL database object, which is db
+            //save the info in the cursor object
             Cursor cursor = sQLiteDatabaseOperations.getInformation(db);
             displayMyPopulistoAdapter = new DisplayMyPopulistoAdapter(ctx, R.layout.populisto_list_row);
 

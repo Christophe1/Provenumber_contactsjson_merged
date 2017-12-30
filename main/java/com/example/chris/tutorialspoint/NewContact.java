@@ -69,7 +69,7 @@ public class NewContact extends AppCompatActivity  {
 
     //these are strings for cat name, name etc..
     //we will be putting these values into our sqlLite db
-    String cat_name, name;
+    //String cat_name, name;
     //*******************
 
     // Details in this comment are for the PHONE CONTACTS LISTVIEW, so
@@ -604,6 +604,8 @@ public class NewContact extends AppCompatActivity  {
         }
     }
 
+
+    //for the SAVE button
     private void saveContactButton() {
 
         save.setOnClickListener(new View.OnClickListener() {
@@ -611,19 +613,30 @@ public class NewContact extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
 
+                //*******FOR SQLITE DB INSERTION ********************
                 //we want to save into a SQLlite db category
+                //review_id
+                //cat_id
+                //cat_name
+                //user_id
                 //name
                 //phone
                 //address
                 //comment
+                //public_or_private
                 //and contacts with whom review is shared with
-                cat_name = categoryname.getText().toString();
-                name = namename.getText().toString();
+                //cat_name = categoryname.getText().toString();
+                //name = namename.getText().toString();
+
+                //create an object of the BackGroundTask class, backGroundTask
+                //pass this activity, ctx, as the object
+                //BackGroundTask backGroundTask = new BackGroundTask(ctx);
 
                 //execute the AsyncTask, do stuff in the background
-                BackGroundTask backGroundTask = new BackGroundTask(ctx);
-                //pass a string, add info, for data insertion
-                backGroundTask.execute("add info",cat_name,name);
+                //pass a string into the task, "add info", for data insertion into the db
+                //backGroundTask.execute("add info",cat_name,name);
+
+                //*************************************************
 
                 try {
                     System.out.println("we're in the try part");
@@ -706,8 +719,8 @@ public class NewContact extends AppCompatActivity  {
 
 
                 //execute the AsyncTask, do stuff in the background
-                //NewContact.SaveNewContact saveNewContact = new NewContact.SaveNewContact();
-                //saveNewContact.execute();
+                NewContact.SaveNewContact saveNewContact = new NewContact.SaveNewContact();
+                saveNewContact.execute();
 
 
 
@@ -719,7 +732,6 @@ public class NewContact extends AppCompatActivity  {
 
 
 
-//THIS IS NOT USED
     private class SaveNewContact extends AsyncTask<Void, Void, Void>
     {
 
@@ -766,9 +778,9 @@ public class NewContact extends AppCompatActivity  {
             //name = namename.getText().toString();
 
             //put cat and name into the table
-            SQLiteDatabaseOperations sQLiteDatabaseOperations = new SQLiteDatabaseOperations(ctx);
-            SQLiteDatabase db = sQLiteDatabaseOperations.getWritableDatabase();
-            sQLiteDatabaseOperations.putInformation(db, cat_name, name);
+            //SQLiteDatabaseOperations sQLiteDatabaseOperations = new SQLiteDatabaseOperations(ctx);
+            //SQLiteDatabase db = sQLiteDatabaseOperations.getWritableDatabase();
+            //sQLiteDatabaseOperations.putInformation(db, cat_name, name);
 
 
 
@@ -851,7 +863,7 @@ public class NewContact extends AppCompatActivity  {
             super.onPostExecute(aVoid);
 
             //toast that the latest review details have been put into sqLite db
-            Toast.makeText(NewContact.this, cat_name + " and " + name + " put into SQLLite", Toast.LENGTH_LONG).show();
+            //Toast.makeText(NewContact.this, cat_name + " and " + name + " put into SQLLite", Toast.LENGTH_LONG).show();
 
         }
     }
