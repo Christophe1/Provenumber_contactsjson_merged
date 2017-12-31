@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -72,6 +73,12 @@ public class PopulistoListView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.phone_listview_contacts);
 
+        Toolbar toolbar = (Toolbar)findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+
+        //why isn't title being set!?
+        toolbar.setTitle("Search...");
+
         // textphonenumber = (TextView) findViewById(R.id.textView3);
 
         //populistolistview is the activity object
@@ -80,9 +87,11 @@ public class PopulistoListView extends AppCompatActivity {
         adapter = new CustomPopulistoListAdapter(this, reviewList);
         listView.setAdapter(adapter);
 
+        //no need for this anymore as it is dealt with in the new
+        //toolbar widget.
         //always show the overflow menu. Some devices don't show it by default
         //This function is in the GlobalFunctions class
-        GlobalFunctions.makeActionOverflowMenuShown(PopulistoListView.this);
+        //GlobalFunctions.makeActionOverflowMenuShown(PopulistoListView.this);
 
         //get the phone number value from shared preferences file instead
         //of from the VerifiedUserPhoneNumber class because we might not

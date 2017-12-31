@@ -70,7 +70,7 @@ public class DisplayMyPopulistoListView extends AppCompatActivity {
 
         //always show the overflow menu. Some devices don't show it by default
         //This function is in the GlobalFunctions class
-        GlobalFunctions.makeActionOverflowMenuShown(DisplayMyPopulistoListView.this);
+        //GlobalFunctions.makeActionOverflowMenuShown(DisplayMyPopulistoListView.this);
 
         //create an object of the BackGroundTask class, backGroundTask
         //pass this activity, ctx, as the object

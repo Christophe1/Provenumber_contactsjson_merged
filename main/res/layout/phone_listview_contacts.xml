@@ -2,10 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.chris.tutorialspoint.PopulistoListView" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.chris.tutorialspoint.PopulistoListView">
+
+    <include layout="@layout/app_bar"
+        android:id = "@+id/app_bar"
+        >
+    </include>
 
     <ListView
         android:id="@+id/list"
+        android:layout_below="@id/app_bar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:divider="@color/list_divider"

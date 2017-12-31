@@ -31,7 +31,7 @@ public class GlobalFunctions {
     }
 
     //always show the overflow menu, some models of phone don't show it by default
-    public static void makeActionOverflowMenuShown(Context context) {
+/*    public static void makeActionOverflowMenuShown(Context context) {
         //devices with hardware menu button (e.g. Samsung Note) don't show action overflow menu
         try {
             ViewConfiguration config = ViewConfiguration.get(context);
@@ -44,7 +44,7 @@ public class GlobalFunctions {
             //Log.d(TAG, e.getLocalizedMessage());
         }
 
-    }
+    }*/
 
 
     //this is the function we call to measure the height of the listview

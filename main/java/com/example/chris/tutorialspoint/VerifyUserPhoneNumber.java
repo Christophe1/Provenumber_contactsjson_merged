@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
@@ -103,6 +104,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
         // setContentView(R.layout.verify_phone_number);
+
+ /*       setContentView(R.layout.phone_listview_contacts);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);*/
 
        // btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
 
