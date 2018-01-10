@@ -9,6 +9,9 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -94,14 +97,23 @@ public class NewContact extends AppCompatActivity  {
    // CheckBox checkBox2;
 
     //for SQLiteDatabaseOperations
-    Context ctx = this;
+   // Context ctx = this;
     //*******************************
    // ArrayList<SelectPhoneContact> possiblecheckedContacts = selectPhoneContacts;
+
+    //For the recycler view, containing the phone contacts
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        LoadContact loadContact = new LoadContact();
+        loadContact.execute();
 
         //hide keyboard on activity start up
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -112,7 +124,8 @@ public class NewContact extends AppCompatActivity  {
         System.out.println("NewContact1: selectPhoneContacts " + selectPhoneContacts);
 
 
-        listView = (ListView) findViewById(R.id.listviewPhoneContacts);
+        recyclerView = (RecyclerView) findViewById(R.id.rv);
+        //listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
         //  showPDialog();
 
@@ -125,7 +138,7 @@ public class NewContact extends AppCompatActivity  {
         //get the phone number, stored in an XML file, when the user first registered the app
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
-        System.out.println("phone number of user is " + phoneNoofUserCheck);
+        System.out.println("NewContact: phone number of user is " + phoneNoofUserCheck);
 
         //get the CountryCode, stored in an XML file, when the user first registered the app
         //We need this for putting phone contacts into E164 and comparing against the app db
@@ -162,7 +175,7 @@ public class NewContact extends AppCompatActivity  {
         //If Public radio button is selected then check all the boxes
         //and change the button text to 'Clear All'
         //listen for which radio button is clicked
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
+      /*  RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int SelectWho) {
@@ -181,10 +194,10 @@ public class NewContact extends AppCompatActivity  {
 
                 }
             }
-        });
+        });*/
 
         //Select All / Clear All Button
-        //Check all or clear all checkboxes
+        //Check all or clear all checkboxes of matching contacts
         btnCheckAll.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -201,7 +214,9 @@ public class NewContact extends AppCompatActivity  {
                     btnCheckAll.setText("Select All");
                 }
 
+                //make an integer the number of matching contacts
                 int count = MatchingContactsAsArrayList.size();
+                //for each of those matching contacts in the recycler view
                 for (int i = 0; i < count; i++) {
                     LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
                     CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
@@ -414,10 +429,10 @@ public class NewContact extends AppCompatActivity  {
         @Override
         protected void onPreExecute() {
 
-            pDialog = new ProgressDialog(NewContact.this);
+            //pDialog = new ProgressDialog(NewContact.this);
             // Showing progress dialog before making http request
-            pDialog.setMessage("Loading...");
-            pDialog.show();
+            //pDialog.setMessage("Loading...");
+            //pDialog.show();
 
             super.onPreExecute();
         }
@@ -516,27 +531,32 @@ public class NewContact extends AppCompatActivity  {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+            //Tell the adapter:
+            //which array to use.
+            //which context
+            //and pass to the adapter the activity value to apply, in this case 1, for NewContact
+            RecyclerViewAdapter adapter = new RecyclerViewAdapter(selectPhoneContacts, NewContact.this,1);
 
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
+            //adapter = new SelectPhoneContactAdapter(selectPhoneContacts, NewContact.this,1);
 
+            //listView.setAdapter(adapter);
 
-
-            adapter = new SelectPhoneContactAdapter(selectPhoneContacts, NewContact.this,1);
-
-            listView.setAdapter(adapter);
-
-            adapter.radioButtontoPhoneContacts = new changeRadioButtontoPhoneContacts() {
+            //check to see which radio button is checked, Public or Phone Contacts
+/*            adapter.radioButtontoPhoneContacts = new changeRadioButtontoPhoneContacts() {
                 //@Override
                 public void update() {
                     NewContact.this.rbu1.setChecked(true);
                 }
-            };
+            };*/
 
             //we need to notify the listview that changes may have been made on
             //the background thread, doInBackground, like adding or deleting contacts,
             //and these changes need to be reflected visibly in the listview. It works
             //in conjunction with selectContacts.clear()
-            adapter.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
 
 
             //********************
@@ -544,9 +564,10 @@ public class NewContact extends AppCompatActivity  {
             //this function measures the height of the listview, with all the contacts, and loads it to be that
             //size. We need to do this because there's a problem with a listview in a scrollview.
             //The function is in GlobalFunctions
-            GlobalFunctions.justifyListViewHeightBasedOnChildren(NewContact.this,listView);
+            //GlobalFunctions.justifyListViewHeightBasedOnChildren(NewContact.this,listView);
+
             //call the hidePDialog function, hide the loading dialog
-            hidePDialog();
+            //hidePDialog();
 
         }
     }
