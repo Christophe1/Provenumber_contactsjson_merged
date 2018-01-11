@@ -20,7 +20,7 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
-    //make a List containing info about SelectPhoneCOntact objects
+    //make a List containing info about SelectPhoneContact objects
     public List<SelectPhoneContact> theContactsList;
     //  private ArrayList<SelectPhoneContact> arraylist;
 
@@ -55,11 +55,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
 
+    public RecyclerViewAdapter(List<SelectPhoneContact>selectPhoneContacts, Context context) {
 
-    public RecyclerViewAdapter(List<SelectPhoneContact>selectPhoneContacts, Context context, int activity) {
+    //public RecyclerViewAdapter(List<SelectPhoneContact>selectPhoneContacts, Context context, int activity) {
 
         theContactsList =selectPhoneContacts;
-        whichactivity = activity;
+        //whichactivity = activity;
         context_type = context;
 
         // this.arraylist = new ArrayList<SelectPhoneContact>();
@@ -76,51 +77,85 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         ViewHolder viewHolder = new ViewHolder(contactView);
 
 
-        //if the activity is NewContact
-        if (whichactivity == 1) {
-            //if a checkbox is checked
-            viewHolder.check.setOnClickListener(new View.OnClickListener() {
-                @Override
-                //when a checkbox in the Listview is clicked
-                public void onClick(View v) {
-                    CheckBox cb = (CheckBox) v;
-                    SelectPhoneContact data = (SelectPhoneContact) cb.getTag();
-                    //if it is set to unchecked
-                 /*   if (cb.isChecked() == false)
-                    //need this to change radio button to Phone Contacts,
-                    //if a checkbox is changed to false
-                    {
-                        radioButtontoPhoneContacts.update();
-                    }*/
-                    Toast.makeText(context_type,
-                            "Clicked on Checkbox: " + data.getPhone() +
-                                    " is " + cb.isChecked(),
-                            Toast.LENGTH_LONG).show();
-                    data.setSelected(cb.isChecked());
-                    //  public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    // if (data.setSelected(isChecked);) {
-                    //   Toast.makeText(_c, "True ", Toast.LENGTH_LONG).show();
-                    // }
-                    // else {
-                    //String phone_no = data.get
-                    //System.out.println("Custom adapter pos " + i);
-                    // Toast.makeText(_c, "phone number " + data.getPhone(), Toast.LENGTH_LONG).show();
-                    // Toast.makeText(_c, "False ", Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewAdapter.ViewHolder viewHolder, int position){
-        SelectPhoneContact selectPhoneContact = theContactsList.get(position);
+    public void onBindViewHolder(final RecyclerViewAdapter.ViewHolder viewHolder, int position){
+        //bind the views into the ViewHolder
+        //selectPhoneContact is an instance of the SelectPhoneContact class.
+        //We will assign each row of the recyclerview to contain details of selectPhoneContact:
+
+        //The number of rows will match the number of contacts in our contacts list
+        final SelectPhoneContact selectPhoneContact = theContactsList.get(position);
+
+        //a text view for the name, set it to the matching selectPhoneContact
         TextView title = viewHolder.title;
         title.setText(selectPhoneContact.getName());
 
+        //a text view for the number, set it to the matching selectPhoneContact
         TextView phone = viewHolder.phone;
         phone.setText(selectPhoneContact.getPhone());
+
+        CheckBox check = viewHolder.check;
+
+        //check.setText("Checked" + position);
+        //check.setChecked(theContactsList.get(position).selected);
+
+        //get the number position of the checkbox in the recyclerview
+        check.setTag(position);
+
+        //if the activity is NewContact
+        //if (whichactivity == 1) {
+        //if a checkbox is checked
+        viewHolder.check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            //when a checkbox in the Listview is clicked
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+//                SelectPhoneContact data = (SelectPhoneContact) cb.getTag();
+                Integer pos = (Integer) viewHolder.check.getTag();
+
+                if (cb.isChecked() == true) {
+                    Toast.makeText(context_type,
+                            "Clicked on Checkbox: " + pos + " " + cb.isChecked() + selectPhoneContact.getPhone(),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                if (cb.isChecked() == false){
+
+                    Toast.makeText(context_type,
+                            "Clicked on Checkbox: " + cb.isChecked(),
+                            Toast.LENGTH_SHORT).show();
+                }
+                //CheckBox cb = (CheckBox) v;
+               // SelectPhoneContact data = (SelectPhoneContact) cb.getTag();
+                //if it is set to unchecked
+                //if (cb.isChecked() == false)
+                //need this to change radio button to Phone Contacts,
+                //if a checkbox is changed to false
+                //{
+                 //   System.out.println("It's false");
+                    //radioButtontoPhoneContacts.update();
+                //}
+/*                Toast.makeText(context_type,
+                        "Clicked on Checkbox: " + data.getPhone() +
+                                " is " + cb.isChecked(),
+                        Toast.LENGTH_LONG).show();
+                data.setSelected(cb.isChecked());*/
+
+                //  public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // if (data.setSelected(isChecked);) {
+                //   Toast.makeText(_c, "True ", Toast.LENGTH_LONG).show();
+                // }
+                // else {
+                //String phone_no = data.get
+                //System.out.println("Custom adapter pos " + i);
+                // Toast.makeText(_c, "phone number " + data.getPhone(), Toast.LENGTH_LONG).show();
+                // Toast.makeText(_c, "False ", Toast.LENGTH_LONG).show();
+            }
+        });
+        //}
 
     }
 
