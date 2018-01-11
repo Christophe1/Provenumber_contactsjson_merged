@@ -536,9 +536,9 @@ public class NewContact extends AppCompatActivity  {
             //which context
             //and pass to the adapter the activity value to apply, in this case 1, for NewContact
 
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter(selectPhoneContacts, NewContact.this);
+           // RecyclerViewAdapter adapter = new RecyclerViewAdapter(selectPhoneContacts, NewContact.this);
 
-            //RecyclerViewAdapter adapter = new RecyclerViewAdapter(selectPhoneContacts, NewContact.this,1);
+            RecyclerViewAdapter adapter = new RecyclerViewAdapter(selectPhoneContacts, NewContact.this,1);
 
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
