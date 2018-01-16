@@ -30,6 +30,18 @@ public class SelectPhoneContact {
         this.name = name;
     }
 
+    boolean isMatching;
+
+    public boolean isMatching(){return isMatching;}
+
+    public void setIsMatchingContact(boolean isMatching){
+
+        this.isMatching = isMatching;
+
+    }
+
+
+
     //*****************************************
     //this is for the checkbox
     boolean selected = false;
@@ -42,6 +54,17 @@ public class SelectPhoneContact {
 
             this.selected = selected;
 
+    }
+
+
+    String type_row;
+
+    public String getType_row() {
+        return type_row;
+    }
+
+    public void setType_row(String type_row) {
+        this.type_row = type_row;
     }
 
 

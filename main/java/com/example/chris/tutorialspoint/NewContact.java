@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -92,7 +91,7 @@ public class NewContact extends AppCompatActivity  {
     ArrayList <String> allNamesofContacts;
     ArrayList<String> MatchingContactsAsArrayList;
     String phoneNoofUserCheck;
-    String phoneNumberofContact;
+    public String phoneNumberofContact;
     String phoneNameofContact;
    // CheckBox checkBox2;
 
@@ -499,6 +498,8 @@ public class NewContact extends AppCompatActivity  {
                 {   //add the selectContacts to the selectPhoneContacts array
                     // insert the contact at the beginning of the listview
                     selectPhoneContacts.add(0, selectContact);
+                    selectContact.setType_row("1");
+                    //selectContact.isMatching=true;
                     // checkBoxforContact.setVisibility(View.VISIBLE);
 
                 }
@@ -506,6 +507,7 @@ public class NewContact extends AppCompatActivity  {
                 else {
                     // insert it at the end (default)
                     selectPhoneContacts.add(selectContact);
+                    selectContact.setType_row("2");
                     //makeinvisible();
                 }
 
@@ -536,9 +538,9 @@ public class NewContact extends AppCompatActivity  {
             //which context
             //and pass to the adapter the activity value to apply, in this case 1, for NewContact
 
-           // RecyclerViewAdapter adapter = new RecyclerViewAdapter(selectPhoneContacts, NewContact.this);
+           // PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter(selectPhoneContacts, NewContact.this,1);
+            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
 
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));

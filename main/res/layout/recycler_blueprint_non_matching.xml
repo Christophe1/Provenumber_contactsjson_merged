@@ -49,19 +49,19 @@
         android:paddingLeft="5dp">
 
 
-        <CheckBox
+<!--        <CheckBox
             android:id="@+id/checkBoxContact"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:checked="false" />
+            android:checked="false" />-->
 
         <!--for the Invite button-->
- <!--       <Button
+        <Button
             android:id="@+id/btnInvite"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="20dp"
-            android:text="@string/btnInvite" />-->
+            android:text="@string/btnInvite" />
 
     </LinearLayout>
 
