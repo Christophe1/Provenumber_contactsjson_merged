@@ -69,13 +69,11 @@ public class NewContact extends AppCompatActivity  {
     //depends on radio button selected
     int public_or_private;
 
+    //*********NOT APPLICABLE***********
     //these are strings for cat name, name etc..
     //we will be putting these values into our sqlLite db
     //String cat_name, name;
     //*******************
-
-    // Details in this comment are for the PHONE CONTACTS LISTVIEW, so
-    //user can add,edit, delete contacts who can see a review
 
     // ArrayList called selectPhoneContacts that will contain SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
@@ -124,13 +122,10 @@ public class NewContact extends AppCompatActivity  {
 
 
         recyclerView = (RecyclerView) findViewById(R.id.rv);
-        //listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
         //  showPDialog();
 
-
         //*************************
-
 
         //first of all we want to get the phone number of the current user so we
         //can post it and then get the user_id in php
@@ -498,9 +493,9 @@ public class NewContact extends AppCompatActivity  {
                 {   //add the selectContacts to the selectPhoneContacts array
                     // insert the contact at the beginning of the listview
                     selectPhoneContacts.add(0, selectContact);
+
+                    //In SelectContact class, so getItemViewType will know which layout to show
                     selectContact.setType_row("1");
-                    //selectContact.isMatching=true;
-                    // checkBoxforContact.setVisibility(View.VISIBLE);
 
                 }
 
@@ -508,7 +503,7 @@ public class NewContact extends AppCompatActivity  {
                     // insert it at the end (default)
                     selectPhoneContacts.add(selectContact);
                     selectContact.setType_row("2");
-                    //makeinvisible();
+
                 }
 
 
@@ -534,7 +529,7 @@ public class NewContact extends AppCompatActivity  {
             super.onPostExecute(aVoid);
 
             //Tell the adapter:
-            //which array to use.
+            //which array to use and
             //which context
             //and pass to the adapter the activity value to apply, in this case 1, for NewContact
 
@@ -561,7 +556,7 @@ public class NewContact extends AppCompatActivity  {
             //the background thread, doInBackground, like adding or deleting contacts,
             //and these changes need to be reflected visibly in the listview. It works
             //in conjunction with selectContacts.clear()
-            //adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
 
 
             //********************
@@ -672,7 +667,7 @@ public class NewContact extends AppCompatActivity  {
                     //table put 1. The review is for public view.
                     //otherwise, if PhoneContacts is selected,
                     //put 0. The review is for private view.
-                    RadioGroup rg1 =(RadioGroup)findViewById(R.id.SharedWith);
+ /*                   RadioGroup rg1 =(RadioGroup)findViewById(R.id.SharedWith);
                     if (rg1.getCheckedRadioButtonId()==R.id.Public){
                         System.out.println("It is public");
                         public_or_private =1;
@@ -680,7 +675,7 @@ public class NewContact extends AppCompatActivity  {
                     if (rg1.getCheckedRadioButtonId()==R.id.PhoneContacts){
                         System.out.println("It is private");
                         public_or_private =0;
-                    }
+                    }*/
 
                     //select from matching contacts
                     //the user will be able to check contacts who to share the review

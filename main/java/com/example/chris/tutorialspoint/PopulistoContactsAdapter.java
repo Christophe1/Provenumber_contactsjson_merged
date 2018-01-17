@@ -30,19 +30,17 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     //make a List containing info about SelectPhoneContact objects
     public List<SelectPhoneContact> theContactsList;
 
-   // public int matchingcontact;
+    //we will run through different logic in this custom adapter based on the activity that is passed to it
+    //NewContact, ViewContact or EditContact
+    private int whichactivity;
 
     Context context_type;
 
-    //ArrayList<String> matchingContacts = new ArrayList<String>();
-    //ArrayList<SelectPhoneContact> selectPhoneContacts;
-    //we will be bringing the matching contacts to this activity, from shared preferences
-   // ArrayList<String> MatchingContactsAsArrayList;
+    //for remembering checked boxes in 'New', if phone ges to sleep
+    SharedPreferences.Editor editor;
 
-   // ArrayList <String> allPhonesofContacts;
-   // public String phoneNumberofContact;
 
-    public  class MatchingContact extends RecyclerView.ViewHolder {
+    public class MatchingContact extends RecyclerView.ViewHolder {
 
         //In each recycler_blueprint show the items you want to have appearing
         public TextView title, phone;
@@ -63,7 +61,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     }
 
-    public class nonMatchingContact extends  RecyclerView.ViewHolder {
+    public class nonMatchingContact extends RecyclerView.ViewHolder {
 
         //In each recycler_blueprint show the items you want to have appearing
         public TextView title, phone;
@@ -86,63 +84,32 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        // Just as an example, return 0 or 2 depending on position
-        // Note that unlike in ListView adapters, types don't have to be contiguous
-/*        System.out.println("testt");
-       // SelectPhoneContact selectPhoneContact = new SelectPhoneContact();
-        //for every phone number in the MatchingContactsAsArrayList array list...
-        for (int number = 0; number < MatchingContactsAsArrayList.size(); number++) {
-            phoneNumberofContact = allPhonesofContacts.get(number);
-            //if a phone number is in our array of matching contacts
-            if (MatchingContactsAsArrayList.contains(phoneNumberofContact)) {
-                System.out.println("populistocontactsadapter: the number is " + phoneNumberofContact);
-                position = 1;
-            }
-            }*/
-            // matchingcontact=position;
-
-            //if (selectPhoneContact.
-
+        //for each row in recyclerview, get the getType_row, set in NewContact.java
         return Integer.parseInt(theContactsList.get(position).getType_row());
     }
+
 
     public PopulistoContactsAdapter(List<SelectPhoneContact> selectPhoneContacts, Context context, int activity) {
         //selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
-       // theContactsList = selectPhoneContacts;
+         theContactsList = selectPhoneContacts;
+        whichactivity = activity;
         context_type = context;
-        //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
-        //with this we will put a checkbox beside the matching contacts
-/*
-        SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(context_type);
-        Gson gsonMatchingContactsAsArrayList = new Gson();
-        String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
-        Type type1 = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
-        System.out.println("SelectPhoneContactAdapter MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
-*/
 
-        //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
-        //with this we will put all phone numbers of contacts on user's phone into our ListView in NewContact activity
-/*        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(context_type);
-        Gson gson = new Gson();
-        String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
-        Type type = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        allPhonesofContacts = gson.fromJson(json, type);*/
 
 /*        matchingContacts.add("+3531234567");
         matchingContacts.add("+353868132813");
         matchingContacts.add("+353863366715");
         matchingContacts.add("+353858716422");*/
-       // }
+        // }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView;
+
+        //if getType_row is 1...
         if (viewType == 1)
 
         {
@@ -151,13 +118,10 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
             LayoutInflater inflater = LayoutInflater.from(context);
 
             itemView = inflater.inflate(R.layout.recycler_blueprint, parent, false);
-            //RecyclerView.ViewHolder viewHolder = new RecyclerView.ViewHolder(contactView);
 
             return new MatchingContact(itemView);
 
-        }
-
-        else  {
+        } else {
 
             Context context = parent.getContext();
             LayoutInflater inflater = LayoutInflater.from(context);
@@ -180,28 +144,84 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         //The number of rows will match the number of phone contacts
         final SelectPhoneContact selectPhoneContact = theContactsList.get(position);
 
-        if(viewHolder.getItemViewType()==1)
+        if (viewHolder.getItemViewType() == 1)
 
         {
 
-            ((MatchingContact)viewHolder).title.setText(selectPhoneContact.getName());
-            ((MatchingContact)viewHolder).phone.setText(selectPhoneContact.getPhone());
+            ((MatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
+            ((MatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
 
-          //  if (selectPhoneContact.isMatching = true){
 
-                //((MatchingContact)viewHolder).invite.setVisibility(View.GONE);
+            CheckBox check = ((MatchingContact) viewHolder).check;
+
+            //get the number position of the checkbox in the recyclerview
+            check.setTag(position);
+
+            //initialize a sharedpreferences file called "sharedPrefs", which will be private, for our app only
+            //we are doing this so the checkbox state in the listview will be saved, so user can come back to it if the phone sleeps
+            SharedPreferences sharedPrefs = context_type.getSharedPreferences("sharedPrefsFile", Context.MODE_PRIVATE);
+
+
+            //if the activity is NewContact
+            if (whichactivity == 1) {
+                //if a checkbox is checked
+                ((MatchingContact) viewHolder).check.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    //when a checkbox in the Listview is clicked
+                    public void onClick(View v) {
+                        //make new instance of the checkbox, cb, otherwise I was getting errors
+                        CheckBox cb = (CheckBox) v;
+
+                        if (cb.isChecked() == true) {
+                            Toast.makeText(context_type,
+                                    "Clicked on Checkbox: " + position + " " + cb.isChecked() + selectPhoneContact.getPhone(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        if (cb.isChecked() == false) {
+
+                            Toast.makeText(context_type,
+                                    "Clicked on Checkbox: " + cb.isChecked(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                });
+
+                //initialize the SharedPreferences editor
+                editor = sharedPrefs.edit();
+
+                //in the recyclerview for checkboxes, get the checkbox values from the sharedpreferences file
+                check.setChecked(sharedPrefs.getBoolean("CheckValue" + position, false));
+
+                //when the checkbox changes, edit those changes and commit,
+                check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        //edit and commit the checkbox status to the sharedpreferences file
+                        //"CheckValue"+1 is the key, isChecked is the value
+                        editor.putBoolean("CheckValue" + position, isChecked);
+                        editor.commit();
+
+                    }
+
+
+                });
+            }
+
+
+        } else {
+
+            ((nonMatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
+            ((nonMatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
+
         }
 
-        else {
 
-            ((nonMatchingContact)viewHolder).title.setText(selectPhoneContact.getName());
-            ((nonMatchingContact)viewHolder).phone.setText(selectPhoneContact.getPhone());
-
-        }
-
-        }
-
-        //a text view for the name, set it to the matching selectPhoneContact
+    }
+    //a text view for the name, set it to the matching selectPhoneContact
 /*        TextView title = viewHolder.title;
         title.setText(selectPhoneContact.getName());
 
@@ -232,7 +252,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
         }*/
 
-   // }
+    // }
 
     @Override
     public int getItemCount() {
