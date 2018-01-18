@@ -52,7 +52,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
     SharedPreferences.Editor editor;
 
     //so we can set the radio button to Phone Contacts in NewContact, when a checkbox is unchecked
-    public NewContact.changeRadioButtontoPhoneContacts radioButtontoPhoneContacts;
+    //public NewContact.changeRadioButtontoPhoneContacts radioButtontoPhoneContacts;
 
     //so we can set the radio button to Phone Contacts in EditContact, when a checkbox is unchecked
     public EditContact.radioButtontoPhoneContactsEdit radioButtontoPhoneContactsEdit;
@@ -163,7 +163,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
                         //need this to change radio button to Phone Contacts,
                         //if a checkbox is changed to false
                         {
-                            radioButtontoPhoneContacts.update();
+                           // radioButtontoPhoneContacts.update();
                         }
                         Toast.makeText(_c,
                                 "Clicked on Checkbox: " + data.getPhone() +

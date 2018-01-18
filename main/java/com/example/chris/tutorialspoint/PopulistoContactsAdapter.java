@@ -1,3 +1,4 @@
+
 package com.example.chris.tutorialspoint;
 
 import android.content.Context;
@@ -20,6 +21,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.attr.data;
 
 /**
  * Created by Chris on 07/01/2018.
@@ -92,7 +95,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     public PopulistoContactsAdapter(List<SelectPhoneContact> selectPhoneContacts, Context context, int activity) {
         //selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
-         theContactsList = selectPhoneContacts;
+        theContactsList = selectPhoneContacts;
         whichactivity = activity;
         context_type = context;
 
@@ -119,6 +122,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
             itemView = inflater.inflate(R.layout.recycler_blueprint, parent, false);
 
+            //itemView.setTag(select);
             return new MatchingContact(itemView);
 
         } else {
@@ -171,7 +175,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                     public void onClick(View v) {
                         //make new instance of the checkbox, cb, otherwise I was getting errors
                         CheckBox cb = (CheckBox) v;
-
+                        // SelectPhoneContact selectPhoneContact = (SelectPhoneContact) cb.getTag();
                         if (cb.isChecked() == true) {
                             Toast.makeText(context_type,
                                     "Clicked on Checkbox: " + position + " " + cb.isChecked() + selectPhoneContact.getPhone(),
@@ -181,8 +185,9 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                         if (cb.isChecked() == false) {
 
                             Toast.makeText(context_type,
-                                    "Clicked on Checkbox: " + cb.isChecked(),
+                                    "Clicked on Checkbox: " + selectPhoneContact.getPhone() + cb.isChecked(),
                                     Toast.LENGTH_SHORT).show();
+                            selectPhoneContact.setSelected(cb.isChecked());
                         }
 
                     }

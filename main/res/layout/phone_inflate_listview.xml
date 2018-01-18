@@ -65,13 +65,13 @@
         >
 
 
-        <CheckBox
+<!--        <CheckBox
             android:id="@+id/checkBoxContact"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:checked="false"
             android:clickable="true"
- />
+ />-->
 
         <Button
             android:id="@+id/btnInvite"
