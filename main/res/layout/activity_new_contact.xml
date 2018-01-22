@@ -84,13 +84,13 @@
                     android:background="@drawable/back"
                     android:hint="Comment" />
 
-                <TextView
+<!--                <TextView
                     android:id="@+id/textViewSharedWith"
                     android:layout_width="match_parent"
                     android:layout_height="0px"
                     android:layout_weight="1"
                     android:text="Share With: "
-                    android:textSize="18dp" />
+                    android:textSize="18dp" />-->
 
                 <!--  <RadioGroup
                       android:id="@+id/SharedWith"
@@ -136,31 +136,31 @@
             android:layout_gravity="center_vertical|center_horizontal">
 
             <Button
-                android:id="@+id/btnCheckAll"
+                android:id="@+id/btnPublic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:text="Select All" />
+                android:text="Public" />
             <!--android:onClick="clearAllCheckBoxes"-->
 
             <Button
-                android:id="@+id/btnClearAll"
+                android:id="@+id/btnPhoneContacts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/btnCheckAll"
-                android:text="Clear All" />
+                android:layout_toRightOf="@+id/btnPublic"
+                android:text="Phone Contacts" />
             <!--android:onClick="clearAllCheckBoxes"-->
 
             <Button
-                android:id="@+id/btnGetItem"
+                android:id="@+id/btnJustMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/btnClearAll"
-                android:text="Get item" />
+                android:layout_toRightOf="@+id/btnPhoneContacts"
+                android:text="Just me" />
             <!--android:onClick="clearAllCheckBoxes"-->
 
 

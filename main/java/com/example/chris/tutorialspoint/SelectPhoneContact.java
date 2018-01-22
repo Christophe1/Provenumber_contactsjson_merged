@@ -46,15 +46,16 @@ public class SelectPhoneContact {
 
     //*****************************************
     //this is for the checkbox
-    boolean selected = false;
+    //by default, make it unchecked
+    boolean isSelected = false;
 
-    public boolean isSelected() {
-        return selected;
+    public boolean getSelected() {
+        return isSelected;
     }
 
     public void setSelected(boolean selected){
 
-            this.selected = selected;
+            isSelected = selected;
 
     }
 
