@@ -31,6 +31,7 @@ import static android.R.attr.data;
 
 public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder > {
 
+    NewContact newc;
     //ArrayList<SelectPhoneContact> selectPhoneContacts;
 
     //make a List containing info about SelectPhoneContact objects
@@ -154,20 +155,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
             //((MatchingContact) viewHolder).check.setText("Cheeckbox" + position);
             ((MatchingContact) viewHolder).check.setChecked(theContactsList.get(position).isSelected);
             ((MatchingContact) viewHolder).check.setTag(position);
-          //  ((MatchingContact) viewHolder).check.setChecked(selectPhoneContact.isSelected());
-
-            //I've read having this here can fix some problems
-            //((MatchingContact) viewHolder).check.setOnCheckedChangeListener(null);
-
-            //final int position2 = viewHolder.getAdapterPosition();
-
-/*            if(mChecked.containsKey(theContactsList.get(position2))) {
-                ((MatchingContact) viewHolder).check.setChecked(mChecked.get(theContactsList.get(position2)));
-            }
-            else {
-                ((MatchingContact) viewHolder).check.setChecked(false);
-            }*/
-
 
             ((MatchingContact) viewHolder).check.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -176,25 +163,31 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                     //pos is the row number that the clicked checkbox exists in
                     Integer pos = (Integer) ((MatchingContact) viewHolder).check.getTag();
 
-                   // mChecked.put(mData.get(holder.getAdapterPosition()), isChecked);
-                   // int position2 = viewHolder.getAdapterPosition();
-
-                   // mChecked.put(String.valueOf(position2), isChecked);
-                  //  Toast.makeText(context_type, "Status is: " + isChecked + "", Toast.LENGTH_SHORT).show();
-
-
                     Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
 
+                    //because it is onClick, getSelected will always be the same value
+                    //false or true, it doesn't matter
                     if (theContactsList.get(pos).getSelected()) {
                         theContactsList.get(pos).setSelected(false);
-                    } else {
-                        theContactsList.get(pos).setSelected(true);
                     }
+                   /* else {
+                        theContactsList.get(pos).setSelected(true);
+                    }*/
+                    //Activity secondActivity = new Activity();
+                    newc.changeColorInFirstActivity();
+
+
                 }
             });
 
             }
 
+        else {
+
+            ((nonMatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
+            ((nonMatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
+
+        }
     }
 
 

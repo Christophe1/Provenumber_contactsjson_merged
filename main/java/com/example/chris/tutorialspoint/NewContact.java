@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -53,6 +54,8 @@ public class NewContact extends AppCompatActivity {
     private ProgressDialog pDialog;
 
     Button publicContacts;
+    Button phoneContacts;
+    Button justMeContacts;
     Button save;
     Button cancel;
 
@@ -84,6 +87,7 @@ public class NewContact extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -125,6 +129,8 @@ public class NewContact extends AppCompatActivity {
 
         //for the Public, phoneContacts, justMe, save and cancel buttons
         publicContacts = (Button) findViewById(R.id.btnPublic);
+        phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
+        justMeContacts = (Button) findViewById(R.id.btnJustMe);
         save = (Button) findViewById(R.id.save);
         cancel = (Button) findViewById(R.id.cancel);
 
@@ -136,6 +142,8 @@ public class NewContact extends AppCompatActivity {
         //final Button btnJustMe = (Button) findViewById(R.id.btnJustMe);
 
         publicButton();
+        phoneContactsButton();
+        justMeButton();
         saveContactButton();
 
         public_or_private = 1;
@@ -260,7 +268,7 @@ public class NewContact extends AppCompatActivity {
 
     }
 
-    //for the Public Contatcs button
+    //for the Public Contacts button
     private void publicButton() {
 
         publicContacts.setOnClickListener(new View.OnClickListener() {
@@ -268,16 +276,89 @@ public class NewContact extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+
+                recyclerView.setAdapter(adapter);
+               // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
                 //loop through the matching contacts
-                int count = MatchingContactsAsArrayList.size();
+                int count = PopulistoContactsAdapter.theContactsList.size();
 
                 for (int i = 0; i < count; i++) {
 
                     //for  contacts that are checked (they can only be matching contacts)...
                     //PopulistoContactsAdapter.theContactsList.get(i).isSelected=true;
+                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
+                    //we need to notify the recyclerview that changes may have been made
+                    adapter.notifyDataSetChanged();
                     }
             }
+
+        });
+
+    }
+
+
+    //for the Public Contacts button
+    private void phoneContactsButton() {
+
+        phoneContacts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+
+                recyclerView.setAdapter(adapter);
+                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+                //loop through the matching contacts
+                int count = PopulistoContactsAdapter.theContactsList.size();
+
+                for (int i = 0; i < count; i++) {
+
+                    //for  contacts that are checked (they can only be matching contacts)...
+                    //PopulistoContactsAdapter.theContactsList.get(i).isSelected=true;
+                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                    //we need to notify the recyclerview that changes may have been made
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+        });
+
+    }
+
+
+    //for the Just Me button
+    private void justMeButton() {
+
+        justMeContacts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+
+                recyclerView.setAdapter(adapter);
+                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+                //loop through the matching contacts
+                int count = PopulistoContactsAdapter.theContactsList.size();
+
+                for (int i = 0; i < count; i++) {
+
+                    //for  contacts that are checked (they can only be matching contacts)...
+                    //PopulistoContactsAdapter.theContactsList.get(i).isSelected=true;
+                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
+
+                    //we need to notify the recyclerview that changes may have been made
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
         });
 
     }
@@ -405,5 +486,12 @@ public class NewContact extends AppCompatActivity {
         });
 
 
+    }
+
+    //create a method in your first activity, (where the button color should change):
+
+    public void changeColorInFirstActivity(){
+        Button btnA = (Button) findViewById(R.id.btnPhoneContacts);
+        btnA.setBackgroundColor(Color.RED);
     }
 }
