@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -40,8 +41,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.support.design.R.styleable.CompoundButton;
 
-public class NewContact extends AppCompatActivity {
+
+public class NewContact extends AppCompatActivity  {
     // this is the php file name where to save to.
     // we will post the category, name, phone, address, comment etc into Php and
     // create a new review_id
@@ -58,6 +61,7 @@ public class NewContact extends AppCompatActivity {
     Button justMeContacts;
     Button save;
     Button cancel;
+    CheckBox mcheckbox;
 
     //thse are the fields in the xml
     private EditText categoryname;
@@ -82,12 +86,16 @@ public class NewContact extends AppCompatActivity {
 
     //For the recycler view, containing the phone contacts
     RecyclerView recyclerView;
+    PopulistoContactsAdapter adapter;
+
+    int check_counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
 
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -99,12 +107,19 @@ public class NewContact extends AppCompatActivity {
         //hide keyboard on activity start up
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
+
+
+
+
+
         //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
         selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
         System.out.println("NewContact1: selectPhoneContacts " + selectPhoneContacts);
 
         recyclerView = (RecyclerView) findViewById(R.id.rv);
+
+
 
         //first of all we want to get the phone number of the current user so we
         //can post it and then get the user_id in php
@@ -134,8 +149,6 @@ public class NewContact extends AppCompatActivity {
         save = (Button) findViewById(R.id.save);
         cancel = (Button) findViewById(R.id.cancel);
 
-
-
         //for Public, Phone Contacts and Just Me buttons
         //final Button btnPublic = (Button) findViewById(R.id.btnPublic);
         //final Button btnPhoneCOntacts = (Button) findViewById(R.id.btnPhoneContacts);
@@ -145,6 +158,7 @@ public class NewContact extends AppCompatActivity {
         phoneContactsButton();
         justMeButton();
         saveContactButton();
+checkboxnull();
 
         public_or_private = 1;
 
@@ -166,7 +180,7 @@ public class NewContact extends AppCompatActivity {
             //we want to delete the old selectContacts from the listview when the Activity loads
             //because it may need to be updated and we want the user to see the updated listview,
             //like if the user adds new names and numbers to their phone contacts.
-            selectPhoneContacts.clear();
+           // selectPhoneContacts.clear();
 
             //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
             //with this we will put all phone numbers of contacts on user's phone into our ListView in NewContact activity
@@ -337,10 +351,12 @@ public class NewContact extends AppCompatActivity {
 
         justMeContacts.setOnClickListener(new View.OnClickListener() {
 
+            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+
             @Override
             public void onClick(View v) {
 
-                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+              //  PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
                 recyclerView.setAdapter(adapter);
                 // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
@@ -488,10 +504,36 @@ public class NewContact extends AppCompatActivity {
 
     }
 
-    //create a method in your first activity, (where the button color should change):
+    private void checkboxnull() {
 
-    public void changeColorInFirstActivity(){
-        Button btnA = (Button) findViewById(R.id.btnPhoneContacts);
-        btnA.setBackgroundColor(Color.RED);
+        //adapter.setOnClickListener(new PopulistoContactsAdapter.OnClickListener() {
+         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+
+            adapter.SetOnCheckBoxClickListener(new PopulistoContactsAdapter.OnCheckBoxClickListener() {
+
+            @Override
+            public void onCheckBoxClick(boolean isChecked) {
+                if (isChecked)
+                    ++check_counter;
+                else
+                    --check_counter;
+
+                if (check_counter <= 0)
+                    Toast.makeText(NewContact.this, "all unchecked!", Toast.LENGTH_SHORT).show();
+
+
+            }
+
+        });
     }
+
+    //create a method in your first activity, (where the button color should change):
+    public void changeColorInFirstActivity(){
+       // Button btnA = (Button) findViewById(R.id.btnPhoneContacts);
+        phoneContacts.setBackgroundColor(Color.RED);
+    }
+
+
+
+
 }

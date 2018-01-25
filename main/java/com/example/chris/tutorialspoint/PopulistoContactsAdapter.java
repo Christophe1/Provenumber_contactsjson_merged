@@ -31,7 +31,9 @@ import static android.R.attr.data;
 
 public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder > {
 
-    NewContact newc;
+   // NewContact newc;
+
+    private Context mContext;
     //ArrayList<SelectPhoneContact> selectPhoneContacts;
 
     //make a List containing info about SelectPhoneContact objects
@@ -43,6 +45,10 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     //private HashMap<String, Boolean> mChecked;
 
     Context context_type;
+
+
+    private OnCheckBoxClickListener onCheckBoxClickListener;
+
 
     public class MatchingContact extends RecyclerView.ViewHolder {
 
@@ -97,11 +103,12 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
         theContactsList = selectPhoneContacts;
 
-
+        this.mContext = context;
        // whichactivity = activity;
         context_type = context;
 
       //  mChecked = new HashMap<>();
+
 
     }
 
@@ -152,36 +159,45 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
             //in the title textbox in the row, put the corresponding name etc...
             ((MatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
             ((MatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
-            //((MatchingContact) viewHolder).check.setText("Cheeckbox" + position);
-            ((MatchingContact) viewHolder).check.setChecked(theContactsList.get(position).isSelected);
+            ((MatchingContact) viewHolder).check.setChecked(theContactsList.get(position).getSelected());
             ((MatchingContact) viewHolder).check.setTag(position);
 
+
             ((MatchingContact) viewHolder).check.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
 
                     //pos is the row number that the clicked checkbox exists in
                     Integer pos = (Integer) ((MatchingContact) viewHolder).check.getTag();
 
-                    Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
-
+                    //NEED THIS TO PRESERVE CHECKBOX STATE
                     //because it is onClick, getSelected will always be the same value
                     //false or true, it doesn't matter
                     if (theContactsList.get(pos).getSelected()) {
                         theContactsList.get(pos).setSelected(false);
-                    }
-                   /* else {
-                        theContactsList.get(pos).setSelected(true);
-                    }*/
-                    //Activity secondActivity = new Activity();
-                    newc.changeColorInFirstActivity();
+                        Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
 
+                    } else {
+
+                        theContactsList.get(pos).setSelected(true);
+                        Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+            });
+
+            ((MatchingContact) viewHolder).check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // ((MatchingContact) viewHolder).check.setOnClickListener(new CompoundButton.OnClickListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    onCheckBoxClickListener.onCheckBoxClick(isChecked);
 
                 }
             });
 
-            }
-
+        }
         else {
 
             ((nonMatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
@@ -191,13 +207,19 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
 
-
     @Override
     public int getItemCount() {
 
         return theContactsList.size();
     }
 
+    public interface OnCheckBoxClickListener {
+        void onCheckBoxClick(boolean ischecked);
+    }
+
+    public void SetOnCheckBoxClickListener(final OnCheckBoxClickListener onCheckBoxClickListener) {
+        this.onCheckBoxClickListener = onCheckBoxClickListener;
+    }
 
 }
 
