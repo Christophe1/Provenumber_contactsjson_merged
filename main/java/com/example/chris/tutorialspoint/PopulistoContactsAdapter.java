@@ -33,22 +33,13 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
    // NewContact newc;
 
+    //for changing the colour of 'Phone COntacts' button
     private Context mContext;
-    //ArrayList<SelectPhoneContact> selectPhoneContacts;
 
     //make a List containing info about SelectPhoneContact objects
     public static List<SelectPhoneContact> theContactsList;
 
-    //ArrayList<String> listOfStrings = new ArrayList<>(theContactsList.size());
-
-
-    //private HashMap<String, Boolean> mChecked;
-
     Context context_type;
-
-
-    private OnCheckBoxClickListener onCheckBoxClickListener;
-
 
     public class MatchingContact extends RecyclerView.ViewHolder {
 
@@ -100,6 +91,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     public PopulistoContactsAdapter(List<SelectPhoneContact> selectPhoneContacts, Context context) {
         //selectPhoneContacts = new ArrayList<SelectPhoneContact>();
+
+       // checkAccumulator = 0;
 
         theContactsList = selectPhoneContacts;
 
@@ -172,22 +165,59 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                     Integer pos = (Integer) ((MatchingContact) viewHolder).check.getTag();
 
                     //NEED THIS TO PRESERVE CHECKBOX STATE
-                    //because it is onClick, getSelected will always be the same value
-                    //false or true, it doesn't matter
                     if (theContactsList.get(pos).getSelected()) {
                         theContactsList.get(pos).setSelected(false);
-                        Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
 
                     } else {
 
                         theContactsList.get(pos).setSelected(true);
-                        Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
 
                     }
+
+                    //we want to keep track of checked boxes, so when it is '0'
+                    //'Phone Contacts' button will switch to 'Just Me'
+                    int count = 0;
+                    int size = theContactsList.size();
+                    for (int i = 0; i < size; i++) {
+                        if (theContactsList.get(i).isSelected) {
+                            count++;
+                        }
+                    }
+                    if(count==0) {
+                        Toast.makeText(context_type, "The count is " + count , Toast.LENGTH_SHORT).show();
+
+                        //change the colour of 'Phone Contacts' button in NewContact.java
+
+                            ((NewContact) mContext).changeColorofJustMe();
+
+                    }
+
+                    //change the colour of 'Phone Contacts' button in NewContact.java
+                    if (mContext instanceof NewContact) {
+                        ((NewContact) mContext).changeColourOfPhoneContacts();
+                    }
                 }
+
+
+
+
             });
 
-            ((MatchingContact) viewHolder).check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+/*            CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    countCheck(isChecked);
+                    Toast.makeText(context_type, checkAccumulator + " unclicked!", Toast.LENGTH_SHORT).show();
+
+                   // Log.i("MAIN", checkAccumulator + "");
+                }
+            };*/
+
+            //((MatchingContact) viewHolder).check.setOnCheckedChangeListener(checkListener);
+
+/*            ((MatchingContact) viewHolder).check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // ((MatchingContact) viewHolder).check.setOnClickListener(new CompoundButton.OnClickListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -195,7 +225,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                     onCheckBoxClickListener.onCheckBoxClick(isChecked);
 
                 }
-            });
+            });*/
 
         }
         else {
@@ -213,13 +243,18 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         return theContactsList.size();
     }
 
-    public interface OnCheckBoxClickListener {
+/*    public interface OnCheckBoxClickListener {
         void onCheckBoxClick(boolean ischecked);
     }
 
     public void SetOnCheckBoxClickListener(final OnCheckBoxClickListener onCheckBoxClickListener) {
         this.onCheckBoxClickListener = onCheckBoxClickListener;
-    }
+    }*/
+
+/*    private void countCheck(boolean isChecked) {
+
+        checkAccumulator += isChecked ? 1 : -1 ;
+    }*/
 
 }
 

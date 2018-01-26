@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.support.design.R.styleable.CompoundButton;
+import static java.util.logging.Logger.global;
 
 
 public class NewContact extends AppCompatActivity  {
@@ -95,7 +96,7 @@ public class NewContact extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
 
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+       PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -158,7 +159,7 @@ public class NewContact extends AppCompatActivity  {
         phoneContactsButton();
         justMeButton();
         saveContactButton();
-checkboxnull();
+        //checkboxnull();
 
         public_or_private = 1;
 
@@ -351,12 +352,12 @@ checkboxnull();
 
         justMeContacts.setOnClickListener(new View.OnClickListener() {
 
-            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+           // PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
             @Override
             public void onClick(View v) {
 
-              //  PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
                 recyclerView.setAdapter(adapter);
                 // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
@@ -504,10 +505,10 @@ checkboxnull();
 
     }
 
-    private void checkboxnull() {
+    /*private void checkboxnull() {
 
         //adapter.setOnClickListener(new PopulistoContactsAdapter.OnClickListener() {
-         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+         //PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
             adapter.SetOnCheckBoxClickListener(new PopulistoContactsAdapter.OnCheckBoxClickListener() {
 
@@ -524,16 +525,20 @@ checkboxnull();
 
             }
 
-        });
-    }
+        });*/
+    //}
 
     //create a method in your first activity, (where the button color should change):
-    public void changeColorInFirstActivity(){
+    public void changeColourOfPhoneContacts(){
        // Button btnA = (Button) findViewById(R.id.btnPhoneContacts);
         phoneContacts.setBackgroundColor(Color.RED);
     }
 
-
+    //create a method in your first activity, (where the button color should change):
+    public void changeColorofJustMe(){
+        // Button btnA = (Button) findViewById(R.id.btnPhoneContacts);
+        phoneContacts.setBackgroundColor(Color.RED);
+    }
 
 
 }
