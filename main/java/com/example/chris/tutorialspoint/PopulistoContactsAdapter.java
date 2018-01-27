@@ -3,8 +3,10 @@ package com.example.chris.tutorialspoint;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +42,10 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     public static List<SelectPhoneContact> theContactsList;
 
     Context context_type;
+
+    public static ArrayList<String> MatchingContactsAsArrayList;
+
+
 
     public class MatchingContact extends RecyclerView.ViewHolder {
 
@@ -100,8 +106,15 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
        // whichactivity = activity;
         context_type = context;
 
-      //  mChecked = new HashMap<>();
-
+        //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
+        //with this we will put a checkbox beside the matching contacts
+        SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(context_type);
+        Gson gsonMatchingContactsAsArrayList = new Gson();
+        String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
+        Type type1 = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
+        System.out.println("SelectPhoneContactAdapter MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
     }
 
@@ -178,26 +191,45 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                     //we want to keep track of checked boxes, so when it is '0'
                     //'Phone Contacts' button will switch to 'Just Me'
-                    int count = 0;
+                    int count;
+                    count = 0;
                     int size = theContactsList.size();
                     for (int i = 0; i < size; i++) {
                         if (theContactsList.get(i).isSelected) {
                             count++;
+                           // System.out.println("The count is " + count);
+
                         }
                     }
-                    if(count==0) {
-                        Toast.makeText(context_type, "The count is " + count , Toast.LENGTH_SHORT).show();
+                    Log.i("MyMessage","The count is " + count);
+
+
+                    switch (count){
+
+                        case 0:
+                            if (mContext instanceof NewContact) {
+                            ((NewContact) mContext).changeColorofJustMe();
+                                Toast.makeText(context_type, "count is 0!", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                        case 1:
+
+                   // if(count==0)
 
                         //change the colour of 'Phone Contacts' button in NewContact.java
+                       if (mContext instanceof NewContact) {
+                            ((NewContact) mContext).changeColourOfPhoneContacts();
+                           Toast.makeText(context_type, "The count is " + count , Toast.LENGTH_SHORT).show();
 
-                            ((NewContact) mContext).changeColorofJustMe();
+                       }
 
                     }
 
                     //change the colour of 'Phone Contacts' button in NewContact.java
-                    if (mContext instanceof NewContact) {
+              /*      if (mContext instanceof NewContact) {
                         ((NewContact) mContext).changeColourOfPhoneContacts();
-                    }
+                    }*/
                 }
 
 
@@ -255,6 +287,10 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
         checkAccumulator += isChecked ? 1 : -1 ;
     }*/
+
+
+
+
 
 }
 

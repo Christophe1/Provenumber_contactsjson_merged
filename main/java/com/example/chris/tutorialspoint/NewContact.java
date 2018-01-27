@@ -80,7 +80,7 @@ public class NewContact extends AppCompatActivity  {
 
     ArrayList<String> allPhonesofContacts;
     ArrayList<String> allNamesofContacts;
-    ArrayList<String> MatchingContactsAsArrayList;
+    //ArrayList<String> MatchingContactsAsArrayList;
     String phoneNoofUserCheck;
     public String phoneNumberofContact;
     String phoneNameofContact;
@@ -209,6 +209,7 @@ public class NewContact extends AppCompatActivity  {
             //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
             //With that we'll put our
             //matching contacts at the top of the listview, display check boxes beside them etc...
+/*
             SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
             Gson gsonMatchingContactsAsArrayList = new Gson();
             String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
@@ -216,6 +217,7 @@ public class NewContact extends AppCompatActivity  {
             }.getType();
             MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
             System.out.println("SelectPhoneContactAdapter MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+*/
 
 
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
@@ -230,7 +232,7 @@ public class NewContact extends AppCompatActivity  {
                 SelectPhoneContact selectContact = new SelectPhoneContact();
 
                 //if a phone number is in our array of matching contacts
-                if (MatchingContactsAsArrayList.contains(phoneNumberofContact))
+                if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
                 {   //add the selectContacts to the selectPhoneContacts array
                     // insert the contact at the beginning of the listview
@@ -291,18 +293,20 @@ public class NewContact extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
 
+                publicContacts.setBackgroundColor(Color.parseColor("#2AB40E"));
+
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
                 recyclerView.setAdapter(adapter);
                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
                 //loop through the matching contacts
-                int count = PopulistoContactsAdapter.theContactsList.size();
+                int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
+                //i is the number of matching contacts that there are
                 for (int i = 0; i < count; i++) {
 
-                    //for  contacts that are checked (they can only be matching contacts)...
-                    //PopulistoContactsAdapter.theContactsList.get(i).isSelected=true;
+                    //for all contacts, only those that are matching will be checked
                     PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
                     //we need to notify the recyclerview that changes may have been made
@@ -399,7 +403,7 @@ public class NewContact extends AppCompatActivity  {
                     System.out.println("we're in the try part");
 
                     //loop through the matching contacts
-                    int count = MatchingContactsAsArrayList.size();
+                    int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
                     for (int i = 0; i < count; i++) {
 
@@ -505,39 +509,16 @@ public class NewContact extends AppCompatActivity  {
 
     }
 
-    /*private void checkboxnull() {
-
-        //adapter.setOnClickListener(new PopulistoContactsAdapter.OnClickListener() {
-         //PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
-
-            adapter.SetOnCheckBoxClickListener(new PopulistoContactsAdapter.OnCheckBoxClickListener() {
-
-            @Override
-            public void onCheckBoxClick(boolean isChecked) {
-                if (isChecked)
-                    ++check_counter;
-                else
-                    --check_counter;
-
-                if (check_counter <= 0)
-                    Toast.makeText(NewContact.this, "all unchecked!", Toast.LENGTH_SHORT).show();
-
-
-            }
-
-        });*/
-    //}
-
-    //create a method in your first activity, (where the button color should change):
+    //change the colour of the phoneContacts button
     public void changeColourOfPhoneContacts(){
        // Button btnA = (Button) findViewById(R.id.btnPhoneContacts);
-        phoneContacts.setBackgroundColor(Color.RED);
+        phoneContacts.setBackgroundColor(Color.parseColor("#0A7FDA"));
     }
 
-    //create a method in your first activity, (where the button color should change):
+    //change the colour of the justMe button
     public void changeColorofJustMe(){
         // Button btnA = (Button) findViewById(R.id.btnPhoneContacts);
-        phoneContacts.setBackgroundColor(Color.RED);
+        justMeContacts.setBackgroundColor(Color.parseColor("#DA850B"));
     }
 
 
