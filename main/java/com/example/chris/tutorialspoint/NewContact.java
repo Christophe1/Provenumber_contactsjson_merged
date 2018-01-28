@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.R.attr.type;
 import static android.support.design.R.styleable.CompoundButton;
 import static java.util.logging.Logger.global;
 
@@ -78,7 +79,7 @@ public class NewContact extends AppCompatActivity  {
 
     String CountryCode;
 
-    ArrayList<String> allPhonesofContacts;
+    //ArrayList<String> allPhonesofContacts;
     ArrayList<String> allNamesofContacts;
     //ArrayList<String> MatchingContactsAsArrayList;
     String phoneNoofUserCheck;
@@ -107,11 +108,6 @@ public class NewContact extends AppCompatActivity  {
 
         //hide keyboard on activity start up
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-
-
-
-
 
         //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
         selectPhoneContacts = new ArrayList<SelectPhoneContact>();
@@ -150,11 +146,6 @@ public class NewContact extends AppCompatActivity  {
         save = (Button) findViewById(R.id.save);
         cancel = (Button) findViewById(R.id.cancel);
 
-        //for Public, Phone Contacts and Just Me buttons
-        //final Button btnPublic = (Button) findViewById(R.id.btnPublic);
-        //final Button btnPhoneCOntacts = (Button) findViewById(R.id.btnPhoneContacts);
-        //final Button btnJustMe = (Button) findViewById(R.id.btnJustMe);
-
         publicButton();
         phoneContactsButton();
         justMeButton();
@@ -165,7 +156,7 @@ public class NewContact extends AppCompatActivity  {
 
     }
 
-//******for the phone contacts in the listview
+//******for the phone contacts in the recyclerView
 
     // Load data in background
     class LoadContact extends AsyncTask<Void, Void, Void> {
@@ -185,6 +176,7 @@ public class NewContact extends AppCompatActivity  {
 
             //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
             //with this we will put all phone numbers of contacts on user's phone into our ListView in NewContact activity
+/*
             SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
             Gson gson = new Gson();
             String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
@@ -192,7 +184,9 @@ public class NewContact extends AppCompatActivity  {
             }.getType();
             allPhonesofContacts = gson.fromJson(json, type);
             System.out.println("NewContact: allPhonesofContacts :" + allPhonesofContacts);
+*/
 
+/*
             //we are fetching the array list allNamesofContacts, created in VerifyUserPhoneNumber.
             //with this we will put all phone names of contacts on user's phone into our ListView in NewContact activity
             SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
@@ -200,11 +194,12 @@ public class NewContact extends AppCompatActivity  {
             String jsonNames = sharedPreferencesallNamesofContacts.getString("allNamesofContacts", "");
             Type typeNames = new TypeToken<ArrayList<String>>() {
             }.getType();
-            allNamesofContacts = gson.fromJson(jsonNames, type);
+            allNamesofContacts = gsonNames.fromJson(jsonNames, typeNames);
             System.out.println("NewContact: allNamesofContacts :" + allNamesofContacts);
 
-            System.out.println("NewContact:the amount in allPhonesofContacts :" + allPhonesofContacts.size());
+            System.out.println("NewContact:the amount in allPhonesofContacts :" + PopulistoContactsAdapter.allPhonesofContacts.size());
             System.out.println("NewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
+*/
 
             //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
             //With that we'll put our
@@ -217,14 +212,14 @@ public class NewContact extends AppCompatActivity  {
             }.getType();
             MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
             System.out.println("SelectPhoneContactAdapter MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
 */
 
-
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
-            for (int i = 0; i < allPhonesofContacts.size(); i++) {
+            for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
 
-                phoneNumberofContact = allPhonesofContacts.get(i);
-                phoneNameofContact = allNamesofContacts.get(i);
+                phoneNumberofContact = PopulistoContactsAdapter.allPhonesofContacts.get(i);
+                phoneNameofContact = PopulistoContactsAdapter.allNamesofContacts.get(i);
 
                 System.out.println("SelectPhoneContactAdapter: phoneNumberofContact : " + phoneNumberofContact);
                 System.out.println("SelectPhoneContactAdapter: phoneNameofContact : " + phoneNameofContact);
@@ -294,6 +289,8 @@ public class NewContact extends AppCompatActivity  {
             public void onClick(View v) {
 
                 publicContacts.setBackgroundColor(Color.parseColor("#2AB40E"));
+                phoneContacts.setBackgroundColor(Color.parseColor("#D3D3D3"));
+                justMeContacts.setBackgroundColor(Color.parseColor("#D3D3D3"));
 
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
@@ -326,6 +323,10 @@ public class NewContact extends AppCompatActivity  {
 
             @Override
             public void onClick(View v) {
+
+                phoneContacts.setBackgroundColor(Color.parseColor("#0A7FDA"));
+                publicContacts.setBackgroundColor(Color.parseColor("#D3D3D3"));
+                justMeContacts.setBackgroundColor(Color.parseColor("#D3D3D3"));
 
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
@@ -360,6 +361,10 @@ public class NewContact extends AppCompatActivity  {
 
             @Override
             public void onClick(View v) {
+
+                justMeContacts.setBackgroundColor(Color.parseColor("#DA850B"));
+                publicContacts.setBackgroundColor(Color.parseColor("#D3D3D3"));
+                phoneContacts.setBackgroundColor(Color.parseColor("#D3D3D3"));
 
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
@@ -513,12 +518,16 @@ public class NewContact extends AppCompatActivity  {
     public void changeColourOfPhoneContacts(){
        // Button btnA = (Button) findViewById(R.id.btnPhoneContacts);
         phoneContacts.setBackgroundColor(Color.parseColor("#0A7FDA"));
+        publicContacts.setBackgroundColor(Color.parseColor("#D3D3D3"));
+        justMeContacts.setBackgroundColor(Color.parseColor("#D3D3D3"));
     }
 
     //change the colour of the justMe button
     public void changeColorofJustMe(){
         // Button btnA = (Button) findViewById(R.id.btnPhoneContacts);
         justMeContacts.setBackgroundColor(Color.parseColor("#DA850B"));
+        publicContacts.setBackgroundColor(Color.parseColor("#D3D3D3"));
+        phoneContacts.setBackgroundColor(Color.parseColor("#D3D3D3"));
     }
 
 

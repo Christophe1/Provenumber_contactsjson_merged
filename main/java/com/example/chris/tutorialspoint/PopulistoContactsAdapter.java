@@ -43,6 +43,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     Context context_type;
 
+    public static ArrayList<String> allPhonesofContacts;
+    public static ArrayList<String> allNamesofContacts;
     public static ArrayList<String> MatchingContactsAsArrayList;
 
 
@@ -115,6 +117,32 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         }.getType();
         MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
         System.out.println("SelectPhoneContactAdapter MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
+        //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
+        //with this we will put all phone numbers of contacts on user's phone into our ListView in NewContact activity
+        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(context_type);
+        Gson gson = new Gson();
+        String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        allPhonesofContacts = gson.fromJson(json, type);
+        System.out.println("NewContact: allPhonesofContacts :" + allPhonesofContacts);
+
+        //we are fetching the array list allNamesofContacts, created in VerifyUserPhoneNumber.
+        //with this we will put all phone names of contacts on user's phone into our ListView in NewContact activity
+        SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(context_type);
+        Gson gsonNames = new Gson();
+        String jsonNames = sharedPreferencesallNamesofContacts.getString("allNamesofContacts", "");
+        Type typeNames = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        allNamesofContacts = gsonNames.fromJson(jsonNames, typeNames);
+        System.out.println("NewContact: allNamesofContacts :" + allNamesofContacts);
+
+        System.out.println("NewContact:the amount in allPhonesofContacts :" + PopulistoContactsAdapter.allPhonesofContacts.size());
+        System.out.println("NewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
+
+
+
 
     }
 
@@ -203,8 +231,28 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                     }
                     Log.i("MyMessage","The count is " + count);
 
+                    if (count==0){
 
-                    switch (count){
+                        if (mContext instanceof NewContact) {
+                            ((NewContact) mContext).changeColorofJustMe();
+                            Toast.makeText(context_type, "count is 0!", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    }
+
+                    else {
+
+                        //change the colour of 'Phone Contacts' button in NewContact.java
+                        if (mContext instanceof NewContact) {
+                            ((NewContact) mContext).changeColourOfPhoneContacts();
+                            Toast.makeText(context_type, "The count is " + count , Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+
+
+                 /*   switch (count){
 
                         case 0:
                             if (mContext instanceof NewContact) {
@@ -224,7 +272,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                        }
 
-                    }
+                    }*/
 
                     //change the colour of 'Phone Contacts' button in NewContact.java
               /*      if (mContext instanceof NewContact) {
