@@ -121,7 +121,7 @@ public class SelectPhoneContactAdapter extends BaseAdapter {
 
 
         //initialize a sharedpreferences file called "sharedPrefs", which will be private, for our app only
-        //we are doing this so the checkbox state in the listview will be saved, so user can come back to it if the phone sleeps
+        //we are doing this so the checkbox state in the listview will be saved, so user can come textboxes_for_contact to it if the phone sleeps
         SharedPreferences sharedPrefs = _c.getSharedPreferences("sharedPrefsFile", Context.MODE_PRIVATE);
 
 

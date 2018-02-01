@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/back"
+        android:background="@drawable/textboxes_for_contact"
         android:textSize="30dp" />
 
     <TextView
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewCategory"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/back"
+        android:background="@drawable/textboxes_for_contact"
         android:textSize="30dp" />
 
     <TextView
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewName"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/back"
+        android:background="@drawable/textboxes_for_contact"
         android:textSize="30dp" />
 
     <TextView
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewPhone"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/back"
+        android:background="@drawable/textboxes_for_contact"
         android:textSize="30dp" />
 
     <TextView
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewAddress"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/back"
+        android:background="@drawable/textboxes_for_contact"
         android:textSize="30dp" />
 
     <TextView

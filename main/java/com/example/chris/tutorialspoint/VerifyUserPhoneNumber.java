@@ -243,7 +243,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     }
                 });
 
-                //coming back to this activity, put in the Country code selected
+                //coming textboxes_for_contact to this activity, put in the Country code selected
                 //by the user in CountryCodes.java
                 Intent myIntent = VerifyUserPhoneNumber.this.getIntent();
                 CountryCode = myIntent.getStringExtra("CountryCode");

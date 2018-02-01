@@ -374,7 +374,7 @@ public class EditContact extends AppCompatActivity {
 
                 AppController.getInstance().addToRequestQueue(stringRequest);
 
-                //when saved, go back to the PopulistoListView class and update with
+                //when saved, go textboxes_for_contact to the PopulistoListView class and update with
                 //the edited values
                 Intent j = new Intent(EditContact.this, PopulistoListView.class);
 /*                j.putExtra("category", categoryname.getText().toString());

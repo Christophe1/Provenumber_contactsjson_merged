@@ -375,7 +375,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         });
 
 
-        //This is for when we are coming back to ViewContact class,
+        //This is for when we are coming textboxes_for_contact to ViewContact class,
         //after user has finished editing in EditContact
         //get the "category" key,make it into a string called
         //new_category_value, and then set it into the categoryname
@@ -478,7 +478,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
                     AppController.getInstance().addToRequestQueue(stringRequest);
 
-                    //when deleted, go back to the PopulistoListView class and update
+                    //when deleted, go textboxes_for_contact to the PopulistoListView class and update
 
                     Intent j = new Intent(ViewContact.this,PopulistoListView.class);
 

@@ -29,7 +29,7 @@
                 android:id="@+id/holder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="14"
+                android:layout_weight="9.5"
                 android:orientation="vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
@@ -40,57 +40,65 @@
                     android:id="@+id/textViewInvisible"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:background="@drawable/back"
+                    android:layout_weight="2"
+                    android:background="@drawable/textboxes_for_contact"
                     android:visibility="invisible" />
 
                 <EditText
                     android:id="@+id/textViewCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:background="@drawable/back"
+                    android:layout_weight="1"
+                    android:background="@drawable/textboxes_for_contact"
                     android:hint="Category" />
 
                 <EditText
                     android:id="@+id/textViewName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:background="@drawable/back"
+                    android:layout_weight="1"
+                    android:background="@drawable/textboxes_for_contact"
                     android:hint="Name" />
 
                 <EditText
                     android:id="@+id/textViewPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:background="@drawable/back"
+                    android:layout_weight="1"
+                    android:background="@drawable/textboxes_for_contact"
                     android:hint="Phone" />
 
                 <EditText
                     android:id="@+id/textViewAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:background="@drawable/back"
+                    android:layout_weight="1"
+                    android:background="@drawable/textboxes_for_contact"
                     android:hint="Address" />
 
                 <EditText
                     android:id="@+id/textViewComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:background="@drawable/back"
+                    android:layout_weight="1"
+                    android:background="@drawable/textboxes_for_contact"
                     android:hint="Comment" />
 
-<!--                <TextView
-                    android:id="@+id/textViewSharedWith"
+                <TextView
+                    android:id="@+id/textViewInvisible2"
                     android:layout_width="match_parent"
-                    android:layout_height="0px"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Share With: "
-                    android:textSize="18dp" />-->
+                    android:background="@drawable/textboxes_for_contact"
+                    android:visibility="invisible" />
+
+                <!--                <TextView
+                                    android:id="@+id/textViewSharedWith"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0px"
+                                    android:layout_weight="1"
+                                    android:text="Share With: "
+                                    android:textSize="18dp" />-->
 
                 <!--  <RadioGroup
                       android:id="@+id/SharedWith"
@@ -118,7 +126,7 @@
 
             </LinearLayout>
 
-
+            <!--This is for bar pinned to top of screen-->
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -130,82 +138,95 @@
         </android.support.design.widget.CollapsingToolbarLayout>
 
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal">
+            android:weightSum="1.0">
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/btnPublic"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
+                android:layout_weight=".27"
+                android:background="@drawable/buttonshape"
                 android:text="Public" />
             <!--android:onClick="clearAllCheckBoxes"-->
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="wrap_content" />
+
             <Button
                 android:id="@+id/btnPhoneContacts"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/btnPublic"
+                android:layout_weight=".46"
+                android:background="@drawable/buttonshape"
                 android:text="Phone Contacts" />
             <!--android:onClick="clearAllCheckBoxes"-->
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="wrap_content" />
+
             <Button
                 android:id="@+id/btnJustMe"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/btnPhoneContacts"
+                android:layout_weight=".27"
+                android:background="@drawable/buttonshape"
                 android:text="Just me" />
             <!--android:onClick="clearAllCheckBoxes"-->
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="wrap_content" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
 
     </android.support.design.widget.AppBarLayout>
 
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:orientation="vertical">
 
-        >
-
-        <Button
-            android:id="@+id/save"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:text="SAVE"
+            android:layout_height="match_parent"
 
+            >
 
-            />
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:text="CANCEL" />
 
-        <Button
-            android:id="@+id/cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:text="CANCEL"
+            <Button
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/cancel"
+                android:layout_marginRight="1dp"
+                android:text="SAVE" />
 
-
-            />
-
-
-    </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
