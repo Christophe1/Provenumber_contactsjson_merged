@@ -138,56 +138,12 @@
         </android.support.design.widget.CollapsingToolbarLayout>
 
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="1.0">
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/btnPublic"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".27"
-                android:background="@drawable/buttonshape"
-                android:text="Public" />
-            <!--android:onClick="clearAllCheckBoxes"-->
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/btnPhoneContacts"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".46"
-                android:background="@drawable/buttonshape"
-                android:text="Phone Contacts" />
-            <!--android:onClick="clearAllCheckBoxes"-->
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/btnJustMe"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".27"
-                android:background="@drawable/buttonshape"
-                android:text="Just me" />
-            <!--android:onClick="clearAllCheckBoxes"-->
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
+     <fragment
+         android:name="com.example.chris.tutorialspoint.button_sharing"
+         android:id="@+id/sharing_buttons"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+        />
 
     </android.support.design.widget.AppBarLayout>
 
