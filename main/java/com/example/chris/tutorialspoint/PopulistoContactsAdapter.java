@@ -1,6 +1,8 @@
 
 package com.example.chris.tutorialspoint;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -37,6 +39,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     //for changing the colour of 'Phone COntacts' button
     private Context mContext;
+
+    private ButtonSharingFragment fragment;
 
     //make a List containing info about SelectPhoneContact objects
     public static List<SelectPhoneContact> theContactsList;
@@ -97,7 +101,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
 
-    public PopulistoContactsAdapter(List<SelectPhoneContact> selectPhoneContacts, Context context) {
+    public PopulistoContactsAdapter(List<SelectPhoneContact> selectPhoneContacts, Context context, ButtonSharingFragment fragment) {
         //selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
        // checkAccumulator = 0;
@@ -107,6 +111,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         this.mContext = context;
        // whichactivity = activity;
         context_type = context;
+
+        this.fragment = fragment;
 
         //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
         //with this we will put a checkbox beside the matching contacts
@@ -225,23 +231,25 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                     for (int i = 0; i < size; i++) {
                         if (theContactsList.get(i).isSelected) {
                             count++;
-                           // System.out.println("The count is " + count);
 
                         }
                     }
                     Log.i("MyMessage","The count is " + count);
 
+                    //if 'count' is 0, then change button to Just me
                     if (count==0){
 
-                        if (mContext instanceof NewContact) {
-                            ((NewContact) mContext).changeColorofJustMe();
+                        fragment.phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+                        Log.i("MyMessage","colour is blue " + count);
+                   /*     if (ButtonSharingFragment.isInstance(mContext)) {
+                            ((ButtonSharingFragment) mContext).changeColorofJustMe();
                             Toast.makeText(context_type, "count is 0!", Toast.LENGTH_SHORT).show();
 
-                        }
+                        }*/
 
                     }
 
-                    else {
+            /*        else {
 
                         //change the colour of 'Phone Contacts' button in NewContact.java
                         if (mContext instanceof NewContact) {
@@ -249,7 +257,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                             Toast.makeText(context_type, "The count is " + count , Toast.LENGTH_SHORT).show();
 
                         }
-                    }
+                    }*/
 
 
                  /*   switch (count){
@@ -335,9 +343,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
         checkAccumulator += isChecked ? 1 : -1 ;
     }*/
-
-
-
 
 
 }

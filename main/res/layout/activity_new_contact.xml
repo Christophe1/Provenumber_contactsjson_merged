@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme">
 
         <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="350dp"
             android:fitsSystemWindows="true"
@@ -92,37 +93,6 @@
                     android:background="@drawable/textboxes_for_contact"
                     android:visibility="invisible" />
 
-                <!--                <TextView
-                                    android:id="@+id/textViewSharedWith"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0px"
-                                    android:layout_weight="1"
-                                    android:text="Share With: "
-                                    android:textSize="18dp" />-->
-
-                <!--  <RadioGroup
-                      android:id="@+id/SharedWith"
-                      android:layout_width="match_parent"
-                      android:layout_height="0px"
-                      android:layout_weight="2"
-                      >
-
-                      <RadioButton
-                          android:id="@+id/Public"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:text="Public"
-                          />
-
-                      <RadioButton
-                          android:id="@+id/PhoneContacts"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="Phone Contacts"
-                          android:checked="true"/>
-
-                  </RadioGroup>-->
-
 
             </LinearLayout>
 
@@ -139,10 +109,10 @@
 
 
      <fragment
-         android:name="com.example.chris.tutorialspoint.button_sharing"
-         android:id="@+id/sharing_buttons"
+         android:name="com.example.chris.tutorialspoint.ButtonSharingFragment"
+         android:id = "@+id/myFragment"
          android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
+         android:layout_height="fill_parent"
         />
 
     </android.support.design.widget.AppBarLayout>
