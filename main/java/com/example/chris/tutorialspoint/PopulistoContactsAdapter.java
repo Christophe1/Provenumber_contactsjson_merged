@@ -35,17 +35,28 @@ import static android.R.attr.data;
 
 public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder > {
 
-   // NewContact newc;
+
+    private PlayPauseClick playPauseClick;
+
+
+    public void setPlayPauseClickListener(PlayPauseClick playPauseClick) {
+        this.playPauseClick = playPauseClick;
+    }
+
+
+    // NewContact newc;
 
     //for changing the colour of 'Phone COntacts' button
     private Context mContext;
 
-    private ButtonSharingFragment fragment;
+   // private ButtonSharingFragment fragment;
 
     //make a List containing info about SelectPhoneContact objects
     public static List<SelectPhoneContact> theContactsList;
 
     Context context_type;
+
+    //ButtonSharingFragment.AdapterInterface buttonListener;
 
     public static ArrayList<String> allPhonesofContacts;
     public static ArrayList<String> allNamesofContacts;
@@ -101,18 +112,21 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
 
-    public PopulistoContactsAdapter(List<SelectPhoneContact> selectPhoneContacts, Context context, ButtonSharingFragment fragment) {
+
+    public PopulistoContactsAdapter(List<SelectPhoneContact> selectPhoneContacts, Context context) {
         //selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
        // checkAccumulator = 0;
 
         theContactsList = selectPhoneContacts;
 
+       // this.buttonListener = buttonListener;
+
         this.mContext = context;
        // whichactivity = activity;
         context_type = context;
 
-        this.fragment = fragment;
+       // this.fragment = fragment;
 
         //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
         //with this we will put a checkbox beside the matching contacts
@@ -183,6 +197,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     }
 
+
+
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         //bind the views into the ViewHolder
@@ -239,7 +255,13 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                     //if 'count' is 0, then change button to Just me
                     if (count==0){
 
-                        fragment.phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+                        if (playPauseClick != null) {
+                            playPauseClick.imageButtonOnClick();
+                        }
+
+                       // buttonListener.buttonPressed();
+
+                       // fragment.phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
                         Log.i("MyMessage","colour is blue " + count);
                    /*     if (ButtonSharingFragment.isInstance(mContext)) {
                             ((ButtonSharingFragment) mContext).changeColorofJustMe();
@@ -344,6 +366,10 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         checkAccumulator += isChecked ? 1 : -1 ;
     }*/
 
+   /* public interface AdapterInterface {
+
+        public void buttonPressed();
+    }*/
 
 }
 

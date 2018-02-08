@@ -171,7 +171,7 @@ public class NewContact extends AppCompatActivity  {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,null);
+            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
 
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
@@ -218,11 +218,10 @@ public class NewContact extends AppCompatActivity  {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,null);
+            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
-
 
             //*********set the Matching Contacts to checked, by default ************
             //loop through the matching contacts

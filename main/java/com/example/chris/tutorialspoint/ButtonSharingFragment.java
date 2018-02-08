@@ -4,10 +4,12 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.tutorialspoint.R;
 
@@ -17,7 +19,7 @@ import java.util.ArrayList;
  * Created by Chris on 01/02/2018.
  */
 
-public class ButtonSharingFragment extends Fragment{
+public class ButtonSharingFragment extends Fragment implements PlayPauseClick {
 
     RecyclerView recyclerView;
 
@@ -35,10 +37,18 @@ public class ButtonSharingFragment extends Fragment{
         // Defines the xml file for the fragment
 
         //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
-        selectPhoneContacts = new ArrayList<SelectPhoneContact>();
+       // selectPhoneContacts = new ArrayList<SelectPhoneContact>();
+
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, getActivity());
+
+
+         adapter.setPlayPauseClickListener(this);
+
+
 
         View buttonView = inflater.inflate(R.layout.sharing_buttons, parent, false);
         //return inflater.inflate(R.layout.sharing_buttons, parent, false);
+
 
         //for the Public, phoneContacts, justMe, save and cancel buttons
         publicContacts = (Button) buttonView.findViewById(R.id.btnPublic);
@@ -213,4 +223,10 @@ public class ButtonSharingFragment extends Fragment{
     }*/
 
 
+    @Override
+    public void imageButtonOnClick() {
+        // TODO: Implement this
+        //Toast.makeText(getActivity(), " howaya!", Toast.LENGTH_SHORT).show();
+        Log.i("MyMessage","baaaalllls");
+    }
 }
