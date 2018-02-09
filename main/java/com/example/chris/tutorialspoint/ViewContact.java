@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,6 +101,9 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     //amonst other things, we'll be bringing the intent over to EditContact.
     int pub_or_priv;
 
+    //For the recycler view, containing the phone contacts
+    RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +115,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
         System.out.println("ViewContact: selectPhoneContacts " + selectPhoneContacts);
 
-        listView = (ListView) findViewById(R.id.listviewPhoneContacts);
+        //listView = (ListView) findViewById(R.id.listviewPhoneContacts);
+        recyclerView = (RecyclerView) findViewById(R.id.rv);
 
         pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
@@ -124,13 +130,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         //then posting to ViewContact.php to get associated details
         review_id = i.getStringExtra("review_id");
         System.out.println("ViewContact: review id is " + review_id);
-
-        //Toast.makeText(ViewContact.this, review_id, Toast.LENGTH_SHORT).show();
-
-
-
-
-
 
         //cast a TextView for each of the field ids in activity_view_contact.xml
         categoryname = (TextView) findViewById(R.id.textViewCategory);
@@ -637,8 +636,9 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                 }
             }*/
 
+            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this);
 
-            adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this,0);
+            //adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this,0);
 
             //Intent intent = getIntent();
             // intent = intent.putStringArrayListExtra("checked_array", checkedContactsAsArrayList);
@@ -653,11 +653,12 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             //holder.check.setEnabled(false);
             //   }
 
-            listView.setAdapter(adapter);
+            //listView.setAdapter(adapter);
+
+            recyclerView.setAdapter(adapter);
 
 
-
-
+            recyclerView.setLayoutManager((new LinearLayoutManager(ViewContact.this)));
 
 
 
@@ -674,7 +675,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             //this function measures the height of the listview, with all the contacts, and loads it to be that
             //size. We need to do this because there's a problem with a listview in a scrollview.
             //The function is in GlobalFunctions
-            GlobalFunctions.justifyListViewHeightBasedOnChildren(ViewContact.this,listView);
+//            GlobalFunctions.justifyListViewHeightBasedOnChildren(ViewContact.this,listView);
 
         }
     }

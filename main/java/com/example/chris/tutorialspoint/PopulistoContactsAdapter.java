@@ -1,8 +1,5 @@
-
 package com.example.chris.tutorialspoint;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -35,28 +32,15 @@ import static android.R.attr.data;
 
 public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder > {
 
-
-    private PlayPauseClick playPauseClick;
-
-
-    public void setPlayPauseClickListener(PlayPauseClick playPauseClick) {
-        this.playPauseClick = playPauseClick;
-    }
-
-
     // NewContact newc;
 
     //for changing the colour of 'Phone COntacts' button
     private Context mContext;
 
-   // private ButtonSharingFragment fragment;
-
     //make a List containing info about SelectPhoneContact objects
     public static List<SelectPhoneContact> theContactsList;
 
     Context context_type;
-
-    //ButtonSharingFragment.AdapterInterface buttonListener;
 
     public static ArrayList<String> allPhonesofContacts;
     public static ArrayList<String> allNamesofContacts;
@@ -112,21 +96,16 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
 
-
     public PopulistoContactsAdapter(List<SelectPhoneContact> selectPhoneContacts, Context context) {
         //selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
-       // checkAccumulator = 0;
+        // checkAccumulator = 0;
 
         theContactsList = selectPhoneContacts;
 
-       // this.buttonListener = buttonListener;
-
         this.mContext = context;
-       // whichactivity = activity;
+        // whichactivity = activity;
         context_type = context;
-
-       // this.fragment = fragment;
 
         //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
         //with this we will put a checkbox beside the matching contacts
@@ -197,8 +176,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     }
 
-
-
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         //bind the views into the ViewHolder
@@ -247,31 +224,23 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                     for (int i = 0; i < size; i++) {
                         if (theContactsList.get(i).isSelected) {
                             count++;
+                            // System.out.println("The count is " + count);
 
                         }
                     }
                     Log.i("MyMessage","The count is " + count);
 
-                    //if 'count' is 0, then change button to Just me
                     if (count==0){
 
-                        if (playPauseClick != null) {
-                            playPauseClick.imageButtonOnClick();
-                        }
-
-                       // buttonListener.buttonPressed();
-
-                       // fragment.phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
-                        Log.i("MyMessage","colour is blue " + count);
-                   /*     if (ButtonSharingFragment.isInstance(mContext)) {
-                            ((ButtonSharingFragment) mContext).changeColorofJustMe();
+                        if (mContext instanceof NewContact) {
+                            ((NewContact) mContext).changeColorofJustMe();
                             Toast.makeText(context_type, "count is 0!", Toast.LENGTH_SHORT).show();
 
-                        }*/
+                        }
 
                     }
 
-            /*        else {
+                    else {
 
                         //change the colour of 'Phone Contacts' button in NewContact.java
                         if (mContext instanceof NewContact) {
@@ -279,29 +248,22 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                             Toast.makeText(context_type, "The count is " + count , Toast.LENGTH_SHORT).show();
 
                         }
-                    }*/
+                    }
 
 
                  /*   switch (count){
-
                         case 0:
                             if (mContext instanceof NewContact) {
                             ((NewContact) mContext).changeColorofJustMe();
                                 Toast.makeText(context_type, "count is 0!", Toast.LENGTH_SHORT).show();
-
                             }
-
                         case 1:
-
                    // if(count==0)
-
                         //change the colour of 'Phone Contacts' button in NewContact.java
                        if (mContext instanceof NewContact) {
                             ((NewContact) mContext).changeColourOfPhoneContacts();
                            Toast.makeText(context_type, "The count is " + count , Toast.LENGTH_SHORT).show();
-
                        }
-
                     }*/
 
                     //change the colour of 'Phone Contacts' button in NewContact.java
@@ -320,7 +282,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     countCheck(isChecked);
                     Toast.makeText(context_type, checkAccumulator + " unclicked!", Toast.LENGTH_SHORT).show();
-
                    // Log.i("MAIN", checkAccumulator + "");
                 }
             };*/
@@ -331,9 +292,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                 // ((MatchingContact) viewHolder).check.setOnClickListener(new CompoundButton.OnClickListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                     onCheckBoxClickListener.onCheckBoxClick(isChecked);
-
                 }
             });*/
 
@@ -356,20 +315,16 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 /*    public interface OnCheckBoxClickListener {
         void onCheckBoxClick(boolean ischecked);
     }
-
     public void SetOnCheckBoxClickListener(final OnCheckBoxClickListener onCheckBoxClickListener) {
         this.onCheckBoxClickListener = onCheckBoxClickListener;
     }*/
 
 /*    private void countCheck(boolean isChecked) {
-
         checkAccumulator += isChecked ? 1 : -1 ;
     }*/
 
-   /* public interface AdapterInterface {
 
-        public void buttonPressed();
-    }*/
+
+
 
 }
-

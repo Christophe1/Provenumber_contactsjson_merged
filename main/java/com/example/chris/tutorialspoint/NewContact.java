@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,8 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class NewContact extends AppCompatActivity  {
-
+public class NewContact extends AppCompatActivity {
     // this is the php file name where to save to.
     // we will post the category, name, phone, address, comment etc into Php and
     // create a new review_id
@@ -47,12 +45,12 @@ public class NewContact extends AppCompatActivity  {
 
     private ProgressDialog pDialog;
 
-/*    Button publicContacts;
+    Button publicContacts;
     Button phoneContacts;
-    Button justMeContacts; */
+    Button justMeContacts;
     Button save;
     Button cancel;
-   // CheckBox mcheckbox;
+    CheckBox mcheckbox;
 
     //thse are the fields in the xml
     private EditText categoryname;
@@ -61,7 +59,7 @@ public class NewContact extends AppCompatActivity  {
     private EditText addressname;
     private EditText commentname;
 
-    public int public_or_private;
+    int public_or_private;
 
     // ArrayList called selectPhoneContacts that will contain SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
@@ -77,9 +75,7 @@ public class NewContact extends AppCompatActivity  {
 
     //For the recycler view, containing the phone contacts
     RecyclerView recyclerView;
-    //PopulistoContactsAdapter adapter;
-
-   // private CollapsingToolbarLayout collapsingToolbarLayout = null;
+    PopulistoContactsAdapter adapter;
 
     //int check_counter = 0;
 
@@ -88,9 +84,8 @@ public class NewContact extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
 
-    //   PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
 
-        //make the toolbar as the actionbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -100,9 +95,6 @@ public class NewContact extends AppCompatActivity  {
 
         //show the App title
         actionbar.setTitle("Pop");
-
-   /*     collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle("Pop");*/
 
         //we are fetching details for the recyclerview - the name, numbers, matching contacts...
         LoadContact loadContact = new LoadContact();
@@ -136,20 +128,20 @@ public class NewContact extends AppCompatActivity  {
         commentname = (EditText) findViewById(R.id.textViewComment);
 
         //for the Public, phoneContacts, justMe, save and cancel buttons
-/*        publicContacts = (Button) findViewById(R.id.btnPublic);
+        publicContacts = (Button) findViewById(R.id.btnPublic);
         phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
-        justMeContacts = (Button) findViewById(R.id.btnJustMe);*/
+        justMeContacts = (Button) findViewById(R.id.btnJustMe);
         save = (Button) findViewById(R.id.save);
         cancel = (Button) findViewById(R.id.cancel);
 
-/*        publicButton();
+        publicButton();
         phoneContactsButton();
-        justMeButton();*/
+        justMeButton();
         saveContactButton();
 
         //have the phoneContacts button selected by default
         //make it blue
-        //phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+        phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
 
         recyclerView = (RecyclerView) findViewById(R.id.rv);
 
@@ -171,7 +163,10 @@ public class NewContact extends AppCompatActivity  {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+            //we want to delete the old selectContacts from the listview when the Activity loads
+            //because it may need to be updated and we want the user to see the updated listview,
+            //like if the user adds new names and numbers to their phone contacts.
+            // selectPhoneContacts.clear();
 
 
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
@@ -223,20 +218,20 @@ public class NewContact extends AppCompatActivity  {
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
+
             //*********set the Matching Contacts to checked, by default ************
             //loop through the matching contacts
             int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
             for (int i = 0; i < count; i++) {
 
-                //check all matching contacts, we want it to be 'Phone Contacts'
+                //check all matching contacts, we want it to be 'Phone Contacts' by default
                 PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
                 //we need to notify the recyclerview that changes may have been made
                 adapter.notifyDataSetChanged();
             }
             //*********************************
-
 
 
             //we need to notify the listview that changes may have been made on
@@ -256,7 +251,129 @@ public class NewContact extends AppCompatActivity  {
 
     }
 
+    //for the Public Contacts button
+    private void publicButton() {
 
+        publicContacts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+//              keep the slightly rounded shape, when the button is pressed
+                publicContacts.setBackgroundResource(R.drawable.publiccontacts_buttonshapepressed);
+
+//               keep the slightly rounded shape of the others, but still grey
+                phoneContacts.setBackgroundResource(R.drawable.buttonshape);
+                justMeContacts.setBackgroundResource(R.drawable.buttonshape);
+
+                //set sharing to Public
+                public_or_private = 2;
+
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+
+                recyclerView.setAdapter(adapter);
+                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+                //loop through the matching contacts
+                int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+                //i is the number of matching contacts that there are
+                for (int i = 0; i < count; i++) {
+
+                    //for all contacts, only those that are matching will be checked
+                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                    //we need to notify the recyclerview that changes may have been made
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+        });
+
+    }
+
+
+    //for the phone Contacts button
+    private void phoneContactsButton() {
+
+        phoneContacts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                //keep the slightly rounded shape, when the button is pressed
+                phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+
+
+//               keep the slightly rounded shape of the others, but still grey
+                publicContacts.setBackgroundResource(R.drawable.buttonshape);
+                justMeContacts.setBackgroundResource(R.drawable.buttonshape);
+
+                //set sharing to Phone Contacts
+                public_or_private = 1;
+
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+
+                recyclerView.setAdapter(adapter);
+                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+                //loop through the matching contacts
+                int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+                for (int i = 0; i < count; i++) {
+
+                    //check all matching contacts, we want it to be 'Phone Contacts'
+                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                    //we need to notify the recyclerview that changes may have been made
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+        });
+
+    }
+
+
+    //for the Just Me button
+    private void justMeButton() {
+
+        justMeContacts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                //keep the slightly rounded shape, when the button is pressed
+                justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
+
+//               keep the slightly rounded shape of the others, but still grey
+                publicContacts.setBackgroundResource(R.drawable.buttonshape);
+                phoneContacts.setBackgroundResource(R.drawable.buttonshape);
+
+                //set sharing to Just Me
+                public_or_private = 0;
+
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+
+                recyclerView.setAdapter(adapter);
+                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+                //loop through the matching contacts
+                int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+                for (int i = 0; i < count; i++) {
+
+                    //uncheck all matching contacts, we want it to be 'Just Me'
+                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
+
+                    //we need to notify the recyclerview that changes may have been made
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+        });
+
+    }
 
 
     //for the SAVE button
@@ -276,32 +393,45 @@ public class NewContact extends AppCompatActivity  {
                 try {
                     System.out.println("we're in the try part");
 
-                    //loop through the matching contacts
-                    int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+                        //loop through the matching contacts
+                        int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
-                    for (int i = 0; i < count; i++) {
+                        for (int i = 0; i < count; i++) {
 
-                        //for  contacts that are checked (they can only be matching contacts)...
-                        if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
-                            //Toast.makeText(NewContact.this, PopulistoContactsAdapter.theContactsList.get(i).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
+                            //for  contacts that are checked (they can only be matching contacts)...
+                            if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
+                                //Toast.makeText(NewContact.this, PopulistoContactsAdapter.theContactsList.get(i).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
 
-                            // make each checked contact in selectPhoneContacts
-                            // into an individual
-                            // JSON object called checkedContact
-                            JSONObject checkedContact = new JSONObject();
+                                // make each checked contact in selectPhoneContacts
+                                // into an individual
+                                // JSON object called checkedContact
+                                JSONObject checkedContact = new JSONObject();
 
-                            // checkedContact will be of the form {"checkedContact":"+353123456"}
-                            checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
+                                // checkedContact will be of the form {"checkedContact":"+353123456"}
+                                checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
 
-                            // Add checkedContact JSON Object to checkedContacts jsonArray
-                            //The JSON Array will be of the form
-                            // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-                            //we will be posting this JSON Array to Php, further down below
-                            checkedContacts.put(checkedContact);
-                            System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+                                // Add checkedContact JSON Object to checkedContacts jsonArray
+                                //The JSON Array will be of the form
+                                // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                                //we will be posting this JSON Array to Php, further down below
+                                checkedContacts.put(checkedContact);
+                                System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+                            }
+
                         }
 
-                    }
+                        //add phone owner's number to the checkedContacts JSON Array
+                        //new JSON Object called phoneOwner
+                        JSONObject phoneOwner = new JSONObject();
+
+                        //add the phone number
+                        phoneOwner.put("checkedContact", phoneNoofUserCheck);
+                        System.out.println("NewContact: phoneOwner: " + phoneOwner);
+
+                        //add it to the Array
+                        checkedContacts.put(phoneOwner);
+
+                        System.out.println("checkedContacts JSON Array " + checkedContacts);
 
 
                 } catch (Exception e) {
@@ -382,7 +512,29 @@ public class NewContact extends AppCompatActivity  {
 
     }
 
+    //this is called from PopulistoContactsAdapter
+    //change the colour of the phoneContacts button
+    public void changeColourOfPhoneContacts() {
+        //keep the slightly rounded shape, when the button is pressed
+        phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
 
+        //keep the slightly rounded shape of the others, but still grey
+        publicContacts.setBackgroundResource(R.drawable.buttonshape);
+        justMeContacts.setBackgroundResource(R.drawable.buttonshape);
+
+    }
+
+    //this is called from PopulistoContactsAdapter
+    //change the colour of the justMe button
+    public void changeColorofJustMe() {
+        //keep the slightly rounded shape, when the button is pressed
+        justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
+
+        //keep the slightly rounded shape of the others, but still grey
+        publicContacts.setBackgroundResource(R.drawable.buttonshape);
+        phoneContacts.setBackgroundResource(R.drawable.buttonshape);
+
+    }
 
 
 }
