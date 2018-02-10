@@ -67,7 +67,7 @@ public class NewContact extends AppCompatActivity {
     String CountryCode;
 
     //ArrayList<String> allPhonesofContacts;
-    ArrayList<String> allNamesofContacts;
+    //ArrayList<String> allNamesofContacts;
     //ArrayList<String> MatchingContactsAsArrayList;
     String phoneNoofUserCheck;
     public String phoneNumberofContact;
@@ -84,7 +84,7 @@ public class NewContact extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
 
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -213,7 +213,7 @@ public class NewContact extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
@@ -269,7 +269,7 @@ public class NewContact extends AppCompatActivity {
                 //set sharing to Public
                 public_or_private = 2;
 
-                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
 
                 recyclerView.setAdapter(adapter);
                 // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
@@ -312,7 +312,7 @@ public class NewContact extends AppCompatActivity {
                 //set sharing to Phone Contacts
                 public_or_private = 1;
 
-                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
 
                 recyclerView.setAdapter(adapter);
                 // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
@@ -353,7 +353,7 @@ public class NewContact extends AppCompatActivity {
                 //set sharing to Just Me
                 public_or_private = 0;
 
-                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this);
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
 
                 recyclerView.setAdapter(adapter);
                 // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));

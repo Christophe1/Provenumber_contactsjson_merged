@@ -84,7 +84,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
     //an arraylist of all contacts phone numbers, which we will get from VerifyUserPhoneNumber
-    ArrayList <String> allPhonesofContacts;
+    //ArrayList <String> allPhonesofContacts;
     //an arraylist of all contacts names, which we will get from VerifyUserPhoneNumber
     ArrayList <String> allNamesofContacts;
     String MatchingContactsAsString;
@@ -92,7 +92,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     ArrayList<String> checkedContactsAsArrayList;
     String phoneNumberofContact;
     String phoneNameofContact;
-    ListView listView;
+   // ListView listView;
     SelectPhoneContactAdapter adapter;
     CheckBox checkBoxforContact;
     // String checkedContacts;
@@ -522,12 +522,12 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             //we want to delete the old selectContacts from the listview when the Activity loads
             //because it may need to be updated and we want the user to see the updated listview,
             //like if the user adds new names and numbers to their phone contacts.
-            selectPhoneContacts.clear();
+            //selectPhoneContacts.clear();
 
 
             //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
             //with this we will put all phone numbers of contacts on user's phone into our ListView in ViewContact activity
-            SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+      /*      SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
             Gson gson = new Gson();
             String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
             Type type = new TypeToken<ArrayList<String>>() {
@@ -559,14 +559,14 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             }.getType();
             MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
             System.out.println("ViewContact MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
-
+*/
 
 
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
-            for (int i = 0; i < allPhonesofContacts.size(); i++) {
+            for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
 
-                phoneNumberofContact = allPhonesofContacts.get(i);
-                phoneNameofContact = allNamesofContacts.get(i);
+                phoneNumberofContact = PopulistoContactsAdapter.allPhonesofContacts.get(i);
+                phoneNameofContact = PopulistoContactsAdapter.allNamesofContacts.get(i);
 
                 System.out.println("ViewContact: phoneNumberofContact : " + phoneNumberofContact);
                 System.out.println("ViewContact: phoneNameofContact : " + phoneNameofContact);
@@ -574,20 +574,23 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                 SelectPhoneContact selectContact = new SelectPhoneContact();
 
                 //if a phone number is in our array of matching contacts
-                if (MatchingContactsAsArrayList.contains(phoneNumberofContact))
+                if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
-                {
+                {   //add the selectContacts to the selectPhoneContacts array
                     // insert the contact at the beginning of the listview
                     selectPhoneContacts.add(0, selectContact);
-                    // checkBoxforContact.setVisibility(View.VISIBLE);
 
-                }
+                    //In SelectContact class, so getItemViewType will know which layout to show
+                    //:checkbox or Invite Button
+                    selectContact.setType_row("1");
 
-                else {
+                } else {
                     // insert it at the end (default)
                     selectPhoneContacts.add(selectContact);
-                    //makeinvisible();
+                    selectContact.setType_row("2");
+
                 }
+
 
 
                 selectContact.setName(phoneNameofContact);
@@ -636,7 +639,7 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                 }
             }*/
 
-            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this);
+            PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this,0);
 
             //adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this,0);
 
