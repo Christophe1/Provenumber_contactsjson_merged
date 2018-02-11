@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -31,6 +33,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.support.v7.appcompat.R.styleable.MenuItem;
 
 
 public class NewContact extends AppCompatActivity {
@@ -92,9 +96,11 @@ public class NewContact extends AppCompatActivity {
         //Show the back button (???)
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
+        //actionbar.setDisplayShowHomeEnabled(true);
 
         //show the App title
-        actionbar.setTitle("Pop");
+        actionbar.setTitle("Populisto");
+
 
         //we are fetching details for the recyclerview - the name, numbers, matching contacts...
         LoadContact loadContact = new LoadContact();
@@ -148,6 +154,20 @@ public class NewContact extends AppCompatActivity {
         //save it by default to the DB as 1, for phoneContacts
         public_or_private = 1;
 
+    }
+
+    //code for the '<', back button. Go back to PopulistoListView, as defined
+    //in Manifest, PARENT_ACTIVITY
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 //******for the phone contacts in the recyclerView

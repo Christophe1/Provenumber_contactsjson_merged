@@ -9,11 +9,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -74,6 +78,10 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     private TextView commentname;
     private TextView publicorprivate;
 
+    Button publicContacts;
+    Button phoneContacts;
+    Button justMeContacts;
+
     //for categoryid we only need the value, don't need to cast it to anything
     String categoryid;
 
@@ -81,18 +89,23 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     String review_id;
     private ProgressDialog pDialog;
 
-    //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
+    //selectPhoneContacts is an array list that will hold our SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
     //an arraylist of all contacts phone numbers, which we will get from VerifyUserPhoneNumber
     //ArrayList <String> allPhonesofContacts;
     //an arraylist of all contacts names, which we will get from VerifyUserPhoneNumber
-    ArrayList <String> allNamesofContacts;
+   // ArrayList <String> allNamesofContacts;
     String MatchingContactsAsString;
     ArrayList<String> MatchingContactsAsArrayList;
+
+    //this is phone numbers who the phone owner is sharing the review with
     ArrayList<String> checkedContactsAsArrayList;
+
+    //all phone contact numbers, broken down
     String phoneNumberofContact;
+    //all phone contact names, broken down
     String phoneNameofContact;
-   // ListView listView;
+
     SelectPhoneContactAdapter adapter;
     CheckBox checkBoxforContact;
     // String checkedContacts;
@@ -125,6 +138,17 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
         //********************
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        //Show the back button (???)
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        //actionbar.setDisplayShowHomeEnabled(true);
+
+        //show the App title
+        actionbar.setTitle("Pop");
+
         Intent i = this.getIntent();
         //we'll be getting this from the cell clicked in the listview
         //then posting to ViewContact.php to get associated details
@@ -139,6 +163,11 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
         commentname = (TextView) findViewById(R.id.textViewComment);
         publicorprivate = (TextView) findViewById(R.id.textPublicorPrivate);
         // textphonenumber.setText(phoneNoofUser);
+
+        //for the Public, phoneContacts, justMe, save and cancel buttons
+        publicContacts = (Button) findViewById(R.id.btnPublic);
+        phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
+        justMeContacts = (Button) findViewById(R.id.btnJustMe);
 
         //for the checkbox
         // checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
@@ -194,11 +223,13 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
                             //convert public_or_private to an integer
                             pub_or_priv = Integer.parseInt(public_or_private);
                             //If pub_or_priv in mySQL is 0 then
-                            if(pub_or_priv==0)
-                                publicorprivate.setText("Phone Contacts");
+                           // if(pub_or_priv==0)
+                                publicorprivate.setText(String.valueOf(pub_or_priv));
+
+                           // publicorprivate.setText("Phone Contacts");
                                 //If pub_or_priv in mySQL is 1 then
-                            else
-                                publicorprivate.setText("Public");
+                           // else
+                            //    publicorprivate.setText("Public");
                             System.out.println("ViewContact: public or private value :" + pub_or_priv);
 
 
@@ -263,37 +294,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
                             System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
-                            //we are going to loop through the checked contacts and check the boxes
-                            //(we could just set them as checked without a loop but User Phone Number,
-                            //which isn't in the Contacts list, is problematic)
-                            //int count = checkedContactsAsArrayList.size();
-
-                           /* int num_of_visible_view=listView.getLastVisiblePosition() -
-                                    listView.getFirstVisiblePosition();
-
-                            for (int i = 0; i < num_of_visible_view; i++) {
-                                //for (int i = 0; i < count; i++) {
-
-                                LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
-
-                                //inflate the layout that contains the checkbox or else we can get errors
-                                //   LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                //  View view = itemLayout.inflate(R.layout.phone_inflate_listview, null);
-                                //associate it with a checkbox
-                                CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
-
-                                //get the other data related to that checkbox - name and number of contact
-                                SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
-                                //if the contact is in the checked array
-                                if (checkedContactsAsArrayList.contains(data.getPhone())) {
-
-                                    //check the box, make it disabled
-                                    checkbox.setChecked(true);
-                                    checkbox.setEnabled(false);
-                                }
-                            }
-
-*/
 
                             //System.out.println("heree it is" + jsonResponse);
                             //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
@@ -403,6 +403,21 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
 
     }
+
+    //code for the '<', back button. Go back to PopulistoListView, as defined
+    //in Manifest, PARENT_ACTIVITY
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     private void deleteContactButton() {
 
@@ -525,43 +540,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             //selectPhoneContacts.clear();
 
 
-            //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
-            //with this we will put all phone numbers of contacts on user's phone into our ListView in ViewContact activity
-      /*      SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-            Gson gson = new Gson();
-            String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
-            Type type = new TypeToken<ArrayList<String>>() {
-            }.getType();
-            allPhonesofContacts = gson.fromJson(json, type);
-            System.out.println("ViewContact: allPhonesofContacts :" + allPhonesofContacts);
-
-            //we are fetching the array list allNamesofContacts, created in VerifyUserPhoneNumber.
-            //with this we will put all phone names of contacts on user's phone into our ListView in ViewContact activity
-            SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-            Gson gsonNames = new Gson();
-            String jsonNames = sharedPreferencesallNamesofContacts.getString("allNamesofContacts", "");
-            Type typeNames = new TypeToken<ArrayList<String>>() {
-            }.getType();
-            allNamesofContacts = gsonNames.fromJson(jsonNames, typeNames);
-            System.out.println("ViewContact: allNamesofContacts :" + allNamesofContacts);
-
-            System.out.println("ViewContact:the amount in allPhonesofContacts :" + allPhonesofContacts.size());
-            System.out.println("ViewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
-
-
-            //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
-            //With that we'll put our
-            //matching contacts at the top of the listview, display check boxes beside them etc...
-            SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
-            Gson gsonMatchingContactsAsArrayList = new Gson();
-            String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
-            Type type1 = new TypeToken<ArrayList<String>>() {
-            }.getType();
-            MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
-            System.out.println("ViewContact MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
-*/
-
-
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
             for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
 
@@ -641,6 +619,24 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
 
             PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this,0);
 
+
+            if(pub_or_priv==0){
+
+                publicContacts.setVisibility(View.GONE);
+                phoneContacts.setVisibility(View.GONE);
+            }
+
+            if(pub_or_priv==1){
+
+                publicContacts.setVisibility(View.GONE);
+                justMeContacts.setVisibility(View.GONE);
+            }
+
+            if(pub_or_priv==2){
+
+                justMeContacts.setVisibility(View.GONE);
+                phoneContacts.setVisibility(View.GONE);
+            }
             //adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this,0);
 
             //Intent intent = getIntent();

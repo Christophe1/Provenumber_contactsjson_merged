@@ -22,8 +22,7 @@
 
     <android:uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 
     <application
@@ -31,7 +30,8 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name="com.example.chris.tutorialspoint.VerifyUserPhoneNumber"
+        <activity
+            android:name="com.example.chris.tutorialspoint.VerifyUserPhoneNumber"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,20 +39,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.chris.tutorialspoint.DisplayMyPopulistoListView"
-            android:launchMode="singleInstance"
-            />
-        <activity android:name="com.example.chris.tutorialspoint.PopulistoListView"
-            android:launchMode="singleInstance"
-            />
+        <activity
+            android:name="com.example.chris.tutorialspoint.DisplayMyPopulistoListView"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name="com.example.chris.tutorialspoint.PopulistoListView"
+            android:launchMode="singleInstance" />
         <activity android:name="com.example.chris.tutorialspoint.CountryCodes" />
-        <activity android:name="com.example.chris.tutorialspoint.ViewContact"
-            android:noHistory="true"
-            />
+        <activity
+            android:name="com.example.chris.tutorialspoint.ViewContact"
+            android:noHistory="true" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.example.chris.tutorialspoint.PopulistoListView" />
+        </activity>
         <activity android:name="com.example.chris.tutorialspoint.EditContact" />
-        <activity android:name="com.example.chris.tutorialspoint.NewContact"
+        <activity
+            android:name="com.example.chris.tutorialspoint.NewContact"
             android:configChanges="orientation|screenSize">
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.chris.tutorialspoint.PopulistoListView" />
         </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
