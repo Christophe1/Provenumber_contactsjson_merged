@@ -54,7 +54,7 @@ import java.util.Map;
 import static com.example.tutorialspoint.R.layout.activity_view_contact;
 import static com.example.tutorialspoint.R.menu.main;
 
-public class ViewContact extends AppCompatActivity implements android.widget.CompoundButton.OnCheckedChangeListener  {
+public class ViewContact extends AppCompatActivity  {
     //
     // this is the php file name where to select from.
     // we will post the review id of the review in ListView (in PopulistoListView.java) into Php and
@@ -95,8 +95,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     //ArrayList <String> allPhonesofContacts;
     //an arraylist of all contacts names, which we will get from VerifyUserPhoneNumber
    // ArrayList <String> allNamesofContacts;
-    String MatchingContactsAsString;
-    ArrayList<String> MatchingContactsAsArrayList;
+    //String MatchingContactsAsString;
+    //ArrayList<String> MatchingContactsAsArrayList;
 
     //this is phone numbers who the phone owner is sharing the review with
     ArrayList<String> checkedContactsAsArrayList;
@@ -106,8 +106,8 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     //all phone contact names, broken down
     String phoneNameofContact;
 
-    SelectPhoneContactAdapter adapter;
-    CheckBox checkBoxforContact;
+    //SelectPhoneContactAdapter adapter;
+    //CheckBox checkBoxforContact;
     // String checkedContacts;
 
     //this is for public or private groups
@@ -121,6 +121,10 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(activity_view_contact);
+
+        //need to initialize this
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this,0);
+
 
         //********************
         //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
@@ -511,15 +515,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
     };
 
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-        //checkBoxforContact.setChecked(true);
-
-
-    }
-
-
 
 
     //******for the phone contacts in the listview
@@ -538,7 +533,6 @@ public class ViewContact extends AppCompatActivity implements android.widget.Com
             //because it may need to be updated and we want the user to see the updated listview,
             //like if the user adds new names and numbers to their phone contacts.
             //selectPhoneContacts.clear();
-
 
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
             for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {

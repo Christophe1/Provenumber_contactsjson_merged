@@ -48,12 +48,17 @@
         <activity android:name="com.example.chris.tutorialspoint.CountryCodes" />
         <activity
             android:name="com.example.chris.tutorialspoint.ViewContact"
-            android:noHistory="true" >
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.chris.tutorialspoint.PopulistoListView" />
+            android:noHistory="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.chris.tutorialspoint.PopulistoListView" />
         </activity>
-        <activity android:name="com.example.chris.tutorialspoint.EditContact" />
+        <activity android:name="com.example.chris.tutorialspoint.EditContact">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.chris.tutorialspoint.PopulistoListView" />
+        </activity>
+
         <activity
             android:name="com.example.chris.tutorialspoint.NewContact"
             android:configChanges="orientation|screenSize">

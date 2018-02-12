@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_edit_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context="com.example.chris.tutorialspoint.EditContact">
 
-    <ScrollView android:id="@+id/scrollView1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:fillViewport="true"
-        android:gravity="top"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <LinearLayout
-        android:id="@+id/listview1"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleTextAppearance="@android:color/transparent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false"
+
+            >
+
+            <LinearLayout
+                android:id="@+id/holder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="9.5"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                app:layout_collapseMode="parallax">
 
     <EditText
         android:id="@+id/textViewCategory"
@@ -67,107 +82,72 @@
         android:textSize="30dp" />
 
 
-    <TextView
-        android:id="@+id/textViewSharedWith"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewComment"
-        android:text="Shared With: "
-        android:textSize="30dp" />
+                <TextView
+                    android:id="@+id/textViewInvisible2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/textboxes_for_contact"
+                    android:visibility="invisible" />
 
-    <RadioGroup
-        android:id="@+id/SharedWith"
-        android:layout_width="match_parent"
-        android:layout_below="@id/textViewSharedWith"
-        android:layout_height="wrap_content"
-        android:layout_weight="4"
-        >
 
-        <RadioButton
-            android:id="@+id/Public"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Public"
+            </LinearLayout>
+
+            <!--This is for bar pinned to top of screen-->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:theme="@style/CustomToolbarStyle"
+                app:layout_collapseMode="pin" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+        <fragment
+            android:name="com.example.chris.tutorialspoint.ButtonSharingFragment"
+            android:id = "@+id/myFragment"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             />
 
-        <!--             <LinearLayout
-                         android:id="@+id/selectPhoneContacts"
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:orientation="horizontal" >-->
-
-        <RadioButton
-            android:id="@+id/PhoneContacts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Phone Contacts"
-            android:checked="true"/>
-
-        <!--                   <Button
-                               android:layout_height="wrap_content"
-                               android:layout_width="wrap_content"
-                               android:text="Clear All"
-                               android:id="@+id/clearAll"/>
-
-                       </LinearLayout>-->
+    </android.support.design.widget.AppBarLayout>
 
 
-    </RadioGroup>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <!--This is positioned in the toolbar, above-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-        <Button
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="Select All"
-            android:id="@+id/btnCheckAll"/>
+            android:layout_height="match_parent"
+
+            >
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="CANCEL" />
+
+            <Button
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/cancel"
+                android:layout_marginRight="1dp"
+                android:text="SAVE" />
 
         </RelativeLayout>
-
-
-        <ListView
-            android:id="@+id/listviewPhoneContacts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:layout_weight="3"
-            >
-        </ListView>
-
     </LinearLayout>
 
-    </ScrollView>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-
-        >
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SAVE"
-        android:id="@+id/save"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CANCEL"
-        android:id="@+id/cancel"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        />
-
-
-    </RelativeLayout>
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
