@@ -134,7 +134,7 @@ public class EditContact extends AppCompatActivity {
 
         //get the phone number, stored in an XML file, when the user first registered the app
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        final String phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
+        phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
 
 
         //cast an EditText for each of the field ids in activity_edit_contact.xmlxml
@@ -145,7 +145,10 @@ public class EditContact extends AppCompatActivity {
         addressname = (EditText) findViewById(R.id.textViewAddress);
         commentname = (EditText) findViewById(R.id.textViewComment);
 
+        //for the save button ******************************
+        save = (Button) findViewById(R.id.save);
 
+        saveContactButton();
 
         //get the intent we created in ViewContact class, to bring the details over
         //to this class
@@ -259,11 +262,22 @@ public class EditContact extends AppCompatActivity {
 */
 
 
-        //for the save button ******************************
-        save = (Button) findViewById(R.id.save);
+        //*****************************************
+        //for the cancel button
+        cancel = (Button) findViewById(R.id.cancel);
+
+        //call the cancel function
+        cancelButton();
+
+
+    }
+
+    //for the SAVE button
+    private void saveContactButton() {
 
         save.setOnClickListener(new View.OnClickListener() {
 
+            @Override
             public void onClick(View view) {
                 System.out.println("you clicked it, save");
 
@@ -294,22 +308,32 @@ public class EditContact extends AppCompatActivity {
                         System.out.println("It is private");
                         pub_or_priv =0;
                     }*/
-
-                    //the user will be able to check contacts who to share the review
+                    // the user will be able to check contacts who to share the review
                     // with, from their matching contacts list
-                    int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
-
+                    int count = PopulistoContactsAdapter.newcheckedContactsAsArrayList.size();
+                    // CheckBox fee_checkbox;
                     for (int i = 0; i < count; i++) {
+                        //  LinearLayout itemLayout = (LinearLayout)recyclerView.getChildAt(i);
+                        // CheckBox checkbox = (CheckBox)itemLayout.findViewById(R.id.checkBoxContact);
 
+             /*           Object position = checkbox.getTag();
+                        if (position instanceof Integer) {
+                            Toast.makeText(EditContact.this, "whawha", Toast.LENGTH_LONG).show();
+
+                            //SelectPhoneContact contact = checkedContactsAsArrayList.get((Integer)position);
+                        }*/
+                        // SelectPhoneContact contact = (SelectPhoneContact) checkbox.getTag();
+                        // fee_checkbox = (CheckBox)findViewById(R.id.checkBoxContact);
+                        //   if(count.get(i)==true){
                         //for  contacts that are checked (they can only be matching contacts)...
-                        if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
+                        // if (fee_checkbox.isChecked()) {
 
                         //for each Matching Contacts row in the listview
                         //LinearLayout itemLayout = (LinearLayout)listView.getChildAt(i); // Find by under LinearLayout
                         //for each Matching Contacts checkbox in the listview
                         //CheckBox checkbox = (CheckBox)itemLayout.findViewById(R.id.checkBoxContact);
                         //get the other data related to the selected contact - name and number
-                       // SelectPhoneContact contact = (SelectPhoneContact) checkbox.getTag();
+                        // SelectPhoneContact contact = (SelectPhoneContact) checkbox.getTag();
 
                         // make each checked contact in selectPhoneContacts
                         // into an individual
@@ -317,22 +341,23 @@ public class EditContact extends AppCompatActivity {
                         JSONObject checkedContact = new JSONObject();
 
                         //if that checkbox is checked, then get the phone number
+                        //if(checkbox.isChecked()) {
                 /*        if(checkbox.isChecked()) {
                             Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
                             Toast.makeText(EditContact.this, contact.getPhone(), Toast.LENGTH_LONG).show();
 */
-                            // checkedContact will be of the form {"checkedContact":"+353123456"}
-                            checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
+                        // checkedContact will be of the form {"checkedContact":"+353123456"}
+                        checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
 
-                            // Add checkedContact JSON Object to checkedContacts jsonArray
-                            //The JSON Array will be of the form
-                            // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-                            //we will be posting this JSON Array to Php, further down below
-                            checkedContacts.put(checkedContact);
-                            System.out.println("EditContact: checkedcontact JSONObject :" + checkedContact);
-                        }
+                        // Add checkedContact JSON Object to checkedContacts jsonArray
+                        //The JSON Array will be of the form
+                        // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                        //we will be posting this JSON Array to Php, further down below
+                        checkedContacts.put(checkedContact);
+                        System.out.println("EditContact: checkedcontact JSONObject :" + checkedContact);
+                        //  }
 
-                    }
+                   // }
 
                     //add phone owner's number to the checkedContacts JSON Array
                     //new JSON Object called phoneOwner
@@ -348,11 +373,12 @@ public class EditContact extends AppCompatActivity {
                     System.out.println("checkedContacts JSON Array " + checkedContacts);
 
 
-
+                    }
                 } catch (Exception e) {
                     System.out.println("EditContact: there's a problem here unfortunately");
                     e.printStackTrace();
                 }
+
 
                 //post the review_id in the current activity to EditContact.php and from that
                 //get associated values - category, name, phone etc...
@@ -376,7 +402,7 @@ public class EditContact extends AppCompatActivity {
                     protected Map<String, String> getParams() {
                         Map<String, String> params = new HashMap<String, String>();
                         //post the phone number to php to get the user_id in the user table
-                        //params.put("phonenumberofuser", phoneNoofUserCheck);
+                        params.put("phonenumberofuser", phoneNoofUserCheck);
                         params.put("review_id", review_id);
                         //the second value, categoryname.getText().toString() etc...
                         // is the value we get from Android.
@@ -405,7 +431,7 @@ public class EditContact extends AppCompatActivity {
 
                 AppController.getInstance().addToRequestQueue(stringRequest);
 
-                //when saved, go textboxes_for_contact to the PopulistoListView class and update with
+                //when saved, go to the PopulistoListView class and update with
                 //the edited values
                 Intent j = new Intent(EditContact.this, PopulistoListView.class);
 /*                j.putExtra("category", categoryname.getText().toString());
@@ -414,7 +440,7 @@ public class EditContact extends AppCompatActivity {
                 j.putExtra("address", addressname.getText().toString());
                 j.putExtra("comment", commentname.getText().toString());*/
 
-            //    j.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //    j.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //startactivity only once with intent
                 // android:launchMode="singleInstance"
                 // android:launchMode="singleInstance"
@@ -423,8 +449,8 @@ public class EditContact extends AppCompatActivity {
                 EditContact.this.startActivity(j);
 
                 // clear the checkbox state of checked contacts, we only want to keep it when the app resumes
-                SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
-                preferences.edit().clear().commit();
+                //SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
+                //preferences.edit().clear().commit();
 
                 finish();
                 //hide the dialogue box when page is saved
@@ -433,15 +459,6 @@ public class EditContact extends AppCompatActivity {
 
 
         });
-
-
-        //*****************************************
-        //for the cancel button
-        cancel = (Button) findViewById(R.id.cancel);
-
-        //call the cancel function
-        cancelButton();
-
 
     }
 
@@ -487,10 +504,13 @@ public class EditContact extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
 
+            //System.out.println("EditContact postexecute1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+
+
             //we want to delete the old selectContacts from the listview when the Activity loads
             //because it may need to be updated and we want the user to see the updated listview,
             //like if the user adds new names and numbers to their phone contacts.
-            selectPhoneContacts.clear();
+            //selectPhoneContacts.clear();
 
 
             //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
@@ -578,13 +598,26 @@ public class EditContact extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
 
             PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager((new LinearLayoutManager(EditContact.this)));
+
+            //*********set the Matching Contacts to checked, by default ************
+            //loop through the matching contacts
+ /*           int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
+            System.out.println("EditContact postexecute: checkedContactsAsArrayList is " + PopulistoContactsAdapter.checkedContactsAsArrayList);
+
+           for (int number2 = 0; number2 < count; number2++) {
+
+                //if a phone number is in our array of checked contacts
+                if (PopulistoContactsAdapter.theContactsList.contains(checkedContactsAsArrayList)) {
+
+                    PopulistoContactsAdapter.theContactsList.get(number2).setSelected(true);
+                }
+            }*/
 
             // adapter = new SelectPhoneContactAdapter(selectPhoneContacts, EditContact.this,2);
 
@@ -597,6 +630,18 @@ public class EditContact extends AppCompatActivity {
                 }
             };*/
 
+            //*********set the Matching Contacts to checked, by default ************
+            //loop through the matching contacts
+  /*          int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
+
+            for (int i = 0; i < count; i++) {
+
+                //check all matching contacts, we want it to be 'Phone Contacts' by default
+                PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                //we need to notify the recyclerview that changes may have been made
+                adapter.notifyDataSetChanged();
+            }*/
 
 
             //we need to notify the listview that changes may have been made on
