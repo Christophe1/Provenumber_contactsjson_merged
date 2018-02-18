@@ -214,7 +214,7 @@ public class ViewContact extends AppCompatActivity  {
                             String comment = responseObject.getString("comment");
                             String public_or_private = responseObject.getString("publicorprivate");
 
-                            //checkedContacts is a String
+                            //checkedContacts is a String, we get it from "checkedcontacts", on the server
                             String checkedContacts = responseObject.getString("checkedcontacts");
 
                             //assign a textview to each of the fields in the review
@@ -279,7 +279,7 @@ public class ViewContact extends AppCompatActivity  {
                     }*/
 
 
-                            //we want to bring the checkedContactsAsArrayList array list to our SelectPhoneContactAdapter.
+                            //we want to bring the checkedContactsAsArrayList array list to our PopulistoContactAdapter.
                             // It looks like Shared Preferences
                             //only works easily with strings so best way to bring the array list in Shared Preferences is with
                             //Gson.

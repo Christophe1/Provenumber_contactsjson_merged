@@ -50,7 +50,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     public static ArrayList<String> allNamesofContacts;
     public static ArrayList<String> MatchingContactsAsArrayList;
     public static ArrayList<String> checkedContactsAsArrayList;
-    public static ArrayList<String> newcheckedContactsAsArrayList;
+ //   public static ArrayList<String> newcheckedContactsAsArrayList;
 
     public class MatchingContact extends RecyclerView.ViewHolder {
 
@@ -324,22 +324,18 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         //if the activity is EditContact
         if (whichactivity == 2) {
 
-            //This is for EditContact, to display the contacts the review is shared with
-            //for every phone number in the checkedContactsAsArrayList array list...
-            for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
-                Log.i("MyMessage","checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
+            //we need to remove the user's phone number from checkedContactsAsArrayList
+            //otherwise it will be added twice, when saved in EditContact
+            if (checkedContactsAsArrayList.contains(EditContact.phoneNoofUserCheck))
 
-                //if a phone number is in our array of checked contacts
-                if (checkedContactsAsArrayList.contains(selectPhoneContact.getPhone())) {
-                    //check the box
-                    ((MatchingContact) viewHolder).check.setChecked(true);
-                }
+            {
+                checkedContactsAsArrayList.remove(EditContact.phoneNoofUserCheck);
             }
 
-            newcheckedContactsAsArrayList = new ArrayList<String>(checkedContactsAsArrayList);
+          //  newcheckedContactsAsArrayList = new ArrayList<String>(checkedContactsAsArrayList);
 
             // delete duplicates (if any) from 'myArrayList'
-            newcheckedContactsAsArrayList = new ArrayList<String>(new LinkedHashSet<String>(newcheckedContactsAsArrayList));
+            //newcheckedContactsAsArrayList = new ArrayList<String>(new LinkedHashSet<String>(newcheckedContactsAsArrayList));
 
             //if the row is a matching contact
             if (viewHolder.getItemViewType() == 1)
@@ -352,11 +348,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                 ((MatchingContact) viewHolder).check.setTag(position);
 
 
-//disable the check box, can't be changed
-                //((MatchingContact) viewHolder).check.setEnabled(false);
-
-
-
                 ((MatchingContact) viewHolder).check.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -365,27 +356,44 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                         //pos is the row number that the clicked checkbox exists in
                         Integer pos = (Integer) ((MatchingContact) viewHolder).check.getTag();
 
+                        //if the checkbox is checked
+                        if (((MatchingContact) viewHolder).check.isChecked())
+
+                        {
+
+
+
+
+
+                            Toast.makeText(context_type, theContactsList.get(pos).getPhone() + "clicked", Toast.LENGTH_SHORT).show();
+                            //add the checked number into the arraylist
+                            checkedContactsAsArrayList.add(theContactsList.get(pos).getPhone());
+                            Log.i("newchecked", "checkedContactsAsArrayList" + checkedContactsAsArrayList);
+                            Log.i("newchecked", "clicked checkedContactsAsArrayList" + checkedContactsAsArrayList);
+
+                        }
+
+                        else {
+                            //remove the checked number from the arraylist
+                            checkedContactsAsArrayList.remove(theContactsList.get(pos).getPhone());
+                            Log.i("newchecked", "checkedContactsAsArrayList" + checkedContactsAsArrayList);
+                            Log.i("newchecked", "unclicked checkedContactsAsArrayList" + checkedContactsAsArrayList);
+
+                        }
                         //*************
 
                         //NEED THIS TO PRESERVE CHECKBOX STATE
 
-
-
-
                         if (theContactsList.get(pos).getSelected()) {
                             theContactsList.get(pos).setSelected(false);
-                            Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
-                           // newcheckedContactsAsArrayList = new ArrayList<String>();
-                            newcheckedContactsAsArrayList.remove(theContactsList.get(pos).getPhone());
-                            Log.i("newchecked", "newcheckedContactsAsArrayList" + newcheckedContactsAsArrayList);
+                           // Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
+
                         } else {
 
                             theContactsList.get(pos).setSelected(true);
                             Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
 
-                          //  newcheckedContactsAsArrayList = new ArrayList<String>();
-                            newcheckedContactsAsArrayList.add(theContactsList.get(pos).getPhone());
-                            Log.i("newchecked", "newcheckedContactsAsArrayList" + newcheckedContactsAsArrayList);
+
                         }
 
                         //we want to keep track of checked boxes, so when it is '0'
@@ -436,9 +444,22 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
 
 
+            //This is for EditContact, to display the contacts the review is shared with
+            //for every phone number in the checkedContactsAsArrayList array list...
+            for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
+                Log.i("MyMessage","checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
+
+                //if a phone number is in our array of checked contacts
+                if (checkedContactsAsArrayList.contains(selectPhoneContact.getPhone())) {
+                    //check the box
+                    ((MatchingContact) viewHolder).check.setChecked(true);
+                    break;
+                }
 
 
-            Log.i("newchecked", "newcheckedContactsAsArrayList" + newcheckedContactsAsArrayList.size());
+            }
+
+            Log.i("newchecked", "newcheckedContactsAsArrayList" + checkedContactsAsArrayList.size());
 
 
 

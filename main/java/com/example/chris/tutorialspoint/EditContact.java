@@ -68,7 +68,7 @@ public class EditContact extends AppCompatActivity {
     //ListView listView;
     //SelectPhoneContactAdapter adapter;
     PopulistoContactsAdapter adapter;
-    String phoneNoofUserCheck;
+    public static String phoneNoofUserCheck;
 
     //For the recycler view, containing the phone contacts
     RecyclerView recyclerView;
@@ -308,59 +308,32 @@ public class EditContact extends AppCompatActivity {
                         System.out.println("It is private");
                         pub_or_priv =0;
                     }*/
-                    // the user will be able to check contacts who to share the review
-                    // with, from their matching contacts list
-                    int count = PopulistoContactsAdapter.newcheckedContactsAsArrayList.size();
-                    // CheckBox fee_checkbox;
+
+                    //get the checked contacts from the adapter
+                    int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
+
+                    //for each phone number in the array list...
                     for (int i = 0; i < count; i++) {
-                        //  LinearLayout itemLayout = (LinearLayout)recyclerView.getChildAt(i);
-                        // CheckBox checkbox = (CheckBox)itemLayout.findViewById(R.id.checkBoxContact);
 
-             /*           Object position = checkbox.getTag();
-                        if (position instanceof Integer) {
-                            Toast.makeText(EditContact.this, "whawha", Toast.LENGTH_LONG).show();
-
-                            //SelectPhoneContact contact = checkedContactsAsArrayList.get((Integer)position);
-                        }*/
-                        // SelectPhoneContact contact = (SelectPhoneContact) checkbox.getTag();
-                        // fee_checkbox = (CheckBox)findViewById(R.id.checkBoxContact);
-                        //   if(count.get(i)==true){
-                        //for  contacts that are checked (they can only be matching contacts)...
-                        // if (fee_checkbox.isChecked()) {
-
-                        //for each Matching Contacts row in the listview
-                        //LinearLayout itemLayout = (LinearLayout)listView.getChildAt(i); // Find by under LinearLayout
-                        //for each Matching Contacts checkbox in the listview
-                        //CheckBox checkbox = (CheckBox)itemLayout.findViewById(R.id.checkBoxContact);
-                        //get the other data related to the selected contact - name and number
-                        // SelectPhoneContact contact = (SelectPhoneContact) checkbox.getTag();
-
-                        // make each checked contact in selectPhoneContacts
+                        // make each checked contact
                         // into an individual
-                        // JSON object called checkedContact
+                        // JSON OBJECT called checkedContact
                         JSONObject checkedContact = new JSONObject();
 
-                        //if that checkbox is checked, then get the phone number
-                        //if(checkbox.isChecked()) {
-                /*        if(checkbox.isChecked()) {
-                            Log.d("Item " + String.valueOf(i), checkbox.getTag().toString());
-                            Toast.makeText(EditContact.this, contact.getPhone(), Toast.LENGTH_LONG).show();
-*/
-                        // checkedContact will be of the form {"checkedContact":"+353123456"}
-                        checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
+                        // checkedContact OBJECT will be of the form {"checkedContact":"+353123456"}
+                        checkedContact.put("checkedContact", PopulistoContactsAdapter.checkedContactsAsArrayList.get(i));
 
                         // Add checkedContact JSON Object to checkedContacts jsonArray
-                        //The JSON Array will be of the form
+                        //The JSON ARRAY will be of the form
                         // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
                         //we will be posting this JSON Array to Php, further down below
                         checkedContacts.put(checkedContact);
                         System.out.println("EditContact: checkedcontact JSONObject :" + checkedContact);
-                        //  }
 
-                   // }
+                    }
 
                     //add phone owner's number to the checkedContacts JSON Array
-                    //new JSON Object called phoneOwner
+                    //First, new JSON Object called phoneOwner
                     JSONObject phoneOwner = new JSONObject();
 
                     //add the phone number
@@ -373,7 +346,7 @@ public class EditContact extends AppCompatActivity {
                     System.out.println("checkedContacts JSON Array " + checkedContacts);
 
 
-                    }
+
                 } catch (Exception e) {
                     System.out.println("EditContact: there's a problem here unfortunately");
                     e.printStackTrace();
