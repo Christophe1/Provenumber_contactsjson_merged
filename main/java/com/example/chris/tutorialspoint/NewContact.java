@@ -54,7 +54,7 @@ public class NewContact extends AppCompatActivity {
     Button justMeContacts;
     Button save;
     Button cancel;
-    CheckBox mcheckbox;
+    //CheckBox mcheckbox;
 
     //thse are the fields in the xml
     private EditText categoryname;
@@ -62,6 +62,7 @@ public class NewContact extends AppCompatActivity {
     private EditText phonename;
     private EditText addressname;
     private EditText commentname;
+
 
     int public_or_private;
 

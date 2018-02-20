@@ -76,6 +76,10 @@ public class EditContact extends AppCompatActivity {
     //this is the review of the current activity
     String review_id;
 
+    Button publicContacts;
+    Button phoneContacts;
+    Button justMeContacts;
+
     Button save;
     Button cancel;
 
@@ -85,6 +89,8 @@ public class EditContact extends AppCompatActivity {
     private EditText phonename;
     private EditText addressname;
     private EditText commentname;
+
+    int public_or_private;
 
     //string for getting intent info from ContactView class
     String categoryid, category, name, phone, address, comment;
@@ -679,6 +685,157 @@ public class EditContact extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
         preferences.edit().clear().commit();
         finish();
+    }
+
+
+
+    //for the Public Contacts button
+    private void publicButton() {
+
+        publicContacts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+//              keep the slightly rounded shape, when the button is pressed
+                publicContacts.setBackgroundResource(R.drawable.publiccontacts_buttonshapepressed);
+
+//               keep the slightly rounded shape of the others, but still grey
+                phoneContacts.setBackgroundResource(R.drawable.buttonshape);
+                justMeContacts.setBackgroundResource(R.drawable.buttonshape);
+
+                //set sharing to Public
+                public_or_private = 2;
+
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,1);
+
+                recyclerView.setAdapter(adapter);
+                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+                //loop through the matching contacts
+                int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+                //i is the number of matching contacts that there are
+                for (int i = 0; i < count; i++) {
+
+                    //for all contacts, only those that are matching will be checked
+                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                    //we need to notify the recyclerview that changes may have been made
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+        });
+
+    }
+
+
+    //for the phone Contacts button
+    private void phoneContactsButton() {
+
+        phoneContacts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                //keep the slightly rounded shape, when the button is pressed
+                phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+
+
+//               keep the slightly rounded shape of the others, but still grey
+                publicContacts.setBackgroundResource(R.drawable.buttonshape);
+                justMeContacts.setBackgroundResource(R.drawable.buttonshape);
+
+                //set sharing to Phone Contacts
+                public_or_private = 1;
+
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,1);
+
+                recyclerView.setAdapter(adapter);
+                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+                //loop through the matching contacts
+                int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+                for (int i = 0; i < count; i++) {
+
+                    //check all matching contacts, we want it to be 'Phone Contacts'
+                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                    //we need to notify the recyclerview that changes may have been made
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+        });
+
+    }
+
+
+    //for the Just Me button
+    private void justMeButton() {
+
+        justMeContacts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                //keep the slightly rounded shape, when the button is pressed
+                justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
+
+//               keep the slightly rounded shape of the others, but still grey
+                publicContacts.setBackgroundResource(R.drawable.buttonshape);
+                phoneContacts.setBackgroundResource(R.drawable.buttonshape);
+
+                //set sharing to Just Me
+                public_or_private = 0;
+
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,1);
+
+                recyclerView.setAdapter(adapter);
+                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+                //loop through the matching contacts
+                int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+                for (int i = 0; i < count; i++) {
+
+                    //uncheck all matching contacts, we want it to be 'Just Me'
+                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
+
+                    //we need to notify the recyclerview that changes may have been made
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+        });
+
+    }
+
+
+    //this is called from PopulistoContactsAdapter
+    //change the colour of the phoneContacts button
+    public void changeColourOfPhoneContacts() {
+        //keep the slightly rounded shape, when the button is pressed
+        phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+
+        //keep the slightly rounded shape of the others, but still grey
+        publicContacts.setBackgroundResource(R.drawable.buttonshape);
+        justMeContacts.setBackgroundResource(R.drawable.buttonshape);
+
+    }
+
+    //this is called from PopulistoContactsAdapter
+    //change the colour of the justMe button
+    public void changeColorofJustMe() {
+        //keep the slightly rounded shape, when the button is pressed
+        justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
+
+        //keep the slightly rounded shape of the others, but still grey
+        publicContacts.setBackgroundResource(R.drawable.buttonshape);
+        phoneContacts.setBackgroundResource(R.drawable.buttonshape);
+
     }
 
 

@@ -27,14 +27,12 @@ import java.util.List;
 
 import static android.R.attr.data;
 
+
 /**
  * Created by Chris on 07/01/2018.
  */
 
-public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder > {
-
-    // NewContact newc;
-
+public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //for changing the colour of 'Phone COntacts' button
     private Context mContext;
 
@@ -50,7 +48,12 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     public static ArrayList<String> allNamesofContacts;
     public static ArrayList<String> MatchingContactsAsArrayList;
     public static ArrayList<String> checkedContactsAsArrayList;
- //   public static ArrayList<String> newcheckedContactsAsArrayList;
+    //   public static ArrayList<String> newcheckedContactsAsArrayList;
+
+    //In each recycler_blueprint show the items you want to have appearing
+    public TextView title, phone;
+    public CheckBox check;
+    public Button invite;
 
     public class MatchingContact extends RecyclerView.ViewHolder {
 
@@ -95,7 +98,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        //for each row in recyclerview, get the getType_row, set in NewContact.java
+        //for each row in recyclerview, get the getType_row
+        //it will either have Invite Button, or no Invite Button
         return Integer.parseInt(theContactsList.get(position).getType_row());
     }
 
@@ -108,7 +112,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         theContactsList = selectPhoneContacts;
 
         this.mContext = context;
-         whichactivity = activity;
+        whichactivity = activity;
         context_type = context;
 
         //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
@@ -155,8 +159,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         System.out.println("SelectPhoneContactAdapter checkedContactsAsArrayList :" + checkedContactsAsArrayList);
 
 
-
-
     }
 
     @Override
@@ -199,6 +201,47 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         //The number of rows will match the number of phone contacts
         final SelectPhoneContact selectPhoneContact = theContactsList.get(position);
 
+        // For the ViewContact, which has int activity = 0
+        if (whichactivity == 0) {
+
+
+            //if the row is a matching contact
+            if (viewHolder.getItemViewType() == 1)
+
+            {
+                //in the title textbox in the row, put the corresponding name etc...
+                ((MatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
+                ((MatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
+                ((MatchingContact) viewHolder).check.setChecked(theContactsList.get(position).getSelected());
+                ((MatchingContact) viewHolder).check.setTag(position);
+
+                //disable the check box, can't be changed
+                ((MatchingContact) viewHolder).check.setEnabled(false);
+
+
+            } else {
+
+                //if getItemViewType == 2, then show the invite button layout
+                ((nonMatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
+                ((nonMatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
+            }
+
+
+            //This is for ViewContact, to display the contact the review is shared with
+            //for every phone number in the checkedContactsAsArrayList array list...
+            for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
+                Log.i("MyMessage", "checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
+
+                //if a phone number is in our array of checked contacts
+                if (checkedContactsAsArrayList.contains(selectPhoneContact.getPhone())) {
+                    //check the box
+                    ((MatchingContact) viewHolder).check.setChecked(true);
+                }
+            }
+            //disable the checkbox
+            //((MatchingContact) viewHolder).check.setEnabled(false);
+        }
+
 
         //if the activity is NewContact
         if (whichactivity == 1) {
@@ -212,7 +255,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                 ((MatchingContact) viewHolder).check.setChecked(theContactsList.get(position).getSelected());
                 ((MatchingContact) viewHolder).check.setTag(position);
 
-
+                //for the onClick of the check box
                 ((MatchingContact) viewHolder).check.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -222,14 +265,15 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                         Integer pos = (Integer) ((MatchingContact) viewHolder).check.getTag();
 
                         //NEED THIS TO PRESERVE CHECKBOX STATE
+
+                        //if unclicked
                         if (theContactsList.get(pos).getSelected()) {
                             theContactsList.get(pos).setSelected(false);
                             Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
 
-                        }
+                        } else {
 
-                        else {
-
+                            //if clicked
                             theContactsList.get(pos).setSelected(true);
                             Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
                             theContactsList.get(pos).getPhone();
@@ -247,8 +291,10 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                             }
                         }
+                        Toast.makeText(context_type, "The count is " + count, Toast.LENGTH_SHORT).show();
                         Log.i("MyMessage", "The count is " + count);
 
+                        //if count is 0, nothing selected, then show 'Just Me'
                         if (count == 0) {
 
                             if (mContext instanceof NewContact) {
@@ -332,25 +378,19 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                 checkedContactsAsArrayList.remove(EditContact.phoneNoofUserCheck);
             }
 
-          //  newcheckedContactsAsArrayList = new ArrayList<String>(checkedContactsAsArrayList);
-
-            // delete duplicates (if any) from 'myArrayList'
-            //newcheckedContactsAsArrayList = new ArrayList<String>(new LinkedHashSet<String>(newcheckedContactsAsArrayList));
-
             //if the row is a matching contact
             if (viewHolder.getItemViewType() == 1)
 
             {
-                //in the title textbox in the row, put the corresponding name etc...
+                //in the title textbox in the recycler_blueprint row, put the corresponding name etc...
                 ((MatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
                 ((MatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
                 ((MatchingContact) viewHolder).check.setChecked(theContactsList.get(position).getSelected());
                 ((MatchingContact) viewHolder).check.setTag(position);
-
-
                 ((MatchingContact) viewHolder).check.setOnClickListener(new View.OnClickListener() {
 
                     @Override
+                    //on checkbox click
                     public void onClick(View v) {
 
                         //pos is the row number that the clicked checkbox exists in
@@ -360,20 +400,17 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                         if (((MatchingContact) viewHolder).check.isChecked())
 
                         {
-
-
-
-
-
+                            //we want to add the phone number of the checked row into our arraylist.
+                            //this arraylist will be passed to EditContact class when Save is clicked and
+                            //saved in review_shared table on server.
                             Toast.makeText(context_type, theContactsList.get(pos).getPhone() + "clicked", Toast.LENGTH_SHORT).show();
+
                             //add the checked number into the arraylist
                             checkedContactsAsArrayList.add(theContactsList.get(pos).getPhone());
                             Log.i("newchecked", "checkedContactsAsArrayList" + checkedContactsAsArrayList);
                             Log.i("newchecked", "clicked checkedContactsAsArrayList" + checkedContactsAsArrayList);
 
-                        }
-
-                        else {
+                        } else {
                             //remove the checked number from the arraylist
                             checkedContactsAsArrayList.remove(theContactsList.get(pos).getPhone());
                             Log.i("newchecked", "checkedContactsAsArrayList" + checkedContactsAsArrayList);
@@ -386,7 +423,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                         if (theContactsList.get(pos).getSelected()) {
                             theContactsList.get(pos).setSelected(false);
-                           // Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
 
                         } else {
 
@@ -398,41 +435,39 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                         //we want to keep track of checked boxes, so when it is '0'
                         //'Phone Contacts' button will switch to 'Just Me'
+
+                       // if (((MatchingContact) viewHolder).check.isChecked())
                         int count;
                         count = 0;
-                        int size = theContactsList.size();
+                        int size = MatchingContactsAsArrayList.size();
                         for (int i = 0; i < size; i++) {
-                            if (theContactsList.get(i).isSelected) {
+                            if (((MatchingContact) viewHolder).check.isChecked()) {
                                 count++;
-                                // System.out.println("The count is " + count);
-
+                                 //System.out.println("The count is " + count);
                             }
+                           // Toast.makeText(context_type, "The count is " + count, Toast.LENGTH_SHORT).show();
+
                         }
                         Log.i("MyMessage", "The count is " + count);
 
-                      //  if (count == 0) {
+                          if (count == 0) {
 
-                     /*       if (mContext instanceof EditContact) {
-                                ((EditContact) mContext).changeColorofJustMe();
+                           /* if (mContext instanceof EditContact) {
+                                ((EditContact) mContext).changeColorofJustMe();*/
                                 Toast.makeText(context_type, "count is 0!", Toast.LENGTH_SHORT).show();
-
-                            }
-
+                            //}
                         } else {
-
                             //change the colour of 'Phone Contacts' button in NewContact.java
-                            if (mContext instanceof EditContact) {
-                                ((EditContact) mContext).changeColourOfPhoneContacts();
+                         /*   if (mContext instanceof EditContact) {
+                                ((EditContact) mContext).changeColourOfPhoneContacts();*/
                                 Toast.makeText(context_type, "The count is " + count, Toast.LENGTH_SHORT).show();
-
-                            }
-                        }*/
+                            //}
+                        }
 
                     }
 
 
                 });
-
 
 
             } else {
@@ -443,11 +478,10 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
             }
 
 
-
             //This is for EditContact, to display the contacts the review is shared with
             //for every phone number in the checkedContactsAsArrayList array list...
             for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
-                Log.i("MyMessage","checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
+                Log.i("MyMessage", "checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
 
                 //if a phone number is in our array of checked contacts
                 if (checkedContactsAsArrayList.contains(selectPhoneContact.getPhone())) {
@@ -462,56 +496,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
             Log.i("newchecked", "newcheckedContactsAsArrayList" + checkedContactsAsArrayList.size());
 
 
-
-
         }
-
-
-
-        // For the ViewContact, which has int activity = 0
-        if (whichactivity == 0) {
-
-
-            //if the row is a matching contact
-            if (viewHolder.getItemViewType() == 1)
-
-            {
-                //in the title textbox in the row, put the corresponding name etc...
-                ((MatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
-                ((MatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
-                ((MatchingContact) viewHolder).check.setChecked(theContactsList.get(position).getSelected());
-                ((MatchingContact) viewHolder).check.setTag(position);
-
-                //disable the check box, can't be changed
-                ((MatchingContact) viewHolder).check.setEnabled(false);
-
-
-
-
-            } else {
-
-                //if getItemViewType == 2, then show the invite button layout
-                ((nonMatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
-                ((nonMatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
-            }
-
-
-
-            //This is for ViewContact, to display the contact the review is shared with
-            //for every phone number in the checkedContactsAsArrayList array list...
-            for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
-                Log.i("MyMessage","checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
-
-                //if a phone number is in our array of checked contacts
-                if (checkedContactsAsArrayList.contains(selectPhoneContact.getPhone())) {
-                    //check the box
-                    ((MatchingContact) viewHolder).check.setChecked(true);
-                }
-            }
-            //disable the checkbox
-            //((MatchingContact) viewHolder).check.setEnabled(false);
-        }
-
 
     }
 
@@ -532,9 +517,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 /*    private void countCheck(boolean isChecked) {
         checkAccumulator += isChecked ? 1 : -1 ;
     }*/
-
-
-
 
 
 }
