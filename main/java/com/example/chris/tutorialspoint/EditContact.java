@@ -125,12 +125,12 @@ public class EditContact extends AppCompatActivity {
 
         //********************
         //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
-        selectPhoneContacts = new ArrayList<SelectPhoneContact>();
+       // selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
         //listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
         //rbu1 = (RadioButton) findViewById(R.id.PhoneContacts);
-       // rbu2 = (RadioButton) findViewById(R.id.Public);
+        // rbu2 = (RadioButton) findViewById(R.id.Public);
 
         //final Button btnCheckAll = (Button) findViewById(R.id.btnCheckAll);
 
@@ -229,7 +229,6 @@ public class EditContact extends AppCompatActivity {
                         checkbox.setChecked(true);
                         btnCheckAll.setText("Clear All");
                     }
-
                 }
                 //  else
                 //If 'phone contacts' is selected, set pub_or_priv = 0
@@ -242,12 +241,9 @@ public class EditContact extends AppCompatActivity {
         //Select All / Clear All Button
         //Check all or clear all checkboxes
   /*      btnCheckAll.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View v) {
                 boolean toCheck = true;
-
                 //THE CONDITION SHOULD BE OUTSIDE THE LOOP!
-
                 if (btnCheckAll.getText().toString().equalsIgnoreCase("Select All")) {
                     toCheck = true;
                     btnCheckAll.setText("Clear All");
@@ -256,7 +252,6 @@ public class EditContact extends AppCompatActivity {
                     rbu1.setChecked(true);
                     btnCheckAll.setText("Select All");
                 }
-
                 int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
                 for (int i = 0; i < count; i++) {
                     LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
@@ -511,7 +506,6 @@ public class EditContact extends AppCompatActivity {
             }.getType();
             allNamesofContacts = gsonNames.fromJson(jsonNames, typeNames);
             System.out.println("ViewContact: allNamesofContacts :" + allNamesofContacts);
-
             System.out.println("ViewContact:the amount in allPhonesofContacts :" + allPhonesofContacts.size());
             System.out.println("ViewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
 */
@@ -584,16 +578,76 @@ public class EditContact extends AppCompatActivity {
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager((new LinearLayoutManager(EditContact.this)));
 
+
+
+            //*********set the Matching Contacts to checked, by default ************
+            //loop through the matching contacts
+/*            int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+            for (int i = 0; i < count; i++) {
+
+                //check all matching contacts, we want it to be 'Phone Contacts' by default
+                PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                //we need to notify the recyclerview that changes may have been made
+                adapter.notifyDataSetChanged();
+            }*/
+            //*********************************
+
+
+/*
+            SelectPhoneContact selectPhoneContact = new SelectPhoneContact();
+
+
+            int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
+            for (int number2 = 0; number2 < count; number2++) {
+
+                //if a phone number is in our array of checked contacts
+                if (PopulistoContactsAdapter.checkedContactsAsArrayList.contains(selectPhoneContact.getPhone()))
+
+                {
+
+                    PopulistoContactsAdapter.theContactsList.get(number2).setSelected(true);
+
+                    //check the box
+                    // ((PopulistoContactsAdapter.MatchingContact) viewHolder).check.setChecked(true);
+                    // break;
+                }
+
+            }
+*/
+
+
+
+
+
+
+
+
+            //*********set the Matching Contacts to checked, by default ************
+            //loop through the matching contacts
+  /*          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+
+
+
+
+            for (int i = 0; i < count; i++) {
+
+                //check all matching contacts, we want it to be 'Phone Contacts' by default
+                PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                //we need to notify the recyclerview that changes may have been made
+                adapter.notifyDataSetChanged();
+            }*/
+
             //*********set the Matching Contacts to checked, by default ************
             //loop through the matching contacts
  /*           int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
             System.out.println("EditContact postexecute: checkedContactsAsArrayList is " + PopulistoContactsAdapter.checkedContactsAsArrayList);
-
            for (int number2 = 0; number2 < count; number2++) {
-
                 //if a phone number is in our array of checked contacts
                 if (PopulistoContactsAdapter.theContactsList.contains(checkedContactsAsArrayList)) {
-
                     PopulistoContactsAdapter.theContactsList.get(number2).setSelected(true);
                 }
             }*/
@@ -612,12 +666,9 @@ public class EditContact extends AppCompatActivity {
             //*********set the Matching Contacts to checked, by default ************
             //loop through the matching contacts
   /*          int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
-
             for (int i = 0; i < count; i++) {
-
                 //check all matching contacts, we want it to be 'Phone Contacts' by default
                 PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-
                 //we need to notify the recyclerview that changes may have been made
                 adapter.notifyDataSetChanged();
             }*/
@@ -636,7 +687,7 @@ public class EditContact extends AppCompatActivity {
             //this function measures the height of the listview, with all the contacts, and loads it to be that
             //size. We need to do this because there's a problem with a listview in a scrollview.
             //The function is in GlobalFunctions
-           // GlobalFunctions.justifyListViewHeightBasedOnChildren(EditContact.this,listView);
+            // GlobalFunctions.justifyListViewHeightBasedOnChildren(EditContact.this,listView);
 
         }
     }
