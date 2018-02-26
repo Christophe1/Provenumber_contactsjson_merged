@@ -125,7 +125,7 @@ public class EditContact extends AppCompatActivity {
 
         //********************
         //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
-       // selectPhoneContacts = new ArrayList<SelectPhoneContact>();
+        // selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
         //listView = (ListView) findViewById(R.id.listviewPhoneContacts);
 
@@ -184,6 +184,15 @@ public class EditContact extends AppCompatActivity {
 
         //make the cursor appear at the end of the categoryname
         categoryname.setSelection(categoryname.getText().length());
+
+        //for the Public, phoneContacts, justMe, save and cancel buttons
+        publicContacts = (Button) findViewById(R.id.btnPublic);
+        phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
+        justMeContacts = (Button) findViewById(R.id.btnJustMe);
+
+        publicButton();
+        phoneContactsButton();
+        justMeButton();
 
         //we get this from ViewContact, with an intent
         //Set the radio button to be 'public' or 'phone contacts'
@@ -583,12 +592,9 @@ public class EditContact extends AppCompatActivity {
             //*********set the Matching Contacts to checked, by default ************
             //loop through the matching contacts
 /*            int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
-
             for (int i = 0; i < count; i++) {
-
                 //check all matching contacts, we want it to be 'Phone Contacts' by default
                 PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-
                 //we need to notify the recyclerview that changes may have been made
                 adapter.notifyDataSetChanged();
             }*/
@@ -597,23 +603,16 @@ public class EditContact extends AppCompatActivity {
 
 /*
             SelectPhoneContact selectPhoneContact = new SelectPhoneContact();
-
-
             int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
             for (int number2 = 0; number2 < count; number2++) {
-
                 //if a phone number is in our array of checked contacts
                 if (PopulistoContactsAdapter.checkedContactsAsArrayList.contains(selectPhoneContact.getPhone()))
-
                 {
-
                     PopulistoContactsAdapter.theContactsList.get(number2).setSelected(true);
-
                     //check the box
                     // ((PopulistoContactsAdapter.MatchingContact) viewHolder).check.setChecked(true);
                     // break;
                 }
-
             }
 */
 
@@ -627,16 +626,9 @@ public class EditContact extends AppCompatActivity {
             //*********set the Matching Contacts to checked, by default ************
             //loop through the matching contacts
   /*          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
-
-
-
-
-
             for (int i = 0; i < count; i++) {
-
                 //check all matching contacts, we want it to be 'Phone Contacts' by default
                 PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-
                 //we need to notify the recyclerview that changes may have been made
                 adapter.notifyDataSetChanged();
             }*/
@@ -756,9 +748,11 @@ public class EditContact extends AppCompatActivity {
                 justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
                 //set sharing to Public
+                // This will be uploaded to server to review table,
+                //public_or_private column, if saved in this state
                 public_or_private = 2;
 
-                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,1);
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,2);
 
                 recyclerView.setAdapter(adapter);
                 // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
@@ -799,9 +793,11 @@ public class EditContact extends AppCompatActivity {
                 justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
                 //set sharing to Phone Contacts
+                // This will be uploaded to server to review table,
+                //public_or_private column, if saved in this state
                 public_or_private = 1;
 
-                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,1);
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,2);
 
                 recyclerView.setAdapter(adapter);
                 // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
@@ -840,9 +836,11 @@ public class EditContact extends AppCompatActivity {
                 phoneContacts.setBackgroundResource(R.drawable.buttonshape);
 
                 //set sharing to Just Me
+                // This will be uploaded to server to review table,
+                //public_or_private column, if saved in this state
                 public_or_private = 0;
 
-                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,1);
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,2);
 
                 recyclerView.setAdapter(adapter);
                 // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));

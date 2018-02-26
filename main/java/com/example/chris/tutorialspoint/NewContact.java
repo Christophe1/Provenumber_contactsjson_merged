@@ -287,7 +287,9 @@ public class NewContact extends AppCompatActivity {
                 phoneContacts.setBackgroundResource(R.drawable.buttonshape);
                 justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
-                //set sharing to Public
+                //set sharing to Public.
+                // This will be uploaded to server to review table,
+                //public_or_private column, if saved in this state
                 public_or_private = 2;
 
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
@@ -331,6 +333,8 @@ public class NewContact extends AppCompatActivity {
                 justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
                 //set sharing to Phone Contacts
+                // This will be uploaded to server to review table,
+                //public_or_private column, if saved in this state
                 public_or_private = 1;
 
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
@@ -372,6 +376,8 @@ public class NewContact extends AppCompatActivity {
                 phoneContacts.setBackgroundResource(R.drawable.buttonshape);
 
                 //set sharing to Just Me
+                // This will be uploaded to server to review table,
+                //public_or_private column, if saved in this state
                 public_or_private = 0;
 
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
