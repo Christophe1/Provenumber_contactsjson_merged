@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -843,17 +844,21 @@ public class EditContact extends AppCompatActivity {
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,2);
 
                 recyclerView.setAdapter(adapter);
-                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+                //reset the size of the array to 0
+                PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+
+
+
 
                 //loop through the matching contacts
-                int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+               int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
                 for (int i = 0; i < count; i++) {
 
                     //uncheck all matching contacts, we want it to be 'Just Me'
                     PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
-
-                    //we need to notify the recyclerview that changes may have been made
+                    //we need to notify the recyclerview that changes may have been made*/
                     adapter.notifyDataSetChanged();
                 }
             }
