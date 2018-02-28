@@ -280,7 +280,7 @@ public class NewContact extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-//              keep the slightly rounded shape, when the button is pressed
+//              keep the slightly rounded shape, when the button is pressed, and change colour
                 publicContacts.setBackgroundResource(R.drawable.publiccontacts_buttonshapepressed);
 
 //               keep the slightly rounded shape of the others, but still grey
@@ -324,7 +324,7 @@ public class NewContact extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //keep the slightly rounded shape, when the button is pressed
+                //keep the slightly rounded shape, when the button is pressed, and change colour
                 phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
 
 
@@ -368,7 +368,7 @@ public class NewContact extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //keep the slightly rounded shape, when the button is pressed
+                //keep the slightly rounded shape, when the button is pressed, and change colour
                 justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
 
 //               keep the slightly rounded shape of the others, but still grey
@@ -523,7 +523,7 @@ public class NewContact extends AppCompatActivity {
                 // Adding request to request queue
                 AppController.getInstance().addToRequestQueue(stringRequest);
 
-                //when saved, go textboxes_for_contact to the PopulistoListView class and update with
+                //when saved, go back to the PopulistoListView class and update with
                 //the new entry
                 Intent j = new Intent(NewContact.this, PopulistoListView.class);
                 j.putExtra("phonenumberofuser", phoneNoofUserCheck);

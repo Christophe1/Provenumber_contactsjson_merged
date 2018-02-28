@@ -64,7 +64,7 @@ public class PopulistoListView extends AppCompatActivity {
     String phoneNumberofContact;
 
     //declare an activity object so we can
-    //call populistolistview and shut it down in ViewContact
+    //call populistolistview and shut it down in ViewContact and NewContact
     //so that we will only have one instance of populistolistview
     public static Activity fa;
 

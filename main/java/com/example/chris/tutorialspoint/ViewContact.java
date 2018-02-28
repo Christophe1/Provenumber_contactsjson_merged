@@ -378,7 +378,7 @@ public class ViewContact extends AppCompatActivity  {
         });
 
 
-        //This is for when we are coming textboxes_for_contact to ViewContact class,
+        //This is for when we are coming back to ViewContact class,
         //after user has finished editing in EditContact
         //get the "category" key,make it into a string called
         //new_category_value, and then set it into the categoryname
@@ -450,6 +450,10 @@ public class ViewContact extends AppCompatActivity  {
                 case DialogInterface.BUTTON_POSITIVE:
                     //Yes button clicked
 
+                    //close the populistolistview class
+                    //(we'll be opening it again, will close now so it will be refreshed)
+                    PopulistoListView.fa.finish();
+
                     Toast.makeText(ViewContact.this, "delete stuff", Toast.LENGTH_SHORT).show();
 
                     pDialog = new ProgressDialog(ViewContact.this);
@@ -496,7 +500,7 @@ public class ViewContact extends AppCompatActivity  {
 
                     AppController.getInstance().addToRequestQueue(stringRequest);
 
-                    //when deleted, go textboxes_for_contact to the PopulistoListView class and update
+                    //when deleted, back to the PopulistoListView class and update
 
                     Intent j = new Intent(ViewContact.this,PopulistoListView.class);
 

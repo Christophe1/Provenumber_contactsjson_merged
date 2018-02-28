@@ -96,7 +96,7 @@ public class EditContact extends AppCompatActivity {
     //string for getting intent info from ContactView class
     String categoryid, category, name, phone, address, comment;
 
-    //int for getting intent info for the check radio button, will be 0 or 1
+    //int for getting intent info for the sharing buttons in ViewContact
     int pub_or_priv;
 
     //for the radio buttons
@@ -171,8 +171,8 @@ public class EditContact extends AppCompatActivity {
         address = i.getStringExtra("address");
         comment = i.getStringExtra("comment");
 
-        pub_or_priv = i.getIntExtra("publicorprivate",pub_or_priv);
-        System.out.println("EditContact: public or private value :" + pub_or_priv);
+        public_or_private = i.getIntExtra("publicorprivate",pub_or_priv);
+        System.out.println("EditContact: public or private value :" + public_or_private);
 
 
         //set the EditText to display the pair value of key "category"
@@ -196,14 +196,31 @@ public class EditContact extends AppCompatActivity {
         justMeButton();
 
         //we get this from ViewContact, with an intent
-        //Set the radio button to be 'public' or 'phone contacts'
+        //Set the sharing button to be 'public' or 'phone contacts' or 'just me' colour
+
         //If pub_or_priv value from ViewContact is 0 then
-/*        if(pub_or_priv==0)
-            //set the radio button to phone contacts
-            rbu1.setChecked(true);
-        else
+        if(pub_or_priv==0)
+        {
+            //keep the slightly rounded shape, when the button is pressed, and change colour
+            justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
+        }
+
+        if(pub_or_priv==1)
+        {
+            //keep the slightly rounded shape, when the button is pressed, and change colour
+            phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+        }
+
+        if(pub_or_priv==2)
+        {
+            //keep the slightly rounded shape, when the button is pressed, and change colour
+            publicContacts.setBackgroundResource(R.drawable.publiccontacts_buttonshapepressed);
+        }
+
+          //  rbu1.setChecked(true);
+       // else
             //otherwise, if it's 1, make it public
-            rbu2.setChecked(true);*/
+            //rbu2.setChecked(true);*/
 
         //load the asynctask stuff here
         LoadContact loadContact = new LoadContact();
@@ -326,21 +343,25 @@ public class EditContact extends AppCompatActivity {
                     //for each phone number in the array list...
                     for (int i = 0; i < count; i++) {
 
-                        // make each checked contact
-                        // into an individual
-                        // JSON OBJECT called checkedContact
-                        JSONObject checkedContact = new JSONObject();
+                        //for  contacts that are checked (they can only be matching contacts)...
+                        if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
 
-                        // checkedContact OBJECT will be of the form {"checkedContact":"+353123456"}
-                        checkedContact.put("checkedContact", PopulistoContactsAdapter.checkedContactsAsArrayList.get(i));
 
-                        // Add checkedContact JSON Object to checkedContacts jsonArray
-                        //The JSON ARRAY will be of the form
-                        // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-                        //we will be posting this JSON Array to Php, further down below
-                        checkedContacts.put(checkedContact);
-                        System.out.println("EditContact: checkedcontact JSONObject :" + checkedContact);
+                            // make each checked contact
+                            // into an individual
+                            // JSON OBJECT called checkedContact
+                            JSONObject checkedContact = new JSONObject();
 
+                            // checkedContact OBJECT will be of the form {"checkedContact":"+353123456"}
+                            checkedContact.put("checkedContact", PopulistoContactsAdapter.checkedContactsAsArrayList.get(i));
+
+                            // Add checkedContact JSON Object to checkedContacts jsonArray
+                            //The JSON ARRAY will be of the form
+                            // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                            //we will be posting this JSON Array to Php, further down below
+                            checkedContacts.put(checkedContact);
+                            System.out.println("EditContact: checkedcontact JSONObject :" + checkedContact);
+                        }
                     }
 
                     //add phone owner's number to the checkedContacts JSON Array
@@ -354,7 +375,7 @@ public class EditContact extends AppCompatActivity {
                     //add it to the Array
                     checkedContacts.put(phoneOwner);
 
-                    System.out.println("checkedContacts JSON Array " + checkedContacts);
+                    System.out.println("EditContact: checkedContacts JSON Array " + checkedContacts);
 
 
 
@@ -398,7 +419,7 @@ public class EditContact extends AppCompatActivity {
                         params.put("phone", phonename.getText().toString());
                         params.put("address", addressname.getText().toString());
                         params.put("comment", commentname.getText().toString());
-                        params.put("public_or_private", String.valueOf(pub_or_priv));
+                        params.put("public_or_private", String.valueOf(public_or_private));
 
                         //this is the JSON Array of checked contacts
                         //it will be of the form
@@ -753,6 +774,8 @@ public class EditContact extends AppCompatActivity {
                 //public_or_private column, if saved in this state
                 public_or_private = 2;
 
+                Toast.makeText(EditContact.this, String.valueOf(public_or_private), Toast.LENGTH_LONG).show();
+
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,2);
 
                 recyclerView.setAdapter(adapter);
@@ -770,6 +793,8 @@ public class EditContact extends AppCompatActivity {
                     //we need to notify the recyclerview that changes may have been made
                     adapter.notifyDataSetChanged();
                 }
+                Log.i("EditContact-MyMessage", "checkedContactsAsArrayList is: " + PopulistoContactsAdapter.checkedContactsAsArrayList);
+
             }
 
         });
@@ -797,6 +822,8 @@ public class EditContact extends AppCompatActivity {
                 // This will be uploaded to server to review table,
                 //public_or_private column, if saved in this state
                 public_or_private = 1;
+                Toast.makeText(EditContact.this, String.valueOf(public_or_private), Toast.LENGTH_LONG).show();
+
 
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,2);
 
@@ -840,6 +867,7 @@ public class EditContact extends AppCompatActivity {
                 // This will be uploaded to server to review table,
                 //public_or_private column, if saved in this state
                 public_or_private = 0;
+                Toast.makeText(EditContact.this, String.valueOf(public_or_private), Toast.LENGTH_LONG).show();
 
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,2);
 
