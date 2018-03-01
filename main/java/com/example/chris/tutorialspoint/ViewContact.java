@@ -111,7 +111,7 @@ public class ViewContact extends AppCompatActivity  {
     // String checkedContacts;
 
     //this is for public or private groups
-    //amonst other things, we'll be bringing the intent over to EditContact.
+    //amongst other things, we'll be bringing the intent over to EditContact.
     int pub_or_priv;
 
     //For the recycler view, containing the phone contacts
@@ -226,9 +226,9 @@ public class ViewContact extends AppCompatActivity  {
 
                             //convert public_or_private to an integer
                             pub_or_priv = Integer.parseInt(public_or_private);
-                            //If pub_or_priv in mySQL is 0 then
-                           // if(pub_or_priv==0)
-                                publicorprivate.setText(String.valueOf(pub_or_priv));
+
+                            //put pub_or_priv in the textbox called publicorprivate
+                            publicorprivate.setText(String.valueOf(pub_or_priv));
 
                            // publicorprivate.setText("Phone Contacts");
                                 //If pub_or_priv in mySQL is 1 then

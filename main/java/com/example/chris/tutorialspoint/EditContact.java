@@ -91,6 +91,7 @@ public class EditContact extends AppCompatActivity {
     private EditText addressname;
     private EditText commentname;
 
+    //this is an integer, different to the string public_or_private in ViewContact. Not related
     int public_or_private;
 
     //string for getting intent info from ContactView class
@@ -172,7 +173,8 @@ public class EditContact extends AppCompatActivity {
         comment = i.getStringExtra("comment");
 
         public_or_private = i.getIntExtra("publicorprivate",pub_or_priv);
-        System.out.println("EditContact: public or private value :" + public_or_private);
+
+        Log.i("EditContact-MyMessage", "EditContact: public or private value :" + public_or_private);
 
 
         //set the EditText to display the pair value of key "category"
@@ -199,19 +201,19 @@ public class EditContact extends AppCompatActivity {
         //Set the sharing button to be 'public' or 'phone contacts' or 'just me' colour
 
         //If pub_or_priv value from ViewContact is 0 then
-        if(pub_or_priv==0)
+        if(public_or_private==0)
         {
             //keep the slightly rounded shape, when the button is pressed, and change colour
             justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
         }
 
-        if(pub_or_priv==1)
+        if(public_or_private==1)
         {
             //keep the slightly rounded shape, when the button is pressed, and change colour
             phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
         }
 
-        if(pub_or_priv==2)
+        if(public_or_private==2)
         {
             //keep the slightly rounded shape, when the button is pressed, and change colour
             publicContacts.setBackgroundResource(R.drawable.publiccontacts_buttonshapepressed);
@@ -425,6 +427,9 @@ public class EditContact extends AppCompatActivity {
                         //it will be of the form
                         //[{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
                         params.put("checkedContacts", checkedContacts.toString());
+
+                        Log.i("EditContact-MyMessage", "public_or_private value when saved is: " + public_or_private);
+
 
                         return params;
 
@@ -776,7 +781,7 @@ public class EditContact extends AppCompatActivity {
 
                 Toast.makeText(EditContact.this, String.valueOf(public_or_private), Toast.LENGTH_LONG).show();
 
-                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,2);
+                PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
                 recyclerView.setAdapter(adapter);
                 // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
@@ -787,16 +792,27 @@ public class EditContact extends AppCompatActivity {
                 //i is the number of matching contacts that there are
                 for (int i = 0; i < count; i++) {
 
-                    //for all contacts, only those that are matching will be checked
-                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
-                    //we need to notify the recyclerview that changes may have been made
-                    adapter.notifyDataSetChanged();
+                    if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
+                        PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
+                        // Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                        //for all contacts, only those that are matching will be checked
+                        //PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
+
+                        //PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                        //we need to notify the recyclerview that changes may have been made
+                        adapter.notifyDataSetChanged();
+                    }
+                    Log.i("EditContact-MyMessage", "checkedContactsAsArrayList is: " + PopulistoContactsAdapter.checkedContactsAsArrayList);
+
                 }
-                Log.i("EditContact-MyMessage", "checkedContactsAsArrayList is: " + PopulistoContactsAdapter.checkedContactsAsArrayList);
-
             }
-
         });
 
     }
@@ -822,6 +838,7 @@ public class EditContact extends AppCompatActivity {
                 // This will be uploaded to server to review table,
                 //public_or_private column, if saved in this state
                 public_or_private = 1;
+
                 Toast.makeText(EditContact.this, String.valueOf(public_or_private), Toast.LENGTH_LONG).show();
 
 
@@ -906,6 +923,10 @@ public class EditContact extends AppCompatActivity {
         publicContacts.setBackgroundResource(R.drawable.buttonshape);
         justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
+        //when checked boxes are more than 0, change public_or_private to 1,
+        //so phone contacts button will be selected
+        public_or_private =1;
+
     }
 
     //this is called from PopulistoContactsAdapter
@@ -917,6 +938,10 @@ public class EditContact extends AppCompatActivity {
         //keep the slightly rounded shape of the others, but still grey
         publicContacts.setBackgroundResource(R.drawable.buttonshape);
         phoneContacts.setBackgroundResource(R.drawable.buttonshape);
+
+        //when checked boxes are 0, change public_or_private to 0,
+        //so justme button will be selected
+        public_or_private =0;
 
     }
 

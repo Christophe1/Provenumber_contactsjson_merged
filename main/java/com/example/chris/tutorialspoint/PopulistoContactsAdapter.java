@@ -468,6 +468,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                             if (mContext instanceof EditContact) {
                                 ((EditContact) mContext).changeColorofJustMe();
+
                                 Toast.makeText(context_type, "count is 0!yeah", Toast.LENGTH_SHORT).show();
 
                             }
@@ -477,6 +478,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                             //change the colour of 'Phone Contacts' button in EditContact.java
                             if (mContext instanceof EditContact) {
                                 ((EditContact) mContext).changeColourOfPhoneContacts();
+
                                 //  Toast.makeText(context_type, "The count is " + checkedContactsAsArrayList.size(), Toast.LENGTH_SHORT).show();
 
                             }
