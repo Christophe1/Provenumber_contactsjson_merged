@@ -40,6 +40,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EditContact extends AppCompatActivity {
@@ -101,8 +102,11 @@ public class EditContact extends AppCompatActivity {
     int pub_or_priv;
 
     //for the radio buttons
-    RadioButton rbu1;
-    RadioButton rbu2;
+    //RadioButton rbu1;
+    //RadioButton rbu2;
+
+    //for duplicates
+    ArrayList<String> existing_values;
 
     //depends on radio button selected
     //int public_or_private;
@@ -345,15 +349,12 @@ public class EditContact extends AppCompatActivity {
                     //for each phone number in the array list...
                     for (int i = 0; i < count; i++) {
 
-                        //for  contacts that are checked (they can only be matching contacts)...
-                        if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
-
-
                             // make each checked contact
                             // into an individual
                             // JSON OBJECT called checkedContact
                             JSONObject checkedContact = new JSONObject();
 
+                            //for  contacts that are checked (they can only be matching contacts)...
                             // checkedContact OBJECT will be of the form {"checkedContact":"+353123456"}
                             checkedContact.put("checkedContact", PopulistoContactsAdapter.checkedContactsAsArrayList.get(i));
 
@@ -362,8 +363,8 @@ public class EditContact extends AppCompatActivity {
                             // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
                             //we will be posting this JSON Array to Php, further down below
                             checkedContacts.put(checkedContact);
-                            System.out.println("EditContact: checkedcontact JSONObject :" + checkedContact);
-                        }
+                            Log.i("Adapter1", "EditContact: checkedcontact JSONObject :" + checkedContact);
+
                     }
 
                     //add phone owner's number to the checkedContacts JSON Array
@@ -377,7 +378,7 @@ public class EditContact extends AppCompatActivity {
                     //add it to the Array
                     checkedContacts.put(phoneOwner);
 
-                    System.out.println("EditContact: checkedContacts JSON Array " + checkedContacts);
+                    Log.i("Adapter1", "EditContact: checkedContacts JSON Array " + checkedContacts);
 
 
 
@@ -428,7 +429,7 @@ public class EditContact extends AppCompatActivity {
                         //[{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
                         params.put("checkedContacts", checkedContacts.toString());
 
-                        Log.i("EditContact-MyMessage", "public_or_private value when saved is: " + public_or_private);
+                        Log.i("Adapter1", "public_or_private value when saved is: " + public_or_private);
 
 
                         return params;
@@ -712,7 +713,7 @@ public class EditContact extends AppCompatActivity {
     }
 
 
-    @Override
+/*    @Override
     protected void onResume() {
 
         super.onResume();
@@ -727,7 +728,7 @@ public class EditContact extends AppCompatActivity {
         Toast.makeText(EditContact.this, "resuming!", Toast.LENGTH_SHORT).show();
 
 
-    }
+    }*/
 
     //need this to change radio button to Phone Contacts,
     //if a checkbox is changed to false
@@ -789,17 +790,25 @@ public class EditContact extends AppCompatActivity {
                 //loop through the matching contacts
                 int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
+                PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+
                 //i is the number of matching contacts that there are
                 for (int i = 0; i < count; i++) {
 
+                    PopulistoContactsAdapter.checkedContactsAsArrayList.add(i,PopulistoContactsAdapter.MatchingContactsAsArrayList.get(i));
 
-                    if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
-                        PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
-                        // Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
+                 /*   existing_values = new ArrayList<String>(PopulistoContactsAdapter.checkedContactsAsArrayList);
 
-                    } else {
+                    if (!existing_values.contains(PopulistoContactsAdapter.theContactsList.get(i).getPhone())) {
+                        existing_values.add(PopulistoContactsAdapter.theContactsList.get(i).getPhone());
+                    }*/
 
-                        PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+                    //we want to add all the phone numbers in MatchingContacts to the
+                    //checkedContactsAsArrayList
+                   // PopulistoContactsAdapter.checkedContactsAsArrayList.add(PopulistoContactsAdapter.theContactsList.get(i).getPhone());
+
+                    PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
                         //for all contacts, only those that are matching will be checked
                         //PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
@@ -808,10 +817,14 @@ public class EditContact extends AppCompatActivity {
 
                         //we need to notify the recyclerview that changes may have been made
                         adapter.notifyDataSetChanged();
-                    }
-                    Log.i("EditContact-MyMessage", "checkedContactsAsArrayList is: " + PopulistoContactsAdapter.checkedContactsAsArrayList);
 
                 }
+                Log.i("Adapter1", "checkedContactsAsArrayList is: " + PopulistoContactsAdapter.checkedContactsAsArrayList);
+                //Log.i("EditContact-MyMessage", "List is: " + existing_values);
+                Log.i("Adapter1", "number in Matching Contacts is " + PopulistoContactsAdapter.MatchingContactsAsArrayList.size());
+                Log.i("Adapter1", "number in checkedContactsAsArrayList is " + PopulistoContactsAdapter.checkedContactsAsArrayList.size());
+
+
             }
         });
 

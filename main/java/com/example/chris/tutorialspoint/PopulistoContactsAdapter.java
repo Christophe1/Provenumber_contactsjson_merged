@@ -268,13 +268,13 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                         //if unclicked
                         if (theContactsList.get(pos).getSelected()) {
                             theContactsList.get(pos).setSelected(false);
-                            Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context_type, theContactsList.get(pos).getSelected() + " unclicked!", Toast.LENGTH_SHORT).show();
 
                         } else {
 
                             //if clicked
                             theContactsList.get(pos).setSelected(true);
-                            Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context_type, theContactsList.get(pos).getSelected() + " clicked!", Toast.LENGTH_SHORT).show();
                             // theContactsList.get(pos).getPhone();
                         }
 
@@ -411,14 +411,14 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                             //add the checked number into the arraylist
                             checkedContactsAsArrayList.add(theContactsList.get(pos).getPhone());
-                            Log.i("MyMessage", "checkedContactsAsArrayList: " + checkedContactsAsArrayList);
-                            Log.i("MyMessage", "clicked checkedContactsAsArrayList: " + checkedContactsAsArrayList);
+                            Log.i("Adapter1", "checkedContactsAsArrayList: " + checkedContactsAsArrayList);
+                           // Log.i("Adapter", "clicked checkedContactsAsArrayList: " + checkedContactsAsArrayList);
 
                         } else {
                             //remove the checked number from the arraylist
                             checkedContactsAsArrayList.remove(theContactsList.get(pos).getPhone());
-                            Log.i("MyMessage", "checkedContactsAsArrayList: " + checkedContactsAsArrayList);
-                            Log.i("MyMessage", "unclicked checkedContactsAsArrayList: " + checkedContactsAsArrayList);
+                            Log.i("Adapter1", "checkedContactsAsArrayList: " + checkedContactsAsArrayList);
+                        //    Log.i("Adapter", "unclicked checkedContactsAsArrayList: " + checkedContactsAsArrayList);
 
                         }
                         //*************
@@ -427,12 +427,12 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                         if (theContactsList.get(pos).getSelected()) {
                             theContactsList.get(pos).setSelected(false);
-                            // Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " unclicked!", Toast.LENGTH_SHORT).show();
+                             Toast.makeText(context_type, theContactsList.get(pos).getSelected() + " unclicked!", Toast.LENGTH_SHORT).show();
 
                         } else {
 
                             theContactsList.get(pos).setSelected(true);
-                            Toast.makeText(context_type, theContactsList.get(pos).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context_type, theContactsList.get(pos).getSelected() + " clicked!", Toast.LENGTH_SHORT).show();
                             //theContactsList.get(pos).getPhone();
 
                         }
@@ -459,6 +459,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                         } else {*/
 
                         Toast.makeText(context_type, "The count is " + checkedContactsAsArrayList.size(), Toast.LENGTH_SHORT).show();
+                        Log.i("Adapter1", "checkedContactsAsArrayList total: " + checkedContactsAsArrayList);
 
                         //   }
 
@@ -519,14 +520,13 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
 
 
-            Log.i("MyMessage", "checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
-
-            //  }
-
-            Log.i("MyMessage", "number in checkedContactsAsArrayList is " + checkedContactsAsArrayList.size());
 
 
         }
+
+        Log.i("EditContact-MyMessage", "whichactivity=2, checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
+        Log.i("EditContact-MyMessage", "whichactivity=2,number in checkedContactsAsArrayList is " + checkedContactsAsArrayList.size());
+
 
     }
 
