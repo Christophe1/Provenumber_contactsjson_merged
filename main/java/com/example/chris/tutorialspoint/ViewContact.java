@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -77,6 +81,7 @@ public class ViewContact extends AppCompatActivity  {
     private TextView addressname;
     private TextView commentname;
     private TextView publicorprivate;
+    private TextView publicorprivate2;
 
     Button publicContacts;
     Button phoneContacts;
@@ -91,12 +96,6 @@ public class ViewContact extends AppCompatActivity  {
 
     //selectPhoneContacts is an array list that will hold our SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
-    //an arraylist of all contacts phone numbers, which we will get from VerifyUserPhoneNumber
-    //ArrayList <String> allPhonesofContacts;
-    //an arraylist of all contacts names, which we will get from VerifyUserPhoneNumber
-   // ArrayList <String> allNamesofContacts;
-    //String MatchingContactsAsString;
-    //ArrayList<String> MatchingContactsAsArrayList;
 
     //this is phone numbers who the phone owner is sharing the review with
     ArrayList<String> checkedContactsAsArrayList;
@@ -105,10 +104,6 @@ public class ViewContact extends AppCompatActivity  {
     String phoneNumberofContact;
     //all phone contact names, broken down
     String phoneNameofContact;
-
-    //SelectPhoneContactAdapter adapter;
-    //CheckBox checkBoxforContact;
-    // String checkedContacts;
 
     //this is for public or private groups
     //amongst other things, we'll be bringing the intent over to EditContact.
@@ -125,8 +120,6 @@ public class ViewContact extends AppCompatActivity  {
         //need to initialize this
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this,0);
 
-
-        //********************
         //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
         selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
@@ -139,8 +132,6 @@ public class ViewContact extends AppCompatActivity  {
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
         pDialog.show();
-
-        //********************
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -166,17 +157,12 @@ public class ViewContact extends AppCompatActivity  {
         addressname = (TextView) findViewById(R.id.textViewAddress);
         commentname = (TextView) findViewById(R.id.textViewComment);
         publicorprivate = (TextView) findViewById(R.id.textPublicorPrivate);
-        // textphonenumber.setText(phoneNoofUser);
+        publicorprivate2 = (TextView) findViewById(R.id.textPublicorPrivate2);
 
         //for the Public, phoneContacts, justMe, save and cancel buttons
         publicContacts = (Button) findViewById(R.id.btnPublic);
         phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
         justMeContacts = (Button) findViewById(R.id.btnJustMe);
-
-        //for the checkbox
-        // checkBoxforContact = (CheckBox) findViewById(R.id.checkBoxContact);
-
-
 
         //post the review_id that has been clicked in the ListView and send it to
         // viewContact.php and from that get other review details, like name, address etc..
@@ -227,13 +213,31 @@ public class ViewContact extends AppCompatActivity  {
                             //convert public_or_private to an integer
                             pub_or_priv = Integer.parseInt(public_or_private);
 
-                            //put pub_or_priv in the textbox called publicorprivate
-                            publicorprivate.setText(String.valueOf(pub_or_priv));
+                            //shared_status will be Public, Phone Contacts or Just Me
+                            String shared_status ="";
 
-                           // publicorprivate.setText("Phone Contacts");
-                                //If pub_or_priv in mySQL is 1 then
-                           // else
-                            //    publicorprivate.setText("Public");
+                            if(pub_or_priv==0){
+                                //change colour depending on value
+                                publicorprivate2.setTextColor(Color.parseColor("#DA850B"));
+                                shared_status = "Just Me";
+                            }
+
+                            if(pub_or_priv==1){
+                                publicorprivate2.setTextColor(Color.parseColor("#0A7FDA"));
+                                shared_status = "Phone Contacts";
+                            }
+
+                            if(pub_or_priv==2){
+                                publicorprivate2.setTextColor(Color.parseColor("#2AB40E"));
+                                shared_status = "Public";
+
+                            }
+
+                            //put pub_or_priv in the textbox called publicorprivate
+                            publicorprivate.setText("Shared with: ");
+
+                            publicorprivate2.setText(shared_status);
+
                             System.out.println("ViewContact: public or private value :" + pub_or_priv);
 
 
@@ -258,25 +262,6 @@ public class ViewContact extends AppCompatActivity  {
                             //convert the checkedContacts string to an arraylist
                             checkedContactsAsArrayList = new ArrayList<String>(Arrays.asList(replace2.split(",")));
                             System.out.println("ViewContact1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
-
-
-
-
-                            // ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
-
-
-                            //This is for ViewContact, to display the contact the review is shared with
-                            //for every phone number in the checkedContactsAsArrayList array list...
-            /*        for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
-                        System.out.println("ViewContact: in the try " + checkedContactsAsArrayList);
-                        SelectPhoneContact contact = checkedContactsAsArrayList.get(number2);
-                        //if a phone number is in our array of checked contacts
-                        if (checkedContactsAsArrayList.contains(contact.getPhone())) {
-                            //check the box
-                            contact.setSelected(checkBoxforContact.isChecked());
-                            System.out.println("ViewContact:checked contacts in the array are " + contact.getPhone());
-                        }
-                    }*/
 
 
                             //we want to bring the checkedContactsAsArrayList array list to our PopulistoContactAdapter.
@@ -313,9 +298,6 @@ public class ViewContact extends AppCompatActivity  {
 
 
                     }
-
-                    // System.out.println("size of reviewlist " + reviewList.size());
-                    //System.out.println("heree it is" + reviewList.toString());
 
 
                 },
@@ -521,7 +503,7 @@ public class ViewContact extends AppCompatActivity  {
 
 
 
-    //******for the phone contacts in the listview
+    //******for the phone contacts in the recyclerView
 
     // Load data in background
     class LoadContact extends AsyncTask<Void, Void, Void> {
@@ -588,37 +570,11 @@ public class ViewContact extends AppCompatActivity  {
             super.onPostExecute(aVoid);
 
             System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
- /*           int count = checkedContactsAsArrayList.size();
-            for (int i = 0; i < count; i++) {
-                //for each Matching Contacts row in the listview
-                LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
-                //for each Matching Contacts checkbox in the listview
-                CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
-                //get the other data related to the selected contact - name and number
-                SelectPhoneContact data = (SelectPhoneContact) checkbox.getTag();
-                checkbox.setChecked(true);
-            }*/
-            //  ArrayList<SelectPhoneContact> checkedContactsAsArrayList = selectPhoneContacts;
-            // checkedContactsAsArrayList.add("+353858716422");
-            //   System.out.println("ViewContact3 checkedContactsAsArrayList :" + checkedContactsAsArrayList);
-            //   SelectPhoneContact data;
-            //This is for ViewContact, to display the contact the review is shared with
-            //for every phone number in the checkedContactsAsArrayList array list...
-            // for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
-            //     if (checkedContactsAsArrayList.contains(data.getPhone()))
-            // SelectPhoneContact contact = checkedContactsAsArrayList.get(number2);
-
-            //if a phone number is in our array of checked contacts
-/*                if (checkedContactsAsArrayList.contains(contact.getPhone())) {
-                    //check the box
-                    contact.setSelected(true);
-                }
-            }*/
 
             PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this,0);
 
 
-            if(pub_or_priv==0){
+/*            if(pub_or_priv==0){
 
                 publicContacts.setVisibility(View.GONE);
                 phoneContacts.setVisibility(View.GONE);
@@ -634,23 +590,7 @@ public class ViewContact extends AppCompatActivity  {
 
                 justMeContacts.setVisibility(View.GONE);
                 phoneContacts.setVisibility(View.GONE);
-            }
-            //adapter = new SelectPhoneContactAdapter(selectPhoneContacts, ViewContact.this,0);
-
-            //Intent intent = getIntent();
-            // intent = intent.putStringArrayListExtra("checked_array", checkedContactsAsArrayList);
-            //startActivity(intent);
-            //break;
-
-            // For the ViewContact, which has int activity = 0
-            // if(whichactivity == 0) {
-
-
-            //disable the checkbox
-            //holder.check.setEnabled(false);
-            //   }
-
-            //listView.setAdapter(adapter);
+            }*/
 
             recyclerView.setAdapter(adapter);
 
@@ -665,14 +605,6 @@ public class ViewContact extends AppCompatActivity  {
             //in conjunction with selectContacts.clear()
             adapter.notifyDataSetChanged();
 
-
-
-            //********************
-
-            //this function measures the height of the listview, with all the contacts, and loads it to be that
-            //size. We need to do this because there's a problem with a listview in a scrollview.
-            //The function is in GlobalFunctions
-//            GlobalFunctions.justifyListViewHeightBasedOnChildren(ViewContact.this,listView);
 
         }
     }

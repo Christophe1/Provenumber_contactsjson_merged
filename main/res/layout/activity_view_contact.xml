@@ -47,56 +47,43 @@
 
                 <TextView
                     android:id="@+id/textViewCategory"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
                     android:background="@drawable/textboxes_for_contact"
-                    android:textSize="30dp" />
+                    />
 
                 <TextView
                     android:id="@+id/textViewName"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/textViewCategory"
-                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
                     android:background="@drawable/textboxes_for_contact"
-                    android:textSize="30dp" />
+                    />
 
                 <TextView
                     android:id="@+id/textViewPhone"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/textViewName"
-                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
                     android:background="@drawable/textboxes_for_contact"
-                    android:textSize="30dp" />
+                     />
 
                 <TextView
                     android:id="@+id/textViewAddress"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/textViewPhone"
-                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
                     android:background="@drawable/textboxes_for_contact"
-                    android:textSize="30dp" />
+                    />
 
                 <TextView
                     android:id="@+id/textViewComment"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/textViewAddress"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/textboxes_for_contact"
-                    android:textSize="30dp" />
-
-                <TextView
-                    android:id="@+id/textPublicorPrivate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/textViewComment"
                     android:layout_weight="1"
-                    android:textSize="30dp" />
+                    android:background="@drawable/textboxes_for_contact"
+                    />
 
                 <TextView
                     android:id="@+id/textViewInvisible2"
@@ -105,6 +92,30 @@
                     android:layout_weight="1"
                     android:background="@drawable/textboxes_for_contact"
                     android:visibility="invisible" />
+
+<!--                <TextView
+                    android:id="@+id/textPublicorPrivate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewComment"
+                    android:layout_weight="1"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/textPublicorPrivate2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/textPublicorPrivate"
+                    android:layout_weight="1"
+                    android:textSize="15dp" />-->
+
+<!--                <TextView
+                    android:id="@+id/textViewInvisible2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/textboxes_for_contact"
+                    android:visibility="invisible" />-->
 
 
             </LinearLayout>
@@ -120,11 +131,36 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
-        <fragment
-            android:id="@+id/myFragment"
-            android:name="com.example.chris.tutorialspoint.ButtonSharingFragment"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+        <TextView
+            android:id="@+id/textPublicorPrivate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewComment"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/textPublicorPrivate2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/textPublicorPrivate"
+            android:textSize="18dp" />
+
+        </LinearLayout>
+
+
+        <!--        <fragment
+                    android:id="@+id/myFragment"
+                    android:name="com.example.chris.tutorialspoint.ButtonSharingFragment"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />-->
 
     </android.support.design.widget.AppBarLayout>
 

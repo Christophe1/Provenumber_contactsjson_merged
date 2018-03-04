@@ -71,9 +71,6 @@ public class NewContact extends AppCompatActivity {
 
     String CountryCode;
 
-    //ArrayList<String> allPhonesofContacts;
-    //ArrayList<String> allNamesofContacts;
-    //ArrayList<String> MatchingContactsAsArrayList;
     String phoneNoofUserCheck;
     public String phoneNumberofContact;
     String phoneNameofContact;
@@ -183,12 +180,6 @@ public class NewContact extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            //we want to delete the old selectContacts from the listview when the Activity loads
-            //because it may need to be updated and we want the user to see the updated listview,
-            //like if the user adds new names and numbers to their phone contacts.
-            // selectPhoneContacts.clear();
-
 
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
             for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {

@@ -58,17 +58,10 @@ public class EditContact extends AppCompatActivity {
 
     //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     ArrayList<SelectPhoneContact> selectPhoneContacts;
-    //an arraylist of all contacts phone numbers, which we will get from VerifyUserPhoneNumber
-    //ArrayList <String> allPhonesofContacts;
-    //an arraylist of all contacts names, which we will get from VerifyUserPhoneNumber
-    //ArrayList <String> allNamesofContacts;
-    String MatchingContactsAsString;
-    //ArrayList<String> MatchingContactsAsArrayList;
-    ArrayList<String> checkedContactsAsArrayList;
+
     String phoneNumberofContact;
     String phoneNameofContact;
-    //ListView listView;
-    //SelectPhoneContactAdapter adapter;
+
     PopulistoContactsAdapter adapter;
     public static String phoneNoofUserCheck;
 
@@ -101,16 +94,6 @@ public class EditContact extends AppCompatActivity {
     //int for getting intent info for the sharing buttons in ViewContact
     int pub_or_priv;
 
-    //for the radio buttons
-    //RadioButton rbu1;
-    //RadioButton rbu2;
-
-    //for duplicates
-    ArrayList<String> existing_values;
-
-    //depends on radio button selected
-    //int public_or_private;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,21 +111,6 @@ public class EditContact extends AppCompatActivity {
 
         //show the App title
         actionbar.setTitle("Populisto");
-
-        //********************
-        //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
-        // selectPhoneContacts = new ArrayList<SelectPhoneContact>();
-
-        //listView = (ListView) findViewById(R.id.listviewPhoneContacts);
-
-        //rbu1 = (RadioButton) findViewById(R.id.PhoneContacts);
-        // rbu2 = (RadioButton) findViewById(R.id.Public);
-
-        //final Button btnCheckAll = (Button) findViewById(R.id.btnCheckAll);
-
-        //we want to get the phone number of the current user for posting
-        //as a checkedcontact, phoneOwner.put("checkedContact", phoneNoofUserCheck);
-        //so, they will always see their own reviews
 
         //get the phone number, stored in an XML file, when the user first registered the app
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -203,7 +171,6 @@ public class EditContact extends AppCompatActivity {
 
         //we get this from ViewContact, with an intent
         //Set the sharing button to be 'public' or 'phone contacts' or 'just me' colour
-
         //If pub_or_priv value from ViewContact is 0 then
         if(public_or_private==0)
         {
@@ -223,11 +190,6 @@ public class EditContact extends AppCompatActivity {
             publicContacts.setBackgroundResource(R.drawable.publiccontacts_buttonshapepressed);
         }
 
-          //  rbu1.setChecked(true);
-       // else
-            //otherwise, if it's 1, make it public
-            //rbu2.setChecked(true);*/
-
         //load the asynctask stuff here
         LoadContact loadContact = new LoadContact();
 
@@ -239,64 +201,6 @@ public class EditContact extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.rv);
 
-
-        //If Public radio button is selected then check all the boxes
-        //and change the button text to 'Clear All'
-        //listen for which radio button is clicked
-   /*     RadioGroup radioGroup = (RadioGroup) findViewById(R.id.SharedWith);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int SelectWho) {
-                // find which radio button is selected
-                if (SelectWho == R.id.Public) {
-                    Toast.makeText(EditContact.this, "Public", Toast.LENGTH_LONG).show();
-                    //If 'public' is selected, set pub_or_priv = 1
-                    //this will save the review as public
-                    // public_or_private=1;
-                    //call the function to check all checkboxes in NewContact
-                    //loop through the Matching Contacts
-                    int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
-                    for (int i = 0; i < count; i++) {
-                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
-                        CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
-                        checkbox.setChecked(true);
-                        btnCheckAll.setText("Clear All");
-                    }
-                }
-                //  else
-                //If 'phone contacts' is selected, set pub_or_priv = 0
-                //this will save the review as private
-                // public_or_private=0;
-                //System.out.println("EditContact, after onCheckChange, should be 0: " + public_or_private);
-            }
-        });*/
-
-        //Select All / Clear All Button
-        //Check all or clear all checkboxes
-  /*      btnCheckAll.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                boolean toCheck = true;
-                //THE CONDITION SHOULD BE OUTSIDE THE LOOP!
-                if (btnCheckAll.getText().toString().equalsIgnoreCase("Select All")) {
-                    toCheck = true;
-                    btnCheckAll.setText("Clear All");
-                } else if (btnCheckAll.getText().toString().equalsIgnoreCase("Clear All")) {
-                    toCheck = false;
-                    rbu1.setChecked(true);
-                    btnCheckAll.setText("Select All");
-                }
-                int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
-                for (int i = 0; i < count; i++) {
-                    LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i); // Find by under LinearLayout
-                    CheckBox checkbox = (CheckBox) itemLayout.findViewById(R.id.checkBoxContact);
-                    checkbox.setChecked(toCheck);
-                }
-            }
-        });
-*/
-
-
-        //*****************************************
         //for the cancel button
         cancel = (Button) findViewById(R.id.cancel);
 
@@ -326,22 +230,6 @@ public class EditContact extends AppCompatActivity {
 
                 try {
                     System.out.println("we're in the try part");
-
-                    //if the public radio button is selected
-                    //then in the public_or_private column of the review
-                    //table put 1, t make it public
-                    //otherwise, if PhoneContacts is selected,
-                    //put 0, to make it private
-
-/*                    RadioGroup rg1 =(RadioGroup)findViewById(R.id.SharedWith);
-                    if (rg1.getCheckedRadioButtonId()==R.id.Public){
-                        System.out.println("It is public");
-                        pub_or_priv =1;
-                    }
-                    if (rg1.getCheckedRadioButtonId()==R.id.PhoneContacts){
-                        System.out.println("It is private");
-                        pub_or_priv =0;
-                    }*/
 
                     //get the checked contacts from the adapter
                     int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
@@ -445,17 +333,6 @@ public class EditContact extends AppCompatActivity {
                 //when saved, go to the PopulistoListView class and update with
                 //the edited values
                 Intent j = new Intent(EditContact.this, PopulistoListView.class);
-/*                j.putExtra("category", categoryname.getText().toString());
-                j.putExtra("name", namename.getText().toString());
-                j.putExtra("phone", phonename.getText().toString());
-                j.putExtra("address", addressname.getText().toString());
-                j.putExtra("comment", commentname.getText().toString());*/
-
-                //    j.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//startactivity only once with intent
-                // android:launchMode="singleInstance"
-                // android:launchMode="singleInstance"
-                //https://stackoverflow.com/questions/8132939/how-to-keep-a-single-activity-instance-but-be-able-to-update-the-view
 
                 EditContact.this.startActivity(j);
 
@@ -515,51 +392,6 @@ public class EditContact extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            //System.out.println("EditContact postexecute1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
-
-
-            //we want to delete the old selectContacts from the listview when the Activity loads
-            //because it may need to be updated and we want the user to see the updated listview,
-            //like if the user adds new names and numbers to their phone contacts.
-            //selectPhoneContacts.clear();
-
-
-            //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
-            //with this we will put all phone numbers of contacts on user's phone into our ListView in ViewContact activity
-            /*SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-            Gson gson = new Gson();
-            String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");
-            Type type = new TypeToken<ArrayList<String>>() {
-            }.getType();
-            PopulistoContactsAdapter.allPhonesofContacts = gson.fromJson(json, type);
-            System.out.println("ViewContact: allPhonesofContacts :" + PopulistoContactsAdapter.allPhonesofContacts);
-*/
-            //we are fetching the array list allNamesofContacts, created in VerifyUserPhoneNumber.
-            //with this we will put all phone names of contacts on user's phone into our ListView in ViewContact activity
-            /*SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-            Gson gsonNames = new Gson();
-            String jsonNames = sharedPreferencesallNamesofContacts.getString("allNamesofContacts", "");
-            Type typeNames = new TypeToken<ArrayList<String>>() {
-            }.getType();
-            allNamesofContacts = gsonNames.fromJson(jsonNames, typeNames);
-            System.out.println("ViewContact: allNamesofContacts :" + allNamesofContacts);
-            System.out.println("ViewContact:the amount in allPhonesofContacts :" + allPhonesofContacts.size());
-            System.out.println("ViewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
-*/
-
-            //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
-            //With that we'll put our
-            //matching contacts at the top of the listview, display check boxes beside them etc...
- /*           SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
-            Gson gsonMatchingContactsAsArrayList = new Gson();
-            String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
-            Type type1 = new TypeToken<ArrayList<String>>() {
-            }.getType();
-            MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
-            System.out.println("ViewContact MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
-*/
-
-
             //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
             for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
 
@@ -615,99 +447,11 @@ public class EditContact extends AppCompatActivity {
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager((new LinearLayoutManager(EditContact.this)));
 
-
-
-            //*********set the Matching Contacts to checked, by default ************
-            //loop through the matching contacts
-/*            int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
-            for (int i = 0; i < count; i++) {
-                //check all matching contacts, we want it to be 'Phone Contacts' by default
-                PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-                //we need to notify the recyclerview that changes may have been made
-                adapter.notifyDataSetChanged();
-            }*/
-            //*********************************
-
-
-/*
-            SelectPhoneContact selectPhoneContact = new SelectPhoneContact();
-            int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
-            for (int number2 = 0; number2 < count; number2++) {
-                //if a phone number is in our array of checked contacts
-                if (PopulistoContactsAdapter.checkedContactsAsArrayList.contains(selectPhoneContact.getPhone()))
-                {
-                    PopulistoContactsAdapter.theContactsList.get(number2).setSelected(true);
-                    //check the box
-                    // ((PopulistoContactsAdapter.MatchingContact) viewHolder).check.setChecked(true);
-                    // break;
-                }
-            }
-*/
-
-
-
-
-
-
-
-
-            //*********set the Matching Contacts to checked, by default ************
-            //loop through the matching contacts
-  /*          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
-            for (int i = 0; i < count; i++) {
-                //check all matching contacts, we want it to be 'Phone Contacts' by default
-                PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-                //we need to notify the recyclerview that changes may have been made
-                adapter.notifyDataSetChanged();
-            }*/
-
-            //*********set the Matching Contacts to checked, by default ************
-            //loop through the matching contacts
- /*           int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
-            System.out.println("EditContact postexecute: checkedContactsAsArrayList is " + PopulistoContactsAdapter.checkedContactsAsArrayList);
-           for (int number2 = 0; number2 < count; number2++) {
-                //if a phone number is in our array of checked contacts
-                if (PopulistoContactsAdapter.theContactsList.contains(checkedContactsAsArrayList)) {
-                    PopulistoContactsAdapter.theContactsList.get(number2).setSelected(true);
-                }
-            }*/
-
-            // adapter = new SelectPhoneContactAdapter(selectPhoneContacts, EditContact.this,2);
-
-            //listView.setAdapter(adapter);
-
-          /*  adapter.radioButtontoPhoneContactsEdit = new EditContact.radioButtontoPhoneContactsEdit() {
-                //@Override
-                public void update() {
-                    EditContact.this.rbu1.setChecked(true);
-                }
-            };*/
-
-            //*********set the Matching Contacts to checked, by default ************
-            //loop through the matching contacts
-  /*          int count = PopulistoContactsAdapter.checkedContactsAsArrayList.size();
-            for (int i = 0; i < count; i++) {
-                //check all matching contacts, we want it to be 'Phone Contacts' by default
-                PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-                //we need to notify the recyclerview that changes may have been made
-                adapter.notifyDataSetChanged();
-            }*/
-
-
             //we need to notify the listview that changes may have been made on
             //the background thread, doInBackground, like adding or deleting contacts,
             //and these changes need to be reflected visibly in the listview. It works
             //in conjunction with selectContacts.clear()
             adapter.notifyDataSetChanged();
-
-
-
-            //********************
-
-            //this function measures the height of the listview, with all the contacts, and loads it to be that
-            //size. We need to do this because there's a problem with a listview in a scrollview.
-            //The function is in GlobalFunctions
-            // GlobalFunctions.justifyListViewHeightBasedOnChildren(EditContact.this,listView);
 
         }
     }
@@ -736,8 +480,6 @@ public class EditContact extends AppCompatActivity {
     {
         public void update() {}
     }
-
-
 
 
     public void hidePDialog() {
@@ -785,35 +527,21 @@ public class EditContact extends AppCompatActivity {
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
                 recyclerView.setAdapter(adapter);
-                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
                 //loop through the matching contacts
                 int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
+                //clear checkedContactsAsArrayList and then add all matching contacts again
                 PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
 
                 //i is the number of matching contacts that there are
                 for (int i = 0; i < count; i++) {
 
+                    //add the matching contacts
                     PopulistoContactsAdapter.checkedContactsAsArrayList.add(i,PopulistoContactsAdapter.MatchingContactsAsArrayList.get(i));
 
-                 /*   existing_values = new ArrayList<String>(PopulistoContactsAdapter.checkedContactsAsArrayList);
-
-                    if (!existing_values.contains(PopulistoContactsAdapter.theContactsList.get(i).getPhone())) {
-                        existing_values.add(PopulistoContactsAdapter.theContactsList.get(i).getPhone());
-                    }*/
-
-
-                    //we want to add all the phone numbers in MatchingContacts to the
-                    //checkedContactsAsArrayList
-                   // PopulistoContactsAdapter.checkedContactsAsArrayList.add(PopulistoContactsAdapter.theContactsList.get(i).getPhone());
-
+                    //set them to be checked
                     PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-
-                        //for all contacts, only those that are matching will be checked
-                        //PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
-
-                        //PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
                         //we need to notify the recyclerview that changes may have been made
                         adapter.notifyDataSetChanged();
@@ -854,16 +582,20 @@ public class EditContact extends AppCompatActivity {
 
                 Toast.makeText(EditContact.this, String.valueOf(public_or_private), Toast.LENGTH_LONG).show();
 
-
                 PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this,2);
 
                 recyclerView.setAdapter(adapter);
-                // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
                 //loop through the matching contacts
                 int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
+                //clear checkedContactsAsArrayList and then add all matching contacts again
+                PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+
+                //i is the number of matching contacts that there are
                 for (int i = 0; i < count; i++) {
+
+                    PopulistoContactsAdapter.checkedContactsAsArrayList.add(i,PopulistoContactsAdapter.MatchingContactsAsArrayList.get(i));
 
                     //check all matching contacts, we want it to be 'Phone Contacts'
                     PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
@@ -905,9 +637,6 @@ public class EditContact extends AppCompatActivity {
 
                 //reset the size of the array to 0
                 PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
-
-
-
 
                 //loop through the matching contacts
                int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
