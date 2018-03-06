@@ -45,7 +45,7 @@
                     android:background="@drawable/textboxes_for_contact"
                     android:visibility="invisible" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/textViewCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

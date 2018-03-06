@@ -16,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -79,12 +81,23 @@ public class NewContact extends AppCompatActivity {
     RecyclerView recyclerView;
     PopulistoContactsAdapter adapter;
 
-    //int check_counter = 0;
+    String[] fruits = {"Apple", "Apron", "Banana","Butthead","Bath", "Cherry", "Date", "Grape", "Kiwi", "Mango", "Pear"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
+
+        //Creating the instance of ArrayAdapter containing list of fruit names
+        ArrayAdapter<String> auto_adapter = new ArrayAdapter<String>
+                (this, android.R.layout.select_dialog_item, fruits);
+
+        //Getting the instance of AutoCompleteTextView
+        AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.textViewCategory);
+
+        actv.setThreshold(1);//will start working from first character
+        actv.setAdapter(auto_adapter);//setting the adapter data into the AutoCompleteTextView
 
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
 
