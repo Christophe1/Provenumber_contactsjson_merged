@@ -10,7 +10,7 @@
         >
     </include>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_below="@id/app_bar"
         android:layout_width="fill_parent"
