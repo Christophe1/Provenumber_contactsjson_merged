@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,16 +82,31 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
                 //position is the number of the row
                 Toast.makeText(v.getContext(),position + " cheers!", Toast.LENGTH_SHORT).show();
 
+                Review review = (Review) CustomPopulistoListAdapter.getItem(position);
+
+                //we want to pass the review_id of the review being clicked
+                //to the ViewContact activity, and from there post it and get more
+                //info for that review - address, comments etc
+                Intent i = new Intent(v.getContext(), ViewContact.class);
+                //pass the review_id to ViewContact class
+                i.putExtra("review_id", review.getReviewid());
+                v.getContext().startActivity(i);
             }
 
         });
+    }
+
+    //I have implemented a getItem method so
+    //we can get the details about review, for the recyclerView row clicked
+    public static Review getItem(int position) {
+        return the_reviews.get(position);
     }
 
 
     @Override
     public int getItemCount() {
 
-        System.out.println("CustomPopulistoListAdapter: here it is" + the_reviews.size());
+        //System.out.println("CustomPopulistoListAdapter: here it is" + the_reviews.size());
         return the_reviews.size();
 
     }

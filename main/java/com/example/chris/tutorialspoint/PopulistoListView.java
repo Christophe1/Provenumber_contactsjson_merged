@@ -167,27 +167,6 @@ public class PopulistoListView extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 
-
-        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                //cast the getItem(position) return value to a review object
-                Review review = (Review) adapter.getItem(position);
-                //we want to pass the review_id of the review being clicked
-                //to the ViewContact activity, and from there post it and get more
-                //info for that review - address, comments etc
-                Intent i = new Intent(PopulistoListView.this, ViewContact.class);
-                //pass the review_id to ViewContact class
-                i.putExtra("review_id", review.getReviewid());
-                startActivity(i);
-
-                Toast.makeText(PopulistoListView.this, "PopulistoListView: the review id is " + review.getReviewid(), Toast.LENGTH_SHORT).show();
-               // finish();
-            }
-
-
-        });
     }
 
     @Override
@@ -218,17 +197,6 @@ public class PopulistoListView extends AppCompatActivity {
                 //start the NewContact class
                 Intent intent = new Intent(PopulistoListView.this, NewContact.class);
 
-                //pass allPhonesofContacts Array to NewContact, so we can display in ListView
-                //intent.putExtra("allPhonesofContacts", allPhonesofContacts);
-
-                //pass allNamesofContacts Array to NewContact, so we can display in ListView
-                //intent.putExtra("allNamesofContacts", allNamesofContacts);
-
-                //also take the names and numbers of contacts, so they'll be displayed in the list view
-                //intent.putExtra("jsonArrayAllPhonesandNamesofContacts", jsonArrayAllPhonesandNamesofContacts);
-
-                //also take the matching contacts, so they'll be displayed in the list view
-                //intent.putExtra("JsonArrayMatchingContacts", JsonArrayMatchingContacts);
                 startActivity(intent);
                 return true;
         }
