@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -47,22 +48,8 @@ public class PopulistoListView extends AppCompatActivity {
     //we are posting phoneNoofUser, the key is phonenumberofuser, which we see in php
     public static final String KEY_PHONENUMBER_USER = "phonenumberofuser";
 
-    // private static final String TAG = PopulistoListView.class.getSimpleName();
-
-
-    // String phoneNoofUser;
     private ProgressDialog pDialog;
     private List<Review> reviewList = new ArrayList<Review>();
-    private ListView listView;
-    private CustomPopulistoListAdapter adapter;
-    //private TextView textphonenumber;
-    //private String strphone;
-//private int reviewid;
-    ArrayList allPhonesofContacts;
-    ArrayList allNamesofContacts;
-    String JsonArrayMatchingContacts;
-    String jsonArrayAllPhoneContacts;
-    String phoneNumberofContact;
 
     //declare an activity object so we can
     //call populistolistview and shut it down in ViewContact and NewContact
@@ -82,24 +69,19 @@ public class PopulistoListView extends AppCompatActivity {
         //why isn't title being set!?
         toolbar.setTitle("Search...");
 
-        // textphonenumber = (TextView) findViewById(R.id.textView3);
-
         //populistolistview is the activity object
         fa = this;
         recyclerView = (RecyclerView) findViewById(R.id.list);
         final CustomPopulistoListAdapter adapter = new CustomPopulistoListAdapter(reviewList, this);
         recyclerView.setAdapter(adapter);
 
-        //no need for this anymore as it is dealt with in the new
-        //toolbar widget.
-        //always show the overflow menu. Some devices don't show it by default
-        //This function is in the GlobalFunctions class
-        //GlobalFunctions.makeActionOverflowMenuShown(PopulistoListView.this);
+        //set the layout
+        recyclerView.setLayoutManager((new LinearLayoutManager(PopulistoListView.this)));
 
         //get the phone number value from shared preferences file instead
         //of from the VerifiedUserPhoneNumber class because we might not
         //be coming from that class, for example on Edit, New etc. The phone
-        //number needs to be posted for this listview to load properly.
+        //number needs to be posted for this recyclerView to load properly.
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         final String phoneNoofUser = sharedPreferences.getString(KEY_PHONENUMBER_USER, "");
 
@@ -157,6 +139,7 @@ public class PopulistoListView extends AppCompatActivity {
                          adapter.notifyDataSetChanged();
 
                         // System.out.println("size of reviewlist " + reviewList.size());
+                        System.out.println("heree it is" + reviewList.size());
                         System.out.println("heree it is" + reviewList.toString());
                     }
                 },
@@ -185,7 +168,7 @@ public class PopulistoListView extends AppCompatActivity {
         requestQueue.add(stringRequest);
 
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
@@ -252,12 +235,12 @@ public class PopulistoListView extends AppCompatActivity {
         return false;
     }
 
-    @Override
+/*    @Override
     protected void onResume() {
 
         super.onResume();
         adapter.notifyDataSetChanged();
 
-    }
+    }*/
 
 }

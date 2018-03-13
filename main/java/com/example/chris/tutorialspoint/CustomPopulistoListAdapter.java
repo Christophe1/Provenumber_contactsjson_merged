@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.example.tutorialspoint.R;
@@ -23,8 +24,8 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private Activity activity;
     private LayoutInflater inflater;
-    private List<Review> reviews;
-
+    public static List<Review> the_reviews;
+  //  Context context_type;
 
     public static class ReviewHolder extends RecyclerView.ViewHolder {
 
@@ -45,7 +46,8 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
     public CustomPopulistoListAdapter(List<Review> reviews, Activity activity) {
 
         this.activity = activity;
-        this.reviews = reviews;
+        the_reviews = reviews;
+
 
     }
         @Override
@@ -64,21 +66,33 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
-         Review r = reviews.get(position);
+        Review r = the_reviews.get(position);
         ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
-        ((ReviewHolder) viewHolder).name.setText("Name: " + r.getCategory());
-        ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getCategory());
-        ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getCategory());
+        ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
+        ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
+        ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
 
-      //  Bitmap myBitmap = BitmapFactory.decodeFile(f.get(position));
-       // holder.imageview.setImageBitmap(myBitmap);
+        //set an onClick listener for the row, if it's clicked anywhere
+        ((ReviewHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+
+                //position is the number of the row
+                Toast.makeText(v.getContext(),position + " cheers!", Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
     }
+
 
     @Override
     public int getItemCount() {
 
-        return reviews.size();
+        System.out.println("CustomPopulistoListAdapter: here it is" + the_reviews.size());
+        return the_reviews.size();
+
     }
 
 

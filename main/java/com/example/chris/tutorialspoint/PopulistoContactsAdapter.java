@@ -114,6 +114,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         whichactivity = activity;
         context_type = context;
 
+
+
         //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
         //with this we will put a checkbox beside the matching contacts
         SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(context_type);
@@ -533,6 +535,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemCount() {
+        System.out.println("here it is, thecontactlist" + theContactsList.size());
 
         return theContactsList.size();
     }
