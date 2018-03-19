@@ -8,6 +8,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+//This is a singleton class in which volley is initiated.
+
 public class AppController extends Application {
 
     public static final String TAG = AppController.class.getSimpleName();
