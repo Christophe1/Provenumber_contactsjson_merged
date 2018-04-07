@@ -65,6 +65,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         public CheckBox check;
         public Button invite;
 
+
         public MatchingContact(final View itemView) {
             super(itemView);
             //title is cast to the name id, in recycler_blueprint,
@@ -118,6 +119,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         whichactivity = activity;
         context_type = context;
 
+        System.out.println("here it is dudio" + String.valueOf(checkBoxhasChanged));
 
 
         //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
@@ -426,8 +428,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                         }
 
-                        Toast.makeText(context_type, "checkbox state has changed!", Toast.LENGTH_SHORT).show();
-                        checkBoxhasChanged = true;
+
+
 
 
 
@@ -472,6 +474,10 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                             }
                         }
 
+                        checkBoxhasChanged = true;
+                        Toast.makeText(context_type, "here it is dudia" + String.valueOf(checkBoxhasChanged), Toast.LENGTH_SHORT).show();
+
+
                     }
 
 
@@ -496,12 +502,26 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                 }
 
 
+               /* ((MatchingContact) viewHolder).check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                  @Override
+                   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {*/
+                //   checkBoxhasChanged = true;
+                 //  Toast.makeText(context_type, "here it is dudia" + String.valueOf(checkBoxhasChanged), Toast.LENGTH_SHORT).show();
+                 /*   }
+                 }
+
+
+                );*/
+
+
             } else {
                 //if it's a nonMatching contact
                 ((nonMatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
                 ((nonMatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
 
             }
+
+
 
         }
 

@@ -40,11 +40,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.chris.tutorialspoint.DisplayMyPopulistoListView"
-            android:launchMode="singleInstance" />
-        <activity
             android:name="com.example.chris.tutorialspoint.PopulistoListView"
-            android:launchMode="singleInstance" />
+            android:launchMode="singleInstance"></activity>
+        <meta-data
+            android:name="android.app.searchable"
+            android:resource="@xml/searchable" />
+        <intent-filter>
+            <action android:name="android.intent.action.SEARCH" />
+        </intent-filter>
+            />
         <activity android:name="com.example.chris.tutorialspoint.CountryCodes" />
         <activity
             android:name="com.example.chris.tutorialspoint.ViewContact"

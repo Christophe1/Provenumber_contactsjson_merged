@@ -3,6 +3,7 @@ package com.example.chris.tutorialspoint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.widget.Toast;
 
 import static android.R.attr.value;
 
@@ -51,11 +52,13 @@ public class SelectPhoneContact {
 
     public boolean getSelected() {
         return isSelected;
+
     }
 
     public void setSelected(boolean selected){
-
+            //isSelected is the value of checkbox, true or false
             isSelected = selected;
+       // System.out.println("here it is dude" + String.valueOf(isSelected));
 
     }
 

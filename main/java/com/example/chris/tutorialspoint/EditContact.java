@@ -104,9 +104,8 @@ public class EditContact extends AppCompatActivity {
     private CheckBox testchecked;
 
     //we want to detect if editTexts have changed,
-    //if so, we'll give the option to save, if cancel is clicked
+    //if so, we'll give the option to save - cancel click will say like'Really? Save changes first?'
     Boolean editTexthasChanged = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,8 +190,8 @@ public class EditContact extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Boolean isDirty has been set to false on initialization,
-                //if thext has been changed in any of our editTexts then set it to true
+                // Boolean editTexthasChanged has been set to false on initialization,
+                //if text has been changed in any of our editTexts then set it to true
                 editTexthasChanged = true;
 
             }
@@ -261,12 +260,18 @@ public class EditContact extends AppCompatActivity {
 
         //when the CANCEL BUTTON is clicked
         //check if editTexts have been changed
+        //and checkboxes changed
         cancel.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
+                Toast.makeText(EditContact.this, "here it is dudia" + String.valueOf(PopulistoContactsAdapter.checkBoxhasChanged), Toast.LENGTH_SHORT).show();
 
-                //if Boolean has been set to true, when text has changed in our editTexts
-                if (editTexthasChanged) || (PopulistoContactsAdapter.checkBoxhasChanged=true)  {
+                //Booleans have been set to true,
+                //when text has changed in our editTexts
+                //and when checkboxes have changed in our adapter
+                if ((PopulistoContactsAdapter.checkBoxhasChanged==true) || (editTexthasChanged==true)) {
+
+                   // if Booleans are true then
                     //add a dialogue box
                     AlertDialog.Builder builder = new AlertDialog.Builder(recyclerView.getContext());
                     builder.setMessage("Save changes you made?").setPositiveButton("Yes", dialogClickListener)
@@ -573,6 +578,7 @@ public class EditContact extends AppCompatActivity {
 
 
     //for the backbutton, remove the saved checkbox state
+    //20/3/2018: DOES THIS STILL APPLY?
     //@Override
     public void onBackPressed() {
         // your code.
@@ -633,6 +639,11 @@ public class EditContact extends AppCompatActivity {
                 Log.i("Adapter1", "number in Matching Contacts is " + PopulistoContactsAdapter.MatchingContactsAsArrayList.size());
                 Log.i("Adapter1", "number in checkedContactsAsArrayList is " + PopulistoContactsAdapter.checkedContactsAsArrayList.size());
 
+                //if checkboxes of contacts have been changed by clicking the button,
+                //then set the boolean to be true
+                PopulistoContactsAdapter.checkBoxhasChanged=true;
+
+                Toast.makeText(EditContact.this, "here it is dudia" + String.valueOf(PopulistoContactsAdapter.checkBoxhasChanged), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -683,6 +694,10 @@ public class EditContact extends AppCompatActivity {
 
                     //we need to notify the recyclerview that changes may have been made
                     adapter.notifyDataSetChanged();
+
+                    //if checkboxes of contacts have been changed by clicking the button,
+                    //then set the boolean to be true
+                    PopulistoContactsAdapter.checkBoxhasChanged=true;
                 }
             }
 
@@ -728,6 +743,10 @@ public class EditContact extends AppCompatActivity {
                     PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
                     //we need to notify the recyclerview that changes may have been made*/
                     adapter.notifyDataSetChanged();
+
+                    //if checkboxes of contacts have been changed by clicking the button,
+                    //then set the boolean to be true
+                    PopulistoContactsAdapter.checkBoxhasChanged=true;
                 }
             }
 
@@ -766,7 +785,17 @@ public class EditContact extends AppCompatActivity {
         //so justme button will be selected
         public_or_private = 0;
 
+        //if checkboxes of contacts have been changed by clicking the button,
+        //then set the boolean to be true
+        PopulistoContactsAdapter.checkBoxhasChanged=true;
+
+
     }
 
+    public void onDestroy() {
+
+        super.onDestroy();
+        PopulistoContactsAdapter.checkBoxhasChanged = false;
+    }
 
 }
