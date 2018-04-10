@@ -31,6 +31,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+        //'sharedWith' is the box for holding (1,0,0)....
         public TextView name, sharedWith;
         public ImageView thumbnail;
 
@@ -72,7 +73,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
         final Category category = categoryListFiltered.get(position);
         holder.name.setText(category.getName());
-        holder.sharedWith.setText(Html.fromHtml("(" + "<font color='#0A7FDA'>" + category.getPrivateCount()+ "</font>" + "," + "<font color='#009900'>" + category.getPublicCount()+ "</font>" + ")") );
+        holder.sharedWith.setText(Html.fromHtml("(" + "<font color='#DA850B'>" + category.getUserPersonalCount()+ "</font>" + "," + "<font color='#0A7FDA'>" + category.getPrivateCount()+ "</font>" + "," + "<font color='#009900'>" + category.getPublicCount()+ "</font>" + ")") );
 
     }
 

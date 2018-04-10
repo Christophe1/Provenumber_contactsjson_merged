@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".27"
             android:background="@drawable/buttonshape"
-            android:text="Just me" />
+            android:text="Just U" />
         <!--android:onClick="clearAllCheckBoxes"-->
 
         <View

@@ -77,6 +77,8 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
         ((ReviewHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
 
             @Override
+            //When the review is clicked in PopulistoListView
+            //then show that review
             public void onClick(View v) {
 
                 //position is the number of the row

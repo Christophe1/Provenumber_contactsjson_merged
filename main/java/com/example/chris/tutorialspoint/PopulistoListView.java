@@ -83,7 +83,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     private SearchView searchView;
 
+    //phoneNoofUser is stored in Shared Prefs at the VerifyUserPhoneNumber user stage
     String phoneNoofUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         // toolbar
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.toolbar_title);
+
+
+        //get the phone number value from shared preferences file instead
+        //of from the VerifiedUserPhoneNumber class because we might not
+        //be coming from that class, for example on Edit, New etc. The phone
+        //number needs to be posted for this recyclerView to load properly.
+        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        phoneNoofUser = sharedPreferences.getString(KEY_PHONENUMBER_USER, "");
 
         //why isn't title being set!?
         //getSupportActionBar().setTitle("Search...");
@@ -112,7 +122,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         mAdapter = new CategoriesAdapter(this, categoryList, this);
 
         // white background notification bar
-        whiteNotificationBar(recyclerView);
+        //whiteNotificationBar(recyclerView);
 
 
        // final CustomPopulistoListAdapter adapter = new CustomPopulistoListAdapter(reviewList, this);
@@ -123,14 +133,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         recyclerView.setLayoutManager(mLayoutManager);
 
         recyclerView.setAdapter(pAdapter);
-
-
-        //get the phone number value from shared preferences file instead
-        //of from the VerifiedUserPhoneNumber class because we might not
-        //be coming from that class, for example on Edit, New etc. The phone
-        //number needs to be posted for this recyclerView to load properly.
-        SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        final String phoneNoofUser = sharedPreferences.getString(KEY_PHONENUMBER_USER, "");
 
         Log.e(TAG, "phonno" + phoneNoofUser);
 
@@ -207,7 +209,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //phoneNoofUser is the value we get from Android, the user's phonenumber.
                 //the key is "phonenumberofuser". When we see "phonenumberofuser" in our php,
                 //put in phoneNoofUser
-                params.put(KEY_PHONENUMBER_USER, "+353872934480");
+                params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
                 return params;
 
             }
@@ -223,6 +225,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //it is called onQueryTextChange
     private void fetchContacts() {
 
+/*        pDialog = new ProgressDialog(this);
+        // Showing progress dialog before making http request
+        pDialog.setMessage("Loading...");
+        pDialog.show();*/
+
         //still crashes the app, with this here
         //recyclerView.setAdapter(mAdapter);
 
@@ -232,10 +239,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 */
         StringRequest request = new StringRequest(Request.Method.POST,AllCategories_URL,
                 new Response.Listener<String>() {
+
                     @Override
                     public void onResponse(String response) {
 
                         // Do something with response
+
 
                         try {
 
@@ -280,7 +289,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //phoneNoofUser is the value we get from Android, the user's phonenumber.
                 //the key,KEY_PHONENUMBER_USER, is "phonenumberofuser". When we see "phonenumberofuser" in our php,
                 //put in phoneNoofUser
-                params.put(KEY_PHONENUMBER_USER, "+353872934480");
+                params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
                 return params;
 
             }
@@ -325,6 +334,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             @Override
             public boolean onQueryTextSubmit(String query) {
 
+               // hidePDialog();
+
                 // filter recycler view when query submitted
                 mAdapter.getFilter().filter(query);
                 return false;
@@ -346,7 +357,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 } else {
                     //if there's text in the search box
                     fetchContacts();
-                    Log.e(TAG, "phonno2" + phoneNoofUser);
+                    Log.e(TAG, "phonno2 is: " + phoneNoofUser);
                     // filter recycler view when text is changed
                     mAdapter.getFilter().filter(query);
                 }
@@ -396,14 +407,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     }*/
 
-    private void whiteNotificationBar(View view) {
+/*    private void whiteNotificationBar(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int flags = view.getSystemUiVisibility();
             flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             view.setSystemUiVisibility(flags);
             getWindow().setStatusBarColor(Color.WHITE);
         }
-    }
+    }*/
 
     @Override
     public void onContactSelected(Category category) {
