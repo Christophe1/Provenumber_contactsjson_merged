@@ -40,6 +40,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -50,10 +51,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     private static final String TAG = PopulistoListView.class.getSimpleName();
     public static RecyclerView recyclerView;
 
-    // this is the php file name where to select from.
+    // this is the php file name where to select all Users reviews from.
     // we will post the user's phone number into Php and get the matching user_id
     //show the user's reviews
     private static final String SelectUserReviews_URL = "http://www.populisto.com/SelectUserReviews.php";
+
+    // we will post the selected review into Php and get the corresponding
+    //review details
+    private static final String SelectOwnReviews_URL = "http://www.populisto.com/SelectOwnReviews.php";
 
     //when searchView has focus and user types, we will be showing/filtering
     //categories
@@ -67,6 +72,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     //we are posting phoneNoofUser, the key is phonenumberofuser, which we see in php
     public static final String KEY_PHONENUMBER_USER = "phonenumberofuser";
+
+    // the key is reviewiduser, which we see in php
+    public static final String KEY_REVIEWID_USER = "reviewiduser";
 
     private ProgressDialog pDialog;
 
@@ -85,6 +93,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     //phoneNoofUser is stored in Shared Prefs at the VerifyUserPhoneNumber user stage
     String phoneNoofUser;
+
+    //selectOwnUserReviews is to hold the own user's reviews for a fetched category
+    //we fetch the review ids from php as an array like [23,65,67] and
+    //remove [ and ] so 23,65,67 will be sent to php and exploded, getting corresponding
+    //categories for each of 23, 65 and 67
+    String selectOwnUserReviews;
 
 
     @Override
@@ -151,8 +165,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                         hidePDialog();
                         //toast the response of SelectUserReviews.php, which has been converted to a
                         //JSON array in the SelectUserReviews.php file with JSON encode
-                        Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
-                        System.out.println("the review list array is :" + response);
+                        //Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
+                        //System.out.println("the review list array is :" + response);
 
                         try {
                             //name our JSONArray responseObject
@@ -407,19 +421,100 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     }*/
 
-/*    private void whiteNotificationBar(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = view.getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-    }*/
 
     @Override
+    //when a fetched category in recyclerView is clicked...
     public void onContactSelected(Category category) {
-        Toast.makeText(getApplicationContext(), "Selected: " + category.getName(), Toast.LENGTH_LONG).show();
 
-        //   Toast.makeText(getApplicationContext(), "Selected: " + category.getName() + ", " + category.getPhone(), Toast.LENGTH_LONG).show();
+        //convert [56,23,87] to a string
+        selectOwnUserReviews = Arrays.toString(category.getUserReviewIds());
+        //remove [ and ] so we have a string of 56,23,87
+        selectOwnUserReviews = selectOwnUserReviews.substring(1,selectOwnUserReviews.length()-1);
+
+        //Toast.makeText(getApplicationContext(), "selectOwnUserReviews is: " + selectOwnUserReviews, Toast.LENGTH_LONG).show();
+
+        showOwnReviews();
+
     }
+
+
+    private void showOwnReviews() {
+
+        //post selectOwnUserReviews to SelectUserReviews.php and from that
+        //get the reviews that belong to own user for the specific category
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, SelectOwnReviews_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        //hide the 'loading' box when the page loads
+                       // hidePDialog();
+
+                        Toast.makeText(getApplicationContext(), "selectOwnUserReviews is: " + response, Toast.LENGTH_LONG).show();
+
+                        try {
+                            //name our JSONArray responseObject
+                            JSONArray responseObject = new JSONArray(response);
+
+
+                            for
+                                //get the number of objects in the Array
+                                    (int i = 0; i < responseObject.length(); i++) {
+                                //for each object in the array, name it obj
+                                //each obj will consist of reviewid, category, name, phone,comment
+                                JSONObject obj = responseObject.getJSONObject(i);
+                                // and create a new review, getting details of user's reviews in the db
+                                Review review = new Review();
+                                //we are getting the reviewid so we can pull extra matching info,
+                                review.setReviewid(obj.getString("reviewid"));
+                                //set the category part of the object to that matching reviewid
+                                review.setCategory(obj.getString("category"));
+                                //etc...
+                                review.setName(obj.getString("name"));
+                                review.setPhone(obj.getString("phone"));
+                                review.setComment(obj.getString("comment"));
+
+                                //add the review to the reviewList
+                                reviewList.add(review);
+
+                            }
+                        } catch (JSONException e) {
+                            Log.e("MYAPP", "unexpected JSON exception", e);
+                            // Do something to recover ... or kill the app.
+                        }
+
+                        // notifying list adapter about data changes
+                        // so that it renders the list view with updated data
+                        pAdapter.notifyDataSetChanged();
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(PopulistoListView.this, error.toString(), Toast.LENGTH_LONG).show();
+
+                    }
+
+                }) {
+            @Override
+            //post info to php
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                //selectOwnUserReviews are the review_ids of the clicked category in
+                // filter.
+                //KEY_REVIEWID_USER is "reviewiduser". When we see "reviewiduser" in our php,
+                //put in selectOwnUserReviews
+                params.put(KEY_REVIEWID_USER, selectOwnUserReviews);
+
+                return params;
+
+            }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+
+    }
+
 }
