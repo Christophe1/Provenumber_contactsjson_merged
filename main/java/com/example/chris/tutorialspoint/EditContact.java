@@ -457,14 +457,19 @@ public class EditContact extends AppCompatActivity {
     //in Manifest, PARENT_ACTIVITY
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+        finish();
+        Intent myIntent = new Intent(getApplicationContext(), ViewContact.class);
+        startActivityForResult(myIntent, 0);
+
+/*        switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
+        }*/
+        return true;
     }
 
 

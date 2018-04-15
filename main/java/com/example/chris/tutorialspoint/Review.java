@@ -20,13 +20,13 @@ public class Review {
     }
 
     public Review(String category,
-                 // String thumbnailUrl,
+                  // String thumbnailUrl,
                   String name,
                   String phone,
                   String address,
                   String comment,
                   String reviewid
-                 // double rating,
+                  // double rating,
                   //ArrayList<String> genre
     ) {
         this.category = category;

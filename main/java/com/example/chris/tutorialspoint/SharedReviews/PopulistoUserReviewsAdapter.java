@@ -1,7 +1,5 @@
-package com.example.chris.tutorialspoint;
+package com.example.chris.tutorialspoint.SharedReviews;
 
-
-import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,13 +11,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chris.tutorialspoint.Review;
+import com.example.chris.tutorialspoint.ViewContact;
 import com.example.tutorialspoint.R;
 
-public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+import java.util.List;
+
+public class PopulistoUserReviewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Activity activity;
     private LayoutInflater inflater;
-    public static List<Review> the_reviews;
+    public static List<ReviewUser> the_reviewUsers;
   //  Context context_type;
 
     public static class ReviewHolder extends RecyclerView.ViewHolder {
@@ -38,10 +40,10 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     }
 
-    public CustomPopulistoListAdapter(List<Review> reviewUsers, Activity activity) {
+    public PopulistoUserReviewsAdapter(List<ReviewUser> reviewUsers, Activity activity) {
 
         this.activity = activity;
-        the_reviews = reviewUsers;
+        the_reviewUsers = reviewUsers;
 
 
     }
@@ -61,7 +63,7 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
-        Review r = the_reviews.get(position);
+        ReviewUser r = the_reviewUsers.get(position);
         ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
         ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
         ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
@@ -78,7 +80,7 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
                 //position is the number of the row
                 Toast.makeText(v.getContext(),position + " cheers!", Toast.LENGTH_SHORT).show();
 
-                Review reviewUser = (Review) CustomPopulistoListAdapter.getItem(position);
+                ReviewUser reviewUser = (ReviewUser) PopulistoUserReviewsAdapter.getItem(position);
 
                 //we want to pass the review_id of the reviewUser being clicked
                 //to the ViewContact activity, and from there post it and get more
@@ -94,8 +96,8 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     //I have implemented a getItem method so
     //we can get the details about review, for the recyclerView row clicked
-    public static Review getItem(int position) {
-        return the_reviews.get(position);
+    public static com.example.chris.tutorialspoint.SharedReviews.ReviewUser getItem(int position) {
+        return the_reviewUsers.get(position);
     }
 
 
@@ -103,7 +105,7 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
     public int getItemCount() {
 
         //System.out.println("CustomPopulistoListAdapter: here it is" + the_reviewUsers.size());
-        return the_reviews.size();
+        return the_reviewUsers.size();
 
     }
 

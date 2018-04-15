@@ -6,8 +6,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,12 +14,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewConfiguration;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,6 +23,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.chris.tutorialspoint.SharedReviews.PopulistoUserReviewsAdapter;
+import com.example.chris.tutorialspoint.SharedReviews.ReviewUser;
 import com.example.tutorialspoint.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -38,10 +33,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,8 +73,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     private List<Review> reviewList = new ArrayList<Review>();
 
-    //this is the adapter for reviews
+    private List<ReviewUser> reviewUserList = new ArrayList<ReviewUser>();
+
+    //this is the adapter for user's reviews
     public CustomPopulistoListAdapter pAdapter;
+
+
+    //this is the adapter for shared reviews including user's own
+    public PopulistoUserReviewsAdapter qAdapter;
 
     //declare an activity object so we can
     //call populistolistview and shut it down in ViewContact and NewContact
@@ -129,17 +128,20 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         fa = this;
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        //the adapter for reviews
+        //the adapter for all user reviews
         pAdapter = new CustomPopulistoListAdapter(reviewList, this);
 
         //the adapter for filtering categories
         mAdapter = new CategoriesAdapter(this, categoryList, this);
 
+        //the adapter for all shared reviews including user's own
+        qAdapter = new PopulistoUserReviewsAdapter(reviewUserList, this);
+
         // white background notification bar
         //whiteNotificationBar(recyclerView);
 
 
-       // final CustomPopulistoListAdapter adapter = new CustomPopulistoListAdapter(reviewList, this);
+       // final CustomPopulistoListAdapter adapter = new CustomPopulistoListAdapter(reviewUserList, this);
        // recyclerView.setAdapter(adapter);
 
         //set the layout
@@ -179,7 +181,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 //for each object in the array, name it obj
                                 //each obj will consist of reviewid, category, name, phone,comment
                                 JSONObject obj = responseObject.getJSONObject(i);
-                                // and create a new review, getting details of user's reviews in the db
+                                // and create a new reviewUser, getting details of user's reviews in the db
                                 Review review = new Review();
                                 //we are getting the reviewid so we can pull extra matching info,
                                 review.setReviewid(obj.getString("reviewid"));
@@ -190,7 +192,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 review.setPhone(obj.getString("phone"));
                                 review.setComment(obj.getString("comment"));
 
-                                //add the review to the reviewList
+                                //add the reviewUser to the reviewUserList
                                 reviewList.add(review);
 
                             }
@@ -203,9 +205,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                         // so that it renders the list view with updated data
                          pAdapter.notifyDataSetChanged();
 
-                        // System.out.println("size of reviewlist " + reviewList.size());
-                        System.out.println("heree it is" + reviewList.size());
-                        System.out.println("heree it is" + reviewList.toString());
+                        // System.out.println("size of reviewlist " + reviewUserList.size());
+                        System.out.println("heree it is" + reviewUserList.size());
+                        System.out.println("heree it is" + reviewUserList.toString());
                     }
                 },
                 new Response.ErrorListener() {
@@ -360,7 +362,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                 //WILL CRASH IF UNCOMMENTED
                 //recyclerView.setAdapter(mAdapter);
-                //reviewList.clear();
+                //reviewUserList.clear();
 
                 //if the searchView is empty
                 if (searchView.getQuery().length() == 0) {
@@ -447,6 +449,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                     @Override
                     public void onResponse(String response) {
 
+                        //clear the list of shared reviews, start afresh on new filter
+                        reviewUserList.clear();
+
                         //hide the 'loading' box when the page loads
                        // hidePDialog();
 
@@ -463,21 +468,25 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 //for each object in the array, name it obj
                                 //each obj will consist of reviewid, category, name, phone,comment
                                 JSONObject obj = responseObject.getJSONObject(i);
-                                // and create a new review, getting details of user's reviews in the db
-                                Review review = new Review();
+                                // and create a new reviewUser, getting details of user's reviews in the db
+                                com.example.chris.tutorialspoint.SharedReviews.ReviewUser reviewUser = new com.example.chris.tutorialspoint.SharedReviews.ReviewUser();
                                 //we are getting the reviewid so we can pull extra matching info,
-                                review.setReviewid(obj.getString("reviewid"));
+                                reviewUser.setReviewid(obj.getString("reviewid"));
                                 //set the category part of the object to that matching reviewid
-                                review.setCategory(obj.getString("category"));
+                                reviewUser.setCategory(obj.getString("category"));
                                 //etc...
-                                review.setName(obj.getString("name"));
-                                review.setPhone(obj.getString("phone"));
-                                review.setComment(obj.getString("comment"));
+                                reviewUser.setName(obj.getString("name"));
+                                reviewUser.setPhone(obj.getString("phone"));
+                                reviewUser.setComment(obj.getString("comment"));
 
-                                //add the review to the reviewList
-                                reviewList.add(review);
+                                //add the reviewUser to the reviewUserList
+                                reviewUserList.add(reviewUser);
 
                             }
+
+                            //set the adapter to show shared reviews
+                            recyclerView.setAdapter(qAdapter);
+
                         } catch (JSONException e) {
                             Log.e("MYAPP", "unexpected JSON exception", e);
                             // Do something to recover ... or kill the app.
@@ -485,7 +494,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                         // notifying list adapter about data changes
                         // so that it renders the list view with updated data
-                        pAdapter.notifyDataSetChanged();
+                        qAdapter.notifyDataSetChanged();
 
                     }
                 },
