@@ -458,8 +458,14 @@ public class EditContact extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
-        Intent myIntent = new Intent(getApplicationContext(), ViewContact.class);
-        startActivityForResult(myIntent, 0);
+        Intent j = new Intent(getApplicationContext(), ViewContact.class);
+/*        j.putExtra("category",  categoryname.getText());
+        //j.putExtra("category_id",  categoryid);
+        j.putExtra("name", namename.getText());
+        j.putExtra("phone",  phonename.getText());
+        j.putExtra("address",  addressname.getText());
+        j.putExtra("comment",  commentname.getText());*/
+        startActivity(j);
 
 /*        switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button

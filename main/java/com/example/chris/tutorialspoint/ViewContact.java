@@ -92,6 +92,7 @@ public class ViewContact extends AppCompatActivity  {
 
     //this is the review that has been clicked in the ListView in PopulistoListView.java
     String review_id;
+
     private ProgressDialog pDialog;
 
     //selectPhoneContacts is an array list that will hold our SelectPhoneContact info
@@ -145,10 +146,27 @@ public class ViewContact extends AppCompatActivity  {
         actionbar.setTitle("Pop");
 
         Intent i = this.getIntent();
-        //we'll be getting this from the cell clicked in the listview
+
+        //we'll be getting review_id from the cell clicked in the listview
         //then posting to ViewContact.php to get associated details
         review_id = i.getStringExtra("review_id");
+
+        //if we are coming from EditContact, where no cell has been clicked
+        if (review_id ==null) {
+
+        //then set review_id to the value we put in shared preferences
+        review_id = PreferenceManager.getDefaultSharedPreferences(this).getString("review_id value", review_id);
+
+        }
+
         System.out.println("ViewContact: review id is " + review_id);
+
+        //coming from PopulistoListView we will always get a value for review_id
+        //Let's save the review_id in shared preferences
+        //so we can get it easily in EditContact,
+        //and load the corresponding values into ViewContact on < press
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("review_id value", review_id).apply();
+
 
         //cast a TextView for each of the field ids in activity_view_contact.xml
         categoryname = (TextView) findViewById(R.id.textViewCategory);
@@ -219,7 +237,7 @@ public class ViewContact extends AppCompatActivity  {
                             if(pub_or_priv==0){
                                 //change colour depending on value
                                 publicorprivate2.setTextColor(Color.parseColor("#DA850B"));
-                                shared_status = "Just Me";
+                                shared_status = "Just U";
                             }
 
                             if(pub_or_priv==1){
