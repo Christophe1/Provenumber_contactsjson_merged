@@ -3,6 +3,8 @@ package com.example.chris.tutorialspoint;
 public class Category {
     String cat_name;
     String [] user_review_ids;
+    String [] private_review_ids;
+    String [] public_review_ids;
     String user_personal_count;
     String private_count;
     String public_count;
@@ -17,9 +19,21 @@ public class Category {
 
 
     public String[] getUserReviewIds() {
-        //return the value of the JSON key named user_personal_count in php file
+        //return the value of the JSON key named user_review_ids in php file
        // return user_personal_count;
         return user_review_ids;
+    }
+
+    public String[] getPrivateReviewIds() {
+        //return the value of the JSON key named private_review_ids in php file
+        // return user_personal_count;
+        return private_review_ids;
+    }
+
+    public String[] getPublicReviewIds() {
+        //return the value of the JSON key named private_review_ids in php file
+        // return user_personal_count;
+        return public_review_ids;
     }
 
     public String getUserPersonalCount() {

@@ -44,14 +44,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     private static final String TAG = PopulistoListView.class.getSimpleName();
     public static RecyclerView recyclerView;
 
-    // this is the php file name where to select all Users reviews from.
+    // this is the php file name where to select ALL Users personal reviews from, on first load
     // we will post the user's phone number into Php and get the matching user_id
-    //show the user's reviews
     private static final String SelectUserReviews_URL = "http://www.populisto.com/SelectUserReviews.php";
 
     // we will post the selected review into Php and get the corresponding
     //review details
-    private static final String SelectOwnReviews_URL = "http://www.populisto.com/SelectOwnReviews.php";
+    private static final String User_Private_Public_Reviews_URL = "http://www.populisto.com/User_Private_Public_Reviews.php";
 
     //when searchView has focus and user types, we will be showing/filtering
     //categories
@@ -60,14 +59,25 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     private CategoriesAdapter mAdapter;
 
     //this is the url for loading the categories
-    private static final String AllCategories_URL = "http://www.populisto.com/CategorySearch.php";
+    //it returns a JSON Array of categories shared with the user -
+    //user_review_ids, private_review_ids, public_review_ids
+    private static final String AllCategories_URL = "http://www.populisto.com/CategoryFilter.php";
 
 
     //we are posting phoneNoofUser, the key is phonenumberofuser, which we see in php
     public static final String KEY_PHONENUMBER_USER = "phonenumberofuser";
 
     // the key is reviewiduser, which we see in php
+    //this is for user's own reviews
     public static final String KEY_REVIEWID_USER = "reviewiduser";
+
+    // the key is reviewidprivate, which we see in php
+    //this is for phone contact reviews
+    public static final String KEY_REVIEWID_PRIVATE = "reviewidprivate";
+
+    // the key is reviewidpublic, which we see in php
+    //this is for public reviews
+    public static final String KEY_REVIEWID_PUBLIC = "reviewidpublic";
 
     private ProgressDialog pDialog;
 
@@ -95,10 +105,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     //selectOwnUserReviews is to hold the own user's reviews for a fetched category
     //we fetch the review ids from php as an array like [23,65,67] and
-    //remove [ and ] so 23,65,67 will be sent to php and exploded, getting corresponding
+    //remove [ and ] so 23,65,67 will be sent to User_Private_Public_Reviews.php and exploded, getting corresponding
     //categories for each of 23, 65 and 67
     String selectOwnUserReviews;
 
+    String selectPrivateReviews;
+
+    String selectPublicReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -433,7 +446,18 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         //remove [ and ] so we have a string of 56,23,87
         selectOwnUserReviews = selectOwnUserReviews.substring(1,selectOwnUserReviews.length()-1);
 
-        //Toast.makeText(getApplicationContext(), "selectOwnUserReviews is: " + selectOwnUserReviews, Toast.LENGTH_LONG).show();
+        //convert [56,23,87] to a string
+        selectPrivateReviews = Arrays.toString(category.getPrivateReviewIds());
+        //remove [ and ] so we have a string of 56,23,87
+        selectPrivateReviews = selectPrivateReviews.substring(1,selectPrivateReviews.length()-1);
+
+        //convert [56,23,87] to a string
+        selectPublicReviews = Arrays.toString(category.getPublicReviewIds());
+        //remove [ and ] so we have a string of 56,23,87
+        selectPublicReviews = selectPublicReviews.substring(1,selectPublicReviews.length()-1);
+
+
+       // Toast.makeText(getApplicationContext(), selectOwnUserReviews + " and " + selectPrivateReviews, Toast.LENGTH_LONG).show();
 
         showOwnReviews();
 
@@ -442,9 +466,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     private void showOwnReviews() {
 
-        //post selectOwnUserReviews to SelectUserReviews.php and from that
+        //post User_Private_Public_Reviews to User_Private_Public_Reviews_URL.php and from that
         //get the reviews that belong to own user for the specific category
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, SelectOwnReviews_URL,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, User_Private_Public_Reviews_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -455,7 +479,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                         //hide the 'loading' box when the page loads
                        // hidePDialog();
 
-                        Toast.makeText(getApplicationContext(), "selectOwnUserReviews is: " + response, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
 
                         try {
                             //name our JSONArray responseObject
@@ -515,6 +539,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //KEY_REVIEWID_USER is "reviewiduser". When we see "reviewiduser" in our php,
                 //put in selectOwnUserReviews
                 params.put(KEY_REVIEWID_USER, selectOwnUserReviews);
+                params.put(KEY_REVIEWID_PRIVATE, selectPrivateReviews);
+                params.put(KEY_REVIEWID_PUBLIC, selectPublicReviews);
 
                 return params;
 
