@@ -459,12 +459,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
        // Toast.makeText(getApplicationContext(), selectOwnUserReviews + " and " + selectPrivateReviews, Toast.LENGTH_LONG).show();
 
-        showOwnReviews();
+        show_own_private_public_Reviews();
 
     }
 
 
-    private void showOwnReviews() {
+    private void show_own_private_public_Reviews() {
 
         //post User_Private_Public_Reviews to User_Private_Public_Reviews_URL.php and from that
         //get the reviews that belong to own user for the specific category
@@ -473,27 +473,37 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                     @Override
                     public void onResponse(String response) {
 
+                        //Toast.makeText(getApplicationContext(),response, Toast.LENGTH_LONG).show();
+
                         //clear the list of shared reviews, start afresh on new filter
                         reviewUserList.clear();
 
                         //hide the 'loading' box when the page loads
                        // hidePDialog();
 
-                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
-
                         try {
-                            //name our JSONArray responseObject
-                            JSONArray responseObject = new JSONArray(response);
 
+                            //name our JSONObject User_Private_Public_Obj, which is response from server
+                            JSONObject User_Private_Public_Obj = new JSONObject(response);
+
+                            //for the JSON Array user_review_ids
+                            JSONArray own_ids = User_Private_Public_Obj.getJSONArray("user_review_ids");
+
+                            //for the JSON Array private_review_ids
+                            JSONArray private_ids = User_Private_Public_Obj.getJSONArray("private_review_ids");
 
                             for
-                                //get the number of objects in the Array
-                                    (int i = 0; i < responseObject.length(); i++) {
-                                //for each object in the array, name it obj
+                                //get the number of objects in the array own_ids
+                                    (int i = 0; i < own_ids.length(); i++)
+
+                            {
+
+                                //for each object in the array own_ids, name it obj
                                 //each obj will consist of reviewid, category, name, phone,comment
-                                JSONObject obj = responseObject.getJSONObject(i);
+                                JSONObject obj = own_ids.getJSONObject(i);
+
                                 // and create a new reviewUser, getting details of user's reviews in the db
-                                com.example.chris.tutorialspoint.SharedReviews.ReviewUser reviewUser = new com.example.chris.tutorialspoint.SharedReviews.ReviewUser();
+                                ReviewUser reviewUser = new ReviewUser();
                                 //we are getting the reviewid so we can pull extra matching info,
                                 reviewUser.setReviewid(obj.getString("reviewid"));
                                 //set the category part of the object to that matching reviewid
@@ -507,6 +517,43 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 reviewUserList.add(reviewUser);
 
                             }
+
+
+                            for
+                                //get the number of objects in User_Private_Public_Obj
+                                    (int i = 0; i < private_ids.length(); i++)
+
+                            {
+
+                                //for each object in the array own_ids, name it obj
+                                //each obj will consist of reviewid, category, name, phone,comment
+                                JSONObject obj = private_ids.getJSONObject(i);
+
+                                /*String own_ids=obj.getString("user_review_ids");
+                                String private_ids=obj.getString("private_review_ids");
+                                String public_ids=obj.getString("public_review_ids");*/
+
+
+
+                                //for each object in the array, name it obj
+                                //each obj will consist of reviewid, category, name, phone,comment
+                                //JSONObject obj = responseObject.getJSONObject(i);
+                                // and create a new reviewUser, getting details of user's reviews in the db
+                                ReviewUser reviewUser = new ReviewUser();
+                                //we are getting the reviewid so we can pull extra matching info,
+                                reviewUser.setReviewid(obj.getString("reviewid"));
+                                //set the category part of the object to that matching reviewid
+                                reviewUser.setCategory(obj.getString("category"));
+                                //etc...
+                                reviewUser.setName(obj.getString("name"));
+                                reviewUser.setPhone(obj.getString("phone"));
+                                reviewUser.setComment(obj.getString("comment"));
+
+                                //add the reviewUser to the reviewUserList
+                                reviewUserList.add(reviewUser);
+
+                            }
+
 
                             //set the adapter to show shared reviews
                             recyclerView.setAdapter(qAdapter);
@@ -534,8 +581,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             //post info to php
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                //selectOwnUserReviews are the review_ids of the clicked category in
-                // filter.
+                //selectOwnUserReviews are the user_review_ids of the clicked category in filter.
                 //KEY_REVIEWID_USER is "reviewiduser". When we see "reviewiduser" in our php,
                 //put in selectOwnUserReviews
                 params.put(KEY_REVIEWID_USER, selectOwnUserReviews);
