@@ -391,6 +391,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     // register the user's phone number in the user table, this is called
     //when the phone number is verified, when the originating number = sent to number
     private void registerUser() {
+         Toast.makeText(VerifyUserPhoneNumber.this, "the numbers match dude" + phoneNoofUser, Toast.LENGTH_LONG).show();
+
         //REGISTER_URL is insert.php
         StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
                 new Response.Listener<String>() {
@@ -646,7 +648,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                         // and extract the phone numbers and compare against the contacts on the user's phone.
 
                         Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
-                        System.out.println("the Populisto contacts of this user are :" + response);
+                        //System.out.println("the Populisto contacts of this user are :" + response);
                         //convert the JSONArray, the response, to a string
                         String MatchingContactsAsString = response.toString();
                         System.out.println("VerifyUserPhoneNumber1: matching contacts of this user are :" + MatchingContactsAsString);

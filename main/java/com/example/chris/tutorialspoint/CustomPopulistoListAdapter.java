@@ -25,10 +25,11 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
     public static class ReviewHolder extends RecyclerView.ViewHolder {
 
         //In each populisto_list_row show the items you want to have appearing
-        public TextView category, name,phone, comment;
+        public TextView phone_user_name, category, name,phone, comment;
 
         public ReviewHolder(View itemView){
             super(itemView);
+             phone_user_name = (TextView) itemView.findViewById(R.id.phone_user_name);
              category = (TextView) itemView.findViewById(R.id.category);
              name = (TextView) itemView.findViewById(R.id.name);
              phone = (TextView) itemView.findViewById(R.id.phone);
@@ -62,6 +63,7 @@ public class CustomPopulistoListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         Review r = the_reviews.get(position);
+        ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhone_user_name());
         ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
         ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
         ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());

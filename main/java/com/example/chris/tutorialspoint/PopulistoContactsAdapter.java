@@ -526,7 +526,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         Log.i("EditContact-MyMessage", "whichactivity=2, checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
-        Log.i("EditContact-MyMessage", "whichactivity=2,number in checkedContactsAsArrayList is " + checkedContactsAsArrayList.size());
+//        Log.i("EditContact-MyMessage", "whichactivity=2,number in checkedContactsAsArrayList is " + checkedContactsAsArrayList.size());
 
 
     }

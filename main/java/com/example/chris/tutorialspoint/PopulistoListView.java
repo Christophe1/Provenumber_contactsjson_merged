@@ -6,6 +6,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -113,6 +115,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     String selectPublicReviews;
 
+    public static ArrayList<String> MatchingContactsAsArrayList;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,12 +132,23 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         getSupportActionBar().setTitle(R.string.toolbar_title);
 
 
-        //get the phone number value from shared preferences file instead
+        //get the own user's phone number value from shared preferences file instead
         //of from the VerifiedUserPhoneNumber class because we might not
         //be coming from that class, for example on Edit, New etc. The phone
         //number needs to be posted for this recyclerView to load properly.
         SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         phoneNoofUser = sharedPreferences.getString(KEY_PHONENUMBER_USER, "");
+
+        //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
+        //we want to put the name of the user who made the review alongside the review
+        SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Gson gsonMatchingContactsAsArrayList = new Gson();
+        String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
+        Type type1 = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
+        System.out.println("PopulistoListView MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
 
         //why isn't title being set!?
         //getSupportActionBar().setTitle("Search...");
@@ -198,6 +214,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 Review review = new Review();
                                 //we are getting the reviewid so we can pull extra matching info,
                                 review.setReviewid(obj.getString("reviewid"));
+                                //set the category part of the object to that matching reviewid
+                                review.setPhone_user_name(obj.getString("category"));
                                 //set the category part of the object to that matching reviewid
                                 review.setCategory(obj.getString("category"));
                                 //etc...
