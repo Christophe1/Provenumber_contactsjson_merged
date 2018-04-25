@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import static java.util.logging.Logger.global;
 
 public class Review {
-    private String phone_user_name, category, thumbnailUrl, name, phone, address, comment;
+    private String phone_user_name, category, publicorprivate, name, phone, address, comment;
     public String reviewid;
     //int reviewid;
   //  private int year;
@@ -19,9 +19,9 @@ public class Review {
     public Review() {
     }
 
-    public Review(String phone_user_name,
+    public Review(String publicorprivate,
+                  String phone_user_name,
                   String category,
-                  // String thumbnailUrl,
                   String name,
                   String phone,
                   String address,
@@ -30,18 +30,25 @@ public class Review {
                   // double rating,
                   //ArrayList<String> genre
     ) {
+        this.publicorprivate = publicorprivate;
         this.phone_user_name = phone_user_name;
         this.category = category;
-       // this.thumbnailUrl = thumbnailUrl;
         this.name = name;
         this.phone = phone;
         this.address = address;
         this.comment = comment;
-     //   this.year = year;
-     //   this.rating = rating;
-      //  this.genre = genre;
         this.reviewid = reviewid;
     }
+
+    //get 0,1 or 2 value, for Just U, private or public
+    public String getPublicorprivate() {
+        return publicorprivate;
+    }
+
+    public void setPublicorprivate(String publicorprivate) {
+        this.publicorprivate = publicorprivate;
+    }
+
 
     public String getPhone_user_name() {
         return phone_user_name;

@@ -6,6 +6,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -115,7 +117,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     String selectPublicReviews;
 
-    public static ArrayList<String> MatchingContactsAsArrayList;
+    //to decide colour of "U" in phone_user_name
+    int pub_or_priv;
+
+    private TextView phone_user_name;
+
+    //public static ArrayList<String> MatchingContactsAsArrayList;
 
 
     @Override
@@ -141,6 +148,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
         //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
         //we want to put the name of the user who made the review alongside the review
+/*
         SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Gson gsonMatchingContactsAsArrayList = new Gson();
         String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
@@ -148,16 +156,20 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         }.getType();
         MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
         System.out.println("PopulistoListView MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+*/
 
 
         //why isn't title being set!?
         //getSupportActionBar().setTitle("Search...");
 
+        //cast a TextView for each of the field ids in activity_view_contact.xml
+        phone_user_name = (TextView) findViewById(R.id.phone_user_name);
+
         //populistolistview is the activity object
         fa = this;
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        //the adapter for all user reviews
+        //the adapter for all own user reviews
         pAdapter = new CustomPopulistoListAdapter(reviewList, this);
 
         //the adapter for filtering categories
@@ -203,7 +215,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                             //name our JSONArray responseObject
                             JSONArray responseObject = new JSONArray(response);
 
-
                             for
                                 //get the number of objects in the Array
                                     (int i = 0; i < responseObject.length(); i++) {
@@ -212,16 +223,49 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 JSONObject obj = responseObject.getJSONObject(i);
                                 // and create a new reviewUser, getting details of user's reviews in the db
                                 Review review = new Review();
+
+                                //get 0,1 or 2 value, for Just U, private or public
+                                review.setPublicorprivate(obj.getString("publicorprivate"));
                                 //we are getting the reviewid so we can pull extra matching info,
                                 review.setReviewid(obj.getString("reviewid"));
-                                //set the category part of the object to that matching reviewid
-                                review.setPhone_user_name(obj.getString("category"));
+
+                                //convert public_or_private to an integer
+                                pub_or_priv = Integer.parseInt(obj.getString("publicorprivate"));
+
+                                //shared_status will be Public, Phone Contacts or Just Me
+                                String shared_status ="";
+
+                                if(pub_or_priv==0){
+                                    //change colour depending on value
+                                    phone_user_name.setTextColor(Color.parseColor("#DA850B"));
+                                    shared_status = "U";
+                                }
+
+                                if(pub_or_priv==1){
+                                    phone_user_name.setTextColor(Color.parseColor("#0A7FDA"));
+                                    shared_status = "U";
+                                }
+
+                                if(pub_or_priv==2){
+                                    phone_user_name.setTextColor(Color.parseColor("#2AB40E"));
+                                    shared_status = "U";
+
+                                }
+
+
+
+                                //these are own user reviews, so set to U
+                                review.setPhone_user_name(shared_status);
+
                                 //set the category part of the object to that matching reviewid
                                 review.setCategory(obj.getString("category"));
                                 //etc...
                                 review.setName(obj.getString("name"));
                                 review.setPhone(obj.getString("phone"));
                                 review.setComment(obj.getString("comment"));
+
+                              //  Toast.makeText(PopulistoListView.this, obj.getString("publicorprivate"), Toast.LENGTH_LONG).show();
+
 
                                 //add the reviewUser to the reviewUserList
                                 reviewList.add(review);
@@ -231,6 +275,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                             Log.e("MYAPP", "unexpected JSON exception", e);
                             // Do something to recover ... or kill the app.
                         }
+
+
 
                         // notifying list adapter about data changes
                         // so that it renders the list view with updated data
