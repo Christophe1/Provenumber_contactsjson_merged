@@ -90,7 +90,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     private List<ReviewUser> reviewUserList = new ArrayList<ReviewUser>();
 
     //this is the adapter for user's reviews
-    public CustomPopulistoListAdapter pAdapter;
+    public UPopulistoListAdapter pAdapter;
 
 
     //this is the adapter for shared reviews including user's own
@@ -118,7 +118,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     String selectPublicReviews;
 
     //to decide colour of "U" in phone_user_name
-    int pub_or_priv;
+    public int pub_or_priv;
 
     private TextView phone_user_name;
 
@@ -163,14 +163,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         //getSupportActionBar().setTitle("Search...");
 
         //cast a TextView for each of the field ids in activity_view_contact.xml
-        phone_user_name = (TextView) findViewById(R.id.phone_user_name);
+       // phone_user_name = (TextView) findViewById(R.id.phone_user_name);
 
         //populistolistview is the activity object
         fa = this;
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         //the adapter for all own user reviews
-        pAdapter = new CustomPopulistoListAdapter(reviewList, this);
+        pAdapter = new UPopulistoListAdapter(reviewList);
 
         //the adapter for filtering categories
         mAdapter = new CategoriesAdapter(this, categoryList, this);
@@ -233,29 +233,29 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 pub_or_priv = Integer.parseInt(obj.getString("publicorprivate"));
 
                                 //shared_status will be Public, Phone Contacts or Just Me
-                                String shared_status ="";
+                              /*  String shared_status ="";
 
                                 if(pub_or_priv==0){
                                     //change colour depending on value
                                     phone_user_name.setTextColor(Color.parseColor("#DA850B"));
-                                    shared_status = "U";
+                                    shared_status = "Just U";
                                 }
 
                                 if(pub_or_priv==1){
-                                    phone_user_name.setTextColor(Color.parseColor("#0A7FDA"));
-                                    shared_status = "U";
+                                    //phone_user_name.setTextColor(Color.parseColor("#0A7FDA"));
+                                    shared_status = "Private";
                                 }
 
                                 if(pub_or_priv==2){
-                                    phone_user_name.setTextColor(Color.parseColor("#2AB40E"));
-                                    shared_status = "U";
+                                    //phone_user_name.setTextColor(Color.parseColor("#2AB40E"));
+                                    shared_status = "Public";
 
                                 }
 
 
 
                                 //these are own user reviews, so set to U
-                                review.setPhone_user_name(shared_status);
+                                review.setPhone_user_name(shared_status);*/
 
                                 //set the category part of the object to that matching reviewid
                                 review.setCategory(obj.getString("category"));
@@ -313,6 +313,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     }
 
+/*    public int getbs(){
+        return pub_or_priv;
+    }*/
 
     //this is the function for filtering categories in the searchView
     //it is called onQueryTextChange
