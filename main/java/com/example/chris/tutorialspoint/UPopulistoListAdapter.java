@@ -129,7 +129,7 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public int getItemCount() {
 
-        //System.out.println("CustomPopulistoListAdapter: here it is" + the_reviewUsers.size());
+        //System.out.println("CustomPopulistoListAdapter: here it is" + the_Shared_reviews.size());
         return the_reviews.size();
 
     }

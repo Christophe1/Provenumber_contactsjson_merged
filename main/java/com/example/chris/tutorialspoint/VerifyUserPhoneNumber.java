@@ -54,7 +54,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class VerifyUserPhoneNumber extends AppCompatActivity  {
+public class VerifyUserPhoneNumber extends AppCompatActivity {
 
     // this is the php file name where to insert into the database, the user's phone number
     private static final String REGISTER_URL = "http://www.populisto.com/insert.php";
@@ -102,7 +102,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
 
 
-
         // setContentView(R.layout.verify_phone_number);
 
  /*       setContentView(R.layout.phone_listview_contacts);
@@ -110,7 +109,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         Toolbar toolbar = (Toolbar)findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);*/
 
-       // btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
+        // btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
 
         // GlobalFunctions simplemessage = new GlobalFunctions();
         //GlobalFunctions.simpleMessage(VerifyUserPhoneNumber.this,"buddy buddy");
@@ -119,9 +118,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         //simplemessage2.simpleMessage2();
 
 
-       // txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
+        // txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
 
-       // txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
+        // txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
 
 
         //execute the AsyncTask, do stuff in the background
@@ -171,12 +170,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
             //  if the user has not already registered, if there is nothing in the SharedPreferences file,
             // then start the sendSMSandRegisterUser function
-            if ( phoneNoofUser == null || phoneNoofUser.equals("") ) {
+            if (phoneNoofUser == null || phoneNoofUser.equals("")) {
 
                 sendSMSandRegisterUser();
 
-            }
-            else {
+            } else {
                 // if it is registered then
                 //get all the contacts on the user's phone
                 getPhoneContacts();
@@ -208,8 +206,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
 
     protected void sendSMSandRegisterUser() {
-    //we are loading the xml for first registering so we need to run a UI Thread. This is necessary
-    //when showing xml from the doInBackground
+        //we are loading the xml for first registering so we need to run a UI Thread. This is necessary
+        //when showing xml from the doInBackground
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -230,7 +228,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                 txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
 
-                txtCountryCode =(TextView) findViewById(R.id.txtCountryCode);
+                txtCountryCode = (TextView) findViewById(R.id.txtCountryCode);
 
                 //when 'Select Country' Text is clicked
                 //load the new activity CountryCodes showing the list of all countries
@@ -260,7 +258,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
             }
         });
-
 
 
     }
@@ -340,9 +337,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     VerifyUserPhoneNumber.this.startActivity(myIntent);*/
 
 
-                }
-
-                else {
+                } else {
                     Toast.makeText(getApplicationContext(), "Number not correct.", Toast.LENGTH_LONG).show();
 
                 }
@@ -356,7 +351,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         phoneNoofUserbeforeE164 = txtphoneNoofUser.getText().toString();
 
         //add the country code onto the phone number, before we parse it
-        phoneNoofUser = String.valueOf(CountryCode) +  String.valueOf(phoneNoofUserbeforeE164);
+        phoneNoofUser = String.valueOf(CountryCode) + String.valueOf(phoneNoofUserbeforeE164);
 
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         try {
@@ -367,7 +362,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             //phoneNoofUser in the format of E164
             phoneNoofUser = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
 
-          } catch (NumberParseException e) {
+        } catch (NumberParseException e) {
             System.err.println("NumberParseException was thrown: " + e.toString());
         }
 
@@ -380,9 +375,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             smsManager.sendTextMessage(phoneNoofUser, null, message, null, null);
             Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
 
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "SMS failed, please try again.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
@@ -391,7 +384,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
     // register the user's phone number in the user table, this is called
     //when the phone number is verified, when the originating number = sent to number
     private void registerUser() {
-         Toast.makeText(VerifyUserPhoneNumber.this, "the numbers match dude" + phoneNoofUser, Toast.LENGTH_LONG).show();
+        Toast.makeText(VerifyUserPhoneNumber.this, "the numbers match dude" + phoneNoofUser, Toast.LENGTH_LONG).show();
 
         //REGISTER_URL is insert.php
         StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
@@ -423,12 +416,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             }
 
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(this) ;
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
-
-
-
 
 
     @Override
@@ -549,10 +539,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                     VerifyUserPhoneNumber.this.startActivity(myIntent1);
 
 
-
-
                     //we will save the array list allPhonesofContacts,
-                    //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
+                    //with this we will put all phone numbers of contacts on user's phone into our ListView, in other activities
                     SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
                     SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
 
@@ -606,8 +594,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         try {
 
             //allPhonesofContacts is our arraylist with all the phone numbers
-            for (int i = 0; i < allPhonesofContacts.size(); i++)
-            {
+            for (int i = 0; i < allPhonesofContacts.size(); i++) {
                 // make each contact in allPhonesofContacts into an individual JSON object called jsonObjectContact
                 JSONObject jsonObjectContact = new JSONObject();
                 // jsonObjectContact will be of the form {"name":"Bob", "phone_number":"123456789"}
@@ -620,8 +607,19 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
             }
             System.out.println("the amount in allPhonesofContacts :" + allPhonesofContacts.size());
             // System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
-            System.out.println("JSONarrayAllPhonecontacts: " + jsonArrayAllPhonesandNamesofContacts.toString());
             //System.out.println("JSON object datatoSend: " + dataToSend.toString());
+
+            //put jsonArrayAllPhonesandNamesofContacts into shared preferences file as a String
+            //Convert back to Json later, in the adapter
+            SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+            //we want to edit SharedPreferences
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            //put the string value into SharedPreferences, with the key "AllPhonesandNamesofContacts"
+            editor.putString("AllPhonesandNamesofContacts", jsonArrayAllPhonesandNamesofContacts.toString());
+            //commit the string
+            editor.commit();
+            System.out.println("jsonArrayAllPhonesandNamesofContacts: " + jsonArrayAllPhonesandNamesofContacts.toString());
+
 
 
         } catch (final JSONException e) {
@@ -649,7 +647,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                         Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
                         //System.out.println("the Populisto contacts of this user are :" + response);
+
                         //convert the JSONArray, the response, to a string
+                        //It will be like: [{"phone_number":"+353864677745"}, etc...]
                         String MatchingContactsAsString = response.toString();
                         System.out.println("VerifyUserPhoneNumber1: matching contacts of this user are :" + MatchingContactsAsString);
 
@@ -658,8 +658,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
 
                         try {
                             JSONArray Object = new JSONArray(MatchingContactsAsString);
+                            //for every object in the Array
                             for (int x = 0; x < Object.length(); x++) {
                                 final JSONObject obj = Object.getJSONObject(x);
+                                //strip out the phone number
+                                //so it will be like: [+353864677745, +35387123456, etc...]
                                 MatchingContactsAsArrayList.add(obj.getString("phone_number"));
 
                             }
@@ -699,7 +702,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 }) {
 
 
-
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
@@ -721,7 +723,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
                 return params;
 
 
-
             }
         };
 
@@ -731,7 +732,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity  {
         requestQueue.add(stringRequest);
 
     }
-
 
 
 }
