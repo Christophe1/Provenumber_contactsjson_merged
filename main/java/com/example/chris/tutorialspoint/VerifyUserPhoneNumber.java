@@ -31,6 +31,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.chris.tutorialspoint.SharedReviews.SharedPopulistoReviewsAdapter;
+import com.example.chris.tutorialspoint.SharedReviews.SharedReview;
 import com.example.tutorialspoint.R;
 import com.google.gson.Gson;
 import com.google.i18n.phonenumbers.NumberParseException;
@@ -96,11 +98,18 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     String CountryCode;
     String phoneNoofUserbeforeE164;
 
+    // ArrayList called sharedReviews that will contain sharedReviews info
+    //we use this to pass jsonArrayofPhonesandNamesofContacts to sharedReviews,
+    //so we can put the phone name beside the review
+    //ArrayList<SharedReview> sharedReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //we need this so we can pass the shared preference jsonArrayAllPhonesandNamesofContacts
+        //to SharedPopulistoReviewsAdapter, to link names with reviews
+       // SharedPopulistoReviewsAdapter adapter = new SharedPopulistoReviewsAdapter(sharedReviews, VerifyUserPhoneNumber.this);
 
         // setContentView(R.layout.verify_phone_number);
 

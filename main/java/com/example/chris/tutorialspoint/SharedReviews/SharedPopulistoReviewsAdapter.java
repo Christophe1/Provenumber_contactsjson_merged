@@ -36,7 +36,11 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
     private Activity activity;
     private LayoutInflater inflater;
     public static List<SharedReview> the_Shared_reviews;
-    Context context;
+    //Context context;
+    Context context_type;
+ //myMethod();
+
+
 
 /*
     SharedPreferences sharedPrefs = context.getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -85,10 +89,11 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
     }
 
-    public SharedPopulistoReviewsAdapter(List<SharedReview> sharedReviews, Activity activity) {
+    public SharedPopulistoReviewsAdapter(List<SharedReview> sharedReviews, Context context) {
 
-        this.activity = activity;
         the_Shared_reviews = sharedReviews;
+        context_type = context;
+
 
 
     }
@@ -119,6 +124,26 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
         //shared_status will be Just U, Private or Public
         String shared_status ="U";
+
+
+        //get shared preference values from VerifyUserPhoneNumber,
+        //we are getting jsonArrayAllPhonesandNamesofContacts as a string,
+        //convert it back to a JSONArray
+        SharedPreferences sharedPrefs = context_type.getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
+        try {
+            JSONArray jsonArray = new JSONArray(json_array);
+            //System.out.println("SharedAdapter, the jsonarray is :" + jsonArray);
+            Toast.makeText(context_type, jsonArray.toString(), Toast.LENGTH_SHORT).show();
+
+
+        } catch (JSONException e) {
+            Log.e("MYAPP", "unexpected JSON exception", e);
+        }
+
+//}
+
+
 
         if(pubOrPriv==0){
             //change colour depending on value
@@ -157,6 +182,8 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
                 SharedReview sharedReview = (SharedReview) SharedPopulistoReviewsAdapter.getItem(position);
 
+
+
                 //we want to pass the review_id of the sharedReview being clicked
                 //to the ViewContact activity, and from there post it and get more
                 //info for that sharedReview - address, comments etc
@@ -183,7 +210,6 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
         return the_Shared_reviews.size();
 
     }
-
 
 }
 
