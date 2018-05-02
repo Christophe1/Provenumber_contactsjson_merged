@@ -211,6 +211,7 @@ public class NewContact extends AppCompatActivity {
                 {   //add the selectContacts to the selectPhoneContacts array
                     // insert the contact at the beginning of the listview
                     selectPhoneContacts.add(0, selectContact);
+                    System.out.println("MatchingContactsAsArrayList is : " + PopulistoContactsAdapter.MatchingContactsAsArrayList);
 
                     //In SelectContact class, so getItemViewType will know which layout to show
                     //:checkbox or Invite Button

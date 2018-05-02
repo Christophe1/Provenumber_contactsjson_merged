@@ -101,7 +101,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     // ArrayList called sharedReviews that will contain sharedReviews info
     //we use this to pass jsonArrayofPhonesandNamesofContacts to sharedReviews,
     //so we can put the phone name beside the review
-    //ArrayList<SharedReview> sharedReviews;
+    ArrayList<SharedReview> sharedReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +109,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
         //we need this so we can pass the shared preference jsonArrayAllPhonesandNamesofContacts
         //to SharedPopulistoReviewsAdapter, to link names with reviews
-       // SharedPopulistoReviewsAdapter adapter = new SharedPopulistoReviewsAdapter(sharedReviews, VerifyUserPhoneNumber.this);
+        SharedPopulistoReviewsAdapter adapter = new SharedPopulistoReviewsAdapter(sharedReviews, VerifyUserPhoneNumber.this);
 
         // setContentView(R.layout.verify_phone_number);
 
@@ -614,6 +614,30 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 jsonArrayAllPhonesandNamesofContacts.put(jsonObjectContact);
 
             }
+
+            ArrayList<String> listdata = new ArrayList<String>();
+            JSONArray jArray = jsonArrayAllPhonesandNamesofContacts;
+            if (jArray != null) {
+                for (int i=0;i<jArray.length();i++){
+                    listdata.add(jArray.getString(i));
+
+                }
+                System.out.println("listdata arraylist: " + listdata.toString());
+
+                //we will save the array list allPhonesofContacts,
+                //with this we will put all phone numbers of contacts on user's phone into our ListView, in other activities
+                SharedPreferences listdatas = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                SharedPreferences.Editor prefsEditor = listdatas.edit();
+
+                Gson gson = new Gson();
+                String json = gson.toJson(listdatas);
+                prefsEditor.putString("allNamesandPhonesofContacts", json);
+                prefsEditor.commit();
+
+
+            }
+
+
             System.out.println("the amount in allPhonesofContacts :" + allPhonesofContacts.size());
             // System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
             //System.out.println("JSON object datatoSend: " + dataToSend.toString());
