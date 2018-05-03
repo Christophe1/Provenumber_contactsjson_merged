@@ -101,7 +101,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     // ArrayList called sharedReviews that will contain sharedReviews info
     //we use this to pass jsonArrayofPhonesandNamesofContacts to sharedReviews,
     //so we can put the phone name beside the review
-    ArrayList<SharedReview> sharedReviews;
+   // ArrayList<SharedReview> sharedReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +109,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
         //we need this so we can pass the shared preference jsonArrayAllPhonesandNamesofContacts
         //to SharedPopulistoReviewsAdapter, to link names with reviews
-        SharedPopulistoReviewsAdapter adapter = new SharedPopulistoReviewsAdapter(sharedReviews, VerifyUserPhoneNumber.this);
+        //SharedPopulistoReviewsAdapter adapter = new SharedPopulistoReviewsAdapter(sharedReviews, VerifyUserPhoneNumber.this);
 
         // setContentView(R.layout.verify_phone_number);
 
@@ -615,6 +615,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
             }
 
+/*
             ArrayList<String> listdata = new ArrayList<String>();
             JSONArray jArray = jsonArrayAllPhonesandNamesofContacts;
             if (jArray != null) {
@@ -636,12 +637,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
 
             }
+*/
 
 
             System.out.println("the amount in allPhonesofContacts :" + allPhonesofContacts.size());
             // System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
             //System.out.println("JSON object datatoSend: " + dataToSend.toString());
 
+/*
             //put jsonArrayAllPhonesandNamesofContacts into shared preferences file as a String
             //Convert back to Json later, in the adapter
             SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -652,6 +655,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             //commit the string
             editor.commit();
             System.out.println("jsonArrayAllPhonesandNamesofContacts: " + jsonArrayAllPhonesandNamesofContacts.toString());
+*/
 
 
 

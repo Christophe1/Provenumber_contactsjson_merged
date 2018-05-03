@@ -1,8 +1,8 @@
 package com.example.chris.tutorialspoint.SharedReviews;
 
 public class SharedReview {
-    private String phone_user_name, publicorprivate, category,
-            thumbnailUrl, name, phone, address, comment, username;
+    private String phoneNameonPhone, publicorprivate, category,
+            thumbnailUrl, name, phone, address, comment, PhoneNumberofUserFromDB;
     public String reviewid;
 
 
@@ -13,26 +13,26 @@ public class SharedReview {
 
     public SharedReview(String publicorprivate,
                         String category,
-                        String phone_user_name,
+                        String phoneNameonPhone,
                         // String thumbnailUrl,
                         String name,
                         String phone,
                         String address,
                         String comment,
-                        String username,
+                        String PhoneNumberofUserFromDB,
                         String reviewid
                         // double rating,
                         //ArrayList<String> genre
     ) {
         this.publicorprivate = publicorprivate;
-        this.phone_user_name = phone_user_name;
+        this.phoneNameonPhone = phoneNameonPhone;
         this.category = category;
        // this.thumbnailUrl = thumbnailUrl;
         this.name = name;
         this.phone = phone;
         this.address = address;
         this.comment = comment;
-        this.username = username;
+        this.PhoneNumberofUserFromDB = PhoneNumberofUserFromDB;
         this.reviewid = reviewid;
     }
 
@@ -46,20 +46,20 @@ public class SharedReview {
         this.publicorprivate = publicorprivate;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPhoneNumberofUserFromDB() {
+        return PhoneNumberofUserFromDB;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setPhoneNumberofUserFromDB(String PhoneNumberofUserFromDB) {
+        this.PhoneNumberofUserFromDB = PhoneNumberofUserFromDB;
     }
 
-    public String getPhone_user_name() {
-        return phone_user_name;
+    public String getPhoneNameonPhone() {
+        return phoneNameonPhone;
     }
 
-    public void setPhone_user_name(String phone_user_name) {
-        this.phone_user_name = phone_user_name;
+    public void setphoneNameonPhone(String phoneNameonPhone) {
+        this.phoneNameonPhone = phoneNameonPhone;
     }
 
     public String getCategory() {

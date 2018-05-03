@@ -105,13 +105,13 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
         //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
         //with this we will put all phone numbers of contacts on user's phone into our ListView in NewContact activity
-        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(context_type);
+/*        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(context_type);
         Gson gson = new Gson();
         String json = sharedPreferencesallPhonesofContacts.getString("allNamesandPhonesofContacts", "");
         Type type = new TypeToken<ArrayList<String>>() {
         }.getType();
         allPhonesofContacts = gson.fromJson(json, type);
-        System.out.println("NewContact: allPhonesofContacts :" + allPhonesofContacts);
+        System.out.println("NewContact: allPhonesofContacts :" + allPhonesofContacts);*/
 
         //get shared preference values from VerifyUserPhoneNumber,
         //we are getting jsonArrayAllPhonesandNamesofContacts as a string,
@@ -122,7 +122,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
         try {
             JSONArray jsonArray = new JSONArray(json_array);
             //System.out.println("SharedAdapter, the jsonarray is :" + jsonArray);
-            Toast.makeText(context_type, jsonArray.toString(), Toast.LENGTH_SHORT).show();
+           // Toast.makeText(context_type, jsonArray.toString(), Toast.LENGTH_SHORT).show();
 
 
         } catch (JSONException e) {
@@ -156,56 +156,14 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
         SharedReview r = the_Shared_reviews.get(position);
 
-        //username is in fact a phone number from the db
-        String username = r.getUsername();
 
-        String phone_user_name = "";
-
-        //pubOrPriv is 0,1 or 2,depending on shared status of the review
-        //int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
-
-        //shared_status will be Just U, Private or Public
-        //String shared_status = "U";
-
-        int matching = jsonArray.length();
-        for (int i = 0; i < matching; i++) {
-
-            try {
-
-                JSONObject object = jsonArray.getJSONObject(i);
-
-                if (object.getString("phone_number").equals(username))
-                    Toast.makeText(context_type,object.getString("phone_number"), Toast.LENGTH_SHORT).show();
-
-                {
-
-                    phone_user_name = (object.getString("name"));
-
-                }
-            } catch (JSONException e) {
-                Log.e("MYAPP", "unexpected JSON exception", e);
-                // Do something to recover ... or kill the app.
-            }
-        }
-
-/*            if (pubOrPriv == 0) {
-                //change colour depending on value
-                ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#DA850B"));
-            }
-
-            if (pubOrPriv == 1) {
-                ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#0A7FDA"));
-            }
-
-            if (pubOrPriv == 2) {
-                ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#2AB40E"));
-            }*/
 
             //I want to set the text to Bob, Tom, or whatever corresponding
             // phone number matches username
-            ((ReviewHolder) viewHolder).phone_user_name.setText("user :" + phone_user_name);
-/*            ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
-            ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
+            ((ReviewHolder) viewHolder).phone_user_name.setText("name :" + r.getPhoneNameonPhone());
+            // ((ReviewHolder) viewHolder).phone_user_name.setText("phone :" + r.getPhoneNumberofUserFromDB());
+            ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
+ /*           ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
             ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
             ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());*/
 

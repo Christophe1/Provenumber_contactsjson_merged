@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PopulistoListView extends AppCompatActivity implements CategoriesAdapter.CategoriesAdapterListener{
+public class PopulistoListView extends AppCompatActivity implements CategoriesAdapter.CategoriesAdapterListener {
 
     private static final String TAG = PopulistoListView.class.getSimpleName();
     public static RecyclerView recyclerView;
@@ -75,8 +75,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     private List<Category> categoryList = new ArrayList<Category>();
     //this is the adapter for categories, loading from the searchView
     private CategoriesAdapter mAdapter;
-
-
 
 
     //we are posting phoneNoofUser (logged-in user's own number), the key is phonenumberofuser, which we see in php
@@ -147,7 +145,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         setContentView(R.layout.phone_listview_contacts);
 
         //set the layout for the searchview widget
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // toolbar
@@ -163,8 +161,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         phoneNoofUser = sharedPreferences.getString(KEY_PHONENUMBER_USER, "");
 
 
-        SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-
+/*        SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
 
         try
@@ -177,7 +174,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         } catch (JSONException e) {
             Log.e("MYAPP", "unexpected JSON exception", e);
             // Do something to recover ... or kill the app.
-        }
+        }*/
 
         // Toast.makeText(PopulistoListView.this, jsonArray, Toast.LENGTH_LONG).show();
 
@@ -199,7 +196,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         //getSupportActionBar().setTitle("Search...");
 
         //cast a TextView for each of the field ids in activity_view_contact.xml
-       // phone_user_name = (TextView) findViewById(R.id.phone_user_name);
+        // phone_user_name = (TextView) findViewById(R.id.phone_user_name);
 
         //populistolistview is the activity object
         fa = this;
@@ -218,8 +215,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         //whiteNotificationBar(recyclerView);
 
 
-       // final CustomPopulistoListAdapter adapter = new CustomPopulistoListAdapter(sharedReviewList, this);
-       // recyclerView.setAdapter(adapter);
+        // final CustomPopulistoListAdapter adapter = new CustomPopulistoListAdapter(sharedReviewList, this);
+        // recyclerView.setAdapter(adapter);
 
         //set the layout
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -275,7 +272,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 review.setPhone(obj.getString("phone"));
                                 review.setComment(obj.getString("comment"));
 
-                              //  Toast.makeText(PopulistoListView.this, obj.getString("publicorprivate"), Toast.LENGTH_LONG).show();
+                                //  Toast.makeText(PopulistoListView.this, obj.getString("publicorprivate"), Toast.LENGTH_LONG).show();
 
 
                                 //add the reviewUser to the sharedReviewList
@@ -288,10 +285,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                         }
 
 
-
                         // notifying list adapter about data changes
                         // so that it renders the list view with updated data
-                         pAdapter.notifyDataSetChanged();
+                        pAdapter.notifyDataSetChanged();
 
                         // System.out.println("size of reviewlist " + sharedReviewList.size());
                         System.out.println("heree it is" + sharedReviewList.size());
@@ -332,13 +328,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //it is called onQueryTextChange
     private void fetchContacts() {
 
-        StringRequest request = new StringRequest(Request.Method.POST,CategoryFilter_URL,
+        StringRequest request = new StringRequest(Request.Method.POST, CategoryFilter_URL,
                 new Response.Listener<String>() {
 
                     @Override
                     public void onResponse(String response) {
 
-                       // Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
 
                         //response will be like:
 
@@ -438,7 +434,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-               // hidePDialog();
+                // hidePDialog();
 
                 // filter recycler view when query submitted
                 mAdapter.getFilter().filter(query);
@@ -467,10 +463,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 }
                 return false;
 
-            }});
+            }
+        });
 
         return true;
-
 
 
         // Inflate the menu items for use in the action bar
@@ -519,20 +515,20 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         //convert [56,23,87] to a string
         selectOwnUserReviews = Arrays.toString(category.getUserReviewIds());
         //remove [ and ] so we have a string of 56,23,87
-        selectOwnUserReviews = selectOwnUserReviews.substring(1,selectOwnUserReviews.length()-1);
+        selectOwnUserReviews = selectOwnUserReviews.substring(1, selectOwnUserReviews.length() - 1);
 
         //convert [56,23,87] to a string
         selectPrivateReviews = Arrays.toString(category.getPrivateReviewIds());
         //remove [ and ] so we have a string of 56,23,87
-        selectPrivateReviews = selectPrivateReviews.substring(1,selectPrivateReviews.length()-1);
+        selectPrivateReviews = selectPrivateReviews.substring(1, selectPrivateReviews.length() - 1);
 
         //convert [56,23,87] to a string
         selectPublicReviews = Arrays.toString(category.getPublicReviewIds());
         //remove [ and ] so we have a string of 56,23,87
-        selectPublicReviews = selectPublicReviews.substring(1,selectPublicReviews.length()-1);
+        selectPublicReviews = selectPublicReviews.substring(1, selectPublicReviews.length() - 1);
 
 
-       // Toast.makeText(getApplicationContext(), selectOwnUserReviews + " and " + selectPrivateReviews, Toast.LENGTH_LONG).show();
+        // Toast.makeText(getApplicationContext(), selectOwnUserReviews + " and " + selectPrivateReviews, Toast.LENGTH_LONG).show();
 
         show_own_private_public_Reviews();
 
@@ -554,8 +550,38 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                         //clear the list of shared reviews, start afresh on new filter
                         sharedReviewList.clear();
 
+                        // and create a new sharedReview, getting details of user's reviews in the db
+                        //  SharedReview sharedReview = new SharedReview();
+
+   /*                     JSONArray jsonArray  = new JSONArray();
+
+                        //username is in fact a phone number from the db
+                        String username = sharedReview.getPhone_user_name();
+
+                        int matching = jsonArray.length();
+                        for (int i = 0; i < matching; i++) {
+
+                            try {
+
+                                JSONObject object = jsonArray.getJSONObject(i);
+
+                                if (object.getString("phone_number").equals(username))
+                                    //Toast.makeText(context_type,object.getString("phone_number"), Toast.LENGTH_SHORT).show();
+
+                                {
+
+                                    //phone_user_name = (object.getString("name"));
+
+                                }
+                            } catch (JSONException e) {
+                                Log.e("MYAPP", "unexpected JSON exception", e);
+                                // Do something to recover ... or kill the app.
+                            }
+                        }*/
+
+
                         //hide the 'loading' box when the page loads
-                       // hidePDialog();
+                        // hidePDialog();
 
                         try {
 
@@ -582,11 +608,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 // and create a new sharedReview, getting details of user's reviews in the db
                                 SharedReview sharedReview = new SharedReview();
 
-                                sharedReview.setUsername(obj.getString("username"));
+                                sharedReview.setphoneNameonPhone("phone user name damn it!");
 
-                                //get 0,1 or 2 value, for Just U, private or public
+                                sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
+
+                                //get 0,1 or 2 value from db, for Just U, private or public
                                 sharedReview.setPublicorprivate(obj.getString("publicorprivate"));
-                                //we are getting the reviewid so we can pull extra matching info,
+                                //we are getting the reviewid from the db so we can pull extra matching info,
                                 sharedReview.setReviewid(obj.getString("reviewid"));
                                 //set the category part of the object to that matching reviewid
                                 sharedReview.setCategory(obj.getString("category"));
@@ -616,15 +644,68 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 String public_ids=obj.getString("public_review_ids");*/
 
 
-
                                 //for each object in the array, name it obj
                                 //each obj will consist of reviewid, category, name, phone,comment
                                 //JSONObject obj = responseObject.getJSONObject(i);
                                 // and create a new sharedReview, getting details of user's reviews in the db
+
+
                                 SharedReview sharedReview = new SharedReview();
 
-                                //get the phonenumber
-                                sharedReview.setUsername(obj.getString("username"));
+
+                                //JSONArray jsonArray = new JSONArray();
+
+                                //String bobby = "muttface";
+
+                                //phoneNumberOnPhone is a phone number from the db
+                                //sharedReview.setPhoneNumberofUserFromDB(bobby);
+
+
+                                String phoneNameonPhone = "";
+
+
+
+
+
+                                SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+                                String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
+
+                                JSONArray jsonArray = new JSONArray(json_array);
+
+                                Toast.makeText(PopulistoListView.this, "wwaaas" + json_array.toString(), Toast.LENGTH_SHORT).show();
+
+
+                                int matching = jsonArray.length();
+                                for (int n = 0; n < matching; n++) {
+
+                                   // String bobby = sharedReview.getPhoneNumberofUserFromDB();
+
+                                    try {
+
+                                        JSONObject object = jsonArray.getJSONObject(n);
+
+
+                                        //if (object.getString("phone_number").contains("+353864677745"))
+
+                                        if (object.getString("phone_number").contains(sharedReview.getPhoneNumberofUserFromDB()))
+                                        //Toast.makeText(PopulistoListView.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
+
+                                        //Toast.makeText(PopulistoListView.this,object.getString("phone_number"), Toast.LENGTH_SHORT).show();
+
+                                        {
+
+                                            phoneNameonPhone = (object.getString("name"));
+
+                                        }
+                                    } catch (JSONException e) {
+                                        Log.e("MYAPP", "unexpected JSON exception", e);
+                                        // Do something to recover ... or kill the app.
+                                    }
+                                }
+
+
+                                sharedReview.setphoneNameonPhone(phoneNameonPhone);
+                                //Toast.makeText(PopulistoListView.this, (sharedReview.setphoneNameonPhone(bobby)), Toast.LENGTH_SHORT).show();
 
                                 //get 0,1 or 2 value, for Just U, private or public
                                 sharedReview.setPublicorprivate(obj.getString("publicorprivate"));
