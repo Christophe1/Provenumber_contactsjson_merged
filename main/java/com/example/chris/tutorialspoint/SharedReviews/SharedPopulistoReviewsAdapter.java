@@ -40,11 +40,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
     public static List<SharedReview> the_Shared_reviews;
     //Context context;
     Context context_type;
-
-    JSONArray jsonArray  = new JSONArray();
-
-    //make a List containing info about SelectPhoneContact objects
-    //public static List<SelectPhoneContact> theContactsList;
+    //myMethod();
 
 
 
@@ -62,14 +58,10 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 /*    sharedPrefs = context.getSharedPreferences("MyData", MODE_PRIVATE);
     text = sharedPrefs.getString(PREFS_KEY, null);*/
 /*    Context context;
-
     SharedPreferences pref = context.getSharedPreferences("MyData", MODE_PRIVATE);
-
     String json_array = pref.getString("AllPhonesandNamesofContacts", null);
-
     public void myMethod() {
         try
-
         {
             JSONArray jsonArray = new JSONArray(json_array);
         } catch (JSONException e) {
@@ -81,9 +73,9 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
     public static class ReviewHolder extends RecyclerView.ViewHolder {
 
         //In each populisto_list_row show the items you want to have appearing
-        public TextView phone_user_name, category, name, phone, comment;
+        public TextView phone_user_name, category, name,phone, comment;
 
-        public ReviewHolder(View itemView) {
+        public ReviewHolder(View itemView){
             super(itemView);
             phone_user_name = (TextView) itemView.findViewById(R.id.phone_user_name);
             category = (TextView) itemView.findViewById(R.id.category);
@@ -97,41 +89,12 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
     public SharedPopulistoReviewsAdapter(List<SharedReview> sharedReviews, Context context) {
 
-        //theContactsList = selectPhoneContacts;
-
         the_Shared_reviews = sharedReviews;
         context_type = context;
 
 
-        //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
-        //with this we will put all phone numbers of contacts on user's phone into our ListView in NewContact activity
-/*        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(context_type);
-        Gson gson = new Gson();
-        String json = sharedPreferencesallPhonesofContacts.getString("allNamesandPhonesofContacts", "");
-        Type type = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        allPhonesofContacts = gson.fromJson(json, type);
-        System.out.println("NewContact: allPhonesofContacts :" + allPhonesofContacts);*/
-
-        //get shared preference values from VerifyUserPhoneNumber,
-        //we are getting jsonArrayAllPhonesandNamesofContacts as a string,
-        //convert it back to a JSONArray
-        SharedPreferences sharedPrefs = context_type.getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
-
-        try {
-            JSONArray jsonArray = new JSONArray(json_array);
-            //System.out.println("SharedAdapter, the jsonarray is :" + jsonArray);
-           // Toast.makeText(context_type, jsonArray.toString(), Toast.LENGTH_SHORT).show();
-
-
-        } catch (JSONException e) {
-            Log.e("MYAPP", "unexpected JSON exception", e);
-        }
-
 
     }
-
     @Override
     public ReviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -144,59 +107,93 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
         // View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.yourlayout, parent, false);
         return new ReviewHolder(itemView);
-
-
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
 
-        //The number of rows will match the number of phone contacts
-//        final SelectPhoneContact selectPhoneContact = theContactsList.get(position);
 
         SharedReview r = the_Shared_reviews.get(position);
 
+        //String username = r.getUsername();
+
+        //pubOrPriv is 0,1 or 2,depending on shared status of the review
+        int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
+
+        //shared_status will be Just U, Private or Public
+        String shared_status ="U";
+
+        String bobby = r.setPhoneNumberofUserFromDB(obj.getString("username"));
+
+        //get shared preference values from VerifyUserPhoneNumber,
+        //we are getting jsonArrayAllPhonesandNamesofContacts as a string,
+        //convert it back to a JSONArray
+        SharedPreferences sharedPrefs = context_type.getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
+        try {
+            JSONArray jsonArray = new JSONArray(json_array);
+            //System.out.println("SharedAdapter, the jsonarray is :" + jsonArray);
+            Toast.makeText(context_type, jsonArray.toString(), Toast.LENGTH_SHORT).show();
 
 
-            //I want to set the text to Bob, Tom, or whatever corresponding
-            // phone number matches username
-            ((ReviewHolder) viewHolder).phone_user_name.setText("name :" + r.getPhoneNameonPhone());
-            // ((ReviewHolder) viewHolder).phone_user_name.setText("phone :" + r.getPhoneNumberofUserFromDB());
-            ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
- /*           ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
-            ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
-            ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());*/
-
-            //set an onClick listener for the row, if it's clicked anywhere
-            ((ReviewHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                //When the review is clicked in PopulistoListView
-                //then show that review
-                public void onClick(View v) {
-
-                    //position is the number of the row
-                    // Toast.makeText(v.getContext(),position + " cheers!", Toast.LENGTH_SHORT).show();
-
-                    //  Toast.makeText(v.getContext(), language, Toast.LENGTH_SHORT).show();
-
-
-                    SharedReview sharedReview = (SharedReview) SharedPopulistoReviewsAdapter.getItem(position);
-
-
-                    //we want to pass the review_id of the sharedReview being clicked
-                    //to the ViewContact activity, and from there post it and get more
-                    //info for that sharedReview - address, comments etc
-                    Intent i = new Intent(v.getContext(), ViewContact.class);
-                    //pass the review_id to ViewContact class
-                    i.putExtra("review_id", sharedReview.getReviewid());
-                    v.getContext().startActivity(i);
-                }
-
-            });
+        } catch (JSONException e) {
+            Log.e("MYAPP", "unexpected JSON exception", e);
         }
+
 //}
 
+
+
+        if(pubOrPriv==0){
+            //change colour depending on value
+            ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#DA850B"));
+        }
+
+        if(pubOrPriv==1){
+            ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#0A7FDA"));
+        }
+
+        if(pubOrPriv==2){
+            ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#2AB40E"));
+        }
+
+
+
+        ((ReviewHolder) viewHolder).phone_user_name.setText("user " + r.getPhoneNameonPhone());
+        ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
+        ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
+        ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
+        ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
+
+        //set an onClick listener for the row, if it's clicked anywhere
+        ((ReviewHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            //When the review is clicked in PopulistoListView
+            //then show that review
+            public void onClick(View v) {
+
+                //position is the number of the row
+                // Toast.makeText(v.getContext(),position + " cheers!", Toast.LENGTH_SHORT).show();
+
+                //  Toast.makeText(v.getContext(), language, Toast.LENGTH_SHORT).show();
+
+
+                SharedReview sharedReview = (SharedReview) SharedPopulistoReviewsAdapter.getItem(position);
+
+
+
+                //we want to pass the review_id of the sharedReview being clicked
+                //to the ViewContact activity, and from there post it and get more
+                //info for that sharedReview - address, comments etc
+                Intent i = new Intent(v.getContext(), ViewContact.class);
+                //pass the review_id to ViewContact class
+                i.putExtra("review_id", sharedReview.getReviewid());
+                v.getContext().startActivity(i);
+            }
+
+        });
+    }
 
     //I have implemented a getItem method so
     //we can get the details about review, for the recyclerView row clicked
@@ -214,7 +211,6 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
     }
 
 }
-
 
 
 

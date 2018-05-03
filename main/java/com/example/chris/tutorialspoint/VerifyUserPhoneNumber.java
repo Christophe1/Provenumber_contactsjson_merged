@@ -101,7 +101,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     // ArrayList called sharedReviews that will contain sharedReviews info
     //we use this to pass jsonArrayofPhonesandNamesofContacts to sharedReviews,
     //so we can put the phone name beside the review
-   // ArrayList<SharedReview> sharedReviews;
+    // ArrayList<SharedReview> sharedReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +114,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         // setContentView(R.layout.verify_phone_number);
 
  /*       setContentView(R.layout.phone_listview_contacts);
-
         Toolbar toolbar = (Toolbar)findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);*/
 
@@ -548,38 +547,40 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                     VerifyUserPhoneNumber.this.startActivity(myIntent1);
 
 
-                    //we will save the array list allPhonesofContacts,
-                    //with this we will put all phone numbers of contacts on user's phone into our ListView, in other activities
-                    SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                    SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
-
-                    Gson gson = new Gson();
-                    String json = gson.toJson(allPhonesofContacts);
-                    prefsEditor.putString("allPhonesofContacts", json);
-                    prefsEditor.commit();
-
-
-                    //now, let's put in the string of phone numbers
-                    //save the array list allNamesofContacts,
-                    //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
-                    SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                    SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
-
-                    //now, let's put in the string of names
-                    Gson gsonNames = new Gson();
-                    String jsonNames = gsonNames.toJson(allNamesofContacts);
-                    prefsEditor2.putString("allNamesofContacts", jsonNames);
-                    prefsEditor2.commit();
-
                 }
-            }
 
+            }
 
             while (cursor.moveToNext());
             System.out.println("size of allPhonesofContacts :" + allPhonesofContacts.size());
             System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
             System.out.println("size of all names :" + allNamesofContacts.size());
             System.out.println("here is the list of names in contacts :" + allNamesofContacts);
+
+
+            //we will save the array list allPhonesofContacts,
+            //with this we will put all phone numbers of contacts on user's phone into our RecyclerView, in other activities
+            SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+            SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
+
+            Gson gson = new Gson();
+            String json = gson.toJson(allPhonesofContacts);
+            prefsEditor.putString("allPhonesofContacts", json);
+            prefsEditor.commit();
+            System.out.println("allPhonesofContacts json is:" + json);
+
+            //now, let's put in the string of names
+            //save the array list allNamesofContacts,
+            //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
+            SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+            SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
+
+            //now, let's put in the string of names
+            Gson gsonNames = new Gson();
+            String jsonNames = gsonNames.toJson(allNamesofContacts);
+            prefsEditor2.putString("allNamesofContacts", jsonNames);
+            prefsEditor2.commit();
+            System.out.println("allNamesofContacts json is:" + jsonNames);
 
 
         } catch (Exception e) {
@@ -621,25 +622,20 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             if (jArray != null) {
                 for (int i=0;i<jArray.length();i++){
                     listdata.add(jArray.getString(i));
-
                 }
                 System.out.println("listdata arraylist: " + listdata.toString());
-
                 //we will save the array list allPhonesofContacts,
                 //with this we will put all phone numbers of contacts on user's phone into our ListView, in other activities
                 SharedPreferences listdatas = PreferenceManager.getDefaultSharedPreferences(getApplication());
                 SharedPreferences.Editor prefsEditor = listdatas.edit();
-
                 Gson gson = new Gson();
                 String json = gson.toJson(listdatas);
                 prefsEditor.putString("allNamesandPhonesofContacts", json);
                 prefsEditor.commit();
-
-
             }
 */
 
-
+            System.out.println("all of the json array phones and names are :" + jsonArrayAllPhonesandNamesofContacts);
             System.out.println("the amount in allPhonesofContacts :" + allPhonesofContacts.size());
             // System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
             //System.out.println("JSON object datatoSend: " + dataToSend.toString());
@@ -656,7 +652,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             editor.commit();
             System.out.println("jsonArrayAllPhonesandNamesofContacts: " + jsonArrayAllPhonesandNamesofContacts.toString());
 */
-
 
 
         } catch (final JSONException e) {
@@ -754,7 +749,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 //The VALUE, jsonArrayAllPhonesandNamesofContacts.toString, is Android side, it will be a sequence of phone numbers
                 // of the form "+12345678"
                 params.put("phonenumberofcontact", jsonArrayAllPhonesandNamesofContacts.toString());
-
+                System.out.println("in post: all of the json array phones and names are :" + jsonArrayAllPhonesandNamesofContacts);
                 System.out.println(Collections.singletonList(params));
                 //System.out.println("contact is : " + jsonArrayAllPhonesandNamesofContacts);
                 return params;

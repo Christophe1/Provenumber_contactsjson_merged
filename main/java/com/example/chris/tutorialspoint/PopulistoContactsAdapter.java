@@ -316,7 +316,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                             //change the colour of 'Phone Contacts' button in NewContact.java
                             if (mContext instanceof NewContact) {
                                 ((NewContact) mContext).changeColourOfPhoneContacts();
-                              //  Toast.makeText(context_type, "The count is " + checkedContactsAsArrayList.size(), Toast.LENGTH_SHORT).show();
+                                //  Toast.makeText(context_type, "The count is " + checkedContactsAsArrayList.size(), Toast.LENGTH_SHORT).show();
 
                             }
                         }
@@ -419,7 +419,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                             //add the checked number into the arraylist
                             checkedContactsAsArrayList.add(theContactsList.get(pos).getPhone());
                             Log.i("Adapter1", "checkedContactsAsArrayList: " + checkedContactsAsArrayList);
-                           // Log.i("Adapter", "clicked checkedContactsAsArrayList: " + checkedContactsAsArrayList);
+                            // Log.i("Adapter", "clicked checkedContactsAsArrayList: " + checkedContactsAsArrayList);
 
                         } else {
                             //remove the checked number from the arraylist
@@ -439,12 +439,12 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                         if (theContactsList.get(pos).getSelected()) {
                             theContactsList.get(pos).setSelected(false);
-                         //    Toast.makeText(context_type, theContactsList.get(pos).getSelected() + " unclicked!", Toast.LENGTH_SHORT).show();
+                            //    Toast.makeText(context_type, theContactsList.get(pos).getSelected() + " unclicked!", Toast.LENGTH_SHORT).show();
 
                         } else {
 
                             theContactsList.get(pos).setSelected(true);
-                         //   Toast.makeText(context_type, theContactsList.get(pos).getSelected() + " clicked!", Toast.LENGTH_SHORT).show();
+                            //   Toast.makeText(context_type, theContactsList.get(pos).getSelected() + " clicked!", Toast.LENGTH_SHORT).show();
                             //theContactsList.get(pos).getPhone();
 
                         }
@@ -459,7 +459,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                             if (mContext instanceof EditContact) {
                                 ((EditContact) mContext).changeColorofJustMe();
 
-                              //  Toast.makeText(context_type, "count is 0!yeah", Toast.LENGTH_SHORT).show();
+                                //  Toast.makeText(context_type, "count is 0!yeah", Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -497,7 +497,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                     //NEED THIS TO PRESERVE CHECKBOX STATE ON RECYCLER SCROLL
 
-                        theContactsList.get(pos).setSelected(true);
+                    theContactsList.get(pos).setSelected(true);
 
                 }
 
@@ -506,11 +506,9 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
                   @Override
                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {*/
                 //   checkBoxhasChanged = true;
-                 //  Toast.makeText(context_type, "here it is dudia" + String.valueOf(checkBoxhasChanged), Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(context_type, "here it is dudia" + String.valueOf(checkBoxhasChanged), Toast.LENGTH_SHORT).show();
                  /*   }
                  }
-
-
                 );*/
 
 

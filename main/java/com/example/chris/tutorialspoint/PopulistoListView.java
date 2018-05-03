@@ -163,14 +163,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 /*        SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
-
         try
-
         {
             JSONArray jsonArray = new JSONArray(json_array);
             System.out.println("the jsonarray is :" + jsonArray);
-
-
         } catch (JSONException e) {
             Log.e("MYAPP", "unexpected JSON exception", e);
             // Do something to recover ... or kill the app.
@@ -501,10 +497,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 /*    @Override
     protected void onResume() {
-
         super.onResume();
         adapter.notifyDataSetChanged();
-
     }*/
 
 
@@ -554,24 +548,16 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                         //  SharedReview sharedReview = new SharedReview();
 
    /*                     JSONArray jsonArray  = new JSONArray();
-
                         //username is in fact a phone number from the db
                         String username = sharedReview.getPhone_user_name();
-
                         int matching = jsonArray.length();
                         for (int i = 0; i < matching; i++) {
-
                             try {
-
                                 JSONObject object = jsonArray.getJSONObject(i);
-
                                 if (object.getString("phone_number").equals(username))
                                     //Toast.makeText(context_type,object.getString("phone_number"), Toast.LENGTH_SHORT).show();
-
                                 {
-
                                     //phone_user_name = (object.getString("name"));
-
                                 }
                             } catch (JSONException e) {
                                 Log.e("MYAPP", "unexpected JSON exception", e);
@@ -678,16 +664,17 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 int matching = jsonArray.length();
                                 for (int n = 0; n < matching; n++) {
 
-                                   // String bobby = sharedReview.getPhoneNumberofUserFromDB();
+                                    // String bobby = sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
 
                                     try {
 
                                         JSONObject object = jsonArray.getJSONObject(n);
 
+                                        String bobby = sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
 
                                         //if (object.getString("phone_number").contains("+353864677745"))
 
-                                        if (object.getString("phone_number").contains(sharedReview.getPhoneNumberofUserFromDB()))
+                                        if (object.getString("phone_number").contains((sharedReview.getPhoneNumberofUserFromDB(obj.getString("username")))))
                                         //Toast.makeText(PopulistoListView.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
 
                                         //Toast.makeText(PopulistoListView.this,object.getString("phone_number"), Toast.LENGTH_SHORT).show();
