@@ -6,6 +6,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,11 +35,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static android.R.attr.value;
+import static com.example.chris.tutorialspoint.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 
 public class PopulistoListView extends AppCompatActivity implements CategoriesAdapter.CategoriesAdapterListener {
 
@@ -138,6 +143,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     //public static ArrayList<String> MatchingContactsAsArrayList;
 
+    //public JSONArray jsonMatchingContacts;
+    //JSONArray jsonMatchingContacts = new JSONArray();
+
+    //JSONObject newobject;
+    //JSONArray newarray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,7 +187,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
         //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
         //we want to put the name of the user who made the review alongside the review
-/*
         SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Gson gsonMatchingContactsAsArrayList = new Gson();
         String jsonMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.getString("MatchingContactsAsArrayList", "");
@@ -185,7 +194,38 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         }.getType();
         MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
         System.out.println("PopulistoListView MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
-*/
+
+       /* //Make a jsonarray out of the MatchingContactsAsArrayList array list.
+        //JSONArray jsonMatchingContacts = new JSONArray();
+        try {
+            //it's in the form ["+123", "+456", "+789", "+1011", etc...]
+            //but we want it to be [{"phone_number":"+123"}, {"phone_number":"+456"}, {"phone_number":"+789"} etc...]
+            //so we can compare it below, and get the phone name of the user
+            JSONArray jsonMatching = new JSONArray(MatchingContactsAsArrayList);
+
+            JSONArray jsonMatchingContacts = new JSONArray();
+            for (int i = 0; i < jsonMatching.length(); i++) {
+                //make a new object
+                JSONObject newobject = new JSONObject();
+                //in the form {"phone_number":"+123"}
+                newobject.put("phone_number", jsonMatching.getString(i));
+                //now put those objects into the new array
+                jsonMatchingContacts.put(newobject);
+
+            }
+           // System.out.println("PopulistoListView newarray :" + jsonMatchingContacts);
+
+
+ *//*          jsonMatchingContacts.put(newobject);
+           System.out.println("PopulistoListView jsonMatchingContacts :" + jsonMatchingContacts);
+*//*
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }*/
+
+
+        //  Toast.makeText(PopulistoListView.this, "jsMC" + jsonMatchingContacts.toString(), Toast.LENGTH_LONG).show();
 
 
         //why isn't title being set!?
@@ -313,6 +353,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         };
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+
+        //System.out.println("PopulistoListView newarray :" + jsonMatchingContacts);
 
     }
 
@@ -523,6 +565,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
         // Toast.makeText(getApplicationContext(), selectOwnUserReviews + " and " + selectPrivateReviews, Toast.LENGTH_LONG).show();
+        //System.out.println("PopulistoListView newarray :" + jsonMatchingContacts);
 
         show_own_private_public_Reviews();
 
@@ -644,55 +687,66 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 //String bobby = "muttface";
 
                                 //phoneNumberOnPhone is a phone number from the db
-                                //sharedReview.setPhoneNumberofUserFromDB(bobby);
-
-
                                 String phoneNameonPhone = "";
-
-
-
-
 
                                 SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                                 String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
 
                                 JSONArray jsonArray = new JSONArray(json_array);
 
-                                Toast.makeText(PopulistoListView.this, "wwaaas" + json_array.toString(), Toast.LENGTH_SHORT).show();
-
+                                JSONArray jsonMatching = new JSONArray(MatchingContactsAsArrayList);
+                                JSONArray jsonMatchingContacts = new JSONArray();
+                                JSONObject newobject = new JSONObject();
+                               // List<String> jsonMatchingContactsList = new ArrayList<String>();
 
                                 int matching = jsonArray.length();
                                 for (int n = 0; n < matching; n++) {
 
-                                    // String bobby = sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
+                                   // JSONArray jsonMatching = new JSONArray(MatchingContactsAsArrayList);
 
-                                    try {
+                           /*         JSONArray jsonMatchingContacts = new JSONArray();
+                                    JSONObject newobject = new JSONObject();*/
 
-                                        JSONObject object = jsonArray.getJSONObject(n);
+                                    for (int p = 0; p < jsonMatching.length(); p++) {
+                                        //make a new object
+                                       // JSONObject newobject = new JSONObject();
+                                        //in the form {"phone_number":"+123"}
+                                        newobject.put("phone_number", jsonMatching.getString(p));
+                                        //now put those objects into the new array
+                                        jsonMatchingContacts.put(newobject);
 
-                                        String bobby = sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
+                                        try {
 
-                                        //if (object.getString("phone_number").contains("+353864677745"))
+                                            JSONObject object = jsonArray.getJSONObject(n);
+                                            JSONObject object2 = jsonMatchingContacts.getJSONObject(p);
 
-                                        if (object.getString("phone_number").contains((sharedReview.getPhoneNumberofUserFromDB(obj.getString("username")))))
-                                        //Toast.makeText(PopulistoListView.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
+                                            if (object.getString("phone_number").equals(object2.getString("phone_number")))
+                                            {
+                                                //jsonMatchingContactsList.add(object.getString("name"));
+                                                sharedReview.setphoneNameonPhone(object.getString("name"));
 
-                                        //Toast.makeText(PopulistoListView.this,object.getString("phone_number"), Toast.LENGTH_SHORT).show();
+                                               // phoneNameonPhone = (object.getString("name"));
+                                                System.out.println("PopulistoListView phoneNameonPhone :" + object.getString("name"));
+                                                System.out.println("PopulistoListView newarray :" + jsonMatchingContacts);
 
-                                        {
+                                                break;
 
-                                            phoneNameonPhone = (object.getString("name"));
+                                            }
+                                            //sharedReview.setphoneNameonPhone(phoneNameonPhone);
 
+                                        } catch (JSONException e) {
+                                            Log.e("MYAPP", "unexpected JSON exception", e);
+                                            // Do something to recover ... or kill the app.
                                         }
-                                    } catch (JSONException e) {
-                                        Log.e("MYAPP", "unexpected JSON exception", e);
-                                        // Do something to recover ... or kill the app.
+                                        //System.out.println("PopulistoListView newarray :" + jsonMatchingContacts);
                                     }
+
                                 }
 
+                                // sharedReview.setphoneNameonPhone(object.getString("name"));
 
-                                sharedReview.setphoneNameonPhone(phoneNameonPhone);
-                                //Toast.makeText(PopulistoListView.this, (sharedReview.setphoneNameonPhone(bobby)), Toast.LENGTH_SHORT).show();
+                                // sharedReview.setphoneNameonPhone(phoneNameonPhone);
+                                //Toast.makeText(PopulistoListView.this, "tt" + jsonArray.toString(), Toast.LENGTH_SHORT).show();
 
                                 //get 0,1 or 2 value, for Just U, private or public
                                 sharedReview.setPublicorprivate(obj.getString("publicorprivate"));
@@ -702,7 +756,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                                 sharedReview.setCategory(obj.getString("category"));
                                 //etc...
                                 sharedReview.setName(obj.getString("name"));
-                                sharedReview.setPhone(obj.getString("phone"));
+                                sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
+
+                                //  sharedReview.setPhone(obj.getString("phone"));
                                 sharedReview.setComment(obj.getString("comment"));
 
                                 //add the sharedReview to the sharedReviewList

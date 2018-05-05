@@ -710,8 +710,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                             String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
                             editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
                             editorMatchingContactsAsArrayList.commit();
+                            System.out.println("VerifyUserPhoneNumber2: jsonMatchingContactsAsArrayList :" + jsonMatchingContactsAsArrayList);
                             System.out.println("VerifyUserPhoneNumber2: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
-
 
                             System.out.println("phonenoofuser" + phoneNoofUser);
                             System.out.println("VerifyUserPhoneNumber: all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);

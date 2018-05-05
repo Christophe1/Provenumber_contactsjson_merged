@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chris.tutorialspoint.PopulistoListView;
 import com.example.chris.tutorialspoint.SelectPhoneContact;
 import com.example.chris.tutorialspoint.UPopulistoListAdapter;
 import com.example.chris.tutorialspoint.ViewContact;
@@ -41,6 +42,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
     //Context context;
     Context context_type;
     //myMethod();
+    JSONArray jsonArray;
 
 
 
@@ -123,12 +125,12 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
         //shared_status will be Just U, Private or Public
         String shared_status ="U";
 
-        String bobby = r.setPhoneNumberofUserFromDB(obj.getString("username"));
+        //String bobby = r.setPhoneNumberofUserFromDB(obj.getString("username"));
 
         //get shared preference values from VerifyUserPhoneNumber,
         //we are getting jsonArrayAllPhonesandNamesofContacts as a string,
         //convert it back to a JSONArray
-        SharedPreferences sharedPrefs = context_type.getSharedPreferences("MyData", Context.MODE_PRIVATE);
+/*        SharedPreferences sharedPrefs = context_type.getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
         try {
             JSONArray jsonArray = new JSONArray(json_array);
@@ -138,10 +140,57 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
         } catch (JSONException e) {
             Log.e("MYAPP", "unexpected JSON exception", e);
-        }
+        }*/
 
 //}
 
+
+
+        String phoneNameonPhone = "";
+
+
+
+
+
+/*        SharedPreferences sharedPrefs = context_type.getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
+
+        JSONArray jsonArray = new JSONArray(json_array);
+
+        Toast.makeText(context_type, "wwaaas" + json_array.toString(), Toast.LENGTH_SHORT).show();*/
+
+
+       /* int matching = PopulistoListView.jsonArray.length();
+        for (int n = 0; n < matching; n++) {
+
+            Toast.makeText(context_type, "wwaaas" + jsonArray.toString(), Toast.LENGTH_SHORT).show();
+
+
+            // String bobby = sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
+
+            try {
+
+                JSONObject object = jsonArray.getJSONObject(n);
+
+                //String bobby = sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
+
+                if (object.getString("phone_number").contains("+353864677745"))
+
+                //if (object.getString("phone_number").contains((sharedReview.getPhoneNumberofUserFromDB(obj.getString("username")))))
+                //Toast.makeText(PopulistoListView.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
+
+                //Toast.makeText(PopulistoListView.this,object.getString("phone_number"), Toast.LENGTH_SHORT).show();
+
+                {
+
+                    phoneNameonPhone = (object.getString("name"));
+
+                }
+            } catch (JSONException e) {
+                Log.e("MYAPP", "unexpected JSON exception", e);
+                // Do something to recover ... or kill the app.
+            }
+        }*/
 
 
         if(pubOrPriv==0){
@@ -162,7 +211,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
         ((ReviewHolder) viewHolder).phone_user_name.setText("user " + r.getPhoneNameonPhone());
         ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
         ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
-        ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
+        ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhoneNumberofUserFromDB());
         ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
 
         //set an onClick listener for the row, if it's clicked anywhere
