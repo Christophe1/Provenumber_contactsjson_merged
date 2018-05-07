@@ -537,6 +537,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               //for the JSON Array private_review_ids
               JSONArray private_ids = User_Private_Public_Obj.getJSONArray("private_review_ids");
 
+              //for the JSON Array public_review_ids
+              JSONArray public_ids = User_Private_Public_Obj.getJSONArray("public_review_ids");
+
               for
                 //get the number of objects in the array own_ids
                   (int i = 0; i < own_ids.length(); i++)
@@ -550,7 +553,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 // and create a new sharedReview, getting details of user's reviews in the db
                 SharedReview sharedReview = new SharedReview();
 
-                sharedReview.setphoneNameonPhone("phone user name damn it!");
+                sharedReview.setphoneNameonPhone("U");
 
                 sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
 
@@ -585,6 +588,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                 //get the string from sharedpreferences, AllPhonesandNamesofContacts
                 //it will be like [{"phone_number":"+123456","name":"Jim Smith"}, etc...]
+                //we want this so we can display phone name in recyclerView
                 SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                 String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
 
@@ -634,7 +638,45 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 }
 
 
-                //  sharedReview.setPhone(obj.getString("phone"));
+                  sharedReview.setPhone(obj.getString("phone"));
+                sharedReview.setComment(obj.getString("comment"));
+
+                //add the sharedReview to the sharedReviewList
+                sharedReviewList.add(sharedReview);
+
+              }
+
+              for
+                //get the number of objects in the array own_ids
+                  (int i = 0; i < public_ids.length(); i++)
+
+              {
+
+                //for each object in the array public_ids, name it obj
+                //each obj will consist of reviewid, category, name, phone,comment
+                JSONObject obj = public_ids.getJSONObject(i);
+
+                // and create a new sharedReview, getting details of user's reviews in the db
+                SharedReview sharedReview = new SharedReview();
+
+                //If public review, mask the number
+                String maskNumber = (obj.getString("username"));
+                maskNumber = maskNumber.substring(0, maskNumber.length() - 4);
+                maskNumber = maskNumber + "****";
+
+                //for public reviews, we'll show the review maker's phone number - masked
+                sharedReview.setphoneNameonPhone(maskNumber);
+
+
+                //get 0,1 or 2 value from db, for Just U, private or public
+                sharedReview.setPublicorprivate(obj.getString("publicorprivate"));
+                //we are getting the reviewid from the db so we can pull extra matching info,
+                sharedReview.setReviewid(obj.getString("reviewid"));
+                //set the category part of the object to that matching reviewid
+                sharedReview.setCategory(obj.getString("category"));
+                //etc...
+                sharedReview.setName(obj.getString("name"));
+                sharedReview.setPhone(obj.getString("phone"));
                 sharedReview.setComment(obj.getString("comment"));
 
                 //add the sharedReview to the sharedReviewList
@@ -653,6 +695,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
             // notifying list adapter about data changes
             // so that it renders the list view with updated data
+            //for shared reviews including user's own
             qAdapter.notifyDataSetChanged();
 
           }

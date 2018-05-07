@@ -211,7 +211,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
         ((ReviewHolder) viewHolder).phone_user_name.setText("user " + r.getPhoneNameonPhone());
         ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
         ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
-        ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhoneNumberofUserFromDB());
+        ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
         ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
 
         //set an onClick listener for the row, if it's clicked anywhere
