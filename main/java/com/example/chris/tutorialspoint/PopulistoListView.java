@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.R.attr.category;
 import static android.R.attr.value;
 import static com.example.chris.tutorialspoint.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 
@@ -49,6 +51,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   private static final String TAG = PopulistoListView.class.getSimpleName();
   public static RecyclerView recyclerView;
+
+  //for if no categories are displayed in recyclerView
+  TextView noResultsFoundView;
 
 
   // this is the php file for showing all logged in (own user's) reviews in the recyclerView.
@@ -181,6 +186,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //populistolistview is the activity object
     fa = this;
     recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+    noResultsFoundView = (TextView) findViewById(R.id.noResultsFoundView);
+
+
 
     //the adapter for all own user reviews
     pAdapter = new UPopulistoListAdapter(reviewList);
@@ -318,20 +327,40 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
             try {
 
-              //not sure exactly what is happening here
-              //something to do with converting the response to a list and setting it to
-              //our Category object...whatever that means
+
+
+              //items is a list of the category names available to the logged-in user
               List<Category> items = new Gson().fromJson(response.toString(), new TypeToken<List<Category>>() {
               }.getType());
+
+              //if (items.size() == 0) {
+               // items = "No results";
+               // Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+             // System.out.println("items list size :" + items.size());
+
+              //}
 
               //clear the list
               categoryList.clear();
 
-              // adding contacts to contacts list
+              //adding contacts to contacts list
               categoryList.addAll(items);
+
+             // System.out.println("categoryList size is :" + CategoriesAdapter.categoryListFiltered.size());
+
 
               //app not crashing as much with this here
               recyclerView.setAdapter(mAdapter);
+
+              //if there are no category results for what is typed
+              if(mAdapter.getItemCount()<1){
+
+                recyclerView.setVisibility(View.GONE);
+                noResultsFoundView.setVisibility(View.VISIBLE);
+              }else{
+                recyclerView.setVisibility(View.VISIBLE);
+                noResultsFoundView.setVisibility(View.GONE);
+              }
 
             } catch (Exception e) {
               e.printStackTrace();
@@ -421,12 +450,18 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         //if the searchView is empty
         if (searchView.getQuery().length() == 0) {
 
-          //show the reviews, not the searched categories
+          //show the logged-in users reviews, not the searched categories
           recyclerView.setAdapter(pAdapter);
           pAdapter.notifyDataSetChanged();
+
+          //show the recyclerview, hide the noResults textview
+          recyclerView.setVisibility(View.VISIBLE);
+          noResultsFoundView.setVisibility(View.GONE);
+
         } else {
           //if there's text in the search box
           fetchContacts();
+
           //Log.e(TAG, "phonno2 is: " + phoneNoofUser);
           // filter recycler view when text is changed
           mAdapter.getFilter().filter(query);

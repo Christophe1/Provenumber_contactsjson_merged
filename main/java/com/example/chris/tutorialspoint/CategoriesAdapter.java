@@ -10,6 +10,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tutorialspoint.R;
 
@@ -25,7 +26,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
     private Context context;
     private List<Category> categoryList;
     //categoryListFiltered are the names in the filtered list
-    private List<Category> categoryListFiltered;
+    public List<Category> categoryListFiltered;
     private CategoriesAdapterListener listener;
     //private List<Category> categoryListFiltered = new ArrayList<>();
 
@@ -33,7 +34,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
     public class MyViewHolder extends RecyclerView.ViewHolder {
         //'sharedWith' is the box for holding (1,0,0)....
         public TextView name, sharedWith;
-        public ImageView thumbnail;
+       // public ImageView thumbnail;
 
         public MyViewHolder(View view) {
             super(view);
@@ -72,13 +73,30 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
     public void onBindViewHolder(MyViewHolder holder, final int position) {
 
         final Category category = categoryListFiltered.get(position);
-        holder.name.setText(category.getName());
-        holder.sharedWith.setText(Html.fromHtml("(" + "<font color='#DA850B'>" + category.getUserPersonalCount()+ "</font>" + "," + "<font color='#0A7FDA'>" + category.getPrivateCount()+ "</font>" + "," + "<font color='#009900'>" + category.getPublicCount()+ "</font>" + ")") );
 
+        System.out.println("getName is :" + category.getName());
+
+       // Toast.makeText(context, categoryListFiltered.size(), Toast.LENGTH_SHORT).show();
+
+       // System.out.println("categoryListFiltered :" + categoryListFiltered.size());
+       // System.out.println("categoryList :" + categoryList.size());
+/*         if (categoryListFiltered.isEmpty()) {
+             //categoryListFiltered = new List<String> monk;
+             //categoryListFiltered.add(1,"No results");
+           holder.name.setText("No results");
+
+        }*/
+
+       // else {
+           holder.name.setText(category.getName());
+           holder.sharedWith.setText(Html.fromHtml("(" + "<font color='#DA850B'>" + category.getUserPersonalCount() + "</font>" + "," + "<font color='#0A7FDA'>" + category.getPrivateCount() + "</font>" + "," + "<font color='#009900'>" + category.getPublicCount() + "</font>" + ")"));
+       //}
     }
 
     @Override
     public int getItemCount() {
+
+      //  System.out.println("items list size :" + categoryListFiltered.size());
 
         //app crashes when this line is not commented
 //        System.out.println("getItemCount is :" + categoryListFiltered.size());
@@ -155,6 +173,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 categoryListFiltered = (ArrayList<Category>) filterResults.values;
+
+              //  System.out.println("categoryListFiltered :" + categoryListFiltered.size());
+
                 notifyDataSetChanged();
             }
         };

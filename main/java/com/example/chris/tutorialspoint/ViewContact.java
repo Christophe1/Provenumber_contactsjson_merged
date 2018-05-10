@@ -1,5 +1,6 @@
 package com.example.chris.tutorialspoint;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -114,10 +115,20 @@ public class ViewContact extends AppCompatActivity {
   //For the recycler view, containing the phone contacts
   RecyclerView recyclerView;
 
+  //ViewContact mn;
+ // Context mContext;
+ // private Thread mThread;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(activity_view_contact);
+
+        pDialog = new ProgressDialog(ViewContact.this);
+        pDialog.setCancelable(false);
+        // Showing progress dialog before making http request
+        pDialog.setMessage("Loading bud...");
+        pDialog.show();
 
     //need to initialize this
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
@@ -179,10 +190,8 @@ public class ViewContact extends AppCompatActivity {
     phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
     justMeContacts = (Button) findViewById(R.id.btnJustMe);
 
-    pDialog = new ProgressDialog(this);
-    // Showing progress dialog before making http request
-    pDialog.setMessage("Loading bud...");
-    pDialog.show();
+
+
 
     //post the review_id that has been clicked in the ListView and send it to
     // viewContact.php and from that get other review details, like name, address etc..
@@ -200,9 +209,8 @@ public class ViewContact extends AppCompatActivity {
             //load the asyncTask straight after we have got the response and
             // the checked Arraylist has been created
             //so the custom adapter will pick up the changes
-            //ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
-
-            //loadContact.execute();
+            ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+            loadContact.execute();
 
 
             try {
@@ -271,7 +279,7 @@ public class ViewContact extends AppCompatActivity {
               //convert the checkedContacts string to an arraylist
               //then we will search through the arraylist and check the associated
               //check boxes
-              //First, take out the double quotes in the string,
+              //First, take out the double quotes in the string, \ is to escape the "
               String replace = checkedContacts.replace("\"", "");
               //take out the starting [
               String replace1 = replace.replace("[", "");
@@ -288,7 +296,6 @@ public class ViewContact extends AppCompatActivity {
               //only works easily with strings so best way to bring the array list in Shared Preferences is with
               //Gson.
               //Here, we PUT the arraylist into the sharedPreferences/*
-/*
               SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
               SharedPreferences.Editor editorcheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.edit();
               Gson gsoncheckedContactsAsArrayList = new Gson();
@@ -296,7 +303,6 @@ public class ViewContact extends AppCompatActivity {
               editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
               editorcheckedContactsAsArrayList.commit();
 
-*/
 
               // System.out.println("ViewContact: jsoncheckedContactsAsArrayList is " + jsoncheckedContactsAsArrayList);
 
@@ -306,7 +312,7 @@ public class ViewContact extends AppCompatActivity {
 
               //System.out.println("heree it is" + jsonResponse);
               //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
-              hidePDialog();
+             // hidePDialog();
 
             } catch (JSONException e) {
               e.printStackTrace();
@@ -343,7 +349,7 @@ public class ViewContact extends AppCompatActivity {
       }
 
     };
-
+    //this is to hopefully end the VolleyTimeOut error message
     stringRequest.setRetryPolicy(new RetryPolicy() {
       @Override
       public int getCurrentTimeout() {
@@ -550,14 +556,21 @@ public class ViewContact extends AppCompatActivity {
   //******for the phone contacts in the recyclerView
 
   // Load data in background
- /* class LoadContact extends AsyncTask<Void, Void, Void> {
+  class LoadContact extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
-
+    super.onPreExecute();
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
+
+
+/*      pDialog = new ProgressDialog(getApplicationContext());
+      // Showing progress dialog before making http request
+      pDialog.setMessage("Loading bud...");
+      pDialog.show();*/
+
 
       //we want to delete the old selectContacts from the listview when the Activity loads
       //because it may need to be updated and we want the user to see the updated listview,
@@ -611,13 +624,14 @@ public class ViewContact extends AppCompatActivity {
     @Override
     protected void onPostExecute(Void aVoid) {
       super.onPostExecute(aVoid);
+      hidePDialog();
 
       System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
       PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
 
 
-*//*            if(pub_or_priv==0){
+/*           if(pub_or_priv==0){
 
                 publicContacts.setVisibility(View.GONE);
                 phoneContacts.setVisibility(View.GONE);
@@ -633,7 +647,7 @@ public class ViewContact extends AppCompatActivity {
 
                 justMeContacts.setVisibility(View.GONE);
                 phoneContacts.setVisibility(View.GONE);
-            }*//*
+            }*/
 
       recyclerView.setAdapter(adapter);
 
@@ -649,7 +663,7 @@ public class ViewContact extends AppCompatActivity {
 
 
     }
-  }*/
+  }
 
 
   @Override

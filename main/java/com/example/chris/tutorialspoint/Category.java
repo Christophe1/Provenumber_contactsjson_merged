@@ -17,6 +17,9 @@ public class Category {
         return cat_name;
     }
 
+/*    public void setName(String cat_name) {
+        this.cat_name = cat_name;
+    }*/
 
     public String[] getUserReviewIds() {
         //return the value of the JSON key named user_review_ids in php file
