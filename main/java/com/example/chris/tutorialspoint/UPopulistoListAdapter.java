@@ -113,6 +113,9 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 Intent i = new Intent(v.getContext(), ViewContact.class);
                 //pass the review_id to ViewContact class
                 i.putExtra("review_id", reviewUser.getReviewid());
+                //pass the PhoneNumberofUserFromDB to ViewContact class
+                //the key is "PhoneNumberofUserFromDB"
+                i.putExtra("PhoneNumberofUserFromDB", reviewUser.getPhoneNumberofUserFromDB());
                 v.getContext().startActivity(i);
             }
 

@@ -96,14 +96,6 @@ public class SharedReview {
         this.address = address;
     }
 
-    /*public int getYear() {
-        return year;
-    }*/
-
-/*
-    public void setYear(int year) {this.year = year;}
-*/
-
     public String getPhone() {
         return phone;
     }
@@ -129,14 +121,5 @@ public class SharedReview {
         //reviewidtoString = String.valueOf(reviewid);
     }
 
-/*
-    public ArrayList<String> getGenre() {
-        return genre;
-    }
-
-    public void setGenre(ArrayList<String> genre) {
-        this.genre = genre;
-    }
-*/
 
 }

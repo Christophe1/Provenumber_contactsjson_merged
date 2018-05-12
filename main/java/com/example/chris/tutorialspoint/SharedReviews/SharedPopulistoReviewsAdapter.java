@@ -123,75 +123,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
         int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
 
         //shared_status will be Just U, Private or Public
-        String shared_status ="U";
-
-        //String bobby = r.setPhoneNumberofUserFromDB(obj.getString("username"));
-
-        //get shared preference values from VerifyUserPhoneNumber,
-        //we are getting jsonArrayAllPhonesandNamesofContacts as a string,
-        //convert it back to a JSONArray
-/*        SharedPreferences sharedPrefs = context_type.getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
-        try {
-            JSONArray jsonArray = new JSONArray(json_array);
-            //System.out.println("SharedAdapter, the jsonarray is :" + jsonArray);
-            Toast.makeText(context_type, jsonArray.toString(), Toast.LENGTH_SHORT).show();
-
-
-        } catch (JSONException e) {
-            Log.e("MYAPP", "unexpected JSON exception", e);
-        }*/
-
-//}
-
-
-
-        String phoneNameonPhone = "";
-
-
-
-
-
-/*        SharedPreferences sharedPrefs = context_type.getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
-
-        JSONArray jsonArray = new JSONArray(json_array);
-
-        Toast.makeText(context_type, "wwaaas" + json_array.toString(), Toast.LENGTH_SHORT).show();*/
-
-
-       /* int matching = PopulistoListView.jsonArray.length();
-        for (int n = 0; n < matching; n++) {
-
-            Toast.makeText(context_type, "wwaaas" + jsonArray.toString(), Toast.LENGTH_SHORT).show();
-
-
-            // String bobby = sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
-
-            try {
-
-                JSONObject object = jsonArray.getJSONObject(n);
-
-                //String bobby = sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
-
-                if (object.getString("phone_number").contains("+353864677745"))
-
-                //if (object.getString("phone_number").contains((sharedReview.getPhoneNumberofUserFromDB(obj.getString("username")))))
-                //Toast.makeText(PopulistoListView.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
-
-                //Toast.makeText(PopulistoListView.this,object.getString("phone_number"), Toast.LENGTH_SHORT).show();
-
-                {
-
-                    phoneNameonPhone = (object.getString("name"));
-
-                }
-            } catch (JSONException e) {
-                Log.e("MYAPP", "unexpected JSON exception", e);
-                // Do something to recover ... or kill the app.
-            }
-        }*/
-
+        //String shared_status ="U";
 
         if(pubOrPriv==0){
             //change colour depending on value
@@ -208,7 +140,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
 
 
-        ((ReviewHolder) viewHolder).phone_user_name.setText("user " + r.getPhoneNameonPhone());
+        ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhoneNameonPhone());
         ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
         ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
         ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
@@ -222,22 +154,19 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
             //then show that review
             public void onClick(View v) {
 
-                //position is the number of the row
-                // Toast.makeText(v.getContext(),position + " cheers!", Toast.LENGTH_SHORT).show();
-
-                //  Toast.makeText(v.getContext(), language, Toast.LENGTH_SHORT).show();
-
-
                 SharedReview sharedReview = (SharedReview) SharedPopulistoReviewsAdapter.getItem(position);
 
-
-
-                //we want to pass the review_id of the sharedReview being clicked
+                //we want to pass the review_id and PhoneNumberofUserFromDB
+                // of the sharedReview being clicked
                 //to the ViewContact activity, and from there post it and get more
                 //info for that sharedReview - address, comments etc
                 Intent i = new Intent(v.getContext(), ViewContact.class);
                 //pass the review_id to ViewContact class
+                //the key is "review_id"
                 i.putExtra("review_id", sharedReview.getReviewid());
+                //pass the PhoneNumberofUserFromDB to ViewContact class
+                //the key is "PhoneNumberofUserFromDB"
+                i.putExtra("PhoneNumberofUserFromDB", sharedReview.getPhoneNumberofUserFromDB());
                 v.getContext().startActivity(i);
             }
 

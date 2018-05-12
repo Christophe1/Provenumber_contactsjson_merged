@@ -144,6 +144,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   //to decide colour of "U" in phone_user_name
   public int pub_or_priv;
 
+  //set a string to the the phone number from the DB,
+  //the phone number of the person who made the review
+  String phoneNoInDB;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -254,6 +257,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 review.setPhone(obj.getString("phone"));
                 review.setComment(obj.getString("comment"));
 
+                //set a string to the the phone number from the DB,
+                //the phone number of the person who made the review
+               // phoneNoInDB = phoneNoofUser;
+                //set the setter to
+                //the phone number of the person who made the review
+                review.setPhoneNumberofUserFromDB(phoneNoofUser);
+
                 //  Toast.makeText(PopulistoListView.this, obj.getString("publicorprivate"), Toast.LENGTH_LONG).show();
 
 
@@ -332,13 +342,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               //items is a list of the category names available to the logged-in user
               List<Category> items = new Gson().fromJson(response.toString(), new TypeToken<List<Category>>() {
               }.getType());
-
-              //if (items.size() == 0) {
-               // items = "No results";
-               // Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
-             // System.out.println("items list size :" + items.size());
-
-              //}
 
               //clear the list
               categoryList.clear();
@@ -520,6 +523,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //remove [ and ] so we have a string of 56,23,87
     selectOwnUserReviews = selectOwnUserReviews.substring(1, selectOwnUserReviews.length() - 1);
 
+    Toast.makeText(getApplicationContext(), selectOwnUserReviews, Toast.LENGTH_LONG).show();
+
     //convert [56,23,87] to a string
     selectPrivateReviews = Arrays.toString(category.getPrivateReviewIds());
     //remove [ and ] so we have a string of 56,23,87
@@ -590,7 +595,17 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                 sharedReview.setphoneNameonPhone("U");
 
+                //set a string to get the phone number of the logged-in user from the DB,
+                //the phone number of the person who made the own_ids review
+               // String reviewOwnerphoneNoInDB = obj.getString("username");
+
+               // System.out.println("reviewOwnerphoneNoInDB :" + reviewOwnerphoneNoInDB);
+
+
+                //set the setter to
+                //the phone number of the person who made the review
                 sharedReview.setPhoneNumberofUserFromDB(obj.getString("username"));
+
 
                 //get 0,1 or 2 value from db, for Just U, private or public
                 sharedReview.setPublicorprivate(obj.getString("publicorprivate"));
@@ -639,9 +654,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //etc...
                 sharedReview.setName(obj.getString("name"));
 
-                //set a string to the the phone number from the DB,
+                //set a string to the phone number from the DB,
                 //the phone number of the person who made the review
-                String phoneNoInDB = obj.getString("username");
+                phoneNoInDB = obj.getString("username");
 
                 //set the setter to the phone number string, the string is
                 //the phone number of the person who made the review
@@ -696,11 +711,19 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                 //If public review, mask the number
                 String maskNumber = (obj.getString("username"));
+
+                //before masking, get the number so it can be passed to ViewContact
+                // in SharedPopulistoReviewsAdapter
+                //so we know what stuff to show in ViewContact
+                sharedReview.setPhoneNumberofUserFromDB(maskNumber);
+
+                //now mask the number
                 maskNumber = maskNumber.substring(0, maskNumber.length() - 4);
                 maskNumber = maskNumber + "****";
 
                 //for public reviews, we'll show the review maker's phone number - masked
                 sharedReview.setphoneNameonPhone(maskNumber);
+                //System.out.println("masknumber:" + maskNumber);
 
 
                 //get 0,1 or 2 value from db, for Just U, private or public

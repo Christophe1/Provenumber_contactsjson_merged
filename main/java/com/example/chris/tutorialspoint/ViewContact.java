@@ -92,8 +92,17 @@ public class ViewContact extends AppCompatActivity {
   //for categoryid we only need the value, don't need to cast it to anything
   String categoryid;
 
-  //this is the review that has been clicked in the ListView in PopulistoListView.java
+  //this is the review that has been clicked in the recyclerView in PopulistoListView.java
   String review_id;
+
+  //the logged-in user's phone number, which we get in SharedPreferences
+  //from VerifyUserPhoneNumber
+  //to be compared to String phoneNumberofUserFromDB;
+  String phoneNoofUser;
+
+  //this is the phone number of person who made the clicked review in recyclerView
+  // in PopulistoListView.java
+  String phoneNumberofUserFromDB;
 
   private ProgressDialog pDialog;
 
@@ -108,6 +117,9 @@ public class ViewContact extends AppCompatActivity {
   //all phone contact names, broken down
   String phoneNameofContact;
 
+  //checkedContacts is a String, we get it from "checkedcontacts", on the server
+  String checkedContacts;
+
   //this is for public or private groups
   //amongst other things, we'll be bringing the intent over to EditContact.
   int pub_or_priv;
@@ -116,19 +128,19 @@ public class ViewContact extends AppCompatActivity {
   RecyclerView recyclerView;
 
   //ViewContact mn;
- // Context mContext;
- // private Thread mThread;
+  // Context mContext;
+  // private Thread mThread;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(activity_view_contact);
 
-        pDialog = new ProgressDialog(ViewContact.this);
-        pDialog.setCancelable(false);
-        // Showing progress dialog before making http request
-        pDialog.setMessage("Loading bud...");
-        pDialog.show();
+    pDialog = new ProgressDialog(ViewContact.this);
+    pDialog.setCancelable(false);
+    // Showing progress dialog before making http request
+    pDialog.setMessage("Loading bud...");
+    pDialog.show();
 
     //need to initialize this
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
@@ -153,13 +165,28 @@ public class ViewContact extends AppCompatActivity {
     //show the App title
     actionbar.setTitle("Pop");
 
+    //  when the activity loads, check to see if phoneNoofUser is using the App,if the user is
+    // already registered, by checking the MyData XML file
+    SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+    phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
+
     Intent i = this.getIntent();
 
-    //we'll be getting review_id from the cell clicked in the listview
+    //we'll be getting review_id from the cell clicked in the recyclerView,
+    //intent review_id is in SharedPopulistoReviewsAdapter,
     //then posting to ViewContact.php to get associated details
     review_id = i.getStringExtra("review_id");
 
-    //if we are coming from EditContact, where no cell has been clicked
+    //we'll be getting the phone number of user who made the review
+    // clicked in the recyclerView,
+    //phoneNumberofUserFromDB is in SharedPopulistoReviewsAdapter and UopulistoListAdapter
+    //then posting to ViewContact.php
+    //so we can decide what parts of review to show the logged-in user
+    phoneNumberofUserFromDB = i.getStringExtra("PhoneNumberofUserFromDB");
+    System.out.println("PhoneNumberofUserFromDB:" + phoneNumberofUserFromDB);
+    System.out.println("phoneNoofUser:" + phoneNoofUser);
+
+    //if we are coming from EditContact, where no recyclerView cell has been clicked
     if (review_id == null) {
 
       //then set review_id to the value we put in shared preferences
@@ -167,7 +194,7 @@ public class ViewContact extends AppCompatActivity {
 
     }
 
-    System.out.println("ViewContact: review id is " + review_id);
+    //System.out.println("ViewContact: review id is " + review_id);
 
     //coming from PopulistoListView we will always get a value for review_id
     //Let's save the review_id in shared preferences
@@ -189,8 +216,6 @@ public class ViewContact extends AppCompatActivity {
     publicContacts = (Button) findViewById(R.id.btnPublic);
     phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
     justMeContacts = (Button) findViewById(R.id.btnJustMe);
-
-
 
 
     //post the review_id that has been clicked in the ListView and send it to
@@ -226,9 +251,17 @@ public class ViewContact extends AppCompatActivity {
               String address = responseObject.getString("address");
               String comment = responseObject.getString("comment");
               String public_or_private = responseObject.getString("publicorprivate");
+              checkedContacts = responseObject.getString("checkedcontacts");
 
-              //checkedContacts is a String, we get it from "checkedcontacts", on the server
-              String checkedContacts = responseObject.getString("checkedcontacts");
+
+              if (phoneNoofUser == phoneNumberofUserFromDB) {
+
+                 Toast.makeText(ViewContact.this, "Yes they match!", Toast.LENGTH_SHORT).show();
+
+                //checkedContacts is a String, we get it from "checkedcontacts", on the server
+                //checkedContacts = responseObject.getString("checkedcontacts");
+
+              }
 
               //assign a textview to each of the fields in the review
               categoryname.setText(category);
@@ -312,7 +345,7 @@ public class ViewContact extends AppCompatActivity {
 
               //System.out.println("heree it is" + jsonResponse);
               //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
-             // hidePDialog();
+              // hidePDialog();
 
             } catch (JSONException e) {
               e.printStackTrace();
@@ -559,7 +592,7 @@ public class ViewContact extends AppCompatActivity {
   class LoadContact extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
-    super.onPreExecute();
+      super.onPreExecute();
     }
 
     @Override

@@ -74,23 +74,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
         final Category category = categoryListFiltered.get(position);
 
-        System.out.println("getName is :" + category.getName());
-
-       // Toast.makeText(context, categoryListFiltered.size(), Toast.LENGTH_SHORT).show();
-
-       // System.out.println("categoryListFiltered :" + categoryListFiltered.size());
-       // System.out.println("categoryList :" + categoryList.size());
-/*         if (categoryListFiltered.isEmpty()) {
-             //categoryListFiltered = new List<String> monk;
-             //categoryListFiltered.add(1,"No results");
-           holder.name.setText("No results");
-
-        }*/
-
-       // else {
            holder.name.setText(category.getName());
-           holder.sharedWith.setText(Html.fromHtml("(" + "<font color='#DA850B'>" + category.getUserPersonalCount() + "</font>" + "," + "<font color='#0A7FDA'>" + category.getPrivateCount() + "</font>" + "," + "<font color='#009900'>" + category.getPublicCount() + "</font>" + ")"));
-       //}
+           holder.sharedWith.setText(Html.fromHtml("(" + "<font color='#DA850B'>" + "U" + "</font>" + "," + "<font color='#0A7FDA'>" + category.getPrivateCount() + "</font>" + "," + "<font color='#009900'>" + category.getPublicCount() + "</font>" + ")"));
     }
 
     @Override
