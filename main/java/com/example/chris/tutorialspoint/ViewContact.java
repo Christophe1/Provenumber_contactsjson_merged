@@ -148,7 +148,7 @@ public class ViewContact extends AppCompatActivity {
     //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
-    System.out.println("ViewContact: selectPhoneContacts " + selectPhoneContacts);
+    //System.out.println("ViewContact: selectPhoneContacts " + selectPhoneContacts);
 
     //listView = (ListView) findViewById(R.id.listviewPhoneContacts);
     recyclerView = (RecyclerView) findViewById(R.id.rv);
@@ -228,14 +228,9 @@ public class ViewContact extends AppCompatActivity {
 
             //toast the response of ViewContact.php, which has been converted to a
             //JSON object by the Php file with JSON encode
-            Toast.makeText(ViewContact.this, "OnResponse is" + response, Toast.LENGTH_LONG).show();
-            System.out.println("ViewContact: And the response is " + response);
+           // Toast.makeText(ViewContact.this, "OnResponse is" + response, Toast.LENGTH_LONG).show();
+           // System.out.println("ViewContact: And the response is " + response);
 
-            //load the asyncTask straight after we have got the response and
-            // the checked Arraylist has been created
-            //so the custom adapter will pick up the changes
-            ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
-            loadContact.execute();
 
 
             try {
@@ -253,15 +248,12 @@ public class ViewContact extends AppCompatActivity {
               String public_or_private = responseObject.getString("publicorprivate");
               checkedContacts = responseObject.getString("checkedcontacts");
 
+              //load the asyncTask straight after we have got the response and
+              // the checked Arraylist has been created
+              //so the custom adapter will pick up the changes
+              ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+              loadContact.execute();
 
-              if (phoneNoofUser == phoneNumberofUserFromDB) {
-
-                 Toast.makeText(ViewContact.this, "Yes they match!", Toast.LENGTH_SHORT).show();
-
-                //checkedContacts is a String, we get it from "checkedcontacts", on the server
-                //checkedContacts = responseObject.getString("checkedcontacts");
-
-              }
 
               //assign a textview to each of the fields in the review
               categoryname.setText(category);
@@ -298,54 +290,30 @@ public class ViewContact extends AppCompatActivity {
 
               publicorprivate2.setText(shared_status);
 
-              System.out.println("ViewContact: public or private value :" + pub_or_priv);
+             // System.out.println("ViewContact: public or private value :" + pub_or_priv);
 
 
               //for categoryid we only need the value, don't need to cast it to anything
               //we'll be sending this to EditContact with an intent
               categoryid = category_id;
 
-              System.out.println("here are the checkedcontacts" + checkedContacts);
+             // System.out.println("here are the checkedcontacts" + checkedContacts);
               //  Toast.makeText(ViewContact.this, "here are the checkedcontacts" + checkedContacts, Toast.LENGTH_SHORT).show();
 
 
-              //convert the checkedContacts string to an arraylist
-              //then we will search through the arraylist and check the associated
-              //check boxes
-              //First, take out the double quotes in the string, \ is to escape the "
-              String replace = checkedContacts.replace("\"", "");
-              //take out the starting [
-              String replace1 = replace.replace("[", "");
-              //and then the ending ]
-              String replace2 = replace1.replace("]", "");
-              System.out.println("here is replace2 " + replace2);
-              //convert the checkedContacts string to an arraylist
-              checkedContactsAsArrayList = new ArrayList<String>(Arrays.asList(replace2.split(",")));
-              System.out.println("ViewContact1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+              if (phoneNoofUser.equals(phoneNumberofUserFromDB)) {
+
+               // Toast.makeText(ViewContact.this, "Yes they match!", Toast.LENGTH_SHORT).show();
+                edit.setVisibility(View.VISIBLE);
+                delete.setVisibility(View.VISIBLE);
+              }
 
 
-              //we want to bring the checkedContactsAsArrayList array list to our PopulistoContactAdapter.
-              // It looks like Shared Preferences
-              //only works easily with strings so best way to bring the array list in Shared Preferences is with
-              //Gson.
-              //Here, we PUT the arraylist into the sharedPreferences/*
-              SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
-              SharedPreferences.Editor editorcheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.edit();
-              Gson gsoncheckedContactsAsArrayList = new Gson();
-              String jsoncheckedContactsAsArrayList = gsoncheckedContactsAsArrayList.toJson(checkedContactsAsArrayList);
-              editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
-              editorcheckedContactsAsArrayList.commit();
-
-
-              // System.out.println("ViewContact: jsoncheckedContactsAsArrayList is " + jsoncheckedContactsAsArrayList);
-
-
-              System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+              //System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
 
               //System.out.println("heree it is" + jsonResponse);
               //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
-              // hidePDialog();
 
             } catch (JSONException e) {
               e.printStackTrace();
@@ -465,15 +433,15 @@ public class ViewContact extends AppCompatActivity {
     //call the delete review function
     deleteContactButton();
 
-    fetchCheckedContacts();
+   // fetchCheckedContacts();
   }
 
   //this is the function for Volley, trying to change from AsycnTask to Volley
   //for getting the checked contacts on phone
-  private void fetchCheckedContacts() {
+  //private void fetchCheckedContacts() {
 
 
-  }
+  //}
 
   //code for the '<', back button. Go back to PopulistoListView, as defined
   //in Manifest, PARENT_ACTIVITY
@@ -593,16 +561,42 @@ public class ViewContact extends AppCompatActivity {
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
+
+
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
 
+      //convert the checkedContacts string to an arraylist
+      //then we will search through the arraylist and check the associated
+      //check boxes
+      //First, take out the double quotes in the string, \ is to escape the "
+      String replace = checkedContacts.replace("\"", "");
+      //take out the starting [
+      String replace1 = replace.replace("[", "");
+      //and then the ending ]
+      String replace2 = replace1.replace("]", "");
+      System.out.println("here is replace2 " + replace2);
+      //convert the checkedContacts string to an arraylist
+      checkedContactsAsArrayList = new ArrayList<String>(Arrays.asList(replace2.split(",")));
+      //System.out.println("ViewContact1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
-/*      pDialog = new ProgressDialog(getApplicationContext());
-      // Showing progress dialog before making http request
-      pDialog.setMessage("Loading bud...");
-      pDialog.show();*/
+
+      //we want to bring the checkedContactsAsArrayList array list to our PopulistoContactAdapter.
+      // It looks like Shared Preferences
+      //only works easily with strings so best way to bring the array list in Shared Preferences is with
+      //Gson.
+      //Here, we PUT the arraylist into the sharedPreferences/*
+      SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+      SharedPreferences.Editor editorcheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.edit();
+      Gson gsoncheckedContactsAsArrayList = new Gson();
+      String jsoncheckedContactsAsArrayList = gsoncheckedContactsAsArrayList.toJson(checkedContactsAsArrayList);
+      editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
+      editorcheckedContactsAsArrayList.commit();
+
+
+      System.out.println("ViewContact: jsoncheckedContactsAsArrayList is " + jsoncheckedContactsAsArrayList);
 
 
       //we want to delete the old selectContacts from the listview when the Activity loads
@@ -659,7 +653,7 @@ public class ViewContact extends AppCompatActivity {
       super.onPostExecute(aVoid);
       hidePDialog();
 
-      System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+     // System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
       PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
 
@@ -711,7 +705,7 @@ public class ViewContact extends AppCompatActivity {
 
     //    loadContact.execute();
 //        adapter.notifyDataSetChanged();
-    Toast.makeText(ViewContact.this, "resuming!", Toast.LENGTH_SHORT).show();
+    //Toast.makeText(ViewContact.this, "resuming!", Toast.LENGTH_SHORT).show();
 
 
   }

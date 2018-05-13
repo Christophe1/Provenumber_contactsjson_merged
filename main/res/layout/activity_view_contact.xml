@@ -184,6 +184,7 @@
 
             <Button
                 android:id="@+id/edit"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -192,6 +193,7 @@
 
             <Button
                 android:id="@+id/delete"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="1dp"

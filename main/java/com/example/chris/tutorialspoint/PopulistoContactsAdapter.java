@@ -119,7 +119,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         whichactivity = activity;
         context_type = context;
 
-        System.out.println("here it is dudio" + String.valueOf(checkBoxhasChanged));
+       // System.out.println("here it is dudio" + String.valueOf(checkBoxhasChanged));
 
 
         //we are fetching the array list MatchingContactsAsArrayList, created in VerifyUserPhoneNumber.
@@ -237,7 +237,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
             //This is for ViewContact, to display the contact the review is shared with
             //for every phone number in the checkedContactsAsArrayList array list...
             for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
-                Log.i("MyMessage", "checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
+               // Log.i("MyMessage", "checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
 
                 //if a phone number is in our array of checked contacts
                 if (checkedContactsAsArrayList.contains(selectPhoneContact.getPhone())) {
