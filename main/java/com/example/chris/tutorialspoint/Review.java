@@ -127,14 +127,7 @@ public class Review {
     //reviewidtoString = String.valueOf(reviewid);
   }
 
-/*
-    public ArrayList<String> getGenre() {
-        return genre;
-    }
 
-    public void setGenre(ArrayList<String> genre) {
-        this.genre = genre;
-    }
-*/
+
 
 }

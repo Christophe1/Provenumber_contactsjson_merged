@@ -46,6 +46,14 @@
                     android:visibility="invisible" />
 
                 <TextView
+                    android:id="@+id/textphoneNameonPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/textboxes_for_contact"
+                    />
+
+                <TextView
                     android:id="@+id/textViewCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -166,6 +174,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"

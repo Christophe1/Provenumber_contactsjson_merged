@@ -453,8 +453,7 @@ public class EditContact extends AppCompatActivity {
     };
 
 
-    //code for the '<', back button. Go back to PopulistoListView, as defined
-    //in Manifest, PARENT_ACTIVITY
+    //code for the '<', back button. Go back to ViewContact
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();

@@ -57,6 +57,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.tutorialspoint.R.id.rv;
 import static com.example.tutorialspoint.R.layout.activity_view_contact;
 import static com.example.tutorialspoint.R.menu.main;
 
@@ -77,6 +78,7 @@ public class ViewContact extends AppCompatActivity {
   Button delete;
 
   //use TextViews instead of EditViews, so they can't be edited unless 'Edit' is selected
+  private TextView textphoneNameonPhone;
   private TextView categoryname;
   private TextView namename;
   private TextView phonename;
@@ -150,8 +152,8 @@ public class ViewContact extends AppCompatActivity {
 
     //System.out.println("ViewContact: selectPhoneContacts " + selectPhoneContacts);
 
-    //listView = (ListView) findViewById(R.id.listviewPhoneContacts);
-    recyclerView = (RecyclerView) findViewById(R.id.rv);
+    //rv is for holding the phone contacts, invite button, checkbox etc
+    recyclerView = (RecyclerView) findViewById(rv);
 
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -204,6 +206,8 @@ public class ViewContact extends AppCompatActivity {
 
 
     //cast a TextView for each of the field ids in activity_view_contact.xml
+
+    textphoneNameonPhone = (TextView) findViewById(R.id.textphoneNameonPhone);
     categoryname = (TextView) findViewById(R.id.textViewCategory);
     namename = (TextView) findViewById(R.id.textViewName);
     phonename = (TextView) findViewById(R.id.textViewPhone);
@@ -272,17 +276,23 @@ public class ViewContact extends AppCompatActivity {
                 //change colour depending on value
                 publicorprivate2.setTextColor(Color.parseColor("#DA850B"));
                 shared_status = "Just U";
+                //for "U"
+                textphoneNameonPhone.setTextColor(Color.parseColor("#DA850B"));
+                textphoneNameonPhone.setText("U");
               }
 
               if (pub_or_priv == 1) {
                 publicorprivate2.setTextColor(Color.parseColor("#0A7FDA"));
                 shared_status = "Phone Contacts";
+                textphoneNameonPhone.setTextColor(Color.parseColor("#0A7FDA"));
+                textphoneNameonPhone.setText("U");
               }
 
               if (pub_or_priv == 2) {
                 publicorprivate2.setTextColor(Color.parseColor("#2AB40E"));
                 shared_status = "Public";
-
+                textphoneNameonPhone.setTextColor(Color.parseColor("#2AB40E"));
+                textphoneNameonPhone.setText("U");
               }
 
               //put pub_or_priv in the textbox called publicorprivate
@@ -306,6 +316,7 @@ public class ViewContact extends AppCompatActivity {
                // Toast.makeText(ViewContact.this, "Yes they match!", Toast.LENGTH_SHORT).show();
                 edit.setVisibility(View.VISIBLE);
                 delete.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
               }
 
 
@@ -656,25 +667,6 @@ public class ViewContact extends AppCompatActivity {
      // System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
       PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
-
-
-/*           if(pub_or_priv==0){
-
-                publicContacts.setVisibility(View.GONE);
-                phoneContacts.setVisibility(View.GONE);
-            }
-
-            if(pub_or_priv==1){
-
-                publicContacts.setVisibility(View.GONE);
-                justMeContacts.setVisibility(View.GONE);
-            }
-
-            if(pub_or_priv==2){
-
-                justMeContacts.setVisibility(View.GONE);
-                phoneContacts.setVisibility(View.GONE);
-            }*/
 
       recyclerView.setAdapter(adapter);
 

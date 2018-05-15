@@ -266,7 +266,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                 //  Toast.makeText(PopulistoListView.this, obj.getString("publicorprivate"), Toast.LENGTH_LONG).show();
 
-
                 //add the reviewUser to the sharedReviewList
                 reviewList.add(review);
 
@@ -618,6 +617,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setPhone(obj.getString("phone"));
                 sharedReview.setComment(obj.getString("comment"));
 
+                //what I am trying to do is, depending on if setType_row is 1 or 2,
+                //if the review is U or another's review, then show a different ViewContact
+                sharedReview.setType_row("1");
+
                 //add the sharedReview to the sharedReviewList
                 sharedReviewList.add(sharedReview);
 
@@ -691,6 +694,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                   sharedReview.setPhone(obj.getString("phone"));
                 sharedReview.setComment(obj.getString("comment"));
 
+                //what I am trying to do is, depending on if setType_row is 1 or 2,
+                //if the review is U or another's review, then show a different ViewContact
+                sharedReview.setType_row("2");
+
                 //add the sharedReview to the sharedReviewList
                 sharedReviewList.add(sharedReview);
 
@@ -736,6 +743,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setName(obj.getString("name"));
                 sharedReview.setPhone(obj.getString("phone"));
                 sharedReview.setComment(obj.getString("comment"));
+
+                //what I am trying to do is, depending on if setType_row is 1 or 2,
+                //if the review is U or another's review, then show a different ViewContact
+                sharedReview.setType_row("2");
 
                 //add the sharedReview to the sharedReviewList
                 sharedReviewList.add(sharedReview);
