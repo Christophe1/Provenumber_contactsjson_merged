@@ -1,6 +1,5 @@
-package com.example.chris.tutorialspoint;
+package com.example.chris.tutorialspoint.SharedReviews;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
@@ -18,19 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,27 +29,27 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.chris.tutorialspoint.AppController;
+import com.example.chris.tutorialspoint.EditContact;
+import com.example.chris.tutorialspoint.PopulistoContactsAdapter;
+import com.example.chris.tutorialspoint.PopulistoListView;
+import com.example.chris.tutorialspoint.SelectPhoneContact;
 import com.example.tutorialspoint.R;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.example.tutorialspoint.R.id.rv;
+import static com.example.tutorialspoint.R.layout.activity_sharedview_contact;
 import static com.example.tutorialspoint.R.layout.activity_view_contact;
-import static com.example.tutorialspoint.R.menu.main;
 
-public class ViewContact extends AppCompatActivity {
+public class SharedViewContact extends AppCompatActivity {
   //
   // this is the php file name where to select from.
   // we will post the review id of the review in ListView (in PopulistoListView.java) into Php and
@@ -71,11 +59,11 @@ public class ViewContact extends AppCompatActivity {
   // this is for the Delete button, the php file name where to select from.
   // we will post the review_id and delete associated fields - category, name, phone,
   // address and comment from the review table
-  private static final String DeleteContact_URL = "http://www.populisto.com/DeleteContact.php";
+  //private static final String DeleteContact_URL = "http://www.populisto.com/DeleteContact.php";
 
   //the edit button, if the user wants to edit a review
-  Button edit;
-  Button delete;
+  //Button edit;
+  //Button delete;
 
   //use TextViews instead of EditViews, so they can't be edited unless 'Edit' is selected
   private TextView textphoneNameonPhone;
@@ -87,9 +75,9 @@ public class ViewContact extends AppCompatActivity {
   private TextView publicorprivate;
   private TextView publicorprivate2;
 
-  Button publicContacts;
-  Button phoneContacts;
-  Button justMeContacts;
+ // Button publicContacts;
+ // Button phoneContacts;
+ // Button justMeContacts;
 
   //for categoryid we only need the value, don't need to cast it to anything
   String categoryid;
@@ -127,7 +115,7 @@ public class ViewContact extends AppCompatActivity {
   int pub_or_priv;
 
   //For the recycler view, containing the phone contacts
-  RecyclerView recyclerView;
+ // RecyclerView recyclerView;
 
   //ViewContact mn;
   // Context mContext;
@@ -136,16 +124,16 @@ public class ViewContact extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(activity_view_contact);
+    setContentView(activity_sharedview_contact);
 
-    pDialog = new ProgressDialog(ViewContact.this);
+    pDialog = new ProgressDialog(SharedViewContact.this);
     pDialog.setCancelable(false);
     // Showing progress dialog before making http request
     pDialog.setMessage("Loading bud...");
     pDialog.show();
 
     //need to initialize this
-    PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
+    PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, SharedViewContact.this, 0);
 
     //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     selectPhoneContacts = new ArrayList<SelectPhoneContact>();
@@ -153,7 +141,7 @@ public class ViewContact extends AppCompatActivity {
     //System.out.println("ViewContact: selectPhoneContacts " + selectPhoneContacts);
 
     //rv is for holding the phone contacts, invite button, checkbox etc
-    recyclerView = (RecyclerView) findViewById(rv);
+    //recyclerView = (RecyclerView) findViewById(rv);
 
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -189,12 +177,12 @@ public class ViewContact extends AppCompatActivity {
     System.out.println("phoneNoofUser:" + phoneNoofUser);
 
     //if we are coming from EditContact, where no recyclerView cell has been clicked
-    if (review_id == null) {
+   // if (review_id == null) {
 
       //then set review_id to the value we put in shared preferences
-      review_id = PreferenceManager.getDefaultSharedPreferences(this).getString("review_id value", review_id);
+     // review_id = PreferenceManager.getDefaultSharedPreferences(this).getString("review_id value", review_id);
 
-    }
+    //}
 
     //System.out.println("ViewContact: review id is " + review_id);
 
@@ -217,9 +205,9 @@ public class ViewContact extends AppCompatActivity {
     publicorprivate2 = (TextView) findViewById(R.id.textPublicorPrivate2);
 
     //for the Public, phoneContacts, justMe, save and cancel buttons
-    publicContacts = (Button) findViewById(R.id.btnPublic);
-    phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
-    justMeContacts = (Button) findViewById(R.id.btnJustMe);
+   // publicContacts = (Button) findViewById(R.id.btnPublic);
+   // phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
+   // justMeContacts = (Button) findViewById(R.id.btnJustMe);
 
 
     //post the review_id that has been clicked in the ListView and send it to
@@ -255,8 +243,10 @@ public class ViewContact extends AppCompatActivity {
               //load the asyncTask straight after we have got the response and
               // the checked Arraylist has been created
               //so the custom adapter will pick up the changes
-              ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+/*
+              SharedViewContact.LoadContact loadContact = new SharedViewContact.LoadContact();
               loadContact.execute();
+*/
 
 
               //assign a textview to each of the fields in the review
@@ -322,7 +312,7 @@ public class ViewContact extends AppCompatActivity {
 
               //System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
-
+              hidePDialog();
               //System.out.println("heree it is" + jsonResponse);
               //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
 
@@ -341,7 +331,7 @@ public class ViewContact extends AppCompatActivity {
         new Response.ErrorListener() {
           @Override
           public void onErrorResponse(VolleyError error) {
-            Toast.makeText(ViewContact.this, error.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(SharedViewContact.this, error.toString(), Toast.LENGTH_LONG).show();
 
           }
 
@@ -385,15 +375,15 @@ public class ViewContact extends AppCompatActivity {
 
     //*****************************************
     //for the edit button
-    edit = (Button) findViewById(R.id.edit);
+    //edit = (Button) findViewById(R.id.edit);
 
 
-    edit.setOnClickListener(new View.OnClickListener() {
+/*    edit.setOnClickListener(new View.OnClickListener() {
       public void onClick(View view) {
         System.out.println("you clicked it, edit");
         //open the Edit Activity, pass over the review_id so we can get that reviews
         //associated fields
-        Intent i = new Intent(ViewContact.this, EditContact.class);
+        Intent i = new Intent(SharedViewContact.this, EditContact.class);
         i.putExtra("review_id", review_id);
         //"category" is the key
         // which we will be looking for from EditContact.class, categoryname.getText() is the
@@ -439,10 +429,10 @@ public class ViewContact extends AppCompatActivity {
 
     //*****************************************
     //for the delete button
-    delete = (Button) findViewById(R.id.delete);
+   // delete = (Button) findViewById(R.id.delete);
 
     //call the delete review function
-    deleteContactButton();
+//    deleteContactButton();
 
    // fetchCheckedContacts();
   }
@@ -469,7 +459,7 @@ public class ViewContact extends AppCompatActivity {
   }
 
 
-  private void deleteContactButton() {
+/*  private void deleteContactButton() {
 
     delete.setOnClickListener(new View.OnClickListener() {
 
@@ -486,10 +476,10 @@ public class ViewContact extends AppCompatActivity {
     });
 
 
-  }
+  }*/
 
   //Are you sure you want to delete? dialogue
-  DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+  /*DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
     @Override
     public void onClick(DialogInterface dialog, int which) {
       switch (which) {
@@ -500,9 +490,9 @@ public class ViewContact extends AppCompatActivity {
           //(we'll be opening it again, will close now so it will be refreshed)
           PopulistoListView.fa.finish();
 
-          Toast.makeText(ViewContact.this, "delete stuff", Toast.LENGTH_SHORT).show();
+          Toast.makeText(SharedViewContact.this, "delete stuff", Toast.LENGTH_SHORT).show();
 
-          pDialog = new ProgressDialog(ViewContact.this);
+          pDialog = new ProgressDialog(SharedViewContact.this);
           // Showing progress dialog for the review being saved
           pDialog.setMessage("Deleting...");
           pDialog.show();
@@ -516,13 +506,13 @@ public class ViewContact extends AppCompatActivity {
                   //hide the dialogue saying 'Deleting...' when page is deleted
                   pDialog.dismiss();
                   //the response in deleteContact.php is "deleted successfully"
-                  Toast.makeText(ViewContact.this, response, Toast.LENGTH_LONG).show();
+                  Toast.makeText(SharedViewContact.this, response, Toast.LENGTH_LONG).show();
                 }
               },
               new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                  Toast.makeText(ViewContact.this, "problem here", Toast.LENGTH_LONG).show();
+                  Toast.makeText(SharedViewContact.this, "problem here", Toast.LENGTH_LONG).show();
 
                 }
 
@@ -548,7 +538,7 @@ public class ViewContact extends AppCompatActivity {
 
           //when deleted, back to the PopulistoListView class and update
 
-          Intent j = new Intent(ViewContact.this, PopulistoListView.class);
+          Intent j = new Intent(SharedViewContact.this, PopulistoListView.class);
 
           startActivity(j);
 
@@ -561,14 +551,14 @@ public class ViewContact extends AppCompatActivity {
           //No button clicked, just close the dialogue
           break;
       }
-    }
+  */
   };
 
 
   //******for the phone contacts in the recyclerView
 
   // Load data in background
-  class LoadContact extends AsyncTask<Void, Void, Void> {
+ /* class LoadContact extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
@@ -583,7 +573,7 @@ public class ViewContact extends AppCompatActivity {
       //then we will search through the arraylist and check the associated
       //check boxes
       //First, take out the double quotes in the string, \ is to escape the "
-      String replace = checkedContacts.replace("\"", "");
+     *//* String replace = checkedContacts.replace("\"", "");
       //take out the starting [
       String replace1 = replace.replace("[", "");
       //and then the ending ]
@@ -598,7 +588,7 @@ public class ViewContact extends AppCompatActivity {
       // It looks like Shared Preferences
       //only works easily with strings so best way to bring the array list in Shared Preferences is with
       //Gson.
-      //Here, we PUT the arraylist into the sharedPreferences/*
+      //Here, we PUT the arraylist into the sharedPreferences*//**//*
       SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
       SharedPreferences.Editor editorcheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.edit();
       Gson gsoncheckedContactsAsArrayList = new Gson();
@@ -650,7 +640,7 @@ public class ViewContact extends AppCompatActivity {
         selectContact.setPhone(phoneNumberofContact);
         //selectContact.setSelected(is);
 
-      }
+      }*//*
 
 
       return null;
@@ -666,12 +656,12 @@ public class ViewContact extends AppCompatActivity {
 
      // System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
-      PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
+      PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, SharedViewContact.this, 0);
 
       recyclerView.setAdapter(adapter);
 
 
-      recyclerView.setLayoutManager((new LinearLayoutManager(ViewContact.this)));
+      recyclerView.setLayoutManager((new LinearLayoutManager(SharedViewContact.this)));
 
 
       //we need to notify the listview that changes may have been made on
@@ -682,7 +672,7 @@ public class ViewContact extends AppCompatActivity {
 
 
     }
-  }
+  }*/
 
 
   @Override

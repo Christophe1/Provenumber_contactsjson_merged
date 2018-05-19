@@ -161,10 +161,11 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
       //then show that review
       public void onClick(View v) {
 
-        if (viewHolder.getItemViewType() == 1) {
+
 
           SharedReview sharedReview = (SharedReview) SharedPopulistoReviewsAdapter.getItem(position);
 
+        if (viewHolder.getItemViewType() == 1) {
           //we want to pass the review_id and PhoneNumberofUserFromDB
           // of the sharedReview being clicked
           //to the ViewContact activity, and from there post it and get more
@@ -181,8 +182,20 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
         else {
 
-          Toast.makeText(context_type, "a different view", Toast.LENGTH_SHORT).show();
+          //Toast.makeText(context_type, "a different view", Toast.LENGTH_SHORT).show();
 
+          //we want to pass the review_id and PhoneNumberofUserFromDB
+          // of the sharedReview being clicked
+          //to the ViewContact activity, and from there post it and get more
+          //info for that sharedReview - address, comments etc
+          Intent i = new Intent(v.getContext(), SharedViewContact.class);
+          //pass the review_id to ViewContact class
+          //the key is "review_id"
+          i.putExtra("review_id", sharedReview.getReviewid());
+          //pass the PhoneNumberofUserFromDB to ViewContact class
+          //the key is "PhoneNumberofUserFromDB"
+          i.putExtra("PhoneNumberofUserFromDB", sharedReview.getPhoneNumberofUserFromDB());
+          v.getContext().startActivity(i);
 
         }
 

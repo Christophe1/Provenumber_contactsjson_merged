@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -74,7 +75,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   // "public_count":0}, etc
   private static final String CategoryFilter_URL = "http://www.populisto.com/CategoryFilter.php";
 
-  //this is for showing ALL reviews available to logged-in user when a category is searched.
+  //this is for showing ALL reviews available to logged-in user when a category is clicked.
   // we will post the selected (clicked on) category into Php and get the
   //reviews that are shared with the logged in user
   //It returns a JSON Array of this format: {"user_review_ids":[1,3],"private_review_ids":[2],"public_review_ids":[8,12]}
@@ -107,12 +108,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   private ProgressDialog pDialog;
 
+
   private List<Review> reviewList = new ArrayList<Review>();
 
   private List<SharedReview> sharedReviewList = new ArrayList<SharedReview>();
 
   //this is the adapter for user's reviews
-  public UPopulistoListAdapter pAdapter;
+  public static UPopulistoListAdapter pAdapter;
 
 
   //this is the adapter for shared reviews including user's own
@@ -306,6 +308,25 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       }
 
     };
+
+    //this is to hopefully end the VolleyTimeOut error message
+    stringRequest.setRetryPolicy(new RetryPolicy() {
+      @Override
+      public int getCurrentTimeout() {
+        return 50000;
+      }
+
+      @Override
+      public int getCurrentRetryCount() {
+        return 50000;
+      }
+
+      @Override
+      public void retry(VolleyError error) throws VolleyError {
+
+      }
+    });
+
     RequestQueue requestQueue = Volley.newRequestQueue(this);
     requestQueue.add(stringRequest);
 
@@ -395,6 +416,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
       }
     };
+
+
     AppController.getInstance().addToRequestQueue(request);
   }
 

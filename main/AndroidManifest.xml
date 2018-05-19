@@ -57,6 +57,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.chris.tutorialspoint.PopulistoListView" />
         </activity>
+        <activity
+            android:name="com.example.chris.tutorialspoint.SharedReviews.SharedViewContact"
+            android:noHistory="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.chris.tutorialspoint.PopulistoListView" />
+        </activity>
         <activity android:name="com.example.chris.tutorialspoint.EditContact">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

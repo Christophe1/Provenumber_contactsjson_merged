@@ -174,6 +174,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
@@ -190,8 +191,9 @@
 
             >
 
-            <Button
+<!--            <Button
                 android:id="@+id/edit"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -200,11 +202,12 @@
 
             <Button
                 android:id="@+id/delete"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="1dp"
                 android:layout_toLeftOf="@id/edit"
-                android:text="DELETE" />
+                android:text="DELETE" />-->
 
         </RelativeLayout>
     </LinearLayout>
