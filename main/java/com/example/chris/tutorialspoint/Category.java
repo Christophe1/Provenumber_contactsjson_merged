@@ -23,7 +23,6 @@ public class Category {
 
     public String[] getUserReviewIds() {
         //return the value of the JSON key named user_review_ids in php file
-       // return user_personal_count;
         return user_review_ids;
     }
 

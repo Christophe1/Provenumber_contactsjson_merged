@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import java.util.Map;
 import static android.support.v7.appcompat.R.styleable.MenuItem;
 
 
-public class NewContact extends AppCompatActivity  {
+public class NewContact extends AppCompatActivity {
   // this is the php file name where to save to.
   // we will post the category, name, phone, address, comment etc into Php and
   // create a new review_id
@@ -88,82 +89,24 @@ public class NewContact extends AppCompatActivity  {
   RecyclerView recyclerView;
   PopulistoContactsAdapter adapter;
 
-  //this is the url for loading the categories shared with the logged-in user
-  //it returns a JSON Array of categories shared with the user -
-  //in this format:
-  //[{"cat_name":"vet",
-  // "user_review_ids":[2],
-  // "private_review_ids":[],
-  // "public_review_ids":[],
-  // "user_personal_count":1,
-  // "private_count":0,
-  // "public_count":0}, etc
-  private static final String CategoryFilter_URL = "http://www.populisto.com/CategoryFilter.php";
+  private AutoCompleteTextView categoryList;
 
-  //when searchView has focus and user types, we will be showing/filtering
-  //categories
-  //private List<Category> categoryList = new ArrayList<Category>();
+  private static final String jsonString = "http://www.populisto.com/CategoryList.php";
 
-  //this is the adapter for categories, loading from the searchView
-  //private CategoriesAdapter mAdapter;
-
-  //we are posting phoneNoofUser (logged-in user's own number), the key is phonenumberofuser, which we see in php
-  public static final String KEY_PHONENUMBER_USER = "phonenumberofuser";
-
-  String[] fruits = {"Apple", "Apron", "Argos", "Arto", "Abraham", "Adam", "Africa", "Aim", "Aqua", "Astro", "Ava"};
-
-  AutoCompleteTextView actv;
-
-  //when searchView has focus and user types, we will be showing/filtering
-  //categories
-  private List<Category> categoryList = new ArrayList<Category>();
-
-  //this is the adapter for categories, loading from the searchView
-  private CategoriesAdapter mAdapter;
+  private ArrayList<CategoryList> existingCategoryList;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_new_contact);
 
-    //Creating the instance of ArrayAdapter containing list of fruit names
-    ArrayAdapter<String> auto_adapter = new ArrayAdapter<String>
-        (this, android.R.layout.select_dialog_item, fruits);
+    existingCategoryList = new ArrayList<>();
 
     //Getting the instance of AutoCompleteTextView
-    actv = (AutoCompleteTextView) findViewById(R.id.textViewCategory);
-
-    actv.setAdapter(mAdapter);
-    // add the listener so it will tries to suggest while the user types
-    actv.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-      }
-
-      @Override
-      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        if (((AutoCompleteTextView) actv).isPerformingCompletion()) {
-          return;
-        }
-        if (charSequence.length() < 2) {
-          return;
-        }
-      }
-
-      @Override
-      public void afterTextChanged(Editable editable) {
-
-      }
-    });
+    categoryList = (AutoCompleteTextView) findViewById(R.id.textViewCategory);
 
 
-
-    //actv.setThreshold(1);//will start working from first character
-    //actv.setAdapter(auto_adapter);//setting the adapter data into the AutoCompleteTextView
-
-    PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
+    PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
@@ -194,6 +137,10 @@ public class NewContact extends AppCompatActivity  {
     //get the phone number, stored in an XML file, when the user first registered the app
     SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
     phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
+
+    //phoneNoofUserCheck = "+3538520987";
+
+
     System.out.println("NewContact: phone number of user is " + phoneNoofUserCheck);
 
     //get the CountryCode, stored in an XML file, when the user first registered the app
@@ -231,63 +178,40 @@ public class NewContact extends AppCompatActivity  {
 
   }
 
+  //load this function when the activity is created, put categories
+  //in autocomplete
+  public void getCategoryList(){
 
-  //this is the function for filtering categories in the searchView
-  //it is called onQueryTextChange
-  private void fetchContacts() {
-
-    StringRequest request = new StringRequest(Request.Method.POST, CategoryFilter_URL,
+    StringRequest request = new StringRequest(Request.Method.GET, jsonString,
         new Response.Listener<String>() {
 
           @Override
           public void onResponse(String response) {
 
-            // Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-
-            //response will be like:
-
-            //[{"cat_name":"vet",
-            // "user_review_ids":[2],
-            // "private_review_ids":[],
-            // "public_review_ids":[],
-            // "user_personal_count":1,
-            // "private_count":0,
-            // "public_count":0}, etc
+            Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
 
             try {
 
-
-              //items is a list of the category names available to the logged-in user
-              List<Category> items = new Gson().fromJson(response.toString(), new TypeToken<List<Category>>() {
-              }.getType());
-
-              //clear the list
-              categoryList.clear();
-
-              //adding contacts to contacts list
-              categoryList.addAll(items);
-
-              // System.out.println("categoryList size is :" + CategoriesAdapter.categoryListFiltered.size());
-
-
-              //app not crashing as much with this here
-              recyclerView.setAdapter(mAdapter);
+              //extract the individual details in jsonString
+              existingCategoryList = extractCategoryList(response);
 
             } catch (Exception e) {
               e.printStackTrace();
             }
 
-            // refreshing recycler view
-            mAdapter.notifyDataSetChanged();
+            //context, layout, list of users
+            CategoryListAdapter userAdapter = new CategoryListAdapter(getApplicationContext(), R.layout.categorylist_dropdown_layout, existingCategoryList);
+
+            categoryList.setAdapter(userAdapter);
+            categoryList.setThreshold(1);
+
           }
 
 
         }, new Response.ErrorListener() {
       @Override
       public void onErrorResponse(VolleyError error) {
-        // error in getting json
-        // Log.e(TAG, "Error: " + error.getMessage());
-        Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+
       }
     })
 
@@ -299,7 +223,7 @@ public class NewContact extends AppCompatActivity  {
         //phoneNoofUser is the value we get from Android, the user's phonenumber.
         //the key,KEY_PHONENUMBER_USER, is "phonenumberofuser". When we see "phonenumberofuser" in our php,
         //put in phoneNoofUser
-        params.put(KEY_PHONENUMBER_USER, "+353872934480");
+        params.put("phonenumberofuser", phoneNoofUserCheck);
         return params;
 
       }
@@ -307,55 +231,47 @@ public class NewContact extends AppCompatActivity  {
 
 
     AppController.getInstance().addToRequestQueue(request);
+
   }
 
+  //for dropdown autocomplete of categories -
+  //extract the individual details in jsonString
+  private ArrayList<CategoryList> extractCategoryList(String response) {
 
-  // listening to search query text change
-  actv.addTextChangedListener(new actv.OnQueryTextListener()
+    ArrayList<CategoryList> list = new ArrayList<>();
 
-  {
+    try {
+      JSONObject rootJO = new JSONObject(response);
+
+      //break down the array in the JSON object
+      JSONArray userJA = rootJO.getJSONArray("results");
+
+      for (int i2 = 0; i2 < userJA.length(); i2++) {
+
+        JSONObject jo = userJA.getJSONObject(i2);
+
+        int id = jo.getInt("cat_id");
+        String name = jo.getString("cat_name");
+
+        //make a new categoryList object
+        CategoryList categoryList = new CategoryList(id, name);
+
+        //add the object to the list array
+        list.add(categoryList);
+
+        Log.e("Parse JSON", "id: " + id + " name: " + name);
+      }
+
+      // Toast.makeText(getApplicationContext(), existingCategoryList.toString(), Toast.LENGTH_LONG).show();
 
 
-    @Override
-    public boolean onQueryTextSubmit (String query){
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
 
-    // hidePDialog();
-
-    // filter recycler view when query submitted
-    mAdapter.getFilter().filter(query);
-    return false;
+    return list;
   }
 
-    @Override
-    public boolean onQueryTextChange (String query){
-
-    //WILL CRASH IF UNCOMMENTED
-    //recyclerView.setAdapter(mAdapter);
-    //sharedReviewList.clear();
-
-    //if the searchView is empty
- /*           if (searchView.getQuery().length() == 0) {
-
-                //show the logged-in users reviews, not the searched categories
-                recyclerView.setAdapter(pAdapter);
-                pAdapter.notifyDataSetChanged();
-
-                //show the recyclerview, hide the noResults textview
-                recyclerView.setVisibility(View.VISIBLE);
-                noResultsFoundView.setVisibility(View.GONE);
-
-            } else {*/
-    //if there's text in the search box
-    fetchContacts();
-
-    //Log.e(TAG, "phonno2 is: " + phoneNoofUser);
-    // filter recycler view when text is changed
-    mAdapter.getFilter().filter(query);
-  }
-    return false;
-
-    //}
-  }
 
   //code for the '<', back button. Go back to PopulistoListView, as defined
   //in Manifest, PARENT_ACTIVITY
@@ -418,8 +334,13 @@ public class NewContact extends AppCompatActivity  {
         selectContact.setName(phoneNameofContact);
         selectContact.setPhone(phoneNumberofContact);
 
+
+
       }
 
+      //call the getCategoryList function, it will load all the categories
+      //in autocompletetextview available to own-user
+      getCategoryList();
       return null;
 
     }
@@ -487,7 +408,7 @@ public class NewContact extends AppCompatActivity  {
         //public_or_private column, if saved in this state
         public_or_private = 2;
 
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
 
         recyclerView.setAdapter(adapter);
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
@@ -532,7 +453,7 @@ public class NewContact extends AppCompatActivity  {
         //public_or_private column, if saved in this state
         public_or_private = 1;
 
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
 
         recyclerView.setAdapter(adapter);
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
@@ -575,7 +496,7 @@ public class NewContact extends AppCompatActivity  {
         //public_or_private column, if saved in this state
         public_or_private = 0;
 
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
 
         recyclerView.setAdapter(adapter);
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));

@@ -343,17 +343,17 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           @Override
           public void onResponse(String response) {
 
-            // Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+             //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
 
             //response will be like:
 
             //[{"cat_name":"vet",
             // "user_review_ids":[2],
-            // "private_review_ids":[],
-            // "public_review_ids":[],
+            // "private_review_ids":[3,4,5],
+            // "public_review_ids":[6,7,8,9,10],
             // "user_personal_count":1,
-            // "private_count":0,
-            // "public_count":0}, etc
+            // "private_count":3,
+            // "public_count":5}, etc
 
             try {
 
