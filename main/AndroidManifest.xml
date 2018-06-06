@@ -5,7 +5,7 @@
     android:versionName="1.0">
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="14"
         android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.SEND_SMS" />
@@ -23,15 +23,17 @@
     <android:uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+
 
 
     <application
-        android:name="com.example.chris.tutorialspoint.AppController"
+        android:name="com.example.chris.populisto.AppController"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name="com.example.chris.tutorialspoint.VerifyUserPhoneNumber"
+            android:name="com.example.chris.populisto.VerifyUserPhoneNumber"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,47 +42,52 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.chris.tutorialspoint.PopulistoListView"
+            android:name="com.example.chris.populisto.PopulistoListView"
             android:launchMode="singleInstance"></activity>
         <meta-data
             android:name="android.app.searchable"
             android:resource="@xml/searchable" />
+
+
         <intent-filter>
             <action android:name="android.intent.action.SEARCH" />
         </intent-filter>
             />
-        <activity android:name="com.example.chris.tutorialspoint.CountryCodes" />
+        <activity android:name="com.example.chris.populisto.CountryCodes" />
         <activity
-            android:name="com.example.chris.tutorialspoint.ViewContact"
+            android:name="com.example.chris.populisto.ViewContact"
             android:noHistory="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chris.tutorialspoint.PopulistoListView" />
+                android:value="com.example.chris.populisto.PopulistoListView" />
         </activity>
         <activity
-            android:name="com.example.chris.tutorialspoint.SharedReviews.SharedViewContact"
+            android:name="com.example.chris.populisto.SharedReviews.SharedViewContact"
             android:noHistory="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chris.tutorialspoint.PopulistoListView" />
+                android:value="com.example.chris.populisto.PopulistoListView" />
         </activity>
-        <activity android:name="com.example.chris.tutorialspoint.EditContact">
+        <activity android:name="com.example.chris.populisto.EditContact">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chris.tutorialspoint.PopulistoListView" />
+                android:value="com.example.chris.populisto.PopulistoListView" />
         </activity>
 
         <activity
-            android:name="com.example.chris.tutorialspoint.NewContact"
+            android:name="com.example.chris.populisto.NewContact"
             android:configChanges="orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chris.tutorialspoint.PopulistoListView" />
+                android:value="com.example.chris.populisto.PopulistoListView" />
         </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCZVOL4rbGi7HTosLYB5xxk33bCaWNY51I"/>
     </application>
 
 </manifest>

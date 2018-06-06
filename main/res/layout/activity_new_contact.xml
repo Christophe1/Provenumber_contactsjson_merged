@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.chris.tutorialspoint.NewContact">
+    tools:context="com.example.chris.populisto.NewContact">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -69,7 +69,7 @@
                     android:background="@drawable/textboxes_for_contact"
                     android:hint="Phone" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/textViewAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
 
 
      <fragment
-         android:name="com.example.chris.tutorialspoint.ButtonSharingFragment"
+         android:name="com.example.chris.populisto.ButtonSharingFragment"
          android:id = "@+id/myFragment"
          android:layout_width="fill_parent"
          android:layout_height="fill_parent"
