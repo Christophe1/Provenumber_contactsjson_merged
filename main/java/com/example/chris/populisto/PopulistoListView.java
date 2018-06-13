@@ -543,7 +543,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //remove [ and ] so we have a string of 56,23,87
     selectOwnUserReviews = selectOwnUserReviews.substring(1, selectOwnUserReviews.length() - 1);
 
-    Toast.makeText(getApplicationContext(), selectOwnUserReviews, Toast.LENGTH_LONG).show();
+    //Toast.makeText(getApplicationContext(), selectOwnUserReviews, Toast.LENGTH_LONG).show();
 
     //convert [56,23,87] to a string
     selectPrivateReviews = Arrays.toString(category.getPrivateReviewIds());
@@ -556,7 +556,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     selectPublicReviews = selectPublicReviews.substring(1, selectPublicReviews.length() - 1);
 
 
-    // Toast.makeText(getApplicationContext(), selectOwnUserReviews + " and " + selectPrivateReviews, Toast.LENGTH_LONG).show();
+     Toast.makeText(getApplicationContext(), selectOwnUserReviews + " and " + selectPrivateReviews  + " and " + selectPublicReviews, Toast.LENGTH_LONG).show();
     //System.out.println("PopulistoListView newarray :" + jsonMatchingContacts);
 
     show_own_private_public_Reviews();
@@ -574,7 +574,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           @Override
           public void onResponse(String response) {
 
-            //Toast.makeText(getApplicationContext(),response, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),response, Toast.LENGTH_LONG).show();
+            System.out.println("response is :" + response);
 
             //clear the list of shared reviews, start afresh on new filter
             sharedReviewList.clear();
@@ -612,6 +613,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                 // and create a new sharedReview, getting details of user's reviews in the db
                 SharedReview sharedReview = new SharedReview();
+
+                //System.out.println("tesst1");
 
                 sharedReview.setphoneNameonPhone("U");
 
@@ -660,14 +663,18 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                 SharedReview sharedReview = new SharedReview();
 
-                //get the string from sharedpreferences, AllPhonesandNamesofContacts
+                //get the string from sharedpreferences, AllPhonesandNamesofContacts,
+                //which we put in VerifyUserPhoneNumber,
                 //it will be like [{"phone_number":"+123456","name":"Jim Smith"}, etc...]
                 //we want this so we can display phone name in recyclerView
                 SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                 String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
+                System.out.println("all phones and names string :" + json_array);
 
                 //convert the string above into a json array
                 JSONArray jsonArray = new JSONArray(json_array);
+
+                System.out.println("all phones and names :" + jsonArray);
 
                 //get 0,1 or 2 value, for Just U, private or public
                 sharedReview.setPublicorprivate(obj.getString("publicorprivate"));

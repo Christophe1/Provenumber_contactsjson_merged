@@ -29,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.chris.populisto.SharedReviews.SharedReview;
 import com.example.tutorialspoint.R;
 import com.google.gson.Gson;
 import com.google.i18n.phonenumbers.NumberParseException;
@@ -39,8 +40,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -91,7 +96,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     // ArrayList called sharedReviews that will contain sharedReviews info
     //we use this to pass jsonArrayofPhonesandNamesofContacts to sharedReviews,
     //so we can put the phone name beside the review
-    // ArrayList<SharedReview> sharedReviews;
+     //ArrayList<SharedReview> sharedReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +124,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         // txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
 
         // txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
+
 
 
         //execute the AsyncTask, do stuff in the background
@@ -321,7 +327,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                     editor.commit();
                     editor2.commit();
 
-                    //Here we want to add the user's phone number to the user table
+                    //Here we want to add the user's phone number, timestamp and the hash
+                    //(ts + phone) to the user table
                     //using Volley. this is a once-off
                     registerUser();
                     //get all the contacts on the user's phone
@@ -379,10 +386,25 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         }
     }
 
-    // register the user's phone number in the user table, this is called
+    //this is done once, on registeration.
+    // register the user's phone number, timestamp and the corresponding hash in the user table, this is called
     //when the phone number is verified, when the originating number = sent to number
     private void registerUser() {
         Toast.makeText(VerifyUserPhoneNumber.this, "the numbers match dude" + phoneNoofUser, Toast.LENGTH_LONG).show();
+
+        //let's get the current date and time, for time_stamp
+        SimpleDateFormat s = new SimpleDateFormat("yyyy-dd-MM hh:mm:ss");
+        final String time_stamp = s.format(new Date());
+
+        //make a password combining time_stamp and phone number
+        String password = time_stamp + phoneNoofUser;
+        final String hashedPassWord = MD5(password);
+        System.out.println("MD5 " + hashedPassWord);
+
+        System.out.println("date format : " + time_stamp);
+
+
+
 
         //REGISTER_URL is insert.php
         StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
@@ -408,7 +430,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 //the key is "phonenumberofuser",
                 // When we see these in our php,  $_POST["phonenumberofuser"],
                 //put in the value from Android
+                //Likewise, hashpass is the key in PHP etc..
                 params.put("phonenumberofuser", phoneNoofUser);
+                params.put("hashpass", hashedPassWord);
+                params.put("timestamp", time_stamp);
                 return params;
 
             }
@@ -630,9 +655,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             // System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
             //System.out.println("JSON object datatoSend: " + dataToSend.toString());
 
-/*
+
             //put jsonArrayAllPhonesandNamesofContacts into shared preferences file as a String
-            //Convert back to Json later, in the adapter
+            //We will convert back to Json later, in PopulistoListView,for linking phone no with contact
             SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
             //we want to edit SharedPreferences
             SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -641,7 +666,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             //commit the string
             editor.commit();
             System.out.println("jsonArrayAllPhonesandNamesofContacts: " + jsonArrayAllPhonesandNamesofContacts.toString());
-*/
+
 
 
         } catch (final JSONException e) {
@@ -753,6 +778,26 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 
+    }
+
+    //function to convert string to md5 hash
+    public static String MD5(String input){
+
+        try {
+
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            //convert to bytes
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger number = new BigInteger(1,messageDigest);
+            String hashtext = number.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        }
     }
 
 
