@@ -127,7 +127,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         System.out.println("SelectPhoneContactAdapter MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
         //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
-        //with this we will put all phone numbers of contacts on user's phone into our ListView in NewContact activity
+        //with this we will put all phone numbers of contacts on user's phone into our recyclerView in NewContact activity
         SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(context_type);
         Gson gson = new Gson();
         String json = sharedPreferencesallPhonesofContacts.getString("allPhonesofContacts", "");

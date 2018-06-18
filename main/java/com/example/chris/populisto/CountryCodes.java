@@ -54,7 +54,7 @@ public class CountryCodes extends AppCompatActivity {
               //  String text = myTextView.getText().toString();
               //  Toast.makeText(getApplicationContext(),text, Toast.LENGTH_LONG).show();
 
-                //start Main activity, taking the Country Code
+                //start VerifyUserPhoneNumber activity, taking the Country Code
                 Intent myIntent = new Intent(CountryCodes.this, VerifyUserPhoneNumber.class);
                 myIntent.putExtra("CountryCode", parts[0]);
                 CountryCodes.this.startActivity(myIntent);
