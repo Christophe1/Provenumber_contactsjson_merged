@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,6 +31,8 @@ public class CountryCodes extends AppCompatActivity {
     ArrayList<String> items;
     ArrayList<String> items2;
 
+    String CountryCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +44,7 @@ public class CountryCodes extends AppCompatActivity {
         items2=new ArrayList<String>();
         adapter=new ArrayAdapter(this, R.layout.listview_country_codes_items,R.id.txt,items);
         listView.setAdapter(adapter);
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -109,5 +113,19 @@ public class CountryCodes extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
+    //code for the '<', back button. Go back to VerifyUserPhoneNumber
+    @Override
+    public void onBackPressed() {
+        // get the string value of "CountryCode" in VerifyPhoneNumber
+        Intent myIntent = CountryCodes.this.getIntent();
+        CountryCode = myIntent.getStringExtra("CountryCode");
+        Toast.makeText(getApplicationContext(),CountryCode, Toast.LENGTH_LONG).show();
 
+        //Now, post back the same CountryCode value to VerifyUserPhoneNumber
+        Intent j = new Intent(getApplicationContext(), VerifyUserPhoneNumber.class);
+        j.putExtra("CountryCode", CountryCode);
+        startActivity(j);
+        //close CountryCodes.java activity
+        finish();
+    }
 }

@@ -176,8 +176,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       //  when the activity loads, check to see if CountryCode is in there,if the user is
       // already registered, by checking the MyData XML file
       // We need this for putting phone contacts into E164
-      //SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-      //CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
+      SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+      CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
 
 //            Log.v("index value", phoneNoofUser);
 //            Log.v("index value", CountryCode);
@@ -204,9 +204,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 //then show the registration page
                 sendSMSandRegisterUser();
 
-              }
-
-              else {
+              } else {
                 // if it is registered, if "True", then
                 //get all the contacts on the user's phone
                 getPhoneContacts();
@@ -287,12 +285,18 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         txtCountryCode = (TextView) findViewById(R.id.txtCountryCode);
 
         //when 'Select Country' Text is clicked
-        //load the new activity CountryCodes showing the list of all countries
+        //load the activity CountryCodes showing the list of all countries
         txtSelectCountry.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
 
             Intent myIntent = new Intent(VerifyUserPhoneNumber.this, CountryCodes.class);
+            //bring over the string value CountryCode if it exists, from VerifyPhoneNumber to CountryCodes.java
+            //we do this so, if a Country Code has been chosen for the Country Code field in VerifyPhoneNumber,
+            // and the "<" button is pressed in CountryCOdes.java,
+            //it will revert to the already chosen Country Code.
+            myIntent.putExtra("CountryCode", CountryCode);
+
             VerifyUserPhoneNumber.this.startActivity(myIntent);
           }
         });
@@ -691,24 +695,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
       }
 
-/*
-            ArrayList<String> listdata = new ArrayList<String>();
-            JSONArray jArray = jsonArrayAllPhonesandNamesofContacts;
-            if (jArray != null) {
-                for (int i=0;i<jArray.length();i++){
-                    listdata.add(jArray.getString(i));
-                }
-                System.out.println("listdata arraylist: " + listdata.toString());
-                //we will save the array list allPhonesofContacts,
-                //with this we will put all phone numbers of contacts on user's phone into our ListView, in other activities
-                SharedPreferences listdatas = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                SharedPreferences.Editor prefsEditor = listdatas.edit();
-                Gson gson = new Gson();
-                String json = gson.toJson(listdatas);
-                prefsEditor.putString("allNamesandPhonesofContacts", json);
-                prefsEditor.commit();
-            }
-*/
 
       System.out.println("all of the json array phones and names are :" + jsonArrayAllPhonesandNamesofContacts);
       System.out.println("the amount in allPhonesofContacts :" + allPhonesofContacts.size());
