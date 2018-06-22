@@ -2,6 +2,7 @@ package com.example.chris.populisto;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -86,6 +88,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   Button btnSendSMS;
   EditText txtphoneNoofUser;
   String phoneNoofUser;
+  String phoneNoofUserInternationalFormat;
   //the generated hash value
   String hashedPassWord;
   String time_stamp;
@@ -100,6 +103,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   TextView txtCountryCode;
   String CountryCode;
+  String CountryName;
   String phoneNoofUserbeforeE164;
 
   // ArrayList called sharedReviews that will contain sharedReviews info
@@ -159,7 +163,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
     @Override
     protected Void doInBackground(Void... params) {
-
 
       // when the activity loads, check to see if phoneNoofUser is using the App,if the user is
       // already registered.
@@ -272,32 +275,35 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
 
-        // GlobalFunctions simplemessage = new GlobalFunctions();
-        //GlobalFunctions.simpleMessage(VerifyUserPhoneNumber.this,"buddy buddy");
-
-        //GlobalFunctions simplemessage2 = new GlobalFunctions();
-        //simplemessage2.simpleMessage2();
-
         txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
 
         txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
 
         txtCountryCode = (TextView) findViewById(R.id.txtCountryCode);
 
+
+
         //when 'Select Country' Text is clicked
         //load the activity CountryCodes showing the list of all countries
+        //and retain details from VerifyUserPhoneNumber
         txtSelectCountry.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
 
-            Intent myIntent = new Intent(VerifyUserPhoneNumber.this, CountryCodes.class);
-            //bring over the string value CountryCode if it exists, from VerifyPhoneNumber to CountryCodes.java
-            //we do this so, if a Country Code has been chosen for the Country Code field in VerifyPhoneNumber,
-            // and the "<" button is pressed in CountryCOdes.java,
-            //it will revert to the already chosen Country Code.
-            myIntent.putExtra("CountryCode", CountryCode);
+            SelectCountryorCodeClicked();
 
-            VerifyUserPhoneNumber.this.startActivity(myIntent);
+          }
+        });
+
+        //when 'Select Code' Text is clicked
+        //load the activity CountryCodes showing the list of all countries
+        //and retain details from VerifyUserPhoneNumber
+        txtCountryCode.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+
+            SelectCountryorCodeClicked();
+
           }
         });
 
@@ -308,12 +314,50 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         CountryCode = myIntent.getStringExtra("CountryCode");
         txtCountryCode.setText(CountryCode);
 
+        //put in the country name selected
+        //by the user in CountryCodes.java
+        CountryName = myIntent.getStringExtra("CountryName");
+        txtSelectCountry.setText(CountryName);
+
+        //put in the phone number entered in VerifyUserPhoneNumber
+        //before having gone on to CountryCodes.java
+        phoneNoofUserbeforeE164 = myIntent.getStringExtra("PhoneNumber");
+        txtphoneNoofUser.setText(phoneNoofUserbeforeE164);
+
+
+
+
+
 
         //When the Send button is clicked, send the message
         btnSendSMS.setOnClickListener(new View.OnClickListener() {
           public void onClick(View view) {
-            System.out.println("you clicked it, send message");
-            sendSMSMessage();
+
+            //add the country code onto the phone number, before we parse it
+            phoneNoofUserInternationalFormat = String.valueOf(CountryCode) + String.valueOf(txtphoneNoofUser.getText().toString());
+
+            PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+            try {
+              //For the second parameter, CountryCode, put whatever country code the user picks
+              //we pass it through phoneUtil to get rid of first 0 like in +353087 etc
+              Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNoofUserInternationalFormat, CountryCode);
+
+              //phoneNoofUser in the correct format
+              phoneNoofUserInternationalFormat = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
+
+            } catch (NumberParseException e) {
+              System.err.println("NumberParseException was thrown: " + e.toString());
+            }
+
+            Toast.makeText(getApplicationContext(), "user's number is:" + phoneNoofUserInternationalFormat, Toast.LENGTH_LONG).show();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(btnSendSMS.getContext());
+            String alert1 = "We will be verifying the phone number:";
+            String alert2 = "Is this OK, or would you like to edit the number?";
+            builder.setMessage(alert1 + "\n" + "\n" + phoneNoofUserInternationalFormat + "\n" + "\n" + alert2).setPositiveButton("OK", dialogClickListener)
+                .setNegativeButton("EDIT", dialogClickListener).show();
+
+
 
           }
         });
@@ -327,9 +371,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   protected void sendSMSMessage() {
 
+
     IntentFilter filter = new IntentFilter();
 //        the thing we're looking out for is received SMSs
     filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+
 
     //this is to check the incoming text message
     receiver = new BroadcastReceiver() {
@@ -428,9 +474,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     };
     registerReceiver(receiver, filter);
 
-    //this is the number the user enters in the Phone Number textbox
-    //We need to parse this, to make it into E.164 format
-    phoneNoofUserbeforeE164 = txtphoneNoofUser.getText().toString();
+    System.out.println("you clicked it, send message");
 
     //add the country code onto the phone number, before we parse it
     phoneNoofUser = String.valueOf(CountryCode) + String.valueOf(phoneNoofUserbeforeE164);
@@ -825,6 +869,27 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   }
 
+  //You sure you want to send a text to this number? Edit it?
+  DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+      switch (which) {
+        case DialogInterface.BUTTON_POSITIVE:
+          //OK button clicked
+          //send the text
+          sendSMSMessage();
+
+        case DialogInterface.BUTTON_NEGATIVE:
+
+          //close the activity
+          dialog.dismiss();
+      }
+    }
+  };
+
+
+
+
   //function to convert string to md5 hash
   public static String MD5(String input) {
 
@@ -845,5 +910,31 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     }
   }
 
+  private void SelectCountryorCodeClicked(){
+
+    //this is the number the user enters in the Phone Number textbox
+    //We need to parse this when sent, to make it into E.164 format
+    phoneNoofUserbeforeE164 = txtphoneNoofUser.getText().toString();
+
+    // txtphoneNoofUser.setText(phoneNoofUserbeforeE164);
+    //System.out.println("the number is " + phoneNoofUserbeforeE164);
+
+    Intent myIntent = new Intent(VerifyUserPhoneNumber.this, CountryCodes.class);
+    //bring over the string value CountryCode if it exists, from VerifyPhoneNumber to CountryCodes.java
+    //we do this so, if a Country Code has been chosen for the Country Code field in VerifyPhoneNumber,
+    // and the "<" button is pressed in CountryCodes.java,
+    //it will revert to the already chosen Country Code.
+    myIntent.putExtra("CountryCode", CountryCode);
+
+    //same for Country Name
+    myIntent.putExtra("CountryName", CountryName);
+
+    //also, we want to keep track of the phone number, if it has been entered in VerifyPhoneNumber
+    myIntent.putExtra("PhoneNumber", phoneNoofUserbeforeE164);
+    Toast.makeText(getApplicationContext(), "vvv" + phoneNoofUserbeforeE164, Toast.LENGTH_LONG).show();
+
+    VerifyUserPhoneNumber.this.startActivity(myIntent);
+
+  }
 
 }

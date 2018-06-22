@@ -30,34 +30,18 @@
  />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_weight ="1"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
         android:layout_marginTop="18dp"
         android:textSize="18dp"
         android:id="@+id/txtSelectCountry"
-        android:text="Select Country"
+        android:hint="Select Country"
         android:layout_alignRight="@+id/txtphoneNoofUser"
         android:layout_alignEnd="@+id/txtphoneNoofUser"
         android:layout_alignLeft="@+id/textView1"
         android:layout_alignStart="@+id/textView1" />
-
-
-
-
-<!--
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/btnSendSMS"
-        android:layout_alignEnd="@+id/btnSendSMS"
-        android:layout_marginBottom="11dp"
-        android:id="@+id/editText2" />
-
--->
 
 
     <TextView
@@ -77,7 +61,7 @@
         android:inputType="phone"
         android:textColorHint="@color/colorPrimaryDark"
         android:layout_below="@+id/textView2"
-        android:layout_marginTop="57dp"
+        android:layout_marginTop="75dp"
         android:layout_marginBottom="57dp"
         android:layout_alignLeft="@+id/textView1"
 
@@ -104,7 +88,7 @@
         android:id="@+id/txtSMSMayApply"
         android:hint="Standard SMS Charges may apply."
         android:textColorHint="@color/colorPrimaryDark"
-        android:gravity="center"
+        android:layout_centerHorizontal="true"
         />
 
     </RelativeLayout>
