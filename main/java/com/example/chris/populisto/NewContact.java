@@ -24,6 +24,7 @@ import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -138,17 +139,27 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
     AutoCompTextViewAddress.setAdapter(mPlaceAutoCompleteAdapter);
 
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    //put in a toolbar
+    Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    //Show the back button (???)
-    ActionBar actionbar = getSupportActionBar();
-    actionbar.setDisplayHomeAsUpEnabled(true);
+    //remove the app name from the toolbar (don't want it twice)
+    getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-    //show the App title
-    //actionbar.setTitle("Populisto");
+    //into the toolbar, inflate the back button and Populisto title,
+    //which we find in toolbar_custom_view_layout.xml
+     View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
+     toolbar.addView(logo);
 
-   // toolbar.setContentInsetsAbsolute(0, 0);
+    //for the back arrow, tell it to close the activity, when clicked
+    ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
+    backButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        finish();
+      }
+    });
+
 
     //we are fetching details for the recyclerview - the name, numbers, matching contacts...
     LoadContact loadContact = new LoadContact();

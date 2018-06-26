@@ -24,32 +24,3 @@
     <include layout="@layout/content_main" />
 
 </android.support.design.widget.CoordinatorLayout>
-
-
-<!--*********-->
-<!--
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.chris.tutorialspoint.PopulistoListView">
-
-    <include layout="@layout/app_bar"
-        android:id = "@+id/app_bar"
-        >
-    </include>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
-        android:scrollbars="vertical"
-        android:layout_below="@id/app_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:divider="@color/list_divider"
-        android:dividerHeight="1dp"
-        android:listSelector="@drawable/list_row_selector"
-        android:background="@color/color_seven"/>
-
-</RelativeLayout>-->

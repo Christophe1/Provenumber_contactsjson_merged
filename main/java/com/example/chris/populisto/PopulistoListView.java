@@ -162,13 +162,16 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     super.onCreate(savedInstanceState);
     setContentView(R.layout.phone_listview_contacts);
 
-    //set the layout for the searchview widget
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+    //set the layout for the toolbar
+    //searchview will appear inside of this
+    Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
 
     // toolbar
     //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setTitle(R.string.toolbar_title);
+    //getSupportActionBar().setTitle(R.string.toolbar_title);
 
 
     //get the own user's phone number value from shared preferences file instead
@@ -646,9 +649,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
   @Override
-  //when a fetched category, the list of reviews
-  //shared with logged in-user including his own, is clicked in recyclerView...
-  public void onContactSelected(Category category) {
+  //when a fetched category is clicked in recyclerView
+  //show the list of reviews
+  //shared with logged in-user including his own,
+  public void onCategorySelected(Category category) {
+
+    Toast.makeText(getApplicationContext(), "cat list!", Toast.LENGTH_LONG).show();
+
 
     //convert [56,23,87] to a string
     selectOwnUserReviews = Arrays.toString(category.getUserReviewIds());
@@ -677,6 +684,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   //when a fetched category in recyclerView is clicked, do this function
   private void show_own_private_public_Reviews() {
+
+    Toast.makeText(getApplicationContext(), "view the clicked on review", Toast.LENGTH_LONG).show();
 
     //post selectOwnUserReviews string (and private and public) to
     // User_Private_Public_Reviews_URL.php and from that
@@ -822,6 +831,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                       //then rip out the other part of the object, the name in Contacts
                       //of the person who made the review
                       sharedReview.setphoneNameonPhone(object.getString("name"));
+
+                      String convertedToString = object.getString("name");
+                      System.out.println("convertedToString:" + convertedToString);
+
+
                     }
 
                   } catch (JSONException e) {

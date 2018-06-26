@@ -265,7 +265,7 @@ public class SharedViewContact extends AppCompatActivity {
                 publicorprivate2.setTextColor(Color.parseColor("#0A7FDA"));
                 shared_status = "Phone Contacts";
                 textphoneNameonPhone.setTextColor(Color.parseColor("#0A7FDA"));
-                textphoneNameonPhone.setText("phoneNameofContact");
+                textphoneNameonPhone.setText(phoneNameonPhone);
               }
 
               if (pub_or_priv == 2) {

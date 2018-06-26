@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chris.populisto.ViewContact;
 import com.example.tutorialspoint.R;
@@ -145,10 +146,13 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
       //then show that review
       public void onClick(View v) {
 
+        Toast.makeText(context_type, "about bloody time", Toast.LENGTH_LONG).show();
 
 
           SharedReview sharedReview = (SharedReview) SharedPopulistoReviewsAdapter.getItem(position);
 
+        //If getItemViewType = 1, the the logged-in user owns the review
+        //so show edit button, list of contacts review is shared with etc...
         if (viewHolder.getItemViewType() == 1) {
           //we want to pass the review_id and PhoneNumberofUserFromDB
           // of the sharedReview being clicked
@@ -179,6 +183,9 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
           //pass the PhoneNumberofUserFromDB to ViewContact class
           //the key is "PhoneNumberofUserFromDB"
           i.putExtra("PhoneNumberofUserFromDB", sharedReview.getPhoneNumberofUserFromDB());
+
+          //i.putExtra("PhoneNameonPhone", sharedReview.getPhoneNameonPhone());
+
           v.getContext().startActivity(i);
 
         }

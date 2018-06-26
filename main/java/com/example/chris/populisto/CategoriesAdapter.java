@@ -44,7 +44,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
         @Override
         public void onClick(View view) {
           // send selected contact in callback
-          listener.onContactSelected(categoryListFiltered.get(getAdapterPosition()));
+          listener.onCategorySelected(categoryListFiltered.get(getAdapterPosition()));
         }
       });
     }
@@ -183,7 +183,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
 
   public interface CategoriesAdapterListener {
-    void onContactSelected(Category category);
+    void onCategorySelected(Category category);
   }
 
 
