@@ -1,5 +1,6 @@
 package com.example.chris.populisto;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,6 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 public class VerifyUserPhoneNumber extends AppCompatActivity {
@@ -105,6 +107,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   String CountryCode;
   String CountryName;
   String phoneNoofUserbeforeE164;
+
+  private ProgressDialog pDialog;
 
   // ArrayList called sharedReviews that will contain sharedReviews info
   //we use this to pass jsonArrayofPhonesandNamesofContacts to sharedReviews,
@@ -282,7 +286,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         txtCountryCode = (TextView) findViewById(R.id.txtCountryCode);
 
 
-
         //when 'Select Country' Text is clicked
         //load the activity CountryCodes showing the list of all countries
         //and retain details from VerifyUserPhoneNumber
@@ -325,10 +328,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         txtphoneNoofUser.setText(phoneNoofUserbeforeE164);
 
 
-
-
-
-
         //When the Send button is clicked, send the message
         btnSendSMS.setOnClickListener(new View.OnClickListener() {
           public void onClick(View view) {
@@ -357,8 +356,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             builder.setMessage(alert1 + "\n" + "\n" + phoneNoofUserInternationalFormat + "\n" + "\n" + alert2).setPositiveButton("OK", dialogClickListener)
                 .setNegativeButton("EDIT", dialogClickListener).show();
 
-
-
           }
         });
 
@@ -371,7 +368,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   protected void sendSMSMessage() {
 
-
     IntentFilter filter = new IntentFilter();
 //        the thing we're looking out for is received SMSs
     filter.addAction("android.provider.Telephony.SMS_RECEIVED");
@@ -382,12 +378,15 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       @Override
       public void onReceive(Context context, Intent intent)
 
+
+
       {
         Bundle extras = intent.getExtras();
 
         if (extras == null)
           return;
 
+        hidePDialog();
         SmsMessage smsMessage;
 
         //apparently this code deals with the deprecated createFromPdu
@@ -406,12 +405,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
         }
 
-        Toast.makeText(getApplicationContext(), "Originating number" + origNumber, Toast.LENGTH_LONG).show();
-        Toast.makeText(getApplicationContext(), "Sent to number" + phoneNoofUser, Toast.LENGTH_LONG).show();
+       // Toast.makeText(getApplicationContext(), "Originating number" + origNumber, Toast.LENGTH_LONG).show();
+       // Toast.makeText(getApplicationContext(), "Sent to number" + phoneNoofUser, Toast.LENGTH_LONG).show();
 
         //when the text message is received, see if originating number matches the
         //sent to number
         if (origNumber.equals(phoneNoofUser)) {
+
+          Toast.makeText(getApplicationContext(), "Yabadabadoo!", Toast.LENGTH_LONG).show();
 
           //save the phone number so this process is skipped in future
           SharedPreferences sharedPreferencesphoneNoofUser = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -459,11 +460,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           //convert all contacts on the user's phone to JSON
           convertNumberstoJSON();
 
-          //start next activity, taking the phone number
-/*                    Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
-                    myIntent.putExtra("keyName", phoneNoofUser);
-                    VerifyUserPhoneNumber.this.startActivity(myIntent);*/
-
 
         } else {
           Toast.makeText(getApplicationContext(), "Number not correct.", Toast.LENGTH_LONG).show();
@@ -474,11 +470,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     };
     registerReceiver(receiver, filter);
 
-    System.out.println("you clicked it, send message");
+    //this is the number the user enters in the Phone Number textbox
+    //We need to parse this, to make it into E.164 format (like +353 etc...)
+    phoneNoofUserbeforeE164 = txtphoneNoofUser.getText().toString();
 
     //add the country code onto the phone number, before we parse it
     phoneNoofUser = String.valueOf(CountryCode) + String.valueOf(phoneNoofUserbeforeE164);
 
+    //Now make it into E.164...
     PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
     try {
       //For the second parameter, CountryCode, put whatever country code the user picks
@@ -492,14 +491,26 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       System.err.println("NumberParseException was thrown: " + e.toString());
     }
 
+    //for our verification code
+    Random rand = new Random();
+    int n1 = rand.nextInt(999) + 1;
+    int n2 = rand.nextInt(999) + 1;
+    String verification_code = n1 + " - " + n2;
 
     //this is the text of the SMS received
-    String message = "Verification test code. Please ignore this message. Thank you.";
+    String message = "Your Populisto verification code is: " + "\n" + verification_code +
+        "\n" + "\n" + "You can delete this message.";
 
     try {
       SmsManager smsManager = SmsManager.getDefault();
       smsManager.sendTextMessage(phoneNoofUser, null, message, null, null);
-      Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+
+      pDialog = new ProgressDialog(this);
+      // Showing progress dialog until we get country list, response from server
+      pDialog.setMessage("Waiting for text message...");
+      pDialog.show();
+      // Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+
 
     } catch (Exception e) {
       Toast.makeText(getApplicationContext(), "SMS failed, please try again.", Toast.LENGTH_LONG).show();
@@ -559,6 +570,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       receiver = null;
     }
     super.onDestroy();
+    hidePDialog();
   }
 
 
@@ -888,8 +900,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   };
 
 
-
-
   //function to convert string to md5 hash
   public static String MD5(String input) {
 
@@ -910,7 +920,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     }
   }
 
-  private void SelectCountryorCodeClicked(){
+  private void SelectCountryorCodeClicked() {
 
     //this is the number the user enters in the Phone Number textbox
     //We need to parse this when sent, to make it into E.164 format
@@ -937,4 +947,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   }
 
+
+  public void hidePDialog() {
+    if (pDialog != null) {
+      pDialog.dismiss();
+      pDialog = null;
+    }
+
+  }
 }

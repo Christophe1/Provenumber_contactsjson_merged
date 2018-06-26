@@ -69,6 +69,8 @@ public class SharedViewContact extends AppCompatActivity {
   //this is the review that has been clicked in the recyclerView in PopulistoListView.java
   String review_id;
 
+
+
   //the logged-in user's phone number, which we get in SharedPreferences
   //from VerifyUserPhoneNumber
   //to be compared to String phoneNumberofUserFromDB;
@@ -87,9 +89,12 @@ public class SharedViewContact extends AppCompatActivity {
   ArrayList<String> checkedContactsAsArrayList;
 
   //all phone contact numbers, broken down
-  String phoneNumberofContact;
-  //all phone contact names, broken down
-  String phoneNameofContact;
+  //String phoneNumberofContact;
+
+  //the person who made the review,
+  //can be "U", the name of the person who made the review (if a contact)
+  //or a masked phonenumber, if Public, to conceal identity
+  String phoneNameonPhone;
 
   //checkedContacts is a String, we get it from "checkedcontacts", on the server
   String checkedContacts;
@@ -122,6 +127,7 @@ public class SharedViewContact extends AppCompatActivity {
     //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
+    //Bring over
     //System.out.println("ViewContact: selectPhoneContacts " + selectPhoneContacts);
 
     //rv is for holding the phone contacts, invite button, checkbox etc
@@ -247,7 +253,7 @@ public class SharedViewContact extends AppCompatActivity {
               String shared_status = "";
 
               if (pub_or_priv == 0) {
-                //change colour depending on value
+                //change colour of button depending on value
                 publicorprivate2.setTextColor(Color.parseColor("#DA850B"));
                 shared_status = "Just U";
                 //for "U"
@@ -259,14 +265,14 @@ public class SharedViewContact extends AppCompatActivity {
                 publicorprivate2.setTextColor(Color.parseColor("#0A7FDA"));
                 shared_status = "Phone Contacts";
                 textphoneNameonPhone.setTextColor(Color.parseColor("#0A7FDA"));
-                textphoneNameonPhone.setText("U");
+                textphoneNameonPhone.setText("phoneNameofContact");
               }
 
               if (pub_or_priv == 2) {
                 publicorprivate2.setTextColor(Color.parseColor("#2AB40E"));
                 shared_status = "Public";
                 textphoneNameonPhone.setTextColor(Color.parseColor("#2AB40E"));
-                textphoneNameonPhone.setText("U");
+                textphoneNameonPhone.setText("Masked");
               }
 
               //put pub_or_priv in the textbox called publicorprivate

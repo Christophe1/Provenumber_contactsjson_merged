@@ -20,157 +20,174 @@ import java.util.List;
  */
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.MyViewHolder>
-        implements Filterable {
-    private Context context;
-    private List<Category> categoryList;
-    //categoryListFiltered are the names in the filtered list
-    public List<Category> categoryListFiltered;
-    private CategoriesAdapterListener listener;
-    //private List<Category> categoryListFiltered = new ArrayList<>();
+    implements Filterable {
+  private Context context;
+  private List<Category> categoryList;
+  //categoryListFiltered are the names in the filtered list
+  public List<Category> categoryListFiltered;
+  private CategoriesAdapterListener listener;
+  //private List<Category> categoryListFiltered = new ArrayList<>();
 
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        //'sharedWith' is the box for holding (1,0,0)....
-        public TextView name, sharedWith;
-       // public ImageView thumbnail;
+  public class MyViewHolder extends RecyclerView.ViewHolder {
+    //'sharedWith' is the box for holding (1,0,0)....
+    public TextView name, sharedWith;
+    // public ImageView thumbnail;
 
-        public MyViewHolder(View view) {
-            super(view);
-            name = (TextView) view.findViewById(R.id.name);
-            sharedWith = (TextView) view.findViewById(R.id.sharedWith);
-            // thumbnail = view.findViewById(R.id.thumbnail);
+    public MyViewHolder(View view) {
+      super(view);
+      name = (TextView) view.findViewById(R.id.name);
+      sharedWith = (TextView) view.findViewById(R.id.sharedWith);
+      // thumbnail = view.findViewById(R.id.thumbnail);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // send selected contact in callback
-                    listener.onContactSelected(categoryListFiltered.get(getAdapterPosition()));
-                }
-            });
+      view.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          // send selected contact in callback
+          listener.onContactSelected(categoryListFiltered.get(getAdapterPosition()));
         }
+      });
     }
+  }
 
 
-    public CategoriesAdapter(Context context, List<Category> categoryList, CategoriesAdapterListener listener) {
-        this.context = context;
-        this.listener = listener;
-        this.categoryList = categoryList;
-        this.categoryListFiltered = categoryList;
-        //categoryListFiltered = new ArrayList<>();
-    }
+  public CategoriesAdapter(Context context, List<Category> categoryList, CategoriesAdapterListener listener) {
+    this.context = context;
+    this.listener = listener;
+    this.categoryList = categoryList;
+    this.categoryListFiltered = categoryList;
+    //categoryListFiltered = new ArrayList<>();
+  }
 
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.user_row_item_fetch, parent, false);
+  @Override
+  public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    View itemView = LayoutInflater.from(parent.getContext())
+        .inflate(R.layout.user_row_item_fetch, parent, false);
 
-        return new MyViewHolder(itemView);
-    }
+    return new MyViewHolder(itemView);
+  }
 
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+  @Override
+  public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-        final Category category = categoryListFiltered.get(position);
+    final Category category = categoryListFiltered.get(position);
 
-           holder.name.setText(category.getName());
-           holder.sharedWith.setText(Html.fromHtml("(" + "<font color='#DA850B'>" + "U" + "</font>" + "," + "<font color='#0A7FDA'>" + category.getPrivateCount() + "</font>" + "," + "<font color='#009900'>" + category.getPublicCount() + "</font>" + ")"));
-    }
+    holder.name.setText(category.getName());
+    holder.sharedWith.setText(Html.fromHtml("(" + "<font color='#DA850B'>" + "U" + "</font>" + "," + "<font color='#0A7FDA'>" + category.getPrivateCount() + "</font>" + "," + "<font color='#009900'>" + category.getPublicCount() + "</font>" + ")"));
+  }
 
-    @Override
-    public int getItemCount() {
+  @Override
+  public int getItemCount() {
 
-      //  System.out.println("items list size :" + categoryListFiltered.size());
+    //  System.out.println("items list size :" + categoryListFiltered.size());
 
-        //app crashes when this line is not commented
+    //app crashes when this line is not commented
 //        System.out.println("getItemCount is :" + categoryListFiltered.size());
 
-        return categoryListFiltered.size();
-    }
+    return categoryListFiltered.size();
+  }
 
 
+  @Override
+  public Filter getFilter() {
+    return new Filter() {
+      @Override
+      protected FilterResults performFiltering(CharSequence charSequence) {
 
+        //the text entered in the search box
+        //String charStringSpaces = charSequence.toString();
+        String charString = charSequence.toString();
 
+       // String doodoo = "";
+/*        if(charString.equals(" "))
+        {
+          //user_name.setError("Leading Space is not allowed");
+          charString.equals("");
+        }*/
+/*        if(charString.equals(" "))
+        {
+          charString.trim();
+        }*/
 
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
+        //String charString = charStringS
+        //
+        // paces.replace(" ", "");
+        //trimFront(charString);
 
-                //the text entered in the search box
-                String charString = charSequence.toString();
+       // String charString = charStringSpaces.replaceFirst("^\\s*", "");
 
-                //if searchbox is empty, show the whole list
-                if (charString.isEmpty()) {
-                    //Toast.makeText(context, "yupp", Toast.LENGTH_SHORT).show();
+        //String charString = charStringSpaces.trim();
 
-                    categoryListFiltered = categoryList;
-                } else {
-                    List<Category> filteredList = new ArrayList<>();
+        //if searchbox is empty, show the whole list
+        if (charString.isEmpty()) {
+          //Toast.makeText(context, "yupp", Toast.LENGTH_SHORT).show();
 
-                    for (Category row : categoryList) {
+          categoryListFiltered = categoryList;
+        } else {
+          List<Category> filteredList = new ArrayList<>();
 
-                        //split the php title into separate words
-                        String[] title_in_php = row.getName().split(" ");
+          for (Category row : categoryList) {
 
-                        //for every split word
-                        for (String split_title : title_in_php) {
+            //split the php title into separate words
+            String[] title_in_php = row.getName().split(" ");
 
-                            //if the search term entered is a whole word in the title
-                            //for example, "red onions". This is split into "red" and "onions"
-                            //with our 'split' function, above.
-                            //so if the search term starts with "r" or "o", the row will be added
-                            //to the list.
-                            if (split_title.toLowerCase().startsWith(charString.toLowerCase())) {
+            //for every split word
+            for (String split_title : title_in_php) {
 
-                                //add the row to the list
-                                filteredList.add(row);
+              //if the search term entered is a whole word in the title
+              //for example, "red onions". This is split into "red" and "onions"
+              //with our 'split' function, above.
+              //so if the search term starts with "r" or "o", the row will be added
+              //to the list.
+              if (split_title.toLowerCase().startsWith(charString.toLowerCase())) {
 
-                            } else if
-                                //this is for if the title starts with the search term.
-                                //so if the search term starts with "r", "red onions"
-                                //will be added to the list UNLESS it has already been
-                                //added (in the if statement above)
-                                    (row.getName().startsWith(charString.toLowerCase()))
-                            {
+                //add the row to the list
+                filteredList.add(row);
 
-                                //add the row to the list unless it has been added already
-                                if (!filteredList.contains(row)) {
-                                    filteredList.add(row);
+              } else if
+                //this is for if the title starts with the search term.
+                //so if the search term starts with "r", "red onions"
+                //will be added to the list UNLESS it has already been
+                //added (in the if statement above)
+                  (row.getName().startsWith(charString.toLowerCase())) {
 
-                                }
-                            }
-                        }
+                //add the row to the list unless it has been added already
+                if (!filteredList.contains(row)) {
+                  filteredList.add(row);
 
-                    }
-
-                    categoryListFiltered = filteredList;
                 }
-
-                FilterResults filterResults = new FilterResults();
-
-                filterResults.values = categoryListFiltered;
-                return filterResults;
+              }
             }
 
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                categoryListFiltered = (ArrayList<Category>) filterResults.values;
+          }
 
-              //  System.out.println("categoryListFiltered :" + categoryListFiltered.size());
+          categoryListFiltered = filteredList;
+        }
 
-                notifyDataSetChanged();
-            }
-        };
-    }
+        FilterResults filterResults = new FilterResults();
+
+        filterResults.values = categoryListFiltered;
+        return filterResults;
+      }
+
+      @Override
+      protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+        categoryListFiltered = (ArrayList<Category>) filterResults.values;
+
+          System.out.println("categoryListFiltered :" + categoryListFiltered.size());
+
+        notifyDataSetChanged();
+      }
+    };
+  }
+
+
+  public interface CategoriesAdapterListener {
+    void onContactSelected(Category category);
+  }
 
 
 
-
-
-    public interface CategoriesAdapterListener {
-        void onContactSelected(Category category);
-    }
 }
 
 

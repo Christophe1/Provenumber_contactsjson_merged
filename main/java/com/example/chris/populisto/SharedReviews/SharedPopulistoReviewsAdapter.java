@@ -118,7 +118,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
     //String shared_status ="U";
 
     if (pubOrPriv == 0) {
-      //change colour depending on value
+      //change colour of the name depending on value
       ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#DA850B"));
     }
 

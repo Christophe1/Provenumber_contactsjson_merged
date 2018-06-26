@@ -9,11 +9,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -93,6 +96,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
   private AutoCompleteTextView AutoCompTextViewcategoryList;
 
+  //for Google Address
   private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71,136));
   private AutoCompleteTextView AutoCompTextViewAddress;
   private GoogleApiClient mGoogleApiClient;
@@ -140,11 +144,11 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     //Show the back button (???)
     ActionBar actionbar = getSupportActionBar();
     actionbar.setDisplayHomeAsUpEnabled(true);
-    //actionbar.setDisplayShowHomeEnabled(true);
 
     //show the App title
-    actionbar.setTitle("Populisto");
+    //actionbar.setTitle("Populisto");
 
+   // toolbar.setContentInsetsAbsolute(0, 0);
 
     //we are fetching details for the recyclerview - the name, numbers, matching contacts...
     LoadContact loadContact = new LoadContact();
@@ -181,6 +185,35 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     addressname = (EditText) findViewById(R.id.textViewAddress);
     commentname = (EditText) findViewById(R.id.textViewComment);
 
+
+    //textlistener for categoryname, if it starts with
+    //" " then don't let it input in edittext
+    categoryname.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        String str = charSequence.toString();
+        //if it starts with " " then don't recognise it
+        if(str.equals(" "))
+        {
+          categoryname.setText("");
+        }
+
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+
+      }
+    });
+
+
+
     //for the Public, phoneContacts, justMe, save and cancel buttons
     publicContacts = (Button) findViewById(R.id.btnPublic);
     phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
@@ -201,6 +234,16 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
     //save it by default to the DB as 1, for phoneContacts
     public_or_private = 1;
+
+
+    cancel.setOnClickListener(new View.OnClickListener() {
+
+      public void onClick(View v) {
+          //close the activity
+          finish();
+        }
+
+    });
 
   }
 
