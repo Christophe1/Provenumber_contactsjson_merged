@@ -43,6 +43,10 @@ import java.util.Map;
 import static com.example.tutorialspoint.R.id.rv;
 import static com.example.tutorialspoint.R.layout.activity_view_contact;
 
+//DESCRIPTION OF ACTIVITY
+//This is one of the logged-in user's own reviews
+//He can see EDIT and DELETE buttons and modify accordingly.
+
 public class ViewContact extends AppCompatActivity {
   //
   // this is the php file name where to select from.
@@ -615,7 +619,7 @@ public class ViewContact extends AppCompatActivity {
           // insert the contact at the beginning of the listview
           selectPhoneContacts.add(0, selectContact);
 
-          //In SelectContact class, so getItemViewType will know which layout to show
+          //In SelectPhoneContact class, so getItemViewType will know which layout to show
           //:checkbox or Invite Button
           selectContact.setType_row("1");
 

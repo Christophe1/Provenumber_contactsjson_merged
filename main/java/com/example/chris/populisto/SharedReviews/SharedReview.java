@@ -56,6 +56,8 @@ public class SharedReview {
     this.PhoneNumberofUserFromDB = PhoneNumberofUserFromDB;
   }
 
+  //it will be "U" or the name of person on logged-in user's phone
+  //or a masked phone number
   public String getPhoneNameonPhone() {
     return phoneNameonPhone;
   }
@@ -124,6 +126,7 @@ public class SharedReview {
   }
 
   //is it a U review, or somebody else's review?
+  //we set it to either 1 or 2
   public String getType_row() {
     return type_row;
   }

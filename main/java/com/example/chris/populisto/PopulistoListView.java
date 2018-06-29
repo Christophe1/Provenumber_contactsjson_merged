@@ -329,7 +329,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         new Response.ErrorListener() {
           @Override
           public void onErrorResponse(VolleyError error) {
-            Toast.makeText(PopulistoListView.this, error.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(PopulistoListView.this, "Trouble cantacting the server right now :(", Toast.LENGTH_LONG).show();
 
           }
 
@@ -762,8 +762,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setPhone(obj.getString("phone"));
                 sharedReview.setComment(obj.getString("comment"));
 
-                //what I am trying to do is, depending on if setType_row is 1 or 2,
-                //if the review is U or another's review, then show a different ViewContact
+                //depending on if setType_row is 1 or 2 or 3,
+                //in this case it is 1 - a review that is owned
+                //by logged-in user.
+                //We will getType_row in SharedPopulistoReviewsAdapter.
+                //We will put phoneNameOnPhone in brown, blue or green text - depending
+                //on how loggedin user is sharing the review
+                //We will show ViewContact - has edit,
+                //delete button etc
                 sharedReview.setType_row("1");
 
                 //add the sharedReview to the sharedReviewList
@@ -832,8 +838,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                       //of the person who made the review
                       sharedReview.setphoneNameonPhone(object.getString("name"));
 
-                      String convertedToString = object.getString("name");
-                      System.out.println("convertedToString:" + convertedToString);
+/*                      String convertedToString = object.getString("name");
+                      System.out.println("convertedToString:" + convertedToString);*/
 
 
                     }
@@ -848,8 +854,15 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setPhone(obj.getString("phone"));
                 sharedReview.setComment(obj.getString("comment"));
 
-                //what I am trying to do is, depending on if setType_row is 1 or 2,
-                //if the review is U or another's review, then show a different ViewContact
+                //depending on if setType_row is 1 or 2 or 3,
+                //in this case it is 2 - a review that is shared with logged-in user
+                //and in phone contacts of logged-in user.
+                //We will getType_row in SharedPopulistoReviewsAdapter.
+                //We will put phoneNameOnPhone in blue text - for Phone Contact
+                //if the review is 1 (belongs to logged-in user)
+                //then we would show ViewContact
+                //In this case, "2", we will be showing SharedViewContact, no edit,
+                //delete button etc
                 sharedReview.setType_row("2");
 
                 //add the sharedReview to the sharedReviewList
@@ -898,9 +911,16 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setPhone(obj.getString("phone"));
                 sharedReview.setComment(obj.getString("comment"));
 
-                //what I am trying to do is, depending on if setType_row is 1 or 2,
-                //if the review is U or another's review, then show a different ViewContact
-                sharedReview.setType_row("2");
+                //depending on if setType_row is 1 or 2 or 3,
+                //in this case it is 3 - a review that is public and
+                //not in phone contacts of logged-in user.
+                //We will getType_row in SharedPopulistoReviewsAdapter.
+                //We will put phoneNameOnPhone in green text - for Public
+                //if the review is 1 (belongs to logged-in user)
+                //then we would show ViewContact
+                //In this case, "3", we will be showing SharedViewContact, no edit,
+                //delete button etc
+                sharedReview.setType_row("3");
 
                 //add the sharedReview to the sharedReviewList
                 sharedReviewList.add(sharedReview);
