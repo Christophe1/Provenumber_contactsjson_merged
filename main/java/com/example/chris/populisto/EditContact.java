@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -83,13 +84,14 @@ public class EditContact extends AppCompatActivity {
   //this is an integer, different to the string public_or_private in ViewContact. Not related
   int public_or_private;
 
-  //string for getting intent info from ContactView class
-  String categoryid, category, name, phone, address, comment;
+  //string for getting intent info from ViewContact class
+  //String categoryid;
+  String category, name, phone, address, comment;
 
   //int for getting intent info for the sharing buttons in ViewContact
   int pub_or_priv;
 
-  private CheckBox testchecked;
+  // private CheckBox testchecked;
 
   //we want to detect if editTexts have changed,
   //if so, we'll give the option to save - cancel click will say like'Really? Save changes first?'
@@ -102,23 +104,59 @@ public class EditContact extends AppCompatActivity {
 
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
+    //put in a toolbar
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
     //Show the back button (???)
-    ActionBar actionbar = getSupportActionBar();
-    actionbar.setDisplayHomeAsUpEnabled(true);
+    //ActionBar actionbar = getSupportActionBar();
+    //actionbar.setDisplayHomeAsUpEnabled(true);
     //actionbar.setDisplayShowHomeEnabled(true);
 
+    //remove the app name from the toolbar (don't want it twice)
+    getSupportActionBar().setDisplayShowTitleEnabled(false);
+
     //show the App title
-    actionbar.setTitle("Populisto");
+    //actionbar.setTitle("Populisto");
+
+    //into the toolbar, inflate the back button and Populisto title,
+    //which we find in toolbar_custom_view_layout.xml
+    View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
+    toolbar.addView(logo);
+
+    //for the back arrow, tell it to close the activity, when clicked
+    ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
+    backButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+
+        //we need to pass an intent going back to ViewContact
+        //so text boxes and pub_or_priv will be filled
+        //Intent intent = new Intent();
+
+
+        Intent intent = new Intent(getApplicationContext(), ViewContact.class);
+        intent.putExtra("categoryfromedit", category);
+        //j.putExtra("category_id",  categoryid);
+        intent.putExtra("namefromedit", name);
+        intent.putExtra("phonefromedit", phone);
+        intent.putExtra("addressfromedit", address);
+        intent.putExtra("commentfromedit", comment);
+
+        intent.putExtra("publicorprivatefromedit", public_or_private);
+
+        startActivity(intent);
+
+        finish();
+      }
+    });
 
     //get the phone number, stored in an XML file, when the user first registered the app
     SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
     phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
 
 
-    //cast an EditText for each of the field ids in activity_edit_contact.xmlxml
+    //cast an EditText for each of the field ids in activity_edit_contact.xml
     //can be edited and changed by the user
     categoryname = (EditText) findViewById(R.id.textViewCategory);
     namename = (EditText) findViewById(R.id.textViewName);
@@ -136,9 +174,9 @@ public class EditContact extends AppCompatActivity {
     //to this class
     Intent i = this.getIntent();
     //we need to get review_id to ensure changes made are saved to correct review_id
-    review_id = i.getStringExtra("review_id");
-    //get the key, "category", in ContactView activity
-    categoryid = i.getStringExtra("category");
+    //review_id = i.getStringExtra("review_id");
+    //get the key, "category", in ViewContact activity
+    // categoryid = i.getStringExtra("category");
     //etc..
     category = i.getStringExtra("category");
     name = i.getStringExtra("name");
@@ -148,7 +186,7 @@ public class EditContact extends AppCompatActivity {
 
     public_or_private = i.getIntExtra("publicorprivate", pub_or_priv);
 
-    Log.i("EditContact-MyMessage", "EditContact: public or private value :" + public_or_private);
+    //Log.i("EditContact-MyMessage", "EditContact: public or private value :" + public_or_private);
 
 
     //set the EditText to display the pair value of key "category"
@@ -409,7 +447,6 @@ public class EditContact extends AppCompatActivity {
     Intent j = new Intent(EditContact.this, PopulistoListView.class);
 
 
-
     EditContact.this.startActivity(j);
 
     //refresh the populistolistview adapter, so when we go back
@@ -446,29 +483,31 @@ public class EditContact extends AppCompatActivity {
 
 
   //code for the '<', back button. Go back to ViewContact
-  @Override
+/*  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    finish();
+    Toast.makeText(EditContact.this, "back pressed!", Toast.LENGTH_SHORT).show();
+
     Intent j = new Intent(getApplicationContext(), ViewContact.class);
-/*        j.putExtra("category",  categoryname.getText());
+        j.putExtra("category",  categoryname.getText());
         //j.putExtra("category_id",  categoryid);
         j.putExtra("name", namename.getText());
         j.putExtra("phone",  phonename.getText());
         j.putExtra("address",  addressname.getText());
-        j.putExtra("comment",  commentname.getText());*/
+        j.putExtra("comment",  commentname.getText());
     startActivity(j);
-
-/*        switch (item.getItemId()) {
+    finish();*/
+/*
+        switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }*/
+        }
     return true;
   }
-
+*/
 
   //******for the phone contacts in the listview
 

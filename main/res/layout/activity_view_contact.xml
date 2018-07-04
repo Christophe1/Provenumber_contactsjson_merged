@@ -102,22 +102,6 @@
                     android:visibility="invisible" />
 
 <!--                <TextView
-                    android:id="@+id/textPublicorPrivate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/textViewComment"
-                    android:layout_weight="1"
-                    android:textSize="15dp" />
-
-                <TextView
-                    android:id="@+id/textPublicorPrivate2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/textPublicorPrivate"
-                    android:layout_weight="1"
-                    android:textSize="15dp" />-->
-
-<!--                <TextView
                     android:id="@+id/textViewInvisible2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -155,7 +139,7 @@
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/textPublicorPrivate2"
+            android:id="@+id/textSharedWith"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/textPublicorPrivate"

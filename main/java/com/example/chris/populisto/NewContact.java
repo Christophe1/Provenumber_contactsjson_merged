@@ -359,17 +359,19 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
   //code for the '<', back button. Go back to PopulistoListView, as defined
   //in Manifest, PARENT_ACTIVITY
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+ // @Override
+/*  public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       // Respond to the action bar's Up/Home button
       case android.R.id.home:
+        Toast.makeText(NewContact.this, "back pressed!", Toast.LENGTH_SHORT).show();
+
         NavUtils.navigateUpFromSameTask(this);
         return true;
       default:
         return super.onOptionsItemSelected(item);
     }
-  }
+  }*/
 
 
 

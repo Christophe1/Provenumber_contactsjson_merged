@@ -66,14 +66,18 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Review r = the_reviews.get(position);
 
         //pubOrPriv is 0,1 or 2,depending on shared status of the review
-        int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
+        final int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
 
-        //shared_status will be Just U, Private or Public
-        String shared_status ="U";
+        //shared_status will be U
+        //String shared_status ="U";
 
+        //change colour of "U" in each recyclerView cell of PopulistoListView
+        // depending on value of pubOrPriv
         if(pubOrPriv==0){
-            //change colour depending on value
+
             ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#DA850B"));
+
+
         }
 
         if(pubOrPriv==1){
@@ -85,8 +89,8 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
 
-        ((ReviewHolder) viewHolder).phone_user_name.setText(shared_status);
-        ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
+        ((ReviewHolder) viewHolder).phone_user_name.setText("U");
+        ((ReviewHolder) viewHolder).category.setText("Categoryy: " + r.getCategory());
         ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
         ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
         ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
@@ -110,9 +114,19 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 Intent i = new Intent(v.getContext(), ViewContact.class);
                 //pass the review_id to ViewContact class
                 i.putExtra("review_id", reviewUser.getReviewid());
+
+                //pass the intent value of pubOrPriv to ViewContact
+                i.putExtra("UPuborPrivVal", pubOrPriv);
+                //pass these values as an intent to ViewContact class
+                i.putExtra("category", reviewUser.getCategory());
+                i.putExtra("name", reviewUser.getName());
+                i.putExtra("phone", reviewUser.getPhone());
+                i.putExtra("address", reviewUser.getAddress());
+                i.putExtra("comment", reviewUser.getComment());
+
                 //pass the PhoneNumberofUserFromDB to ViewContact class
                 //the key is "PhoneNumberofUserFromDB"
-                i.putExtra("PhoneNumberofUserFromDB", reviewUser.getPhoneNumberofUserFromDB());
+                //i.putExtra("PhoneNumberofUserFromDB", reviewUser.getPhoneNumberofUserFromDB());
                 v.getContext().startActivity(i);
             }
 

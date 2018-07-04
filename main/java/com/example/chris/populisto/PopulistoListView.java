@@ -296,6 +296,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //etc...
                 review.setName(obj.getString("name"));
                 review.setPhone(obj.getString("phone"));
+                review.setAddress(obj.getString("address"));
                 review.setComment(obj.getString("comment"));
 
                 //set a string to the the phone number from the DB,

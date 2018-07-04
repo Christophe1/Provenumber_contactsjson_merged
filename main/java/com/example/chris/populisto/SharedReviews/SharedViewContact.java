@@ -160,21 +160,11 @@ public class SharedViewContact extends AppCompatActivity {
     System.out.println("PhoneNumberofUserFromDB:" + phoneNumberofUserFromDB);
     System.out.println("phoneNoofUser:" + phoneNoofUser);
 
-    //if we are coming from EditContact, where no recyclerView cell has been clicked
-    // if (review_id == null) {
-
-    //then set review_id to the value we put in shared preferences
-    // review_id = PreferenceManager.getDefaultSharedPreferences(this).getString("review_id value", review_id);
-
-    //}
-
-    //System.out.println("ViewContact: review id is " + review_id);
-
     //coming from PopulistoListView we will always get a value for review_id
     //Let's save the review_id in shared preferences
     //so we can get it easily in EditContact,
     //and load the corresponding values into ViewContact on < press
-    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("review_id value", review_id).apply();
+    //PreferenceManager.getDefaultSharedPreferences(this).edit().putString("review_id value", review_id).apply();
 
 
     //cast a TextView for each of the field ids in activity_view_contact.xml
@@ -245,42 +235,7 @@ public class SharedViewContact extends AppCompatActivity {
               //shared_status will be Public, Phone Contacts or Just Me
               String shared_status = "";
 
-             /* if (getItemViewType == 1) {
-
-
-                if (pub_or_priv == 0) {
-                  //change colour of button depending on value
-                  publicorprivate2.setTextColor(Color.parseColor("#DA850B"));
-                  shared_status = "Just U";
-                  //for "U"
-                  textphoneNameonPhone.setTextColor(Color.parseColor("#DA850B"));
-                  //textphoneNameonPhone.setText("U");
-                }
-
-                if (pub_or_priv == 1) {
-                  publicorprivate2.setTextColor(Color.parseColor("#0A7FDA"));
-                  shared_status = "Phone Contacts";
-                  textphoneNameonPhone.setTextColor(Color.parseColor("#0A7FDA"));
-                  //textphoneNameonPhone.setText(phoneNameonPhone);
-                }
-
-                if (pub_or_priv == 2) {
-                  publicorprivate2.setTextColor(Color.parseColor("#2AB40E"));
-                  shared_status = "Public";
-                  textphoneNameonPhone.setTextColor(Color.parseColor("#2AB40E"));
-                  //textphoneNameonPhone.setText(phoneNameonPhone);
-                }
-
-                textphoneNameonPhone.setText("U");
-
-                //put pub_or_priv in the textbox called publicorprivate
-                publicorprivate.setText("Shared with: ");
-
-                publicorprivate2.setText(shared_status);
-
-              }*/
-
-              //getItemViewType has been transferred as an intent
+              //getItemViewType has been passed with an intent
               //from SharedPopulistoReviewsAdapter
               //If it is "2" then make phoneNameonPhone in BLUE
               if (getItemViewType == 2) {

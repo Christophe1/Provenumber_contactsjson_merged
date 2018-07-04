@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.tutorialspoint.R.id.rv;
+import static com.example.tutorialspoint.R.id.sharedWith;
 import static com.example.tutorialspoint.R.layout.activity_view_contact;
 
 //DESCRIPTION OF ACTIVITY
@@ -70,23 +72,29 @@ public class ViewContact extends AppCompatActivity {
   private TextView phonename;
   private TextView addressname;
   private TextView commentname;
-  private TextView publicorprivate;
-  private TextView publicorprivate2;
+ // 4/7/2018 private TextView publicorprivate;
+  private TextView sharedWith;
 
-  Button publicContacts;
+//4/7/2018
+/*  Button publicContacts;
   Button phoneContacts;
-  Button justMeContacts;
+  Button justMeContacts;*/
 
   //for categoryid we only need the value, don't need to cast it to anything
-  String categoryid;
+  //String categoryid;
 
   //this is the review that has been clicked in the recyclerView in PopulistoListView.java
+  //We need this for passing to EditContact, so if the changes or saved, we know where
+  //to go by review_id
   String review_id;
 
+  String category, name, phone, address, comment;
+
+  //String new_category_value;
   //the logged-in user's phone number, which we get in SharedPreferences
   //from VerifyUserPhoneNumber
   //to be compared to String phoneNumberofUserFromDB;
-  String phoneNoofUser;
+  //String phoneNoofUser;
 
   //this is the phone number of person who made the clicked review in recyclerView
   // in PopulistoListView.java
@@ -108,10 +116,11 @@ public class ViewContact extends AppCompatActivity {
   //checkedContacts is a String, we get it from "checkedcontacts", on the server
   String checkedContacts;
 
-  //this is for public or private groups
+  //this is for logged-in user's Just U, phone contacts or public
   //amongst other things, we'll be bringing the intent over to EditContact.
   int pub_or_priv;
 
+  //String shared_status;
   //For the recycler view, containing the phone contacts
   RecyclerView recyclerView;
 
@@ -124,11 +133,11 @@ public class ViewContact extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(activity_view_contact);
 
-    pDialog = new ProgressDialog(ViewContact.this);
-    pDialog.setCancelable(false);
+/*    pDialog = new ProgressDialog(ViewContact.this);
+    pDialog.setCancelable(true);
     // Showing progress dialog before making http request
-    pDialog.setMessage("Loading bud...");
-    pDialog.show();
+    pDialog.setMessage("Loading...");
+    pDialog.show();*/
 
     //need to initialize this
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
@@ -141,46 +150,96 @@ public class ViewContact extends AppCompatActivity {
     //rv is for holding the phone contacts, invite button, checkbox etc
     recyclerView = (RecyclerView) findViewById(rv);
 
-
+    //put in a toolbar
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
     //Show the back button (???)
-    ActionBar actionbar = getSupportActionBar();
-    actionbar.setDisplayHomeAsUpEnabled(true);
+    //ActionBar actionbar = getSupportActionBar();
+    //actionbar.setDisplayHomeAsUpEnabled(true);
     //actionbar.setDisplayShowHomeEnabled(true);
 
-    //show the App title
-    actionbar.setTitle("Pop");
+    //remove the app name from the toolbar (don't want it twice)
+    getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+    //into the toolbar, inflate the back button and Populisto title,
+    //which we find in toolbar_custom_view_layout.xml
+    View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
+    toolbar.addView(logo);
+
+    //for the back arrow, tell it to close the activity, when clicked
+    ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
+    backButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        finish();
+      }
+    });
+
+    //*****************************************
+    //for the delete button
+    delete = (Button) findViewById(R.id.delete);
+
+    //call the delete review function
+    deleteContactButton();
+
+    //4/7/2018
     //  when the activity loads, check to see if phoneNoofUser is using the App,if the user is
     // already registered, by checking the MyData XML file
-    SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-    phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
+    //SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+    //phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
 
-    Intent i = this.getIntent();
+    Intent i = getIntent();
 
     //we'll be getting review_id from the cell clicked in the recyclerView,
     //intent review_id is in SharedPopulistoReviewsAdapter,
     //then posting to ViewContact.php to get associated details
-    review_id = i.getStringExtra("review_id");
+    //review_id = i.getStringExtra("review_id");
+
+    //get the values of these intents from UPopulistoListAdapter
+    //pub_or_priv is an integer, need the "0"
+    pub_or_priv = i.getIntExtra("UPuborPrivVal", 0);
+    category = i.getStringExtra("category");
+    //Toast.makeText(ViewContact.this, "category is " + category, Toast.LENGTH_LONG).show();
+
+    name = i.getStringExtra("name");
+    phone = i.getStringExtra("phone");
+    address = i.getStringExtra("address");
+    comment = i.getStringExtra("comment");
+
+    //category = i.getStringExtra("category2");
+
 
     //we'll be getting the phone number of user who made the review
     // clicked in the recyclerView,
-    //phoneNumberofUserFromDB is in SharedPopulistoReviewsAdapter and UopulistoListAdapter
+    //phoneNumberofUserFromDB is in SharedPopulistoReviewsAdapter and UpulistoListAdapter
     //then posting to ViewContact.php
-    //so we can decide what parts of review to show the logged-in user
     phoneNumberofUserFromDB = i.getStringExtra("PhoneNumberofUserFromDB");
-    System.out.println("PhoneNumberofUserFromDB:" + phoneNumberofUserFromDB);
-    System.out.println("phoneNoofUser:" + phoneNoofUser);
+
+
+    //cast a TextView for each of the field ids in activity_view_contact.xml
+    //textphoneNameonPhone if in ViewContact will always be "U"
+    textphoneNameonPhone = (TextView) findViewById(R.id.textphoneNameonPhone);
+    categoryname = (TextView) findViewById(R.id.textViewCategory);
+    namename = (TextView) findViewById(R.id.textViewName);
+    phonename = (TextView) findViewById(R.id.textViewPhone);
+    addressname = (TextView) findViewById(R.id.textViewAddress);
+    commentname = (TextView) findViewById(R.id.textViewComment);
+    //publicorprivate = (TextView) findViewById(R.id.textPublicorPrivate);
+    sharedWith = (TextView) findViewById(R.id.textSharedWith);
+
+
+
+    //System.out.println("PhoneNumberofUserFromDB:" + phoneNumberofUserFromDB);
+    //System.out.println("phoneNoofUser:" + phoneNoofUser);
 
     //if we are coming from EditContact, where no recyclerView cell has been clicked
-    if (review_id == null) {
+    //if (review_id == null) {
 
-      //then set review_id to the value we put in shared preferences
-      review_id = PreferenceManager.getDefaultSharedPreferences(this).getString("review_id value", review_id);
+    //then set review_id to the value we put in shared preferences
+    // review_id = PreferenceManager.getDefaultSharedPreferences(this).getString("review_id value", review_id);
 
-    }
+    // }
 
     //System.out.println("ViewContact: review id is " + review_id);
 
@@ -188,29 +247,83 @@ public class ViewContact extends AppCompatActivity {
     //Let's save the review_id in shared preferences
     //so we can get it easily in EditContact,
     //and load the corresponding values into ViewContact on < press
-    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("review_id value", review_id).apply();
+    //PreferenceManager.getDefaultSharedPreferences(this).edit().putString("review_id value", review_id).apply();
 
 
-    //cast a TextView for each of the field ids in activity_view_contact.xml
-
-    textphoneNameonPhone = (TextView) findViewById(R.id.textphoneNameonPhone);
-    categoryname = (TextView) findViewById(R.id.textViewCategory);
-    namename = (TextView) findViewById(R.id.textViewName);
-    phonename = (TextView) findViewById(R.id.textViewPhone);
-    addressname = (TextView) findViewById(R.id.textViewAddress);
-    commentname = (TextView) findViewById(R.id.textViewComment);
-    publicorprivate = (TextView) findViewById(R.id.textPublicorPrivate);
-    publicorprivate2 = (TextView) findViewById(R.id.textPublicorPrivate2);
-
+    //4/7/2018
     //for the Public, phoneContacts, justMe, save and cancel buttons
-    publicContacts = (Button) findViewById(R.id.btnPublic);
-    phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
-    justMeContacts = (Button) findViewById(R.id.btnJustMe);
+    //publicContacts = (Button) findViewById(R.id.btnPublic);
+    //phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
+    //justMeContacts = (Button) findViewById(R.id.btnJustMe);
 
 
+
+    //set text in textboxes to the values in cell of recyclerView, intents passed from UPopulistoListAdapter
+    categoryname.setText(category);
+    namename.setText(name);
+    phonename.setText(phone);
+    addressname.setText(address);
+    commentname.setText(comment);
+
+
+    if (categoryname.getText().toString().trim().length() == 0)
+    //(categoryname.getText().toString().matches(""))
+
+    {
+      Intent intent = getIntent();
+
+      //update the class with these values from EditView
+      String category_value = intent.getStringExtra("categoryfromedit");
+      String name_value = intent.getStringExtra("namefromedit");
+      String phone_value = intent.getStringExtra("phonefromedit");
+      String address_value = intent.getStringExtra("addressfromedit");
+      String comment_value = intent.getStringExtra("commentfromedit");
+
+      pub_or_priv = i.getIntExtra("publicorprivatefromedit", 0);
+
+      categoryname.setText(category_value);
+      namename.setText(name_value);
+      phonename.setText(phone_value);
+      addressname.setText(address_value);
+      commentname.setText(comment_value);
+
+    }
+
+
+    //shared_status will be "Just U", "Phone Contacts" or "Public"
+    String shared_status = "";
+
+    //pub_or_priv is an intent passed from UPopulistoListAdapter
+    if (pub_or_priv == 0) {
+      //change colour depending on value
+      sharedWith.setTextColor(Color.parseColor("#DA850B"));
+      shared_status = "Just U";
+      //for "U"
+      textphoneNameonPhone.setTextColor(Color.parseColor("#DA850B"));
+      textphoneNameonPhone.setText("U");
+    }
+
+    if (pub_or_priv == 1) {
+      sharedWith.setTextColor(Color.parseColor("#0A7FDA"));
+      shared_status = "Phone Contacts";
+      textphoneNameonPhone.setTextColor(Color.parseColor("#0A7FDA"));
+      textphoneNameonPhone.setText("U");
+    }
+
+    if (pub_or_priv == 2) {
+      sharedWith.setTextColor(Color.parseColor("#2AB40E"));
+      shared_status = "Public";
+      textphoneNameonPhone.setTextColor(Color.parseColor("#2AB40E"));
+      textphoneNameonPhone.setText("U");
+    }
+
+    //put pub_or_priv in the textbox called publicorprivate
+    sharedWith.setText("Shared with: " + shared_status);
+
+    
     //post the review_id that has been clicked in the ListView and send it to
     // viewContact.php and from that get other review details, like name, address etc..
-    StringRequest stringRequest = new StringRequest(Request.Method.POST, ViewContact_URL,
+  /*  StringRequest stringRequest = new StringRequest(Request.Method.POST, ViewContact_URL,
         new Response.Listener<String>() {
 
           @Override
@@ -229,13 +342,13 @@ public class ViewContact extends AppCompatActivity {
               // make a JSONObject called responseObject, break it down into
               //respective parts
               JSONObject responseObject = new JSONObject(response);
-              String category = responseObject.getString("category");
-              String category_id = responseObject.getString("category_id");
-              String name = responseObject.getString("name");
-              String phone = responseObject.getString("phone");
-              String address = responseObject.getString("address");
-              String comment = responseObject.getString("comment");
-              String public_or_private = responseObject.getString("publicorprivate");
+             // String category = responseObject.getString("category");
+              //String category_id = responseObject.getString("category_id");
+             // String name = responseObject.getString("name");
+             // String phone = responseObject.getString("phone");
+             // String address = responseObject.getString("address");
+             // String comment = responseObject.getString("comment");
+              //String public_or_private = responseObject.getString("publicorprivate");
               checkedContacts = responseObject.getString("checkedcontacts");
 
               //load the asyncTask straight after we have got the response and
@@ -246,64 +359,35 @@ public class ViewContact extends AppCompatActivity {
 
 
               //assign a textview to each of the fields in the review
-              categoryname.setText(category);
-              namename.setText(name);
-              phonename.setText(phone);
-              addressname.setText(address);
-              commentname.setText(comment);
+              //categoryname.setText(category);
+              //namename.setText(name);
+              //phonename.setText(phone);
+              //addressname.setText(address);
+              //commentname.setText(comment);
 
               //convert public_or_private to an integer
-              pub_or_priv = Integer.parseInt(public_or_private);
+              //pub_or_priv = Integer.parseInt(public_or_private);
 
-              //shared_status will be Public, Phone Contacts or Just Me
-              String shared_status = "";
 
-              if (pub_or_priv == 0) {
-                //change colour depending on value
-                publicorprivate2.setTextColor(Color.parseColor("#DA850B"));
-                shared_status = "Just U";
-                //for "U"
-                textphoneNameonPhone.setTextColor(Color.parseColor("#DA850B"));
-                textphoneNameonPhone.setText("U");
-              }
-
-              if (pub_or_priv == 1) {
-                publicorprivate2.setTextColor(Color.parseColor("#0A7FDA"));
-                shared_status = "Phone Contacts";
-                textphoneNameonPhone.setTextColor(Color.parseColor("#0A7FDA"));
-                textphoneNameonPhone.setText("U");
-              }
-
-              if (pub_or_priv == 2) {
-                publicorprivate2.setTextColor(Color.parseColor("#2AB40E"));
-                shared_status = "Public";
-                textphoneNameonPhone.setTextColor(Color.parseColor("#2AB40E"));
-                textphoneNameonPhone.setText("U");
-              }
-
-              //put pub_or_priv in the textbox called publicorprivate
-              publicorprivate.setText("Shared with: ");
-
-              publicorprivate2.setText(shared_status);
 
              // System.out.println("ViewContact: public or private value :" + pub_or_priv);
 
 
               //for categoryid we only need the value, don't need to cast it to anything
               //we'll be sending this to EditContact with an intent
-              categoryid = category_id;
+              //categoryid = category_id;
 
              // System.out.println("here are the checkedcontacts" + checkedContacts);
               //  Toast.makeText(ViewContact.this, "here are the checkedcontacts" + checkedContacts, Toast.LENGTH_SHORT).show();
 
 
-/*              if (phoneNoofUser.equals(phoneNumberofUserFromDB)) {
+*//*              if (phoneNoofUser.equals(phoneNumberofUserFromDB)) {
 
                // Toast.makeText(ViewContact.this, "Yes they match!", Toast.LENGTH_SHORT).show();
                 edit.setVisibility(View.VISIBLE);
                 delete.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.VISIBLE);
-              }*/
+              }*//*
 
 
               //System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
@@ -368,7 +452,7 @@ public class ViewContact extends AppCompatActivity {
     RequestQueue requestQueue = Volley.newRequestQueue(this);
     requestQueue.add(stringRequest);
 
-
+*/
     //*****************************************
     //for the edit button
     edit = (Button) findViewById(R.id.edit);
@@ -380,19 +464,19 @@ public class ViewContact extends AppCompatActivity {
         //open the Edit Activity, pass over the review_id so we can get that reviews
         //associated fields
         Intent i = new Intent(ViewContact.this, EditContact.class);
-        i.putExtra("review_id", review_id);
+        //i.putExtra("review_id", review_id);
         //"category" is the key
         // which we will be looking for from EditContact.class, categoryname.getText() is the
         // content to pass from ViewContact.class etc....
         i.putExtra("category", categoryname.getText());
-        i.putExtra("category_id", categoryid);
+        //i.putExtra("category_id", categoryid);
         i.putExtra("name", namename.getText());
         i.putExtra("phone", phonename.getText());
         i.putExtra("address", addressname.getText());
         i.putExtra("comment", commentname.getText());
 
-        //bring the pub_or_private value to EditContact.class, for the radio button to be
-        // appropriately checked
+        //bring the pub_or_private value to EditContact.class, for the right button to be
+        // appropriately coloured
         i.putExtra("publicorprivate", pub_or_priv);
 
         startActivity(i);
@@ -410,27 +494,38 @@ public class ViewContact extends AppCompatActivity {
     //new_category_value, and then set it into the categoryname
     //text box.
     //update the class with all these new values from EditView
-    Intent j = getIntent();
-    String new_category_value = j.getStringExtra("category");
-    String new_name_value = j.getStringExtra("name");
-    String new_phone_value = j.getStringExtra("phone");
-    String new_address_value = j.getStringExtra("address");
-    String new_comment_value = j.getStringExtra("comment");
-    categoryname.setText(new_category_value);
-    namename.setText(new_name_value);
-    phonename.setText(new_phone_value);
-    addressname.setText(new_address_value);
-    commentname.setText(new_comment_value);
+    //Intent intent = getIntent();
+
+    //if <- button is pressed in EditContact
+    //get the intent values and fill in text values in ViewContact
+    //length of categoryname will be 0 as no intent has been passed
+    //from UPopulistoListAdapter, because we are coming from EditContact,
+    //so the textbox length is 0
+    if (categoryname.getText().toString().trim().length() == 0) {
+/*
+    {
+      Intent intent = getIntent();
+
+      //update the class with these values from EditView
+      String category_value = intent.getStringExtra("categoryfromedit");
+      String name_value = intent.getStringExtra("namefromedit");
+      String phone_value = intent.getStringExtra("phonefromedit");
+      String address_value = intent.getStringExtra("addressfromedit");
+      String comment_value = intent.getStringExtra("commentfromedit");
+
+      pub_or_priv = i.getIntExtra("UPuborPrivVal", 0);
+
+      categoryname.setText(category_value);
+      namename.setText(name_value);
+      phonename.setText(phone_value);
+      addressname.setText(address_value);
+      commentname.setText(comment_value);
+
+    }*/
 
 
-    //*****************************************
-    //for the delete button
-    delete = (Button) findViewById(R.id.delete);
-
-    //call the delete review function
-    deleteContactButton();
-
-   // fetchCheckedContacts();
+      // fetchCheckedContacts();
+    }
   }
 
   //this is the function for Volley, trying to change from AsycnTask to Volley
@@ -442,7 +537,7 @@ public class ViewContact extends AppCompatActivity {
 
   //code for the '<', back button. Go back to PopulistoListView, as defined
   //in Manifest, PARENT_ACTIVITY
-  @Override
+/*  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       // Respond to the action bar's Up/Home button
@@ -452,7 +547,7 @@ public class ViewContact extends AppCompatActivity {
       default:
         return super.onOptionsItemSelected(item);
     }
-  }
+  }*/
 
 
   private void deleteContactButton() {
@@ -650,13 +745,25 @@ public class ViewContact extends AppCompatActivity {
       super.onPostExecute(aVoid);
       hidePDialog();
 
-     // System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
+      // System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
       PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
 
       recyclerView.setAdapter(adapter);
 
+      //Intent i = new Intent(getApplicationContext(), ViewContact.class);
 
+      //we'll be getting review_id from the cell clicked in the recyclerView,
+      //intent review_id is in SharedPopulistoReviewsAdapter,
+      //then posting to ViewContact.php to get associated details
+      //review_id = i.getStringExtra("review_id");
+
+      //get the values of these intents from UPopulistoListAdapter
+      //pub_or_priv = i.getIntExtra("UPuborPrivVal",0);
+      //category = i.getStringExtra("category");
+
+      //categoryname.setText(category);
+      namename.setText("wweeee");
       recyclerView.setLayoutManager((new LinearLayoutManager(ViewContact.this)));
 
 
@@ -699,13 +806,13 @@ public class ViewContact extends AppCompatActivity {
 
   //for the backbutton, clear the checkbox state
   //@Override
-  public void onBackPressed() {
+/*  public void onBackPressed() {
     // your code.
     //Integer i = null;
     SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
     preferences.edit().clear().commit();
     finish();
-  }
+  }*/
 
 
   protected void onDestroy() {
@@ -717,5 +824,21 @@ public class ViewContact extends AppCompatActivity {
 
   }
 
+
+/*  private boolean ifBackButtonPressedinEditText(TextView etText) {
+    if (etText.getText().toString().trim().length() == 0)
+
+    //  Intent j = getIntent();
+    // new_category_value = j.getStringExtra("category22");
+    // String new_category_value = j.getStringExtra("category");
+//    String new_name_value = j.getStringExtra("name");
+//    String new_phone_value = j.getStringExtra("phone");
+//    String new_address_value = j.getStringExtra("address");
+//    String new_comment_value = j.getStringExtra("comment");
+    categoryname.setText(new_category_value);
+    //  return false;
+
+    return true;
+  }*/
 
 }

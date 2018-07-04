@@ -192,15 +192,17 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
         //with edit, delete button, list of contacts review is shared with etc...
         if (viewHolder.getItemViewType() == 1) {
 
-          //we want to pass the review_id and PhoneNumberofUserFromDB
-          // of the sharedReview being clicked
-          //to the ViewContact activity, and from there post it and get more
-          //info for that sharedReview - address, comments etc
+          //Load the ViewContact activity
           Intent i = new Intent(v.getContext(), ViewContact.class);
+
           //pass the review_id to ViewContact class
           //the key is "review_id"
           i.putExtra("review_id", sharedReview.getReviewid());
 
+          //We are coming from SharedPopulistoReviewsAdapter so
+          //we need to tell the adapter whcih view to show:
+          //1: show edit, delete buttons etc (an own-user review)
+          //2: no edit details, can't change another user's review
           if (viewHolder.getItemViewType() == 1) {
             //Pass as intent to ViewContact, decide what colour to show "U"
             getItemViewType = 1;
@@ -208,9 +210,6 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
           i.putExtra("getItemViewType", getItemViewType);
 
-          //pass the PhoneNumberofUserFromDB to ViewContact class
-          //the key is "PhoneNumberofUserFromDB"
-          //i.putExtra("PhoneNumberofUserFromDB", sharedReview.getPhoneNumberofUserFromDB());
           v.getContext().startActivity(i);
 
           //If getType_row is 2 or 3, show SharedViewContact
@@ -223,23 +222,22 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
           //to the SharedViewContact activity, and from there post it and get more
           //info for that sharedReview - address, comments etc
           Intent i = new Intent(v.getContext(), SharedViewContact.class);
-          //pass the review_id to ViewContact class
+          //pass the review_id to SharedViewContact class
           //the key is "review_id"
           i.putExtra("review_id", sharedReview.getReviewid());
-          //pass the PhoneNumberofUserFromDB to ViewContact class
-          //the key is "PhoneNumberofUserFromDB"
-          //i.putExtra("PhoneNumberofUserFromDB", sharedReview.getPhoneNumberofUserFromDB());
 
           //show the review maker's name from logged-in user's phone, or else masked number
           i.putExtra("PhoneNameonPhone", r.getPhoneNameonPhone());
 
           //pass getItemViewType value to SharedViewContact with an intent
-          //it will make phoneNameonPhone in BLUE or GREEN text
+          //it will make phoneNameonPhone in BLUE text
           if (viewHolder.getItemViewType() == 2) {
             //BLUE text for name
             getItemViewType = 2;
           }
 
+          //pass getItemViewType value to SharedViewContact with an intent
+          //it will make phoneNameonPhone in GREEN text
           if (viewHolder.getItemViewType() == 3) {
             //GREEN text for name
             getItemViewType = 3;
