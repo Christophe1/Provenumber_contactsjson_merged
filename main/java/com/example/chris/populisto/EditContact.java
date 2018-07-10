@@ -58,6 +58,10 @@ public class EditContact extends AppCompatActivity {
   String phoneNumberofContact;
   String phoneNameofContact;
 
+  //We get this as intent from ViewContact so we can pass it back again to ViewContact
+  //if Cancel or <- is clicked (otherwise its value would be null)
+  String checkedContactsfromViewContact;
+
   PopulistoContactsAdapter adapter;
   public static String phoneNoofUserCheck;
 
@@ -129,29 +133,15 @@ public class EditContact extends AppCompatActivity {
     backButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
+        //before going back, see if changes have been made
+        goBacktoViewContact();
 
-        //we need to pass an intent going back to ViewContact
-        //so text boxes and pub_or_priv will be filled
-        //Intent intent = new Intent();
-
-
-        Intent intent = new Intent(getApplicationContext(), ViewContact.class);
-        intent.putExtra("categoryfromedit", category);
-        //j.putExtra("category_id",  categoryid);
-        intent.putExtra("namefromedit", name);
-        intent.putExtra("phonefromedit", phone);
-        intent.putExtra("addressfromedit", address);
-        intent.putExtra("commentfromedit", comment);
-
-        intent.putExtra("publicorprivatefromedit", public_or_private);
-
-        startActivity(intent);
-
-        finish();
       }
     });
 
-    //get the phone number, stored in an XML file, when the user first registered the app
+    //get the phone number, stored in an XML file, when the user first registered the app.
+    // We need the user's number so we can remove that number from checkedContactsAsArrayList
+    //in PopulistoContactsAdapter, otherwise that number will be saved twice in the DB
     SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
     phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
 
@@ -174,17 +164,21 @@ public class EditContact extends AppCompatActivity {
     //to this class
     Intent i = this.getIntent();
     //we need to get review_id to ensure changes made are saved to correct review_id
-    //review_id = i.getStringExtra("review_id");
-    //get the key, "category", in ViewContact activity
-    // categoryid = i.getStringExtra("category");
-    //etc..
+    //we post review_id in saveContact()
+    review_id = i.getStringExtra("review_id");
+
     category = i.getStringExtra("category");
     name = i.getStringExtra("name");
     phone = i.getStringExtra("phone");
     address = i.getStringExtra("address");
     comment = i.getStringExtra("comment");
+    checkedContactsfromViewContact = i.getStringExtra("checkedContacts");
 
     public_or_private = i.getIntExtra("publicorprivate", pub_or_priv);
+
+    //the original value of pub_or_priv, in case user click CANCEL
+    //or <-, which we pass back to ViewContact
+    pub_or_priv = public_or_private;
 
     //Log.i("EditContact-MyMessage", "EditContact: public or private value :" + public_or_private);
 
@@ -258,13 +252,16 @@ public class EditContact extends AppCompatActivity {
       publicContacts.setBackgroundResource(R.drawable.publiccontacts_buttonshapepressed);
     }
 
+  //  Toast.makeText(EditContact.this, "public_or_private value is : " + public_or_private, Toast.LENGTH_SHORT).show();
+
     //load the asynctask stuff here
     LoadContact loadContact = new LoadContact();
 
     //execute asynctask
     loadContact.execute();
 
-    //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
+    //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info,
+    //the recyclerView of phone contacts, check boxes, Invite button
     selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
     recyclerView = (RecyclerView) findViewById(R.id.rv);
@@ -290,12 +287,13 @@ public class EditContact extends AppCompatActivity {
     cancel.setOnClickListener(new View.OnClickListener() {
 
       public void onClick(View v) {
-        Toast.makeText(EditContact.this, "here it is dudia" + String.valueOf(PopulistoContactsAdapter.checkBoxhasChanged), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(EditContact.this, "here it is dudia" + String.valueOf(PopulistoContactsAdapter.checkBoxhasChanged), Toast.LENGTH_SHORT).show();
 
+        goBacktoViewContact();
         //Booleans have been set to true,
         //when text has changed in our editTexts
         //and when checkboxes have changed in our adapter
-        if ((PopulistoContactsAdapter.checkBoxhasChanged == true) || (editTexthasChanged == true)) {
+        /*if ((PopulistoContactsAdapter.checkBoxhasChanged == true) || (editTexthasChanged == true)) {
 
           // if Booleans are true then
           //add a dialogue box
@@ -305,9 +303,26 @@ public class EditContact extends AppCompatActivity {
 
 
         } else {
-          //close the activity
+
+          //we need to pass an intent going back to ViewContact
+          //so text boxes and pub_or_priv will be filled
+          //Intent intent = new Intent();
+          Intent intent = new Intent(getApplicationContext(), ViewContact.class);
+          intent.putExtra("categoryfromedit", category);
+          //j.putExtra("category_id",  categoryid);
+          intent.putExtra("namefromedit", name);
+          intent.putExtra("phonefromedit", phone);
+          intent.putExtra("addressfromedit", address);
+          intent.putExtra("commentfromedit", comment);
+          intent.putExtra("checkedContactsfromedit", checkedContactsfromViewContact);
+
+
+          intent.putExtra("publicorprivatefromedit", public_or_private);
+
+          startActivity(intent);
+
           finish();
-        }
+        }*/
       }
 
     });
@@ -394,14 +409,16 @@ public class EditContact extends AppCompatActivity {
         new Response.Listener<String>() {
           @Override
           public void onResponse(String response) {
+            Toast.makeText(EditContact.this, "page is saving: " + phoneNoofUserCheck + " + " + review_id, Toast.LENGTH_SHORT).show();
 
-            Toast.makeText(EditContact.this, response, Toast.LENGTH_LONG).show();
+           // Toast.makeText(EditContact.this, response, Toast.LENGTH_LONG).show();
           }
         },
         new Response.ErrorListener() {
           @Override
           public void onErrorResponse(VolleyError error) {
-            Toast.makeText(EditContact.this, "there's a problem saving this page", Toast.LENGTH_LONG).show();
+            //Toast.makeText(EditContact.this, "there's a problem saving this page", Toast.LENGTH_LONG).show();
+            Toast.makeText(EditContact.this, "errorlistener toast: " + phoneNoofUserCheck + " + " + review_id, Toast.LENGTH_SHORT).show();
 
           }
 
@@ -451,7 +468,7 @@ public class EditContact extends AppCompatActivity {
 
     //refresh the populistolistview adapter, so when we go back
     //to that activity the recyclerview will be refreshed
-    //PopulistoListView.pAdapter.notifyDataSetChanged();
+    PopulistoListView.pAdapter.notifyDataSetChanged();
 
     // clear the checkbox state of checked contacts, we only want to keep it when the app resumes
     //SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
@@ -469,17 +486,84 @@ public class EditContact extends AppCompatActivity {
     public void onClick(DialogInterface dialog, int which) {
       switch (which) {
         case DialogInterface.BUTTON_POSITIVE:
+          Toast.makeText(EditContact.this, "Save pressed", Toast.LENGTH_SHORT).show();
+
           //Yes button clicked
           //save the contact
           saveContact();
 
-        case DialogInterface.BUTTON_NEGATIVE:
+          //exit out of the dialogInterface
+          break;
 
-          //close the activity
+        case DialogInterface.BUTTON_NEGATIVE:
+          Toast.makeText(EditContact.this, "Cancel pressed", Toast.LENGTH_SHORT).show();
+
+          //we need to pass an intent going back to ViewContact
+          //so text boxes and pub_or_priv will be filled
+          //Intent intent = new Intent();
+          Intent intent = new Intent(getApplicationContext(), ViewContact.class);
+          intent.putExtra("reviewfromedit", review_id);
+          intent.putExtra("categoryfromedit", category);
+          //j.putExtra("category_id",  categoryid);
+          intent.putExtra("namefromedit", name);
+          intent.putExtra("phonefromedit", phone);
+          intent.putExtra("addressfromedit", address);
+          intent.putExtra("commentfromedit", comment);
+          intent.putExtra("checkedContactsfromedit", checkedContactsfromViewContact);
+
+          //the old value, pub_or_priv, because logged-in user is not saving
+          intent.putExtra("publicorprivatefromedit", pub_or_priv);
+
+          startActivity(intent);
+
           finish();
       }
     }
   };
+
+  //If going back to ViewContact
+  //then bring the intents from EditContact
+  private void goBacktoViewContact() {
+
+    //Booleans have been set to true,
+    //when text has changed in our editTexts
+    //and when checkboxes have changed in our adapter
+    if ((PopulistoContactsAdapter.checkBoxhasChanged == true) || (editTexthasChanged == true)) {
+
+      // if Booleans are true then
+      //add a dialogue box
+      AlertDialog.Builder builder = new AlertDialog.Builder(recyclerView.getContext());
+      builder.setMessage("Save changes you made?").setPositiveButton("Yes", dialogClickListener)
+          .setNegativeButton("No", dialogClickListener).show();
+
+
+    } else {
+
+      //we need to pass an intent going back to ViewContact
+      //so text boxes and pub_or_priv will be filled
+      //Intent intent = new Intent();
+      Intent intent = new Intent(getApplicationContext(), ViewContact.class);
+      intent.putExtra("reviewfromedit", review_id);
+      intent.putExtra("categoryfromedit", category);
+      //j.putExtra("category_id",  categoryid);
+      intent.putExtra("namefromedit", name);
+      intent.putExtra("phonefromedit", phone);
+      intent.putExtra("addressfromedit", address);
+      intent.putExtra("commentfromedit", comment);
+      intent.putExtra("checkedContactsfromedit", checkedContactsfromViewContact);
+
+
+      intent.putExtra("publicorprivatefromedit", public_or_private);
+
+      Toast.makeText(EditContact.this, "review_id is: " + review_id, Toast.LENGTH_SHORT).show();
+
+      startActivity(intent);
+
+      finish();
+
+    }
+
+  }
 
 
   //code for the '<', back button. Go back to ViewContact
@@ -585,22 +669,22 @@ public class EditContact extends AppCompatActivity {
   }
 
 
-/*    @Override
+    @Override
     protected void onResume() {
 
         super.onResume();
 
-        //  selectPhoneContacts.clear();
+/*          selectPhoneContacts.clear();
 
-        //  EditContact.LoadContact loadContact = new EditContact.LoadContact();
+          EditContact.LoadContact loadContact = new EditContact.LoadContact();
 
 
-        //  loadContact.execute();
-//        adapter.notifyDataSetChanged();
+          loadContact.execute();
+        adapter.notifyDataSetChanged();*/
         Toast.makeText(EditContact.this, "resuming!", Toast.LENGTH_SHORT).show();
 
 
-    }*/
+    }
 
   //need this to change radio button to Phone Contacts,
   //if a checkbox is changed to false
@@ -621,13 +705,13 @@ public class EditContact extends AppCompatActivity {
   //for the backbutton, remove the saved checkbox state
   //20/3/2018: DOES THIS STILL APPLY?
   //@Override
-  public void onBackPressed() {
+/*  public void onBackPressed() {
     // your code.
     Integer i = null;
     SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
     preferences.edit().clear().commit();
     finish();
-  }
+  }*/
 
 
   //for the Public Contacts button
@@ -684,7 +768,7 @@ public class EditContact extends AppCompatActivity {
         //then set the boolean to be true
         PopulistoContactsAdapter.checkBoxhasChanged = true;
 
-        Toast.makeText(EditContact.this, "here it is dudia" + String.valueOf(PopulistoContactsAdapter.checkBoxhasChanged), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(EditContact.this, "here it is dudia" + String.valueOf(PopulistoContactsAdapter.checkBoxhasChanged), Toast.LENGTH_SHORT).show();
 
       }
     });
@@ -713,7 +797,7 @@ public class EditContact extends AppCompatActivity {
         //public_or_private column, if saved in this state
         public_or_private = 1;
 
-        Toast.makeText(EditContact.this, valueOf(public_or_private), Toast.LENGTH_LONG).show();
+        Toast.makeText(EditContact.this, "public_or_private is:" + valueOf(public_or_private), Toast.LENGTH_LONG).show();
 
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
