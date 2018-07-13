@@ -174,7 +174,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
       protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
         categoryListFiltered = (ArrayList<Category>) filterResults.values;
 
-          System.out.println("categoryListFiltered :" + categoryListFiltered.size());
+          //System.out.println("categoryListFiltered :" + categoryListFiltered.size());
 
         notifyDataSetChanged();
       }

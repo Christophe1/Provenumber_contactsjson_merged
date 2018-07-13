@@ -13,13 +13,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -156,6 +153,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   //set a string to the the phone number from the DB,
   //the phone number of the person who made the review
   String phoneNoInDB;
+
+  List<Category> items;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -377,7 +376,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   //this is the function for filtering categories in the searchView
   //it is called onQueryTextChange
-  private void fetchContacts() {
+  private void fetchCategories() {
 
     StringRequest request = new StringRequest(Request.Method.POST, CategoryFilter_URL,
         new Response.Listener<String>() {
@@ -388,9 +387,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           public void onResponse(String response) {
 
             //hide the loading dialog when we get a response
-            hidePDialog();
+            //hidePDialog();
 
-            //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "loaded categoryfilter file" + response, Toast.LENGTH_SHORT).show();
 
             //response will be like:
 
@@ -402,32 +401,34 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             // "private_count":3,
             // "public_count":5}, etc
 
-            try {
+            //try {
+
 
 
               //items is a list of the category names available to the logged-in user
-              List<Category> items = new Gson().fromJson(response.toString(), new TypeToken<List<Category>>() {
+              items = new Gson().fromJson(response.toString(), new TypeToken<List<Category>>() {
               }.getType());
 
-              //clear the list
-              categoryList.clear();
-
+/*            //clear the list
+            categoryList.clear();
               //adding categories to category list
-              categoryList.addAll(items);
+              categoryList.addAll(items);*/
 
-             // Toast.makeText(getApplicationContext(), "categoryList: " + items, Toast.LENGTH_SHORT).show();
+              //Toast.makeText(getApplicationContext(), "mAdapter, no category results", Toast.LENGTH_SHORT).show();
 
 
               // System.out.println("categoryList size is :" + CategoriesAdapter.categoryListFiltered.size());
 
-
               //app not crashing as much with this here
-              recyclerView.setAdapter(mAdapter);
+             // recyclerView.setAdapter(mAdapter);
 
-              hidePDialog();
+              //hidePDialog();
 
-              //if there are no category results for what is typed
-              if (mAdapter.getItemCount() < 1) {
+              //if there are no category results for what is typed, with each key press...
+/*              if (mAdapter.getItemCount() < 1) {
+
+                Toast.makeText(getApplicationContext(), "mAdapter is 0, no category results", Toast.LENGTH_SHORT).show();
+
 
                 recyclerView.setVisibility(View.GONE);
                 noResultsFoundView.setVisibility(View.VISIBLE);
@@ -435,15 +436,20 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                  //hidePDialog();
 
               } else {
+
+                //if there ARE category results for what is typed, with each key press...
+                Toast.makeText(getApplicationContext(), "mAdapter, show results", Toast.LENGTH_SHORT).show();
+
                 recyclerView.setVisibility(View.VISIBLE);
                 noResultsFoundView.setVisibility(View.GONE);
 
                 // hidePDialog();
-              }
+              }*/
 
-            } catch (Exception e) {
+            //}
+          /*catch (Exception e) {
               e.printStackTrace();
-            }
+            }*/
 
 
 /*            //when text changes in the searchview, show the 'Loading' dialogue
@@ -453,7 +459,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             pDialog.show();*/
 
             // refreshing recycler view
-            mAdapter.notifyDataSetChanged();
+           // mAdapter.notifyDataSetChanged();
           }
 
 
@@ -462,7 +468,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       public void onErrorResponse(VolleyError error) {
         // error in getting json
         Log.e(TAG, "Error: " + error.getMessage());
-        Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Value is null, but why? " + error.getMessage(), Toast.LENGTH_SHORT).show();
       }
     })
 
@@ -517,12 +523,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
     //When searchview has focus....
-/*    searchView.setOnSearchClickListener(new View.OnClickListener() {
+    searchView.setOnSearchClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         Toast.makeText(getApplicationContext(), "clickety!", Toast.LENGTH_SHORT).show();
+        fetchCategories();
       }
-    });*/
+    });
 
 
 
@@ -534,6 +541,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       public boolean onQueryTextSubmit(String query) {
 
         // hidePDialog();
+
+
 
         // filter recycler view when query submitted
         mAdapter.getFilter().filter(query);
@@ -549,8 +558,39 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         pDialog.setMessage("Loading...");
         pDialog.show();*/
 
+        //clear the list
+        categoryList.clear();
+        //adding categories to category list
+        categoryList.addAll(items);
 
-        //Toast.makeText(getApplicationContext(), "trimmed", Toast.LENGTH_LONG).show();
+        recyclerView.setAdapter(mAdapter);
+
+        mAdapter.getFilter().filter(query);
+
+       // mAdapter.notifyDataSetChanged();
+
+
+        if (mAdapter.getItemCount() < 1) {
+
+                Toast.makeText(getApplicationContext(), "mAdapter is 0, no category results", Toast.LENGTH_SHORT).show();
+
+
+                recyclerView.setVisibility(View.GONE);
+                noResultsFoundView.setVisibility(View.VISIBLE);
+          //mAdapter.notifyDataSetChanged();
+                 //hidePDialog();
+
+              } else {
+
+                //if there ARE category results for what is typed, with each key press...
+                Toast.makeText(getApplicationContext(), "mAdapter, show results", Toast.LENGTH_SHORT).show();
+
+                recyclerView.setVisibility(View.VISIBLE);
+                noResultsFoundView.setVisibility(View.GONE);
+          //mAdapter.notifyDataSetChanged();
+                // hidePDialog();
+              }
+
 
         //WILL CRASH IF UNCOMMENTED
         //recyclerView.setAdapter(mAdapter);
@@ -567,7 +607,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         }*/
 
         //if the searchView is empty
-        if (searchView.getQuery().length() == 0) {
+       /* if (searchView.getQuery().length() == 0) {
 
          // hidePDialog();
 
@@ -579,37 +619,47 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           recyclerView.setVisibility(View.VISIBLE);
           noResultsFoundView.setVisibility(View.GONE);
 
-        } else {
+        }
+
+       // fetchCategories();
+
+        else {
 
           //on entering the first character, show
           //our progress dialog, so user can see activity is happening.
-          if (searchView.getQuery().length() == 1) {
+*//*          if (searchView.getQuery().length() == 1) {
 
-            pDialog = new ProgressDialog(PopulistoListView.this);
+*//**//*            pDialog = new ProgressDialog(PopulistoListView.this);
           // Showing progress dialog before making http request to get user's reviews
           pDialog.setMessage("Loading...");
-          pDialog.show();
+          pDialog.show();*//**//*
 
             //if there's text in the search box
-            fetchContacts();
+            fetchCategories();
 
-          }
+          }*//*
 
 
 
           //if there's text in the search box
-          fetchContacts();
+          //fetchCategories();
 
 
           //Log.e(TAG, "phonno2 is: " + phoneNoofUser);
           // filter recycler view when text is changed
           mAdapter.getFilter().filter(query);
-        }
+        }*/
+        //app not crashing as much with this here
+        //recyclerView.setAdapter(mAdapter);
+
+        // refreshing recycler view
+         mAdapter.notifyDataSetChanged();
+
         return false;
 
       }
     });
-
+    //mAdapter.notifyDataSetChanged();
     return true;
 
 
