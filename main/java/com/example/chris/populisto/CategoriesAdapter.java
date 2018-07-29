@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tutorialspoint.R;
 
@@ -78,6 +79,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
   @Override
   public int getItemCount() {
+    Toast.makeText(context, "size of list is "+ categoryListFiltered.size(), Toast.LENGTH_SHORT).show();
+
 
     //  System.out.println("items list size :" + categoryListFiltered.size());
 

@@ -155,6 +155,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   String phoneNoInDB;
 
   List<Category> items;
+  String the_response;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -391,6 +392,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
             Toast.makeText(getApplicationContext(), "loaded categoryfilter file" + response, Toast.LENGTH_SHORT).show();
 
+            the_response = response;
             //response will be like:
 
             //[{"cat_name":"vet",
@@ -405,9 +407,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
 
-              //items is a list of the category names available to the logged-in user
+/*              //items is a list of the category names available to the logged-in user
               items = new Gson().fromJson(response.toString(), new TypeToken<List<Category>>() {
-              }.getType());
+              }.getType());*/
 
 /*            //clear the list
             categoryList.clear();
@@ -557,6 +559,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         // Showing progress dialog before making http request to get user's reviews
         pDialog.setMessage("Loading...");
         pDialog.show();*/
+        //items is a list of the category names available to the logged-in user
+        items = new Gson().fromJson(the_response, new TypeToken<List<Category>>() {
+        }.getType());
 
         //clear the list
         categoryList.clear();

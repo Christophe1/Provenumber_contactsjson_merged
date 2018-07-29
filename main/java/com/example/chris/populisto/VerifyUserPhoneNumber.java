@@ -1,5 +1,6 @@
 package com.example.chris.populisto;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -110,6 +111,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   private ProgressDialog pDialog;
 
+  public static Activity activity = null;
   // ArrayList called sharedReviews that will contain sharedReviews info
   //we use this to pass jsonArrayofPhonesandNamesofContacts to sharedReviews,
   //so we can put the phone name beside the review
@@ -142,6 +144,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
     // txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
 
+    //so we can close the activity, if the user has no internet access and they
+    //choose "Try again later"
+    activity = this;
+
+    pDialog = new ProgressDialog(this);
+    // Showing progress dialog before making http request to check for hash in DB
+    pDialog.setMessage("Loading...");
+    pDialog.show();
 
     //execute the AsyncTask, do stuff in the background
     VerifyUserPhoneNumber.StartUpInfo startUpInfo = new VerifyUserPhoneNumber.StartUpInfo();
@@ -201,6 +211,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+
+              //hide the pDialog 'loading' box when the page loads
+              //hidePDialog();
+
               System.out.println("third, hashpassinXML is:" + hashedPassinXML);
               //make hashPassTrueorFalse = the response string, "True" or "False"
               hashPassTrueorFalse = response.toString();
@@ -231,10 +245,40 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-              Toast.makeText(VerifyUserPhoneNumber.this, error.toString(), Toast.LENGTH_LONG).show();
+
+              //If there is an error (such as contacting server for example) then
+              //show a message like:
+              //Sorry, can't contact server right now. Is internet access enabled?, try again, Cancel
+              AlertDialog.Builder builder;
+              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                builder = new AlertDialog.Builder(VerifyUserPhoneNumber.this, android.R.style.Theme_Material_Dialog_Alert);
+              } else {
+                builder = new AlertDialog.Builder(VerifyUserPhoneNumber.this);
+              }
+              builder
+                  //.setTitle("Delete entry")
+                  //prevent box being dismissed on back key press or touch outside
+                  .setCancelable(false)
+                  .setMessage("Sorry, can't contact server right now. Is internet access enabled?")
+                  .setPositiveButton("Try Now", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                      //refresh the activity, if the user choses "Try Now"
+                      refresh();
+                    }
+                  })
+                  .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                      //close the app
+                      activity.finish();
+                    }
+                  })
+                  .setIcon(android.R.drawable.ic_dialog_alert)
+                  .show();
+
 
             }
-
           }) {
         @Override
         protected Map<String, String> getParams() {
@@ -953,6 +997,17 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       pDialog.dismiss();
       pDialog = null;
     }
-
   }
+
+
+  //if the user chooses to refresh the Activity, when "Try Again" button is clicked...
+  public void refresh() {
+    Intent intent = getIntent();
+    overridePendingTransition(0, 0);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+    finish();
+    overridePendingTransition(0, 0);
+    startActivity(intent);
+  }
+
 }
