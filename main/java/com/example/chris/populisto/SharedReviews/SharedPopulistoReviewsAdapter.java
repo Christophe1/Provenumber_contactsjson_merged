@@ -69,13 +69,14 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
   public static class ReviewHolder extends RecyclerView.ViewHolder {
 
     //In each populisto_list_row show the items you want to have appearing
-    public TextView phone_user_name, category, name, phone, comment;
+    public TextView phone_user_name, category, name, address, phone, comment;
 
     public ReviewHolder(View itemView) {
       super(itemView);
       phone_user_name = (TextView) itemView.findViewById(R.id.phone_user_name);
       category = (TextView) itemView.findViewById(R.id.category);
       name = (TextView) itemView.findViewById(R.id.name);
+      address = (TextView) itemView.findViewById(R.id.address);
       phone = (TextView) itemView.findViewById(R.id.phone);
       comment = (TextView) itemView.findViewById(R.id.comment);
 
@@ -170,6 +171,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
     ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhoneNameonPhone());
     ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
     ((ReviewHolder) viewHolder).name.setText("Namey: " + r.getName());
+    ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
     ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
     ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
 
@@ -198,6 +200,15 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
           //pass the review_id to ViewContact class
           //the key is "review_id"
           i.putExtra("review_id", sharedReview.getReviewid());
+
+          //pass the intent value of pubOrPriv to ViewContact
+          //i.putExtra("UPuborPrivVal", pubOrPriv);
+          //pass these values as an intent to ViewContact class
+          i.putExtra("category", sharedReview.getCategory());
+          i.putExtra("name", sharedReview.getName());
+          i.putExtra("phone", sharedReview.getPhone());
+          i.putExtra("address", sharedReview.getAddress());
+          i.putExtra("comment", sharedReview.getComment());
 
           //We are coming from SharedPopulistoReviewsAdapter so
           //we need to tell the adapter whcih view to show:

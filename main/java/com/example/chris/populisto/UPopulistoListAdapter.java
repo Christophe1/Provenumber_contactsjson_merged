@@ -24,13 +24,14 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public static class ReviewHolder extends RecyclerView.ViewHolder {
 
         //In each populisto_list_row show the items you want to have appearing
-        public TextView phone_user_name, category, name, phone, comment;
+        public TextView phone_user_name, category, address, name, phone, comment;
 
         public ReviewHolder(View itemView) {
             super(itemView);
             phone_user_name = (TextView) itemView.findViewById(R.id.phone_user_name);
             category = (TextView) itemView.findViewById(R.id.category);
             name = (TextView) itemView.findViewById(R.id.name);
+            address = (TextView) itemView.findViewById(R.id.address);
             phone = (TextView) itemView.findViewById(R.id.phone);
             comment = (TextView) itemView.findViewById(R.id.comment);
 
@@ -92,6 +93,7 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         ((ReviewHolder) viewHolder).phone_user_name.setText("U");
         ((ReviewHolder) viewHolder).category.setText("Categoryy: " + r.getCategory());
         ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
+        ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
         ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
         ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
 

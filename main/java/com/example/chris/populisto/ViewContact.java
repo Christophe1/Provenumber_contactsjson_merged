@@ -157,6 +157,7 @@ public class ViewContact extends AppCompatActivity {
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
+    //31/7/2018
     //Show the back button (???)
     //ActionBar actionbar = getSupportActionBar();
     //actionbar.setDisplayHomeAsUpEnabled(true);

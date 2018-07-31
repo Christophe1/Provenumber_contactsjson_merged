@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.chris.populisto.PopulistoListView.recyclerView;
+import static com.example.tutorialspoint.R.id.rv;
 import static com.example.tutorialspoint.R.layout.activity_sharedview_contact;
 
 public class SharedViewContact extends AppCompatActivity {
@@ -123,17 +128,46 @@ public class SharedViewContact extends AppCompatActivity {
     //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
+    //rv is for holding the phone contacts, invite button, checkbox etc
+    recyclerView = (RecyclerView) findViewById(rv);
+
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
+    //31/7/2018
     //Show the back button (???)
-    ActionBar actionbar = getSupportActionBar();
-    actionbar.setDisplayHomeAsUpEnabled(true);
+    //ActionBar actionbar = getSupportActionBar();
+    //actionbar.setDisplayHomeAsUpEnabled(true);
     //actionbar.setDisplayShowHomeEnabled(true);
 
+    //31/7/2018
     //show the App title
-    actionbar.setTitle("Populisto");
+    //actionbar.setTitle("Populisto");
 
+    //remove the app name from the toolbar (don't want it twice)
+    getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+    //into the toolbar, inflate the back button and Populisto title,
+    //which we find in toolbar_custom_view_layout.xml
+    View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
+    toolbar.addView(logo);
+
+    //for the back arrow, tell it to close the activity, when clicked
+    ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
+    backButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        finish();
+      }
+    });
+
+    //31/7/2018
+    //into the toolbar, inflate the back button and Populisto title,
+    //which we find in toolbar_custom_view_layout.xml
+    //View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
+    //toolbar.addView(logo);
+
+    //31/7/2018
     //  when the activity loads, check to see if phoneNoofUser is using the App,if the user is
     // already registered, by checking the MyData XML file
     //SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);

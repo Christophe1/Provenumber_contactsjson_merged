@@ -390,7 +390,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             //hide the loading dialog when we get a response
             //hidePDialog();
 
-            Toast.makeText(getApplicationContext(), "loaded categoryfilter file" + response, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "loaded categoryfilter file" + response, Toast.LENGTH_SHORT).show();
 
             the_response = response;
             //response will be like:
@@ -563,16 +563,23 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         items = new Gson().fromJson(the_response, new TypeToken<List<Category>>() {
         }.getType());
 
-        //clear the list
+
+
+        //clear the list every time a key is pressed
         categoryList.clear();
-        //adding categories to category list
-        categoryList.addAll(items);
+
+        //was getting NullPointerException so put this here...
+        if (items.size() > 0) {
+          //adding categories to category list
+          categoryList.addAll(items);
+        }
 
         recyclerView.setAdapter(mAdapter);
 
         mAdapter.getFilter().filter(query);
 
        // mAdapter.notifyDataSetChanged();
+
 
 
         if (mAdapter.getItemCount() < 1) {
@@ -597,6 +604,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               }
 
 
+
         //WILL CRASH IF UNCOMMENTED
         //recyclerView.setAdapter(mAdapter);
         //sharedReviewList.clear();
@@ -612,7 +620,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         }*/
 
         //if the searchView is empty
-       /* if (searchView.getQuery().length() == 0) {
+        if (searchView.getQuery().length() == 0) {
 
          // hidePDialog();
 
@@ -628,11 +636,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
        // fetchCategories();
 
-        else {
+       // else {
 
           //on entering the first character, show
           //our progress dialog, so user can see activity is happening.
-*//*          if (searchView.getQuery().length() == 1) {
+
+        /*          if (searchView.getQuery().length() == 1) {
 
 *//**//*            pDialog = new ProgressDialog(PopulistoListView.this);
           // Showing progress dialog before making http request to get user's reviews
@@ -656,6 +665,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         }*/
         //app not crashing as much with this here
         //recyclerView.setAdapter(mAdapter);
+
+        //maybe this will resolve the IndexOutofBounds error?
+        recyclerView.getRecycledViewPool().clear();
 
         // refreshing recycler view
          mAdapter.notifyDataSetChanged();
