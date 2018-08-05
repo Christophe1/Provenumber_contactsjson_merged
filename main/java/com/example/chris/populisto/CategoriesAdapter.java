@@ -79,13 +79,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
   @Override
   public int getItemCount() {
-    Toast.makeText(context, "size of list is "+ categoryListFiltered.size(), Toast.LENGTH_SHORT).show();
-
-
-    //  System.out.println("items list size :" + categoryListFiltered.size());
-
-    //app crashes when this line is not commented
-//        System.out.println("getItemCount is :" + categoryListFiltered.size());
+    Toast.makeText(context, "size of list is " + categoryListFiltered.size(), Toast.LENGTH_SHORT).show();
 
     return categoryListFiltered.size();
   }
@@ -98,37 +92,17 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
       protected FilterResults performFiltering(CharSequence charSequence) {
 
         //the text entered in the search box
-        //String charStringSpaces = charSequence.toString();
         String charString = charSequence.toString();
 
-       // String doodoo = "";
-/*        if(charString.equals(" "))
-        {
-          //user_name.setError("Leading Space is not allowed");
-          charString.equals("");
-        }*/
-/*        if(charString.equals(" "))
-        {
-          charString.trim();
-        }*/
-
-        //String charString = charStringS
-        //
-        // paces.replace(" ", "");
-        //trimFront(charString);
-
-       // String charString = charStringSpaces.replaceFirst("^\\s*", "");
-
-        //String charString = charStringSpaces.trim();
-
-        //if searchbox is empty, show the whole list
+        //if searchbox is empty...
         if (charString.isEmpty()) {
-          //Toast.makeText(context, "yupp", Toast.LENGTH_SHORT).show();
 
+          //set the filtered list to the whole category list
           categoryListFiltered = categoryList;
         } else {
           List<Category> filteredList = new ArrayList<>();
 
+          //for every row in the categoryList
           for (Category row : categoryList) {
 
             //split the php title into separate words
@@ -137,17 +111,26 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
             //for every split word
             for (String split_title : title_in_php) {
 
-              //if the search term entered is a whole word in the title
-              //for example, "red onions". This is split into "red" and "onions"
-              //with our 'split' function, above.
-              //so if the search term starts with "r" or "o", the row will be added
+              //with every character typed in the searchbox see if it exists
+              //at the start of each word in the row.
+              //For example, "red onions"
+              //with our 'split' function above
+              //if the search term starts with "r" or "o", the row will be added
               //to the list.
               if (split_title.toLowerCase().startsWith(charString.toLowerCase())) {
 
-                //add the row to the list
-                filteredList.add(row);
+                //...if the row has already been added to
+                //filteredList don't add it again
+                if (!filteredList.contains(row)) {
+                  filteredList.add(row);
 
-              } else if
+                }
+
+              }
+
+              //5/8/2018
+/*              else if
+
                 //this is for if the title starts with the search term.
                 //so if the search term starts with "r", "red onions"
                 //will be added to the list UNLESS it has already been
@@ -159,7 +142,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
                   filteredList.add(row);
 
                 }
-              }
+              }*/
+              
             }
 
           }
@@ -177,8 +161,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
       protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
         categoryListFiltered = (ArrayList<Category>) filterResults.values;
 
-          //System.out.println("categoryListFiltered :" + categoryListFiltered.size());
+        //System.out.println("categoryListFiltered :" + categoryListFiltered.size());
 
+        //refresh the list with filtered data
         notifyDataSetChanged();
       }
     };
@@ -188,7 +173,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
   public interface CategoriesAdapterListener {
     void onCategorySelected(Category category);
   }
-
 
 
 }

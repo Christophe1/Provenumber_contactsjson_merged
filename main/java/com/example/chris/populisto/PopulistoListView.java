@@ -488,6 +488,25 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       }
     };
 
+    //this is to hopefully end the VolleyTimeOut error message
+    request.setRetryPolicy(new RetryPolicy() {
+      @Override
+      public int getCurrentTimeout() {
+        return 50000;
+      }
+
+      //set retry to 5 seconds
+      @Override
+      public int getCurrentRetryCount() {
+        return 50000;
+      }
+
+      @Override
+      public void retry(VolleyError error) throws VolleyError {
+
+      }
+    });
+
 
     AppController.getInstance().addToRequestQueue(request);
   }
@@ -559,28 +578,36 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         // Showing progress dialog before making http request to get user's reviews
         pDialog.setMessage("Loading...");
         pDialog.show();*/
-        //items is a list of the category names available to the logged-in user
+
+        //items is the complete list of the category names available to the logged-in user
         items = new Gson().fromJson(the_response, new TypeToken<List<Category>>() {
         }.getType());
+
+         //if(items==null){
+
+           //Toast.makeText(PopulistoListView.this, Integer.toString(items.size()), Toast.LENGTH_LONG).show();
+
+         //}
 
 
 
         //clear the list every time a key is pressed
         categoryList.clear();
 
+
         //was getting NullPointerException so put this here...
-        if (items.size() > 0) {
+        if (items!=null && items.size() > 0) {
           //adding categories to category list
           categoryList.addAll(items);
         }
 
-        recyclerView.setAdapter(mAdapter);
+       // recyclerView.setAdapter(mAdapter);
 
         mAdapter.getFilter().filter(query);
 
        // mAdapter.notifyDataSetChanged();
 
-
+        recyclerView.setAdapter(mAdapter);
 
         if (mAdapter.getItemCount() < 1) {
 
@@ -595,7 +622,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               } else {
 
                 //if there ARE category results for what is typed, with each key press...
-                Toast.makeText(getApplicationContext(), "mAdapter, show results", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "mAdapter size is:" , Toast.LENGTH_SHORT).show();
 
                 recyclerView.setVisibility(View.VISIBLE);
                 noResultsFoundView.setVisibility(View.GONE);
@@ -722,7 +749,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   //shared with logged in-user including his own,
   public void onCategorySelected(Category category) {
 
-    Toast.makeText(getApplicationContext(), "cat list!", Toast.LENGTH_LONG).show();
+    Toast.makeText(getApplicationContext(), "cat list selected!", Toast.LENGTH_LONG).show();
 
 
     //convert [56,23,87] to a string

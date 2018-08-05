@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -44,6 +45,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
@@ -277,9 +279,25 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                   .setIcon(android.R.drawable.ic_dialog_alert)
                   .show();
 
+          /*    if (error == null || error.networkResponse == null) {
+                return;
+              }
 
-            }
-          }) {
+              String body;
+              //get status code here
+              final String statusCode = String.valueOf(error.networkResponse.statusCode);
+              //get response body and parse with appropriate encoding
+              try {
+                body = new String(error.networkResponse.data,"UTF-8");
+              } catch (UnsupportedEncodingException e) {
+                // exception
+              }
+
+              //do stuff with the body...
+              Toast.makeText(getApplicationContext(), "error is:" + statusCode, Toast.LENGTH_LONG).show();*/
+
+
+            }}) {
         @Override
         protected Map<String, String> getParams() {
           Map<String, String> params = new HashMap<String, String>();
