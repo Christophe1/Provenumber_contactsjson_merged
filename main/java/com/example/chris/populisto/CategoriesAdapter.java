@@ -79,7 +79,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
   @Override
   public int getItemCount() {
-    Toast.makeText(context, "size of list is " + categoryListFiltered.size(), Toast.LENGTH_SHORT).show();
+    //Toast.makeText(context, "size of list is " + categoryListFiltered.size(), Toast.LENGTH_SHORT).show();
 
     return categoryListFiltered.size();
   }
@@ -143,7 +143,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
                 }
               }*/
-              
+
             }
 
           }

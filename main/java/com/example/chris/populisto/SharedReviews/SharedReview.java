@@ -74,16 +74,6 @@ public class SharedReview {
     this.category = category;
   }
 
-/*
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
-    }
-*/
-
   public String getName() {
     return name;
   }
