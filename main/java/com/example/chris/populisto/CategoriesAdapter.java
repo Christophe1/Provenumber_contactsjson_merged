@@ -74,7 +74,16 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
     final Category category = categoryListFiltered.get(position);
 
     holder.name.setText(category.getName());
-    holder.sharedWith.setText(Html.fromHtml("(" + "<font color='#DA850B'>" + "U" + "</font>" + "," + "<font color='#0A7FDA'>" + category.getPrivateCount() + "</font>" + "," + "<font color='#009900'>" + category.getPublicCount() + "</font>" + ")"));
+
+    if (Integer.parseInt(category.getUserPersonalCount()) > 0) {
+      holder.sharedWith.setText(Html.fromHtml("(U" + "," + "<font color='#0A7FDA'>" + category.getPrivateCount() + "</font>" + "," + "<font color='#009900'>" + category.getPublicCount() + "</font>" + ")"));
+    }
+    else {
+
+      holder.sharedWith.setText(Html.fromHtml("(" + "<font color='#0A7FDA'>" + category.getPrivateCount() + "</font>" + "," + "<font color='#009900'>" + category.getPublicCount() + "</font>" + ")"));
+
+
+    }
   }
 
   @Override
@@ -161,7 +170,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
       protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
         categoryListFiltered = (ArrayList<Category>) filterResults.values;
 
-        //System.out.println("categoryListFiltered :" + categoryListFiltered.size());
+        System.out.println("categoryListFiltered :" + categoryListFiltered.size());
 
         //refresh the list with filtered data
         notifyDataSetChanged();

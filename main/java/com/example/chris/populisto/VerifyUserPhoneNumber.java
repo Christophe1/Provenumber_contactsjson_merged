@@ -111,7 +111,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   String CountryName;
   String phoneNoofUserbeforeE164;
 
-  private ProgressDialog pDialog;
+  //private ProgressDialog pDialog;
+
+  DelayedProgressDialog progressDialog = new DelayedProgressDialog();
+
 
   public static Activity activity = null;
   // ArrayList called sharedReviews that will contain sharedReviews info
@@ -150,10 +153,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     //choose "Try again later"
     activity = this;
 
-    pDialog = new ProgressDialog(this);
+    //9/8/2018
+/*    pDialog = new ProgressDialog(this);
     // Showing progress dialog before making http request to check for hash in DB
     pDialog.setMessage("Loading...");
-    pDialog.show();
+    pDialog.show();*/
+    //show the "Loading" dialog
+    progressDialog.show(getSupportFragmentManager(), "tag");
+
 
     //execute the AsyncTask, do stuff in the background
     VerifyUserPhoneNumber.StartUpInfo startUpInfo = new VerifyUserPhoneNumber.StartUpInfo();
@@ -448,7 +455,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         if (extras == null)
           return;
 
-        hidePDialog();
+        //dismiss the dialog when we get the response
+        progressDialog.cancel();
+
         SmsMessage smsMessage;
 
         //apparently this code deals with the deprecated createFromPdu
@@ -567,12 +576,15 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       SmsManager smsManager = SmsManager.getDefault();
       smsManager.sendTextMessage(phoneNoofUser, null, message, null, null);
 
-      pDialog = new ProgressDialog(this);
+      //9/8/2018
+/*      pDialog = new ProgressDialog(this);
       // Showing progress dialog until we get country list, response from server
       pDialog.setMessage("Waiting for text message...");
-      pDialog.show();
+      pDialog.show();*/
       // Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
 
+      //show the "Loading" dialog
+      progressDialog.show(getSupportFragmentManager(), "tag");
 
     } catch (Exception e) {
       Toast.makeText(getApplicationContext(), "SMS failed, please try again.", Toast.LENGTH_LONG).show();
@@ -632,7 +644,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       receiver = null;
     }
     super.onDestroy();
-    hidePDialog();
+   // hidePDialog();
+    //dismiss the dialog when we get the response
+    progressDialog.cancel();
   }
 
 
@@ -1009,13 +1023,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   }
 
-
-  public void hidePDialog() {
+//9/8/2018
+/*  public void hidePDialog() {
     if (pDialog != null) {
       pDialog.dismiss();
       pDialog = null;
     }
-  }
+  }*/
 
 
   //if the user chooses to refresh the Activity, when "Try Again" button is clicked...

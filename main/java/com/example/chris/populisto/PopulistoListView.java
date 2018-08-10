@@ -84,6 +84,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   //when searchView has focus and user types, we will be showing/filtering
   //categories
   private List<Category> categoryList = new ArrayList<Category>();
+  //public List<Category> categoryListFiltered;
 
   //this is the adapter for categories, loading from the searchView
   private CategoriesAdapter mAdapter;
@@ -99,14 +100,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   public static final String KEY_REVIEWID_USER = "reviewiduser";
 
   // the key is reviewidprivate, which we see in php
-  //this is for phone contact, private, reviews
+  //this is for phone contact reviews
   public static final String KEY_REVIEWID_PRIVATE = "reviewidprivate";
 
   // the key is reviewidpublic, which we see in php
   //this is for public reviews
   public static final String KEY_REVIEWID_PUBLIC = "reviewidpublic";
 
-  private ProgressDialog pDialog;
+  //private ProgressDialog pDialog;
 
   DelayedProgressDialog progressDialog = new DelayedProgressDialog();
 
@@ -226,10 +227,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     Log.e(TAG, "phonno" + phoneNoofUser);
 
-    pDialog = new ProgressDialog(this);
+    //pDialog = new ProgressDialog(this);
     // Showing progress dialog before making http request to get user's reviews
-    pDialog.setMessage("Loading...");
-    pDialog.show();
+
+    //show the "Loading" dialog
+    progressDialog.show(getSupportFragmentManager(), "tag");
+
+    //pDialog.setMessage("Loading...");
+    //pDialog.show();
 
 /*    testy = (EditText) findViewById(R.id.action_search);
 
@@ -267,8 +272,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         new Response.Listener<String>() {
           @Override
           public void onResponse(String response) {
-            //hide the 'loading' box when the page loads
-            hidePDialog();
+
+            //dismiss the dialog when we get the response
+            progressDialog.cancel();
+
             //toast the response of SelectUserReviews.php, which has been converted to a
             //JSON array in the SelectUserReviews.php file with JSON encode
             //Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
@@ -516,15 +523,18 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   @Override
   public void onDestroy() {
     super.onDestroy();
-    hidePDialog();
+    //hidePDialog();
+    //dismiss the dialog when we get the response
+    progressDialog.cancel();
   }
 
-  public void hidePDialog() {
+  //9/8/2018
+/*  public void hidePDialog() {
     if (pDialog != null) {
       pDialog.dismiss();
       pDialog = null;
     }
-  }
+  }*/
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -582,14 +592,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           items = new Gson().fromJson(the_response, new TypeToken<List<Category>>() {
           }.getType());
 
-          //if(items==null){
-
-          //Toast.makeText(PopulistoListView.this, Integer.toString(items.size()), Toast.LENGTH_LONG).show();
-
-          //}
-
-          //categoryList = new ArrayList<>();
-
           //clear the list every time a key is pressed
           categoryList.clear();
 
@@ -608,25 +610,33 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
           recyclerView.setAdapter(mAdapter);
 
-          if (mAdapter.getItemCount() < 1) {
+          if (categoryList.size() < 1) {
 
-            Toast.makeText(getApplicationContext(), "mAdapter is 0, no category results", Toast.LENGTH_SHORT).show();
-
-
+            //if there's nothing to show, hide recyclerView...
             recyclerView.setVisibility(View.GONE);
+
+            //and show the "No Results" textbox
             noResultsFoundView.setVisibility(View.VISIBLE);
-            //mAdapter.notifyDataSetChanged();
+           // mAdapter.notifyDataSetChanged();
             //hidePDialog();
 
-          } else {
+            Toast.makeText(getApplicationContext(), "mAdapter is 0, no item results", Toast.LENGTH_SHORT).show();
 
-            //if there ARE category results for what is typed, with each key press...
-            Toast.makeText(getApplicationContext(), "mAdapter size is:", Toast.LENGTH_SHORT).show();
+
+
+          }
+
+        if (mAdapter.getItemCount() >= 1) {
 
             recyclerView.setVisibility(View.VISIBLE);
             noResultsFoundView.setVisibility(View.GONE);
             //mAdapter.notifyDataSetChanged();
             // hidePDialog();
+
+            //if there ARE category results for what is typed, with each key press...
+            Toast.makeText(getApplicationContext(), "mAdapter size is:" + mAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
+
+
           }
 
 
@@ -695,7 +705,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
          // recyclerView.getRecycledViewPool().clear();
 
           // refreshing recycler view
-          //mAdapter.notifyDataSetChanged();
+          mAdapter.notifyDataSetChanged();
 
 
         return false;
@@ -703,7 +713,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
       }
     });
+
+
+    // refreshing recycler view
     //mAdapter.notifyDataSetChanged();
+
     return true;
 
 

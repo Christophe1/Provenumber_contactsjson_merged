@@ -104,6 +104,9 @@ public class ViewContact extends AppCompatActivity {
 
   private ProgressDialog pDialog;
 
+  DelayedProgressDialog progressDialog = new DelayedProgressDialog();
+
+
   //selectPhoneContacts is an array list that will hold our SelectPhoneContact info
   ArrayList<SelectPhoneContact> selectPhoneContacts;
 
@@ -136,11 +139,15 @@ public class ViewContact extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(activity_view_contact);
 
-    pDialog = new ProgressDialog(ViewContact.this);
+    //9/8/2018
+/*    pDialog = new ProgressDialog(ViewContact.this);
     pDialog.setCancelable(true);
     // Showing progress dialog before making http request
     pDialog.setMessage("Loading...");
-    pDialog.show();
+    pDialog.show();*/
+
+    //show the "Loading" dialog
+    progressDialog.show(getSupportFragmentManager(), "tag");
 
     //need to initialize this
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
@@ -289,7 +296,8 @@ public class ViewContact extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
 
-              hidePDialog();
+              //dismiss the dialog when we get the response
+              progressDialog.cancel();
 
               //toast the response of ViewContact.php, which has been converted to a
               //JSON object by the Php file with JSON encode
@@ -451,7 +459,8 @@ public class ViewContact extends AppCompatActivity {
       ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
       loadContact.execute();
 
-      hidePDialog();
+      //dismiss the dialog when we come back to ViewContact
+      progressDialog.cancel();
 
     }
 

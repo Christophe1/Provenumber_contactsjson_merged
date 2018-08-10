@@ -123,7 +123,8 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
     //pubOrPriv is based on publicorprivate in getPublicorprivate
     // taken from the server, which is 0,1 or 2,depending on shared status of the review
-    int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
+    //We want pubOrPriv so we can decide the colour of "Just U" in ViewContact
+    final int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
 
     //shared_status will be Just U, Private or Public
     //String shared_status ="U";
@@ -131,19 +132,21 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
     //If the review being shown in recyclerView belongs to
     //logged-in user then the colour of "U" will be dependant
     //on the shared status of that review: Just U, Phone Contacts or Public (0,1 or 2)
-    //(getItemViewType is above, in SharedPopulistoReviewsAdapter)
+
+    //If the review is owned by the logged-in user...
     if (viewHolder.getItemViewType() == 1) {
 
+      //If the review owned by logged-in user is not shared with anybody, only himself
       if (pubOrPriv == 0) {
         //change colour of "U" depending on value
         //if it is "Just U"
         ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#DA850B"));
       }
-      //If it is Phone Contacts
+      //If logged-in user review is shared with Phone Contacts
       if (pubOrPriv == 1) {
         ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#0A7FDA"));
       }
-      //If it is Public
+      //If logged-in user review is shared with Public
       if (pubOrPriv == 2) {
         ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#2AB40E"));
       }
@@ -202,7 +205,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
           i.putExtra("review_id", sharedReview.getReviewid());
 
           //pass the intent value of pubOrPriv to ViewContact
-          //i.putExtra("UPuborPrivVal", pubOrPriv);
+          i.putExtra("UPuborPrivVal", pubOrPriv);
           //pass these values as an intent to ViewContact class
           i.putExtra("category", sharedReview.getCategory());
           i.putExtra("name", sharedReview.getName());
