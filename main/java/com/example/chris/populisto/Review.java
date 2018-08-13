@@ -1,7 +1,7 @@
 package com.example.chris.populisto;
 
 public class Review {
-  private String phone_user_name, category, publicorprivate, name,
+  private String phone_user_name, date_created, category, publicorprivate, name,
       phone, address, comment, phoneNumberofUserFromDB;
   public String reviewid;
   //int reviewid;
@@ -18,6 +18,7 @@ public class Review {
 
   public Review(String publicorprivate,
                 String phone_user_name,
+                String date_created,
                 String category,
                 String name,
                 String phone,
@@ -29,6 +30,7 @@ public class Review {
   ) {
     this.publicorprivate = publicorprivate;
     this.phone_user_name = phone_user_name;
+    this.date_created = date_created;
     this.category = category;
     this.name = name;
     this.phone = phone;
@@ -54,6 +56,14 @@ public class Review {
 
   public void setPhone_user_name(String phone_user_name) {
     this.phone_user_name = phone_user_name;
+  }
+
+  public String getDate_created() {
+    return date_created;
+  }
+
+  public void setDate_created(String date_created) {
+    this.date_created = date_created;
   }
 
   public String getCategory() {

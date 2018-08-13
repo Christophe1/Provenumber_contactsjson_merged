@@ -67,6 +67,7 @@ public class ViewContact extends AppCompatActivity {
 
   //use TextViews instead of EditViews, so they can't be edited unless 'Edit' is selected
   private TextView textphoneNameonPhone;
+  private TextView date_created_name;
   private TextView categoryname;
   private TextView namename;
   private TextView phonename;
@@ -89,7 +90,7 @@ public class ViewContact extends AppCompatActivity {
   //changes in the DB by following review_id
   String review_id;
 
-  String category, name, phone, address, comment;
+  String date_created, category, name, phone, address, comment;
 
   //5/7/2018
   //String new_category_value;
@@ -209,6 +210,7 @@ public class ViewContact extends AppCompatActivity {
     //get the values of these intents from UPopulistoListAdapter
     //pub_or_priv is an integer, need the "0"
     pub_or_priv = i.getIntExtra("UPuborPrivVal", 0);
+    date_created = i.getStringExtra("date_created");
     category = i.getStringExtra("category");
     name = i.getStringExtra("name");
     phone = i.getStringExtra("phone");
@@ -229,6 +231,7 @@ public class ViewContact extends AppCompatActivity {
     //cast a TextView for each of the field ids in activity_view_contact.xml
     //textphoneNameonPhone if in ViewContact will always be "U"
     textphoneNameonPhone = (TextView) findViewById(R.id.textphoneNameonPhone);
+    date_created_name = (TextView) findViewById(R.id.textViewDateCreated);
     categoryname = (TextView) findViewById(R.id.textViewCategory);
     namename = (TextView) findViewById(R.id.textViewName);
     phonename = (TextView) findViewById(R.id.textViewPhone);
@@ -269,6 +272,7 @@ public class ViewContact extends AppCompatActivity {
 
 
     //set text in textboxes to the values in cell of recyclerView, intents passed from UPopulistoListAdapter
+    date_created_name.setText(date_created);
     categoryname.setText(category);
     namename.setText(name);
     phonename.setText(phone);
@@ -437,6 +441,7 @@ public class ViewContact extends AppCompatActivity {
 
       review_id = intent.getStringExtra("reviewfromedit");
 
+      String date_created_value = intent.getStringExtra("datecreatedfromedit");
       String category_value = intent.getStringExtra("categoryfromedit");
       String name_value = intent.getStringExtra("namefromedit");
       String phone_value = intent.getStringExtra("phonefromedit");
@@ -450,6 +455,7 @@ public class ViewContact extends AppCompatActivity {
 
       pub_or_priv = intent.getIntExtra("publicorprivatefromedit", 0);
 
+      date_created_name.setText(date_created_value);
       categoryname.setText(category_value);
       namename.setText(name_value);
       phonename.setText(phone_value);
@@ -513,6 +519,7 @@ public class ViewContact extends AppCompatActivity {
         //"category" is the key
         // which we will be looking for from EditContact.class, categoryname.getText() is the
         // content to pass from ViewContact.class etc....
+        i.putExtra("date_created", date_created_name.getText());
         i.putExtra("category", categoryname.getText());
         //i.putExtra("category_id", categoryid);
         i.putExtra("name", namename.getText());

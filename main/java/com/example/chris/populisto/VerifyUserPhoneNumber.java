@@ -1,5 +1,6 @@
 package com.example.chris.populisto;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -81,6 +83,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   //matching contacts, those on phone and populisto users
   ArrayList<String> MatchingContactsAsArrayList;
 
+  // Request code for READ_CONTACTS. It can be any number > 0.
+  //We need this for version greater than Android 6, READ_CONTACTS in
+  //Manifest alone is not enough
+  private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+  //Likewise...
+  private static final int PERMISSION_SEND_SMS = 1;
 
   Cursor cursor;
   String name;
@@ -153,11 +161,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     //choose "Try again later"
     activity = this;
 
-    //9/8/2018
-/*    pDialog = new ProgressDialog(this);
-    // Showing progress dialog before making http request to check for hash in DB
-    pDialog.setMessage("Loading...");
-    pDialog.show();*/
     //show the "Loading" dialog
     progressDialog.show(getSupportFragmentManager(), "tag");
 
@@ -198,6 +201,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       phoneNoofUser = sharedPreferences2.getString("phonenumberofuser", "");
 
       System.out.println("hashpassinXML is:" + hashedPassinXML);
+      System.out.println("phoneNoofUser is:" + phoneNoofUser);
 
       //  when the activity loads, check to see if CountryCode is in there,if the user is
       // already registered, by checking the MyData XML file
@@ -229,7 +233,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               hashPassTrueorFalse = response.toString();
               Toast.makeText(VerifyUserPhoneNumber.this, hashPassTrueorFalse, Toast.LENGTH_LONG).show();
               //If the hash on the user's phone does not equal the hash in the DB..
-              if (hashPassTrueorFalse.equals("False")) {
+              //or if the hash on user's phone does not exist
+              if (hashPassTrueorFalse.equals("False") || hashedPassinXML.length() == 0) {
 
                 //then show the registration page
                 sendSMSandRegisterUser();
@@ -304,7 +309,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               Toast.makeText(getApplicationContext(), "error is:" + statusCode, Toast.LENGTH_LONG).show();*/
 
 
-            }}) {
+            }
+          }) {
         @Override
         protected Map<String, String> getParams() {
           Map<String, String> params = new HashMap<String, String>();
@@ -354,6 +360,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
         txtCountryCode = (TextView) findViewById(R.id.txtCountryCode);
 
+        //dismiss the dialog when sendSMSandRegisterUser() has been called
+        progressDialog.cancel();
 
         //when 'Select Country' Text is clicked
         //load the activity CountryCodes showing the list of all countries
@@ -437,162 +445,170 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   protected void sendSMSMessage() {
 
-    IntentFilter filter = new IntentFilter();
+    // Check the SDK version and whether the permission is already granted or not.
+    // If the phone is Android 6/ SDK 23+ (??) then the phone user has to authorize some "dangerous" commands
+    //at run-time.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+      requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSION_SEND_SMS);
+      //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+    } else {
+
+      IntentFilter filter = new IntentFilter();
 //        the thing we're looking out for is received SMSs
-    filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+      filter.addAction("android.provider.Telephony.SMS_RECEIVED");
 
 
-    //this is to check the incoming text message
-    receiver = new BroadcastReceiver() {
-      @Override
-      public void onReceive(Context context, Intent intent)
+      //this is to check the incoming text message
+      receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent)
 
 
+        {
+          Bundle extras = intent.getExtras();
 
-      {
-        Bundle extras = intent.getExtras();
+          if (extras == null)
+            return;
 
-        if (extras == null)
-          return;
+          //dismiss the dialog when we get the response
+          progressDialog.cancel();
 
-        //dismiss the dialog when we get the response
-        progressDialog.cancel();
+          SmsMessage smsMessage;
 
-        SmsMessage smsMessage;
+          //apparently this code deals with the deprecated createFromPdu
+          //issue, for more modern phones
+          if (Build.VERSION.SDK_INT >= 19) { //KITKAT
+            SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
+            smsMessage = msgs[0];
+            origNumber = smsMessage.getOriginatingAddress();
+          }
 
-        //apparently this code deals with the deprecated createFromPdu
-        //issue, for more modern phones
-        if (Build.VERSION.SDK_INT >= 19) { //KITKAT
-          SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
-          smsMessage = msgs[0];
-          origNumber = smsMessage.getOriginatingAddress();
+          //or else for older phones
+          else {
+            Object pdus[] = (Object[]) extras.get("pdus");
+            smsMessage = SmsMessage.createFromPdu((byte[]) pdus[0]);
+            origNumber = smsMessage.getOriginatingAddress();
+
+          }
+
+          // Toast.makeText(getApplicationContext(), "Originating number" + origNumber, Toast.LENGTH_LONG).show();
+          // Toast.makeText(getApplicationContext(), "Sent to number" + phoneNoofUser, Toast.LENGTH_LONG).show();
+
+          //when the text message is received, see if originating number matches the
+          //sent to number
+          if (origNumber.equals(phoneNoofUser)) {
+
+            Toast.makeText(getApplicationContext(), "Yabadabadoo!", Toast.LENGTH_LONG).show();
+
+            //save the phone number so this process is skipped in future
+            SharedPreferences sharedPreferencesphoneNoofUser = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferencesphoneNoofUser.edit();
+            //phoneNoofUser String is unique, the username of this particular user
+            //it will be of the form +353872934480
+            editor.putString("phonenumberofuser", phoneNoofUser);
+            editor.commit();
+
+            //save the country code so this process is skipped in future
+            SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor2 = sharedPreferencesCountryCode.edit();
+            //we need the Country code as it is needed for determining phone contacts in E164 format
+            editor2.putString("countrycode", CountryCode);
+            editor2.commit();
+
+
+            //let's get the current date and time, for time_stamp
+            SimpleDateFormat s = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+            time_stamp = s.format(new Date());
+
+            //make a password combining time_stamp and phone number
+            String password = time_stamp + phoneNoofUser;
+            hashedPassWord = MD5(password);
+
+            //When the user registers, when the originating phone number and destination number match,
+            //save the hashedPassWord into xml shared prefs
+            //we will also be posting hashedPassWord into the DB, further below
+            SharedPreferences sharedPreferenceshashedpassword = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor3 = sharedPreferenceshashedpassword.edit();
+            //we need the Country code as it is needed for determining phone contacts in E164 format
+            editor3.putString("hashedpassword", hashedPassWord);
+            editor3.commit();
+
+            System.out.println("MD5 " + hashedPassWord);
+
+            System.out.println("date format : " + time_stamp);
+
+            //Here we want to add the user's phone number, timestamp and the hash
+            //(timestamp + phone) to the user table
+            //using Volley. this is a once-off
+            registerUser();
+            //get all the contacts on the user's phone
+            getPhoneContacts();
+            //convert all contacts on the user's phone to JSON
+            convertNumberstoJSON();
+
+
+          } else {
+            Toast.makeText(getApplicationContext(), "Number not correct.", Toast.LENGTH_LONG).show();
+
+          }
         }
 
-        //or else for older phones
-        else {
-          Object pdus[] = (Object[]) extras.get("pdus");
-          smsMessage = SmsMessage.createFromPdu((byte[]) pdus[0]);
-          origNumber = smsMessage.getOriginatingAddress();
+      };
+      registerReceiver(receiver, filter);
 
-        }
+      //this is the number the user enters in the Phone Number textbox
+      //We need to parse this, to make it into E.164 format (like +353 etc...)
+      phoneNoofUserbeforeE164 = txtphoneNoofUser.getText().toString();
 
-       // Toast.makeText(getApplicationContext(), "Originating number" + origNumber, Toast.LENGTH_LONG).show();
-       // Toast.makeText(getApplicationContext(), "Sent to number" + phoneNoofUser, Toast.LENGTH_LONG).show();
+      //add the country code onto the phone number, before we parse it
+      phoneNoofUser = String.valueOf(CountryCode) + String.valueOf(phoneNoofUserbeforeE164);
 
-        //when the text message is received, see if originating number matches the
-        //sent to number
-        if (origNumber.equals(phoneNoofUser)) {
+      //Now make it into E.164...
+      PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+      try {
+        //For the second parameter, CountryCode, put whatever country code the user picks
+        //we pass it through phoneUtil to get rid of first 0 like in +353087 etc
+        Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNoofUser, CountryCode);
 
-          Toast.makeText(getApplicationContext(), "Yabadabadoo!", Toast.LENGTH_LONG).show();
+        //phoneNoofUser in the format of E164
+        phoneNoofUser = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
 
-          //save the phone number so this process is skipped in future
-          SharedPreferences sharedPreferencesphoneNoofUser = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-          SharedPreferences.Editor editor = sharedPreferencesphoneNoofUser.edit();
-          //phoneNoofUser String is unique, the username of this particular user
-          //it will be of the form +353872934480
-          editor.putString("phonenumberofuser", phoneNoofUser);
-          editor.commit();
-
-          //save the country code so this process is skipped in future
-          SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-          SharedPreferences.Editor editor2 = sharedPreferencesCountryCode.edit();
-          //we need the Country code as it is needed for determining phone contacts in E164 format
-          editor2.putString("countrycode", CountryCode);
-          editor2.commit();
-
-
-          //let's get the current date and time, for time_stamp
-          SimpleDateFormat s = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
-          time_stamp = s.format(new Date());
-
-          //make a password combining time_stamp and phone number
-          String password = time_stamp + phoneNoofUser;
-          hashedPassWord = MD5(password);
-
-          //When the user registers, when the originating phone number and destination number match,
-          //save the hashedPassWord into xml shared prefs
-          //we will also be posting hashedPassWord into the DB, further below
-          SharedPreferences sharedPreferenceshashedpassword = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-          SharedPreferences.Editor editor3 = sharedPreferenceshashedpassword.edit();
-          //we need the Country code as it is needed for determining phone contacts in E164 format
-          editor3.putString("hashedpassword", hashedPassWord);
-          editor3.commit();
-
-          System.out.println("MD5 " + hashedPassWord);
-
-          System.out.println("date format : " + time_stamp);
-
-          //Here we want to add the user's phone number, timestamp and the hash
-          //(timestamp + phone) to the user table
-          //using Volley. this is a once-off
-          registerUser();
-          //get all the contacts on the user's phone
-          getPhoneContacts();
-          //convert all contacts on the user's phone to JSON
-          convertNumberstoJSON();
-
-
-        } else {
-          Toast.makeText(getApplicationContext(), "Number not correct.", Toast.LENGTH_LONG).show();
-
-        }
+      } catch (NumberParseException e) {
+        System.err.println("NumberParseException was thrown: " + e.toString());
       }
 
-    };
-    registerReceiver(receiver, filter);
+      //for our verification code
+      Random rand = new Random();
+      int n1 = rand.nextInt(999) + 1;
+      int n2 = rand.nextInt(999) + 1;
+      String verification_code = n1 + " - " + n2;
 
-    //this is the number the user enters in the Phone Number textbox
-    //We need to parse this, to make it into E.164 format (like +353 etc...)
-    phoneNoofUserbeforeE164 = txtphoneNoofUser.getText().toString();
+      //this is the text of the SMS received
+      String message = "Your Populisto verification code is: " + "\n" + verification_code +
+          "\n" + "\n" + "You can delete this message.";
 
-    //add the country code onto the phone number, before we parse it
-    phoneNoofUser = String.valueOf(CountryCode) + String.valueOf(phoneNoofUserbeforeE164);
+      try {
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(phoneNoofUser, null, message, null, null);
 
-    //Now make it into E.164...
-    PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-    try {
-      //For the second parameter, CountryCode, put whatever country code the user picks
-      //we pass it through phoneUtil to get rid of first 0 like in +353087 etc
-      Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNoofUser, CountryCode);
-
-      //phoneNoofUser in the format of E164
-      phoneNoofUser = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
-
-    } catch (NumberParseException e) {
-      System.err.println("NumberParseException was thrown: " + e.toString());
-    }
-
-    //for our verification code
-    Random rand = new Random();
-    int n1 = rand.nextInt(999) + 1;
-    int n2 = rand.nextInt(999) + 1;
-    String verification_code = n1 + " - " + n2;
-
-    //this is the text of the SMS received
-    String message = "Your Populisto verification code is: " + "\n" + verification_code +
-        "\n" + "\n" + "You can delete this message.";
-
-    try {
-      SmsManager smsManager = SmsManager.getDefault();
-      smsManager.sendTextMessage(phoneNoofUser, null, message, null, null);
-
-      //9/8/2018
+        //9/8/2018
 /*      pDialog = new ProgressDialog(this);
       // Showing progress dialog until we get country list, response from server
       pDialog.setMessage("Waiting for text message...");
       pDialog.show();*/
-      // Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+        // Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
 
-      //show the "Loading" dialog
-      progressDialog.show(getSupportFragmentManager(), "tag");
+        //show the "Loading" dialog
+        progressDialog.show(getSupportFragmentManager(), "tag");
 
-    } catch (Exception e) {
-      Toast.makeText(getApplicationContext(), "SMS failed, please try again.", Toast.LENGTH_LONG).show();
-      e.printStackTrace();
+      } catch (Exception e) {
+        Toast.makeText(getApplicationContext(), "SMS failed, please try again.", Toast.LENGTH_LONG).show();
+        e.printStackTrace();
+      }
     }
   }
 
-  //this is done once, on registeration.
+  //this is done just once, on registeration.
   // register the user's phone number, timestamp and the corresponding hash in the user table, this is called
   //when the phone number is verified, when the originating number = sent to number
   private void registerUser() {
@@ -644,7 +660,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       receiver = null;
     }
     super.onDestroy();
-   // hidePDialog();
+    // hidePDialog();
     //dismiss the dialog when we get the response
     progressDialog.cancel();
   }
@@ -654,158 +670,189 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   //and put the phone numbers in E164 format
   private void getPhoneContacts() {
 
+    // Check the SDK version and whether the permission is already granted or not.
+    // If the phone is Android 6/ SDK 23+ (??) then the phone user has to authorize some "dangerous" commands
+    //at run-time.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+      requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+      //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+    } else {
+
 //          we have this here to avoid cursor errors
-    if (cursor != null) {
-      cursor.moveToFirst();
+      if (cursor != null) {
+        cursor.moveToFirst();
 
-    }
+      }
 
 
-    try {
+      try {
 
 //                get a handle on the Content Resolver, so we can query the provider,
-      cursor = getApplicationContext().getContentResolver()
+        cursor = getApplicationContext().getContentResolver()
 //                the table to query
-          .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 //               Null. This means that we are not making any conditional query into the contacts table.
 //               Hence, all data is returned into the cursor.
 //               Projection - the columns you want to query
-              null,
+                null,
 //               Selection - with this you are extracting records with assigned (by you) conditions and rules
-              null,
+                null,
 //               SelectionArgs - This replaces any question marks (?) in the selection string
 //               if you have something like String[] args = { "first string", "second@string.com" };
-              null,
+                null,
 //               display in ascending order
-              ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
 
 //                get the column number of the Contact_ID column, make it an integer.
 //                I think having it stored as a number makes for faster operations later on.
 //            int Idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
 //                get the column number of the DISPLAY_NAME column
-      int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+        int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 //                 get the column number of the NUMBER column
-      int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+        int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
-      cursor.moveToFirst();
+        cursor.moveToFirst();
 
 //              We make a new Hashset to hold all our contact_ids, including duplicates, if they come up
-      Set<String> ids = new HashSet<>();
+        Set<String> ids = new HashSet<>();
 //              We make a new Hashset to hold all our lookup keys, including duplicates, if they come up
 //            Set<String> ids2 = new HashSet<>();
-      do {
-        System.out.println("=====>in while");
+        do {
+          System.out.println("=====>in while");
 
 //                        get a handle on the display name, which is a string
-        name = cursor.getString(nameIdx);
+          name = cursor.getString(nameIdx);
 
 //                        get a handle on the phone number, which is a string
-        phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
+          phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
 
-        //----------PUT INTO E164 FORMAT--------------------------------------
-        //need to strip all characters except numbers and + (+ for the first character)
-        phoneNumberofContact = phoneNumberofContact.replaceAll("[^+0-9]", "");
-        //replace numbers starting with 00 with +
-        if (phoneNumberofContact.startsWith("00")) {
-          phoneNumberofContact = phoneNumberofContact.replaceFirst("00", "+");
-        }
-
-        //all phone numbers not starting with +, make them E.164 format,
-        //for the country code the user has chosen.
-        if (!phoneNumberofContact.startsWith("+")) {
-          //CountryCode is the country code chosen by the user originally
-          phoneNumberofContact = String.valueOf(CountryCode) + String.valueOf(phoneNumberofContact);
-
-          PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-          try {
-            //if phone number on user's phone is not in E.164 format,
-            //precede the number with user's country code.
-            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, "");
-            phoneNumberofContact = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
-            //If an error happens :
-          } catch (NumberParseException e) {
-            System.err.println("NumberParseException was thrown: " + e.toString());
-            // System.out.println(phoneNumberofContact);
+          //----------PUT INTO E164 FORMAT--------------------------------------
+          //need to strip all characters except numbers and + (+ for the first character)
+          phoneNumberofContact = phoneNumberofContact.replaceAll("[^+0-9]", "");
+          //replace numbers starting with 00 with +
+          if (phoneNumberofContact.startsWith("00")) {
+            phoneNumberofContact = phoneNumberofContact.replaceFirst("00", "+");
           }
-        }
 
-        //----------------------------------------------------------
+          //all phone numbers not starting with +, make them E.164 format,
+          //for the country code the user has chosen.
+          if (!phoneNumberofContact.startsWith("+")) {
+            //CountryCode is the country code chosen by the user originally
+            phoneNumberofContact = String.valueOf(CountryCode) + String.valueOf(phoneNumberofContact);
+
+            PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+            try {
+              //if phone number on user's phone is not in E.164 format,
+              //precede the number with user's country code.
+              Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, "");
+              phoneNumberofContact = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
+              //If an error happens :
+            } catch (NumberParseException e) {
+              System.err.println("NumberParseException was thrown: " + e.toString());
+              // System.out.println(phoneNumberofContact);
+            }
+          }
+
+          //----------------------------------------------------------
 
 //                  if our Hashset doesn't already contain the phone number string,
 //                    then add it to the hashset
-        if (!ids.contains(phoneNumberofContact)) {
-          ids.add(phoneNumberofContact);
+          if (!ids.contains(phoneNumberofContact)) {
+            ids.add(phoneNumberofContact);
 
-          //allPhonesofContacts is a list of all the phone numbers in the user's contacts
-          allPhonesofContacts.add(phoneNumberofContact);
+            //allPhonesofContacts is a list of all the phone numbers in the user's contacts
+            allPhonesofContacts.add(phoneNumberofContact);
 
-          //allNamesofContacts is a list of all the names in the user's contacts
-          allNamesofContacts.add(name);
+            //allNamesofContacts is a list of all the names in the user's contacts
+            allNamesofContacts.add(name);
 
-          System.out.println(" Name--->" + name);
-          System.out.println(" Phone number of contact--->" + phoneNumberofContact);
+            System.out.println(" Name--->" + name);
+            System.out.println(" Phone number of contact--->" + phoneNumberofContact);
 
 
-          // then start the next activity, PopulistoListView
-          Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+            // then start the next activity, PopulistoListView
+            Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
 
-          //it looks like the putExtra info here is not needed,
-          //there's no phoneNumberofContact or phoneNameofContact
-          //in populistolistview
+            //it looks like the putExtra info here is not needed,
+            //there's no phoneNumberofContact or phoneNameofContact
+            //in populistolistview
 
-          // myIntent1.putExtra("phoneNumberofContact", phoneNumberofContact);
-          //myIntent1.putExtra("phoneNameofContact", name);
-          VerifyUserPhoneNumber.this.startActivity(myIntent1);
+            // myIntent1.putExtra("phoneNumberofContact", phoneNumberofContact);
+            //myIntent1.putExtra("phoneNameofContact", name);
+            VerifyUserPhoneNumber.this.startActivity(myIntent1);
 
+
+          }
 
         }
 
+        while (cursor.moveToNext());
+        System.out.println("size of allPhonesofContacts :" + allPhonesofContacts.size());
+        System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
+        System.out.println("size of all names :" + allNamesofContacts.size());
+        System.out.println("here is the list of names in contacts :" + allNamesofContacts);
+
+
+        //we will save the array list allPhonesofContacts,
+        //with this we will put all phone numbers of contacts on user's phone into our RecyclerView, in other activities
+        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(allPhonesofContacts);
+        prefsEditor.putString("allPhonesofContacts", json);
+        prefsEditor.commit();
+        System.out.println("allPhonesofContacts json is:" + json);
+
+        //now, let's put in the string of names
+        //save the array list allNamesofContacts,
+        //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
+        SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
+
+        //now, let's put in the string of names
+        Gson gsonNames = new Gson();
+        String jsonNames = gsonNames.toJson(allNamesofContacts);
+        prefsEditor2.putString("allNamesofContacts", jsonNames);
+        prefsEditor2.commit();
+        System.out.println("allNamesofContacts json is:" + jsonNames);
+
+
+      } catch (Exception e) {
+        e.printStackTrace();
+        cursor.close();
+      } finally {
+//                if (cursor != null) {
+        cursor.close();
+//                }
       }
 
-      while (cursor.moveToNext());
-      System.out.println("size of allPhonesofContacts :" + allPhonesofContacts.size());
-      System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
-      System.out.println("size of all names :" + allNamesofContacts.size());
-      System.out.println("here is the list of names in contacts :" + allNamesofContacts);
+      //convert all contacts on the user's phone to JSON
+      convertNumberstoJSON();
 
-
-      //we will save the array list allPhonesofContacts,
-      //with this we will put all phone numbers of contacts on user's phone into our RecyclerView, in other activities
-      SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-      SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
-
-      Gson gson = new Gson();
-      String json = gson.toJson(allPhonesofContacts);
-      prefsEditor.putString("allPhonesofContacts", json);
-      prefsEditor.commit();
-      System.out.println("allPhonesofContacts json is:" + json);
-
-      //now, let's put in the string of names
-      //save the array list allNamesofContacts,
-      //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
-      SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-      SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
-
-      //now, let's put in the string of names
-      Gson gsonNames = new Gson();
-      String jsonNames = gsonNames.toJson(allNamesofContacts);
-      prefsEditor2.putString("allNamesofContacts", jsonNames);
-      prefsEditor2.commit();
-      System.out.println("allNamesofContacts json is:" + jsonNames);
-
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      cursor.close();
-    } finally {
-//                if (cursor != null) {
-      cursor.close();
-//                }
     }
 
-    //convert all contacts on the user's phone to JSON
-    convertNumberstoJSON();
+  }
 
+  @Override
+  public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                         int[] grantResults) {
+    if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+      if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        // Permission is granted
+        getPhoneContacts();
+      }
+      if (requestCode == PERMISSION_SEND_SMS) {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          // Permission is granted
+          sendSMSMessage();
+        }
+
+/*      else {
+        Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+      }*/
+      }
+    }
   }
 
   //CONVERT all phone contacts on the user's phone  - the allPhonesofContacts array, into JSON

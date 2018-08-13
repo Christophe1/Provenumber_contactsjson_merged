@@ -610,7 +610,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
           recyclerView.setAdapter(mAdapter);
 
-          if (categoryList.size() < 1) {
+          if (mAdapter.getItemCount() < 1) {
 
             //if there's nothing to show, hide recyclerView...
             recyclerView.setVisibility(View.GONE);

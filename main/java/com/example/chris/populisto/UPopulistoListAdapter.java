@@ -24,11 +24,12 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public static class ReviewHolder extends RecyclerView.ViewHolder {
 
         //In each populisto_list_row show the items you want to have appearing
-        public TextView phone_user_name, category, address, name, phone, comment;
+        public TextView phone_user_name, date_created, category, address, name, phone, comment;
 
         public ReviewHolder(View itemView) {
             super(itemView);
             phone_user_name = (TextView) itemView.findViewById(R.id.phone_user_name);
+            date_created = (TextView) itemView.findViewById(R.id.date_created);
             category = (TextView) itemView.findViewById(R.id.category);
             name = (TextView) itemView.findViewById(R.id.name);
             address = (TextView) itemView.findViewById(R.id.address);
@@ -91,6 +92,7 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 
         ((ReviewHolder) viewHolder).phone_user_name.setText("U");
+        ((ReviewHolder) viewHolder).date_created.setText("Date Created: " + r.getDate_created());
         ((ReviewHolder) viewHolder).category.setText("Categoryy: " + r.getCategory());
         ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
         ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
@@ -120,6 +122,7 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 //pass the intent value of pubOrPriv to ViewContact
                 i.putExtra("UPuborPrivVal", pubOrPriv);
                 //pass these values as an intent to ViewContact class
+                i.putExtra("date_created", reviewUser.getDate_created());
                 i.putExtra("category", reviewUser.getCategory());
                 i.putExtra("name", reviewUser.getName());
                 i.putExtra("phone", reviewUser.getPhone());
