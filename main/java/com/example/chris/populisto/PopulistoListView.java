@@ -38,8 +38,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -303,12 +306,29 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 pub_or_priv = Integer.parseInt(obj.getString("publicorprivate"));
 
                 //set the category part of the object to that matching reviewid
+                review.setDate_created(obj.getString("date_created"));
+
                 review.setCategory(obj.getString("category"));
                 //etc...
                 review.setName(obj.getString("name"));
                 review.setPhone(obj.getString("phone"));
                 review.setAddress(obj.getString("address"));
                 review.setComment(obj.getString("comment"));
+
+                String date = obj.getString("date_created");
+                SimpleDateFormat spf=new SimpleDateFormat("yyyy dd mm hh:mm:ss");
+                Date newDate;
+                try {
+                  newDate = spf.parse(date);
+                  spf= new SimpleDateFormat("dd MMM yyyy");
+                  date = spf.format(newDate);
+                  System.out.println("the date is" + date);
+
+                } catch (ParseException e) {
+                  e.printStackTrace();
+                }
+
+
 
                 //set a string to the the phone number from the DB,
                 //the phone number of the person who made the review

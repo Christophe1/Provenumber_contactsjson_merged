@@ -356,7 +356,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     return list;
   }
 
-
+//14/8/2-18
   //code for the '<', back button. Go back to PopulistoListView, as defined
   //in Manifest, PARENT_ACTIVITY
  // @Override

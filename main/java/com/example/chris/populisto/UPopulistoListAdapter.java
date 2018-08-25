@@ -1,6 +1,10 @@
 package com.example.chris.populisto;
 
 
+import java.security.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
@@ -92,6 +96,10 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 
         ((ReviewHolder) viewHolder).phone_user_name.setText("U");
+
+
+
+
         ((ReviewHolder) viewHolder).date_created.setText("Date Created: " + r.getDate_created());
         ((ReviewHolder) viewHolder).category.setText("Categoryy: " + r.getCategory());
         ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());

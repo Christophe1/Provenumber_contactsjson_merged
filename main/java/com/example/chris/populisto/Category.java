@@ -33,7 +33,7 @@ public class Category {
     }
 
     public String[] getPublicReviewIds() {
-        //return the value of the JSON key named private_review_ids in php file
+        //return the value of the JSON key named public_review_ids in php file
         // return user_personal_count;
         return public_review_ids;
     }

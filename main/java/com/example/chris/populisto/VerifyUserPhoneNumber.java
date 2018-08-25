@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
@@ -38,6 +39,15 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.chris.populisto.SharedReviews.SharedReview;
 import com.example.tutorialspoint.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskExecutors;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.gson.Gson;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -59,6 +69,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class VerifyUserPhoneNumber extends AppCompatActivity {
 
@@ -112,19 +123,29 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   String origNumber;
   TextView txtSelectCountry;
 
-  private BroadcastReceiver receiver;
+  //private BroadcastReceiver receiver;
 
   TextView txtCountryCode;
   String CountryCode;
   String CountryName;
   String phoneNoofUserbeforeE164;
 
-  //private ProgressDialog pDialog;
+  EditText txtVerificationCode;
+
+  //This is the verification id that will be sent to the user
+  private String mVerificationId;
+
+  //firebase auth object
+  private FirebaseAuth mAuth;
+
+  Button buttonSignIn;
 
   DelayedProgressDialog progressDialog = new DelayedProgressDialog();
 
 
   public static Activity activity = null;
+
+  //24/8/2018
   // ArrayList called sharedReviews that will contain sharedReviews info
   //we use this to pass jsonArrayofPhonesandNamesofContacts to sharedReviews,
   //so we can put the phone name beside the review
@@ -134,29 +155,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    //we need this so we can pass the shared preference jsonArrayAllPhonesandNamesofContacts
-    //to SharedPopulistoReviewsAdapter, to link names with reviews
-    //SharedPopulistoReviewsAdapter adapter = new SharedPopulistoReviewsAdapter(sharedReviews, VerifyUserPhoneNumber.this);
-
-    // setContentView(R.layout.verify_phone_number);
-
- /*       setContentView(R.layout.phone_listview_contacts);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);*/
-
-    // btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
-
-    // GlobalFunctions simplemessage = new GlobalFunctions();
-    //GlobalFunctions.simpleMessage(VerifyUserPhoneNumber.this,"buddy buddy");
-
-    //GlobalFunctions simplemessage2 = new GlobalFunctions();
-    //simplemessage2.simpleMessage2();
-
-
-    // txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
-
-    // txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
-
     //so we can close the activity, if the user has no internet access and they
     //choose "Try again later"
     activity = this;
@@ -164,17 +162,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     //show the "Loading" dialog
     progressDialog.show(getSupportFragmentManager(), "tag");
 
-
     //execute the AsyncTask, do stuff in the background
     VerifyUserPhoneNumber.StartUpInfo startUpInfo = new VerifyUserPhoneNumber.StartUpInfo();
     startUpInfo.execute();
 
-/*
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            startUpInfo.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        else
-            startUpInfo.execute();
-*/
   }
 
 
@@ -352,6 +343,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
         setContentView(R.layout.verify_phone_number);
 
+        //initialize objects
+        mAuth = FirebaseAuth.getInstance();
+
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
 
         txtphoneNoofUser = (EditText) findViewById(R.id.txtphoneNoofUser);
@@ -359,6 +353,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         txtSelectCountry = (TextView) findViewById(R.id.txtSelectCountry);
 
         txtCountryCode = (TextView) findViewById(R.id.txtCountryCode);
+
+        txtVerificationCode = (EditText) findViewById(R.id.txtVerificationCode);
+
+        buttonSignIn = (Button) findViewById(R.id.buttonSignIn);
 
         //dismiss the dialog when sendSMSandRegisterUser() has been called
         progressDialog.cancel();
@@ -406,8 +404,27 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
 
         //When the Send button is clicked, send the message
+        //to phone number the user has entered
         btnSendSMS.setOnClickListener(new View.OnClickListener() {
           public void onClick(View view) {
+
+            //if the box where user enters phone number is empty
+            String mobile = txtphoneNoofUser.getText().toString().trim();
+
+            if(mobile.isEmpty() )
+            {
+              txtphoneNoofUser.setError("Please enter your number");
+              txtphoneNoofUser.requestFocus();
+              return;
+            }
+
+            //if the country code is empty
+            if (txtCountryCode.getText().toString().equals("")) {
+
+              txtCountryCode.setError("Please select country");
+              txtCountryCode.requestFocus();
+              return;
+            }
 
             //add the country code onto the phone number, before we parse it
             phoneNoofUserInternationalFormat = String.valueOf(CountryCode) + String.valueOf(txtphoneNoofUser.getText().toString());
@@ -427,6 +444,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
             Toast.makeText(getApplicationContext(), "user's number is:" + phoneNoofUserInternationalFormat, Toast.LENGTH_LONG).show();
 
+            //Before sending, show an alert dialogue
             AlertDialog.Builder builder = new AlertDialog.Builder(btnSendSMS.getContext());
             String alert1 = "We will be verifying the phone number:";
             String alert2 = "Is this OK, or would you like to edit the number?";
@@ -436,7 +454,25 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           }
         });
 
+        //if the automatic sms detection did not work, user can also enter the code manually
+        //so adding a click listener to the button
+        buttonSignIn.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            String code = txtVerificationCode.getText().toString().trim();
+            if (code.isEmpty() || code.length() < 6) {
+              txtVerificationCode.setError("Enter valid code");
+              txtVerificationCode.requestFocus();
+              return;
+            }
+
+            //verifying the code entered manually
+            verifyVerificationCode(code);
+          }
+        });
+
       }
+
     });
 
 
@@ -477,7 +513,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
           //apparently this code deals with the deprecated createFromPdu
           //issue, for more modern phones
-          if (Build.VERSION.SDK_INT >= 19) { //KITKAT
+/*          if (Build.VERSION.SDK_INT >= 19) { //KITKAT
             SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
             smsMessage = msgs[0];
             origNumber = smsMessage.getOriginatingAddress();
@@ -489,14 +525,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             smsMessage = SmsMessage.createFromPdu((byte[]) pdus[0]);
             origNumber = smsMessage.getOriginatingAddress();
 
-          }
+          }*/
 
           // Toast.makeText(getApplicationContext(), "Originating number" + origNumber, Toast.LENGTH_LONG).show();
           // Toast.makeText(getApplicationContext(), "Sent to number" + phoneNoofUser, Toast.LENGTH_LONG).show();
 
           //when the text message is received, see if originating number matches the
           //sent to number
-          if (origNumber.equals(phoneNoofUser)) {
+          /*if (origNumber.equals(phoneNoofUser)) {
 
             Toast.makeText(getApplicationContext(), "Yabadabadoo!", Toast.LENGTH_LONG).show();
 
@@ -550,7 +586,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           } else {
             Toast.makeText(getApplicationContext(), "Number not correct.", Toast.LENGTH_LONG).show();
 
-          }
+          }*/
         }
 
       };
@@ -655,10 +691,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   @Override
   protected void onDestroy() {
-    if (receiver != null) {
+ /*   if (receiver != null) {
       unregisterReceiver(receiver);
       receiver = null;
-    }
+    }*/
     super.onDestroy();
     // hidePDialog();
     //dismiss the dialog when we get the response
@@ -835,6 +871,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   }
 
   @Override
+  //we need this for newer phones, so permissions can
+  //be given by the user at run-time
   public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                          int[] grantResults) {
     if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
@@ -917,7 +955,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             // and extract the phone numbers and compare against the contacts on the user's phone.
 
             Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
-            //System.out.println("the Populisto contacts of this user are :" + response);
+            System.out.println("the Populisto contacts of this user are :" + response);
 
             //convert the JSONArray, the response, to a string
             //It will be like: [{"phone_number":"+353864677745"}, etc...]
@@ -1012,11 +1050,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         case DialogInterface.BUTTON_POSITIVE:
           //OK button clicked
           //send the text
-          sendSMSMessage();
+          //sendSMSMessage();
+          sendVerificationCode();
 
         case DialogInterface.BUTTON_NEGATIVE:
 
-          //close the activity
+          //close the dialog
           dialog.dismiss();
       }
     }
@@ -1024,6 +1063,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
 
   //function to convert string to md5 hash
+  //we will be putting this into the DB
   public static String MD5(String input) {
 
     try {
@@ -1070,15 +1110,131 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   }
 
-//9/8/2018
-/*  public void hidePDialog() {
-    if (pDialog != null) {
-      pDialog.dismiss();
-      pDialog = null;
+  //the method is sending verification code to phoneNoofUserInternationalFormat
+  private void sendVerificationCode() {
+    PhoneAuthProvider.getInstance().verifyPhoneNumber(
+        phoneNoofUserInternationalFormat,
+        60,
+        TimeUnit.SECONDS,
+        TaskExecutors.MAIN_THREAD,
+        mCallbacks);
+  }
+
+  //the callback to detect the verification status
+  private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+    @Override
+    public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+
+      //Getting the code sent by SMS
+      String code = phoneAuthCredential.getSmsCode();
+
+      //sometimes the code is not detected automatically
+      //in this case the code will be null
+      //so user has to manually enter the code
+      if (code != null) {
+        txtVerificationCode.setText(code);
+        //verifying the code
+        verifyVerificationCode(code);
+      }
     }
-  }*/
+
+    @Override
+    public void onVerificationFailed(FirebaseException e) {
+      Toast.makeText(VerifyUserPhoneNumber.this, e.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+      super.onCodeSent(s, forceResendingToken);
+
+      //storing the verification id that is sent to the user
+      mVerificationId = s;
+    }
+  };
+
+  private void verifyVerificationCode(String code) {
+
+    Toast.makeText(getApplicationContext(), "Yabadabadoo!", Toast.LENGTH_LONG).show();
+
+    //creating the credential
+    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
+
+    //save the phone number so this process is skipped in future
+    SharedPreferences sharedPreferencesphoneNoofUser = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferencesphoneNoofUser.edit();
+    //phoneNoofUser String is unique, the username of this particular user
+    //it will be of the form +353872934480
+    editor.putString("phonenumberofuser", phoneNoofUser);
+    editor.commit();
+
+    //save the country code so this process is skipped in future
+    SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor2 = sharedPreferencesCountryCode.edit();
+    //we need the Country code as it is needed for determining phone contacts in E164 format
+    editor2.putString("countrycode", CountryCode);
+    editor2.commit();
 
 
+    //let's get the current date and time, for time_stamp
+    SimpleDateFormat s = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+    time_stamp = s.format(new Date());
+
+    //make a password combining time_stamp and phone number
+    String password = time_stamp + phoneNoofUser;
+    hashedPassWord = MD5(password);
+
+    //When the user registers, when the originating phone number and destination number match,
+    //save the hashedPassWord into xml shared prefs
+    //we will also be posting hashedPassWord into the DB, further below
+    SharedPreferences sharedPreferenceshashedpassword = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor3 = sharedPreferenceshashedpassword.edit();
+    //we need the Country code as it is needed for determining phone contacts in E164 format
+    editor3.putString("hashedpassword", hashedPassWord);
+    editor3.commit();
+
+    System.out.println("MD5 " + hashedPassWord);
+
+    System.out.println("date format : " + time_stamp);
+
+    //Here we want to add the user's phone number, timestamp and the hash
+    //(timestamp + phone) to the user table
+    //using Volley. this is a once-off
+    registerUser();
+    //get all the contacts on the user's phone
+    getPhoneContacts();
+    //convert all contacts on the user's phone to JSON
+    convertNumberstoJSON();
+
+    //signing in the user
+    signInWithPhoneAuthCredential(credential);
+  }
+
+  private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+    mAuth.signInWithCredential(credential)
+        .addOnCompleteListener(VerifyUserPhoneNumber.this, new OnCompleteListener<AuthResult>() {
+          @Override
+          public void onComplete(@NonNull Task<AuthResult> task) {
+            if (task.isSuccessful()) {
+              //verification successful we will start the profile activity
+              Intent intent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+              intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+              startActivity(intent);
+
+            } else {
+
+              //verification unsuccessful.. display an error message
+
+              String message = "Somthing is wrong, we will fix it soon...";
+
+              if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                message = "Invalid code entered...";
+              }
+            }
+          }
+        });
+  }
+
+//???
   //if the user chooses to refresh the Activity, when "Try Again" button is clicked...
   public void refresh() {
     Intent intent = getIntent();
