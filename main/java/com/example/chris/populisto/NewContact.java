@@ -44,7 +44,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
+import static com.example.chris.populisto.PopulistoContactsAdapter.allPhonesofContacts;
+import static com.example.chris.populisto.PopulistoContactsAdapter.theContactsList;
 
 
 public class NewContact extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
@@ -58,6 +63,15 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   // we will post the category, name, phone, address, comment etc into Php and
   // create a new review_id
   private static final String NewContact_URL = "http://www.populisto.com/NewContact.php";
+
+  //matching contacts, those on phone and populisto users
+  //public static final ArrayList<String> MatchingContactsAsArrayList  = new ArrayList<String>();
+
+  //make a List containing info about SelectPhoneContact objects
+  //public static List<SelectPhoneContact> theContactsList;
+
+  //allPhonesofContacts is a list of all the phone numbers in the user's contacts
+  //public static final ArrayList<String> allPhonesofContacts = new ArrayList<String>();
 
   //in this JSONArray, checkedContacts, we will be storing each checkedContact JSON Object
   //Then we're going to post it to our NewContact.php file
@@ -388,44 +402,44 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     @Override
     protected Void doInBackground(Void... voids) {
 
-      //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
-      for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
 
-        phoneNumberofContact = PopulistoContactsAdapter.allPhonesofContacts.get(i);
-        phoneNameofContact = PopulistoContactsAdapter.allNamesofContacts.get(i);
+        //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
+        for (int i = 0; i < allPhonesofContacts.size(); i++) {
 
-        System.out.println("SelectPhoneContactAdapter: phoneNumberofContact : " + phoneNumberofContact);
-        System.out.println("SelectPhoneContactAdapter: phoneNameofContact : " + phoneNameofContact);
+          phoneNumberofContact = allPhonesofContacts.get(i);
+          phoneNameofContact = PopulistoContactsAdapter.allNamesofContacts.get(i);
 
-        SelectPhoneContact selectContact = new SelectPhoneContact();
+          System.out.println("SelectPhoneContactAdapter: phoneNumberofContact : " + phoneNumberofContact);
+          System.out.println("SelectPhoneContactAdapter: phoneNameofContact : " + phoneNameofContact);
 
-        //if a phone number is in our array of matching contacts
-        if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
+          SelectPhoneContact selectContact = new SelectPhoneContact();
 
-        {   //add the selectContacts to the selectPhoneContacts array
-          // insert the contact at the beginning of the listview
-          selectPhoneContacts.add(0, selectContact);
-          System.out.println("MatchingContactsAsArrayList is : " + PopulistoContactsAdapter.MatchingContactsAsArrayList);
+          //if a phone number is in our array of matching contacts
+          if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
-          //In SelectContact class, so getItemViewType will know which layout to show
-          //:checkbox or Invite Button
-          selectContact.setType_row("1");
+          {   //add the selectContacts to the selectPhoneContacts array
+            // insert the contact at the beginning of the listview
+            selectPhoneContacts.add(0, selectContact);
+            System.out.println("MatchingContactsAsArrayList is : " + PopulistoContactsAdapter.MatchingContactsAsArrayList);
 
-        } else {
-          // insert it at the end (default)
-          selectPhoneContacts.add(selectContact);
-          selectContact.setType_row("2");
+            //In SelectContact class, so getItemViewType will know which layout to show
+            //:checkbox or Invite Button
+            selectContact.setType_row("1");
+
+          } else {
+            // insert it at the end (default)
+            selectPhoneContacts.add(selectContact);
+            selectContact.setType_row("2");
+
+          }
+
+
+          selectContact.setName(phoneNameofContact);
+          selectContact.setPhone(phoneNumberofContact);
+
 
         }
-
-
-        selectContact.setName(phoneNameofContact);
-        selectContact.setPhone(phoneNumberofContact);
-
-
-
-      }
-
+    //  }
       //call the getCategoryList function, it will load all the categories
       //in autocompletetextview available to own-user
       getCategoryList();
@@ -447,14 +461,20 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       //*********set the Matching Contacts to checked, by default ************
       //loop through the matching contacts
       int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+      System.out.println("NewContact: the matching contacts are " + PopulistoContactsAdapter.MatchingContactsAsArrayList);
 
       for (int i = 0; i < count; i++) {
 
-        //check all matching contacts, we want it to be 'Phone Contacts' by default
-        PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+        theContactsList.add(new SelectPhoneContact());
+        //if (PopulistoContactsAdapter.theContactsList != null && PopulistoContactsAdapter.theContactsList.size() >= 1)
+       // {
+          //check all matching contacts, we want it to be 'Phone Contacts' by default
+          PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
         //we need to notify the recyclerview that changes may have been made
         adapter.notifyDataSetChanged();
+
+      //}
       }
       //*********************************
 

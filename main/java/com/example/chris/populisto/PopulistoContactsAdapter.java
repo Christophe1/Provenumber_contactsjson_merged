@@ -98,6 +98,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     public int getItemViewType(int position) {
         //for each row in recyclerview, get the getType_row
         //it will either have Invite Button, or no Invite Button
+
+        System.out.println("gettype row is: " + theContactsList.get(position).getType_row());
         return Integer.parseInt(theContactsList.get(position).getType_row());
     }
 
@@ -146,8 +148,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         allNamesofContacts = gsonNames.fromJson(jsonNames, typeNames);
         System.out.println("NewContact: allNamesofContacts :" + allNamesofContacts);
 
-        System.out.println("NewContact:the amount in allPhonesofContacts :" + PopulistoContactsAdapter.allPhonesofContacts.size());
-        System.out.println("NewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
+   //     System.out.println("NewContact:the amount in allPhonesofContacts :" + PopulistoContactsAdapter.allPhonesofContacts.size());
+   //     System.out.println("NewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
 
         //we are fetching the array list checkedContactsAsArrayList, created in ViewContact.
         //with this we will put a tick in the checkboxes of contacts the review is being shared with
