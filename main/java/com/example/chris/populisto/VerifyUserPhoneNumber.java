@@ -12,11 +12,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -239,11 +241,20 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 sendSMSandRegisterUser();
 
               } else {
-                // if it is registered, if "True", then
-                //get all the contacts on the user's phone
-                getPhoneContacts();
+                // if it is registered, if "True", then...
 
+                //If READ_CONTACTS has been authorized
+                PackageManager manager = getPackageManager();
+                int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+                if (hasPermission == manager.PERMISSION_GRANTED) {
+                  //you don't have permission
+                  Toast.makeText(getApplicationContext(), "Read contact granted!", Toast.LENGTH_LONG).show();
+                  //get all the contacts on the user's phone
+                  getPhoneContacts();
+
+                }
                 // then start the next activity, PopulistoListView
+                Toast.makeText(getApplicationContext(), "Read contacts not granted yet", Toast.LENGTH_LONG).show();
                 Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
                 //we need phoneNoofUser so we can get user_id and corresponding
                 //reviews in the next activity
@@ -419,11 +430,48 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         btnSendSMS.setOnClickListener(new View.OnClickListener() {
           public void onClick(View view) {
 
+            PackageManager manager = getPackageManager();
+            int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+            if (hasPermission == manager.PERMISSION_DENIED) {
+              //you don't have permission
+              Toast.makeText(getApplicationContext(), "No. Read contacts not granted", Toast.LENGTH_LONG).show();
+
+              new AlertDialog.Builder(VerifyUserPhoneNumber.this).
+                  setCancelable(false).
+                  // setTitle("You need to enable Read Contacts").
+                      setMessage("To get full use of Populisto, allow Populisto access to your contacts. Tap Settings > Permisions and turn Contacts on.").
+                  //setIcon(R.drawable.ninja).
+                      setPositiveButton("SETTINGS",
+                      new DialogInterface.OnClickListener() {
+                        @TargetApi(11)
+                        public void onClick(DialogInterface dialog, int id) {
+                          //showToast("Thank you! You're awesome too!");
+                          dialog.cancel();
+
+                          Intent intent = new Intent();
+                          intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                          Uri uri = Uri.fromParts("package", getPackageName(), null);
+                          intent.setData(uri);
+                          startActivity(intent);
+                        }
+                      })
+                  .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
+                    @TargetApi(11)
+                    public void onClick(DialogInterface dialog, int id) {
+                      //showToast("Mike is not awesome for you. :(");
+                      dialog.cancel();
+                    }
+                  }).show();
+
+            } else {
+              Toast.makeText(getApplicationContext(), "Yes!Read contacts granted", Toast.LENGTH_LONG).show();
+
+            }
+
             //if the box where user enters phone number is empty
             String mobile = txtphoneNoofUser.getText().toString().trim();
 
-            if(mobile.isEmpty() )
-            {
+            if (mobile.isEmpty()) {
               txtphoneNoofUser.setError("Please enter your number");
               txtphoneNoofUser.requestFocus();
               return;
@@ -522,8 +570,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
           SmsMessage smsMessage;*/
 
-          //apparently this code deals with the deprecated createFromPdu
-          //issue, for more modern phones
+    //apparently this code deals with the deprecated createFromPdu
+    //issue, for more modern phones
 /*          if (Build.VERSION.SDK_INT >= 19) { //KITKAT
             SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
             smsMessage = msgs[0];
@@ -538,11 +586,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
           }*/
 
-          // Toast.makeText(getApplicationContext(), "Originating number" + origNumber, Toast.LENGTH_LONG).show();
-          // Toast.makeText(getApplicationContext(), "Sent to number" + phoneNoofUser, Toast.LENGTH_LONG).show();
+    // Toast.makeText(getApplicationContext(), "Originating number" + origNumber, Toast.LENGTH_LONG).show();
+    // Toast.makeText(getApplicationContext(), "Sent to number" + phoneNoofUser, Toast.LENGTH_LONG).show();
 
-          //when the text message is received, see if originating number matches the
-          //sent to number
+    //when the text message is received, see if originating number matches the
+    //sent to number
           /*if (origNumber.equals(phoneNoofUser)) {
 
             Toast.makeText(getApplicationContext(), "Yabadabadoo!", Toast.LENGTH_LONG).show();
@@ -604,8 +652,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       registerReceiver(receiver, filter);*/
 
 
-
-      //for our verification code
+    //for our verification code
 /*      Random rand = new Random();
       int n1 = rand.nextInt(999) + 1;
       int n2 = rand.nextInt(999) + 1;
@@ -633,7 +680,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "SMS failed, please try again.", Toast.LENGTH_LONG).show();
         e.printStackTrace();
       }*/
-    }
+  }
   //}
 
   //this is done just once, on registeration.
@@ -709,163 +756,163 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
     }
     //else {
-      Toast.makeText(this, "getContacts function called", Toast.LENGTH_SHORT).show();
+    Toast.makeText(this, "getContacts function called", Toast.LENGTH_SHORT).show();
 //          we have this here to avoid cursor errors
-      if (cursor != null) {
-        cursor.moveToFirst();
+    if (cursor != null) {
+      cursor.moveToFirst();
 
-      }
+    }
 
 
-      try {
+    try {
 
 //                get a handle on the Content Resolver, so we can query the provider,
-        cursor = getApplicationContext().getContentResolver()
+      cursor = getApplicationContext().getContentResolver()
 //                the table to query
-            .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+          .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 //               Null. This means that we are not making any conditional query into the contacts table.
 //               Hence, all data is returned into the cursor.
 //               Projection - the columns you want to query
-                null,
+              null,
 //               Selection - with this you are extracting records with assigned (by you) conditions and rules
-                null,
+              null,
 //               SelectionArgs - This replaces any question marks (?) in the selection string
 //               if you have something like String[] args = { "first string", "second@string.com" };
-                null,
+              null,
 //               display in ascending order
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+              ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
 
 //                get the column number of the Contact_ID column, make it an integer.
 //                I think having it stored as a number makes for faster operations later on.
 //            int Idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
 //                get the column number of the DISPLAY_NAME column
-        int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+      int nameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 //                 get the column number of the NUMBER column
-        int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+      int phoneNumberofContactIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
-        cursor.moveToFirst();
+      cursor.moveToFirst();
 
 //              We make a new Hashset to hold all our contact_ids, including duplicates, if they come up
-        Set<String> ids = new HashSet<>();
+      Set<String> ids = new HashSet<>();
 //              We make a new Hashset to hold all our lookup keys, including duplicates, if they come up
 //            Set<String> ids2 = new HashSet<>();
-        do {
-          System.out.println("=====>in while");
+      do {
+        System.out.println("=====>in while");
 
 //                        get a handle on the display name, which is a string
-          name = cursor.getString(nameIdx);
+        name = cursor.getString(nameIdx);
 
 //                        get a handle on the phone number, which is a string
-          phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
+        phoneNumberofContact = cursor.getString(phoneNumberofContactIdx);
 
-          //----------PUT INTO E164 FORMAT--------------------------------------
-          //need to strip all characters except numbers and + (+ for the first character)
-          phoneNumberofContact = phoneNumberofContact.replaceAll("[^+0-9]", "");
-          //replace numbers starting with 00 with +
-          if (phoneNumberofContact.startsWith("00")) {
-            phoneNumberofContact = phoneNumberofContact.replaceFirst("00", "+");
+        //----------PUT INTO E164 FORMAT--------------------------------------
+        //need to strip all characters except numbers and + (+ for the first character)
+        phoneNumberofContact = phoneNumberofContact.replaceAll("[^+0-9]", "");
+        //replace numbers starting with 00 with +
+        if (phoneNumberofContact.startsWith("00")) {
+          phoneNumberofContact = phoneNumberofContact.replaceFirst("00", "+");
+        }
+
+        //all phone numbers not starting with +, make them E.164 format,
+        //for the country code the user has chosen.
+        if (!phoneNumberofContact.startsWith("+")) {
+          //CountryCode is the country code chosen by the user originally
+          phoneNumberofContact = String.valueOf(CountryCode) + String.valueOf(phoneNumberofContact);
+
+          PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+          try {
+            //if phone number on user's phone is not in E.164 format,
+            //precede the number with user's country code.
+            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, "");
+            phoneNumberofContact = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
+            //If an error happens :
+          } catch (NumberParseException e) {
+            System.err.println("NumberParseException was thrown: " + e.toString());
+            // System.out.println(phoneNumberofContact);
           }
+        }
 
-          //all phone numbers not starting with +, make them E.164 format,
-          //for the country code the user has chosen.
-          if (!phoneNumberofContact.startsWith("+")) {
-            //CountryCode is the country code chosen by the user originally
-            phoneNumberofContact = String.valueOf(CountryCode) + String.valueOf(phoneNumberofContact);
-
-            PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-            try {
-              //if phone number on user's phone is not in E.164 format,
-              //precede the number with user's country code.
-              Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumberofContact, "");
-              phoneNumberofContact = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
-              //If an error happens :
-            } catch (NumberParseException e) {
-              System.err.println("NumberParseException was thrown: " + e.toString());
-              // System.out.println(phoneNumberofContact);
-            }
-          }
-
-          //----------------------------------------------------------
+        //----------------------------------------------------------
 
 //                  if our Hashset doesn't already contain the phone number string,
 //                    then add it to the hashset
-          if (!ids.contains(phoneNumberofContact)) {
-            ids.add(phoneNumberofContact);
+        if (!ids.contains(phoneNumberofContact)) {
+          ids.add(phoneNumberofContact);
 
-            //allPhonesofContacts is a list of all the phone numbers in the user's contacts
-            allPhonesofContacts.add(phoneNumberofContact);
+          //allPhonesofContacts is a list of all the phone numbers in the user's contacts
+          allPhonesofContacts.add(phoneNumberofContact);
 
-            //allNamesofContacts is a list of all the names in the user's contacts
-            allNamesofContacts.add(name);
+          //allNamesofContacts is a list of all the names in the user's contacts
+          allNamesofContacts.add(name);
 
-            System.out.println(" Name--->" + name);
-            System.out.println(" Phone number of contact--->" + phoneNumberofContact);
-
-
-            // then start the next activity, PopulistoListView
-            Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
-
-            //it looks like the putExtra info here is not needed,
-            //there's no phoneNumberofContact or phoneNameofContact
-            //in populistolistview
-
-            // myIntent1.putExtra("phoneNumberofContact", phoneNumberofContact);
-            //myIntent1.putExtra("phoneNameofContact", name);
-            VerifyUserPhoneNumber.this.startActivity(myIntent1);
+          System.out.println(" Name--->" + name);
+          System.out.println(" Phone number of contact--->" + phoneNumberofContact);
 
 
-          }
+          // then start the next activity, PopulistoListView
+          Intent myIntent1 = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+
+          //it looks like the putExtra info here is not needed,
+          //there's no phoneNumberofContact or phoneNameofContact
+          //in populistolistview
+
+          // myIntent1.putExtra("phoneNumberofContact", phoneNumberofContact);
+          //myIntent1.putExtra("phoneNameofContact", name);
+          VerifyUserPhoneNumber.this.startActivity(myIntent1);
+
 
         }
 
-        while (cursor.moveToNext());
-        System.out.println("size of allPhonesofContacts :" + allPhonesofContacts.size());
-        System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
-        System.out.println("size of all names :" + allNamesofContacts.size());
-        System.out.println("here is the list of names in contacts :" + allNamesofContacts);
+      }
+
+      while (cursor.moveToNext());
+      System.out.println("size of allPhonesofContacts :" + allPhonesofContacts.size());
+      System.out.println("here is the list of allPhonesofContacts :" + allPhonesofContacts);
+      System.out.println("size of all names :" + allNamesofContacts.size());
+      System.out.println("here is the list of names in contacts :" + allNamesofContacts);
 
 
-        //we will save the array list allPhonesofContacts,
-        //with this we will put all phone numbers of contacts on user's phone into our RecyclerView, in other activities
-        SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-        SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
+      //we will save the array list allPhonesofContacts,
+      //with this we will put all phone numbers of contacts on user's phone into our RecyclerView, in other activities
+      SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+      SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
 
-        Gson gson = new Gson();
-        String json = gson.toJson(allPhonesofContacts);
-        prefsEditor.putString("allPhonesofContacts", json);
-        prefsEditor.commit();
-        System.out.println("allPhonesofContacts json is:" + json);
+      Gson gson = new Gson();
+      String json = gson.toJson(allPhonesofContacts);
+      prefsEditor.putString("allPhonesofContacts", json);
+      prefsEditor.commit();
+      System.out.println("allPhonesofContacts json is:" + json);
 
-        //now, let's put in the string of names
-        //save the array list allNamesofContacts,
-        //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
-        SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-        SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
+      //now, let's put in the string of names
+      //save the array list allNamesofContacts,
+      //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
+      SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+      SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
 
-        //now, let's put in the string of names
-        Gson gsonNames = new Gson();
-        String jsonNames = gsonNames.toJson(allNamesofContacts);
-        prefsEditor2.putString("allNamesofContacts", jsonNames);
-        prefsEditor2.commit();
-        System.out.println("allNamesofContacts json is:" + jsonNames);
+      //now, let's put in the string of names
+      Gson gsonNames = new Gson();
+      String jsonNames = gsonNames.toJson(allNamesofContacts);
+      prefsEditor2.putString("allNamesofContacts", jsonNames);
+      prefsEditor2.commit();
+      System.out.println("allNamesofContacts json is:" + jsonNames);
 
 
-      } catch (Exception e) {
-        e.printStackTrace();
-        if (cursor != null) {
-          cursor.close();
-        }
+    } catch (Exception e) {
+      e.printStackTrace();
+      if (cursor != null) {
+        cursor.close();
+      }
 /*      finally {
 
                 if (cursor != null) {
         cursor.close();
                 }
       }*/
-      }
-      //convert all contacts on the user's phone to JSON
-      convertNumberstoJSON();
+    }
+    //convert all contacts on the user's phone to JSON
+    convertNumberstoJSON();
 
-   // }
+    // }
 
   }
 
@@ -1241,12 +1288,25 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //(timestamp + phone) to the user table
               //using Volley. this is a once-off
               registerUser();
-              //get all the contacts on the user's phone
-              getPhoneContacts();
-              //convert all contacts on the user's phone to JSON
-              convertNumberstoJSON();
+
+              //If READ_CONTACTS has been enabled...
+              PackageManager manager = getPackageManager();
+              int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+              if (hasPermission == manager.PERMISSION_GRANTED) {
+                //you don't have permission
+                Toast.makeText(getApplicationContext(), "Yes!Read contacts granted", Toast.LENGTH_LONG).show();
+
+                //get all the contacts on the user's phone
+                getPhoneContacts();
+
+                //convert all contacts on the user's phone to JSON
+                convertNumberstoJSON();
 
 
+              } else {
+                Toast.makeText(getApplicationContext(), "No. Read contacts not granted", Toast.LENGTH_LONG).show();
+
+              }
 
 
               //verification successful, we will start PopulistoListView activity
@@ -1280,82 +1340,88 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   }
 
 
-  public void askForContactPermission(){
+  //for newer Android, need to ask ser for permissions
+  public void askForContactPermission() {
 
     // Check the SDK version and whether the permission is already granted or not.
     // If the phone is Android 6/ SDK 23+ (??) then the phone user has to authorize some "dangerous" commands
     //at run-time.
+
+    //check if Marshmallow or newer
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 
-        // Should we show an explanation?
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-            Manifest.permission.READ_CONTACTS)) {
-          AlertDialog.Builder builder = new AlertDialog.Builder(this);
-          builder.setTitle("Contacts access needed");
-          builder.setPositiveButton(android.R.string.ok, null);
-          builder.setMessage("Please confirm Contacts access");//TODO put real question
-          builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @TargetApi(Build.VERSION_CODES.M)
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-              requestPermissions(
-                  new String[]
-                      {Manifest.permission.READ_CONTACTS}
-                  , PERMISSIONS_REQUEST_READ_CONTACTS);
-            }
-          });
-          builder.show();
-          // Show an expanation to the user *asynchronously* -- don't block
-          // this thread waiting for the user's response! After the user
-          // sees the explanation, try again to request the permission.
+      //check if permissions denied
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
 
-        } else {
+        //if denied, show the standard Android dialog, 'Allow access to Contacts?'
+        ActivityCompat.requestPermissions(this,
+            new String[]{Manifest.permission.READ_CONTACTS},
+            PERMISSIONS_REQUEST_READ_CONTACTS);
 
-          // No explanation needed, we can request the permission.
-
-          ActivityCompat.requestPermissions(this,
-              new String[]{Manifest.permission.READ_CONTACTS},
-              PERMISSIONS_REQUEST_READ_CONTACTS);
-
-          // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-          // app-defined int constant. The callback method gets the
-          // result of the request.
-        }
-      }else{
+        //if permissions granted
+      } else {
         getPhoneContacts();
       }
     }
-    else{
+
+
+    //if Android is older than Marshmallow
+    else {
       getPhoneContacts();
     }
   }
 
+
   @Override
+  //check Permissions status
   public void onRequestPermissionsResult(int requestCode,
                                          String permissions[], int[] grantResults) {
     switch (requestCode) {
+
+      //if Permission is granted, then continue as normal
       case PERMISSIONS_REQUEST_READ_CONTACTS: {
-        // If request is cancelled, the result arrays are empty.
+
         if (grantResults.length > 0
             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
           getPhoneContacts();
-          // permission was granted, yay! Do the
-          // contacts-related task you need to do.
+          Toast.makeText(getApplicationContext(), "Yay! Granted now", Toast.LENGTH_LONG).show();
 
+          //if Permission is denied, then show our custom made dialog
+          //This is important for if user chooses, 'Don't Show Again',
+          //It will open up SETTINGS and user can change it
         } else {
-          Toast.makeText(getApplicationContext(), "No permission for contacts", Toast.LENGTH_LONG).show();
-          // permission denied, boo! Disable the
-          // functionality that depends on this permission.
+          new AlertDialog.Builder(this).
+              setCancelable(false).
+              // setTitle("You need to enable Read Contacts").
+                  setMessage("To get full use of Populisto, allow Populisto access to your contacts. Click SETTINGS, tap Permissions and turn Contacts on.").
+              //setIcon(R.drawable.ninja).
+                  setPositiveButton("SETTINGS",
+                  new DialogInterface.OnClickListener() {
+                    @TargetApi(11)
+                    public void onClick(DialogInterface dialog, int id) {
+                      dialog.cancel();
+
+                      //Open up the SETTINGS for the App, user can enable contacts
+                      Intent intent = new Intent();
+                      intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                      Uri uri = Uri.fromParts("package", getPackageName(), null);
+                      intent.setData(uri);
+                      startActivity(intent);
+                    }
+                  })
+              .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
+                @TargetApi(11)
+                public void onClick(DialogInterface dialog, int id) {
+                  dialog.cancel();
+                }
+              }).show();
+
         }
         return;
       }
 
-      // other 'case' lines to check for other
-      // permissions this app might request
     }
   }
-
 
 
 }

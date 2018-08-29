@@ -1,12 +1,20 @@
 package com.example.chris.populisto;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -162,6 +170,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   List<Category> items;
   String the_response;
 
+  // Request code for READ_CONTACTS. It can be any number > 0.
+  //We need this for version greater than Android 6, READ_CONTACTS in
+  //Manifest alone is not enough
+  private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -172,6 +185,26 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //searchview will appear inside of this
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    //Check READ_CONTACTS Permissions, will only be asked on Marshmallow +
+    //because permission is automatically granted on older versions
+    PackageManager manager = getPackageManager();
+    int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+    if (hasPermission == manager.PERMISSION_DENIED) {
+
+      //if denied, show the standard Android dialog, 'Allow access to Contacts?'
+      ActivityCompat.requestPermissions(this,
+          new String[]{Manifest.permission.READ_CONTACTS},
+          PERMISSIONS_REQUEST_READ_CONTACTS);
+
+      //you don't have permission
+      Toast.makeText(getApplicationContext(), "No. Read contacts not granted", Toast.LENGTH_LONG).show();
+    }
+  /*  else
+    {
+      Toast.makeText(getApplicationContext(), "Yes!Read contacts granted", Toast.LENGTH_LONG).show();
+
+    }*/
 
 
     // toolbar
@@ -316,18 +349,17 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 review.setComment(obj.getString("comment"));
 
                 String date = obj.getString("date_created");
-                SimpleDateFormat spf=new SimpleDateFormat("yyyy dd mm hh:mm:ss");
+                SimpleDateFormat spf = new SimpleDateFormat("yyyy dd mm hh:mm:ss");
                 Date newDate;
                 try {
                   newDate = spf.parse(date);
-                  spf= new SimpleDateFormat("dd MMM yyyy");
+                  spf = new SimpleDateFormat("dd MMM yyyy");
                   date = spf.format(newDate);
                   System.out.println("the date is" + date);
 
                 } catch (ParseException e) {
                   e.printStackTrace();
                 }
-
 
 
                 //set a string to the the phone number from the DB,
@@ -608,63 +640,60 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         pDialog.setMessage("Loading...");
         pDialog.show();*/
 
-          //items is the complete list of the category names available to the logged-in user
-          items = new Gson().fromJson(the_response, new TypeToken<List<Category>>() {
-          }.getType());
+        //items is the complete list of the category names available to the logged-in user
+        items = new Gson().fromJson(the_response, new TypeToken<List<Category>>() {
+        }.getType());
 
-          //clear the list every time a key is pressed
-          categoryList.clear();
+        //clear the list every time a key is pressed
+        categoryList.clear();
 
 
-          //was getting NullPointerException so put this here...
-          if (items != null && items.size() > 0) {
-            //adding categories to category list
-            categoryList.addAll(items);
-          }
+        //was getting NullPointerException so put this here...
+        if (items != null && items.size() > 0) {
+          //adding categories to category list
+          categoryList.addAll(items);
+        }
 
-          // recyclerView.setAdapter(mAdapter);
+        // recyclerView.setAdapter(mAdapter);
 
-          mAdapter.getFilter().filter(query);
+        mAdapter.getFilter().filter(query);
 
+        recyclerView.setAdapter(mAdapter);
+
+        if (mAdapter.getItemCount() < 1) {
+
+          //if there's nothing to show, hide recyclerView...
+          recyclerView.setVisibility(View.GONE);
+
+          //and show the "No Results" textbox
+          noResultsFoundView.setVisibility(View.VISIBLE);
           // mAdapter.notifyDataSetChanged();
+          //hidePDialog();
 
-          recyclerView.setAdapter(mAdapter);
-
-          if (mAdapter.getItemCount() < 1) {
-
-            //if there's nothing to show, hide recyclerView...
-            recyclerView.setVisibility(View.GONE);
-
-            //and show the "No Results" textbox
-            noResultsFoundView.setVisibility(View.VISIBLE);
-           // mAdapter.notifyDataSetChanged();
-            //hidePDialog();
-
-            Toast.makeText(getApplicationContext(), "mAdapter is 0, no item results", Toast.LENGTH_SHORT).show();
+          Toast.makeText(getApplicationContext(), "mAdapter is 0, no item results", Toast.LENGTH_SHORT).show();
 
 
-
-          }
+        }
 
         if (mAdapter.getItemCount() >= 1) {
 
-            recyclerView.setVisibility(View.VISIBLE);
-            noResultsFoundView.setVisibility(View.GONE);
-            //mAdapter.notifyDataSetChanged();
-            // hidePDialog();
+          recyclerView.setVisibility(View.VISIBLE);
+          noResultsFoundView.setVisibility(View.GONE);
+          //mAdapter.notifyDataSetChanged();
+          // hidePDialog();
 
-            //if there ARE category results for what is typed, with each key press...
-            Toast.makeText(getApplicationContext(), "mAdapter size is:" + mAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
-
-
-          }
+          //if there ARE category results for what is typed, with each key press...
+          Toast.makeText(getApplicationContext(), "mAdapter size is:" + mAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
 
 
-          //WILL CRASH IF UNCOMMENTED
-          //recyclerView.setAdapter(mAdapter);
-          //sharedReviewList.clear();
-          //String str = query.toString();
-          // searchView.getText().toString().trim();
+        }
+
+
+        //WILL CRASH IF UNCOMMENTED
+        //recyclerView.setAdapter(mAdapter);
+        //sharedReviewList.clear();
+        //String str = query.toString();
+        // searchView.getText().toString().trim();
 
 
     /*    String str = query.toString();
@@ -674,27 +703,27 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           searchView.setQuery("",false);
         }*/
 
-          //if the searchView is empty
-          if (searchView.getQuery().length() == 0) {
+        //if the searchView is empty
+        if (searchView.getQuery().length() == 0) {
 
-            // hidePDialog();
+          // hidePDialog();
 
-            //show the logged-in users reviews, not the searched categories
-            recyclerView.setAdapter(pAdapter);
-            pAdapter.notifyDataSetChanged();
+          //show the logged-in users reviews, not the searched categories
+          recyclerView.setAdapter(pAdapter);
+          pAdapter.notifyDataSetChanged();
 
-            //show the recyclerview, hide the noResults textview
-            recyclerView.setVisibility(View.VISIBLE);
-            noResultsFoundView.setVisibility(View.GONE);
+          //show the recyclerview, hide the noResults textview
+          recyclerView.setVisibility(View.VISIBLE);
+          noResultsFoundView.setVisibility(View.GONE);
 
-          }
+        }
 
-          // fetchCategories();
+        // fetchCategories();
 
-          // else {
+        // else {
 
-          //on entering the first character, show
-          //our progress dialog, so user can see activity is happening.
+        //on entering the first character, show
+        //our progress dialog, so user can see activity is happening.
 
         /*          if (searchView.getQuery().length() == 1) {
 
@@ -718,14 +747,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           // filter recycler view when text is changed
           mAdapter.getFilter().filter(query);
         }*/
-          //app not crashing as much with this here
-          //recyclerView.setAdapter(mAdapter);
+        //app not crashing as much with this here
+        //recyclerView.setAdapter(mAdapter);
 
-          //maybe this will resolve the IndexOutofBounds error?
-         // recyclerView.getRecycledViewPool().clear();
+        //maybe this will resolve the IndexOutofBounds error?
+        // recyclerView.getRecycledViewPool().clear();
 
-          // refreshing recycler view
-          mAdapter.notifyDataSetChanged();
+        // refreshing recycler view
+        mAdapter.notifyDataSetChanged();
 
 
         return false;
@@ -1107,5 +1136,55 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   }
 
+  @Override
+  //check Permissions status
+  public void onRequestPermissionsResult(int requestCode,
+                                         String permissions[], int[] grantResults) {
+    switch (requestCode) {
+
+      //if Permission is granted, then continue as normal
+      case PERMISSIONS_REQUEST_READ_CONTACTS: {
+
+        if (grantResults.length > 0
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          //getPhoneContacts();
+          Toast.makeText(getApplicationContext(), "Yay! Granted now", Toast.LENGTH_LONG).show();
+
+          //if Permission is denied, then show our custom made dialog
+          //This is important for if user chooses, 'Don't Show Again',
+          //It will open up SETTINGS and user can change it
+        } else {
+          new AlertDialog.Builder(this).
+              setCancelable(false).
+              // setTitle("You need to enable Read Contacts").
+                  setMessage("To get full use of Populisto, allow Populisto access to your contacts. Click SETTINGS, tap Permissions and turn Contacts on.").
+              //setIcon(R.drawable.ninja).
+                  setPositiveButton("SETTINGS",
+                  new DialogInterface.OnClickListener() {
+                    @TargetApi(11)
+                    public void onClick(DialogInterface dialog, int id) {
+                      dialog.cancel();
+
+                      //Open up the SETTINGS for the App, user can enable contacts
+                      Intent intent = new Intent();
+                      intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                      Uri uri = Uri.fromParts("package", getPackageName(), null);
+                      intent.setData(uri);
+                      startActivity(intent);
+                    }
+                  })
+              .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
+                @TargetApi(11)
+                public void onClick(DialogInterface dialog, int id) {
+                  dialog.cancel();
+                }
+              }).show();
+
+        }
+        return;
+      }
+
+    }
+  }
 
 }
