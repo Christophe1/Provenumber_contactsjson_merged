@@ -98,7 +98,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   JSONArray jsonArrayAllPhonesandNamesofContacts = new JSONArray();
 
   //matching contacts, those on phone and populisto users
-  ArrayList<String> MatchingContactsAsArrayList;
+  public static final ArrayList<String> MatchingContactsAsArrayList = new ArrayList<String>();
+  //ArrayList<String> MatchingContactsAsArrayList;
 
   // Request code for READ_CONTACTS. It can be any number > 0.
   //We need this for version greater than Android 6, READ_CONTACTS in
@@ -193,7 +194,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
       // when the activity loads, check to see if phoneNoofUser is using the App,if the user is
       // already registered.
-      // We do this by comparing hash in MyData XML file against our DB.
+      // We do this by comparing hash and phone number in MyData XML file against our DB.
       //If they match, user is legit user.
       SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
       hashedPassinXML = sharedPreferences.getString("hashedpassword", "");
@@ -218,8 +219,52 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       allPhonesofContacts.clear();
       allNamesofContacts.clear();
 
-      //We need to post hashedpass XML to the server and see if it exists in our DB
-      //if it does, then get corresponding phone number and do stuff
+
+
+       /* allPhonesofContacts.add("Youu have no contacts :(");
+
+        //allNamesofContacts.add("");
+
+      //we will save the array list allPhonesofContacts,
+      //with this we will put all phone numbers of contacts on user's phone into our RecyclerView, in other activities
+      SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+      SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
+
+      Gson gson = new Gson();
+      String json = gson.toJson(allPhonesofContacts);
+      prefsEditor.putString("allPhonesofContacts", json);
+      prefsEditor.commit();
+      System.out.println("allPhonesofContacts json is:" + json);
+
+      //now, let's put in the string of names
+      //save the array list allNamesofContacts,
+      //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
+      //SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+      //SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
+
+      //now, let's put in the string of names
+*//*      Gson gsonNames = new Gson();
+      String jsonNames = gsonNames.toJson(allNamesofContacts);
+      prefsEditor2.putString("allNamesofContacts", jsonNames);
+      prefsEditor2.commit();
+      System.out.println("allNamesofContacts json is:" + jsonNames);*//*
+
+      phoneNumberofContact = "Youu have no contacts :(";
+      MatchingContactsAsArrayList.add(phoneNumberofContact);
+
+      SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+      SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
+
+      Gson gsonMatchingContactsAsArrayList = new Gson();
+      String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
+      editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
+      editorMatchingContactsAsArrayList.commit();
+
+*/
+
+      //We need to post hashedpass XML and logged-in phone number
+      // to the server and see if the row exists in our DB
+      //if it does, then get corresponding user_id and do stuff
       //HASHCHECK_URL is HashCompare.php
       StringRequest stringRequest = new StringRequest(Request.Method.POST, HASHCHECK_URL,
           new Response.Listener<String>() {
@@ -233,35 +278,45 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //make hashPassTrueorFalse = the response string, "True" or "False"
               hashPassTrueorFalse = response.toString();
               Toast.makeText(VerifyUserPhoneNumber.this, hashPassTrueorFalse, Toast.LENGTH_LONG).show();
+              System.out.println("hashPassTrueorFalse is:" + hashPassTrueorFalse);
               //If the hash on the user's phone does not equal the hash in the DB..
-              //or if the hash on user's phone does not exist
-              if (hashPassTrueorFalse.equals("False") || hashedPassinXML.length() == 0) {
+              //and the phone number does not match...
+
+              //It will be "True" or "False"
+              //If false show registration
+              if (hashPassTrueorFalse.equals("False")) {
+
+
 
                 //then show the registration page
                 sendSMSandRegisterUser();
 
               } else {
                 // if it is registered, if "True", then...
-
-                //If READ_CONTACTS has been authorized
-                PackageManager manager = getPackageManager();
-                int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
-                if (hasPermission == manager.PERMISSION_GRANTED) {
-                  //you don't have permission
-                  Toast.makeText(getApplicationContext(), "Read contact granted!", Toast.LENGTH_LONG).show();
-                  //get all the contacts on the user's phone
-                  getPhoneContacts();
-
-                }
-                // then start the next activity, PopulistoListView
-                Toast.makeText(getApplicationContext(), "Read contacts not granted yet", Toast.LENGTH_LONG).show();
+                //start the next activity, PopulistoListView
                 Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
                 //we need phoneNoofUser so we can get user_id and corresponding
                 //reviews in the next activity
                 myIntent.putExtra("keyName", phoneNoofUser);
                 VerifyUserPhoneNumber.this.startActivity(myIntent);
 
+                //If READ_CONTACTS has been authorized
+                PackageManager manager = getPackageManager();
+                int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+                if (hasPermission == manager.PERMISSION_GRANTED) {
+                  //you have permission
+                  Toast.makeText(getApplicationContext(), "Read contact granted!", Toast.LENGTH_LONG).show();
+                  //get all the contacts on the user's phone
+                  getPhoneContacts();
 
+
+
+                }
+                //If READ_CONTACTS Permission has been denied
+                else {
+                  Toast.makeText(getApplicationContext(), "Read contacts not granted yet", Toast.LENGTH_LONG).show();
+
+                }
               }
 
             }
@@ -301,24 +356,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                   .setIcon(android.R.drawable.ic_dialog_alert)
                   .show();
 
-          /*    if (error == null || error.networkResponse == null) {
-                return;
-              }
-
-              String body;
-              //get status code here
-              final String statusCode = String.valueOf(error.networkResponse.statusCode);
-              //get response body and parse with appropriate encoding
-              try {
-                body = new String(error.networkResponse.data,"UTF-8");
-              } catch (UnsupportedEncodingException e) {
-                // exception
-              }
-
-              //do stuff with the body...
-              Toast.makeText(getApplicationContext(), "error is:" + statusCode, Toast.LENGTH_LONG).show();*/
-
-
             }
           }) {
         @Override
@@ -330,6 +367,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           // When we see this in our php,  $_POST["hashpass"],
           //put in the value from Android, hashedPassinXML
           params.put("hashpass", hashedPassinXML);
+          params.put("phonenumberofuser", phoneNoofUser);
           System.out.println("second, hashpassinXML is:" + hashedPassinXML);
           return params;
 
@@ -380,9 +418,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         //dismiss the dialog when sendSMSandRegisterUser() has been called
         progressDialog.cancel();
 
-
-        askForContactPermission();
-
+        //check if Marshmallow or newer
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+          askForContactPermission();
+        }
         //when 'Select Country' Text is clicked
         //load the activity CountryCodes showing the list of all countries
         //and retain details from VerifyUserPhoneNumber
@@ -430,6 +469,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         btnSendSMS.setOnClickListener(new View.OnClickListener() {
           public void onClick(View view) {
 
+            //If permission denied (will only be on Marshmallow +)
             PackageManager manager = getPackageManager();
             int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
             if (hasPermission == manager.PERMISSION_DENIED) {
@@ -464,6 +504,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                   }).show();
 
             } else {
+              //for phones older then Marshmallow, go straight to here
               Toast.makeText(getApplicationContext(), "Yes!Read contacts granted", Toast.LENGTH_LONG).show();
 
             }
@@ -537,152 +578,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   }
 
-
-  protected void sendSMSMessage() {
-
-    // Check the SDK version and whether the permission is already granted or not.
-    // If the phone is Android 6/ SDK 23+ (??) then the phone user has to authorize some "dangerous" commands
-    //at run-time.
-/*    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-      requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSION_SEND_SMS);
-      //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
-    } else {*/
-
-/*      IntentFilter filter = new IntentFilter();
-//        the thing we're looking out for is received SMSs
-      filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-
-
-      //this is to check the incoming text message
-      receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent)
-
-
-        {
-          Bundle extras = intent.getExtras();
-
-          if (extras == null)
-            return;
-
-          //dismiss the dialog when we get the response
-          progressDialog.cancel();
-
-          SmsMessage smsMessage;*/
-
-    //apparently this code deals with the deprecated createFromPdu
-    //issue, for more modern phones
-/*          if (Build.VERSION.SDK_INT >= 19) { //KITKAT
-            SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
-            smsMessage = msgs[0];
-            origNumber = smsMessage.getOriginatingAddress();
-          }
-
-          //or else for older phones
-          else {
-            Object pdus[] = (Object[]) extras.get("pdus");
-            smsMessage = SmsMessage.createFromPdu((byte[]) pdus[0]);
-            origNumber = smsMessage.getOriginatingAddress();
-
-          }*/
-
-    // Toast.makeText(getApplicationContext(), "Originating number" + origNumber, Toast.LENGTH_LONG).show();
-    // Toast.makeText(getApplicationContext(), "Sent to number" + phoneNoofUser, Toast.LENGTH_LONG).show();
-
-    //when the text message is received, see if originating number matches the
-    //sent to number
-          /*if (origNumber.equals(phoneNoofUser)) {
-
-            Toast.makeText(getApplicationContext(), "Yabadabadoo!", Toast.LENGTH_LONG).show();
-
-            //save the phone number so this process is skipped in future
-            SharedPreferences sharedPreferencesphoneNoofUser = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferencesphoneNoofUser.edit();
-            //phoneNoofUser String is unique, the username of this particular user
-            //it will be of the form +353872934480
-            editor.putString("phonenumberofuser", phoneNoofUser);
-            editor.commit();
-
-            //save the country code so this process is skipped in future
-            SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor2 = sharedPreferencesCountryCode.edit();
-            //we need the Country code as it is needed for determining phone contacts in E164 format
-            editor2.putString("countrycode", CountryCode);
-            editor2.commit();
-
-
-            //let's get the current date and time, for time_stamp
-            SimpleDateFormat s = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
-            time_stamp = s.format(new Date());
-
-            //make a password combining time_stamp and phone number
-            String password = time_stamp + phoneNoofUser;
-            hashedPassWord = MD5(password);
-
-            //When the user registers, when the originating phone number and destination number match,
-            //save the hashedPassWord into xml shared prefs
-            //we will also be posting hashedPassWord into the DB, further below
-            SharedPreferences sharedPreferenceshashedpassword = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor3 = sharedPreferenceshashedpassword.edit();
-            //we need the Country code as it is needed for determining phone contacts in E164 format
-            editor3.putString("hashedpassword", hashedPassWord);
-            editor3.commit();
-
-            System.out.println("MD5 " + hashedPassWord);
-
-            System.out.println("date format : " + time_stamp);
-
-            //Here we want to add the user's phone number, timestamp and the hash
-            //(timestamp + phone) to the user table
-            //using Volley. this is a once-off
-            registerUser();
-            //get all the contacts on the user's phone
-            getPhoneContacts();
-            //convert all contacts on the user's phone to JSON
-            convertNumberstoJSON();
-
-
-          } else {
-            Toast.makeText(getApplicationContext(), "Number not correct.", Toast.LENGTH_LONG).show();
-
-          }*/
-/*        }
-
-      };
-      registerReceiver(receiver, filter);*/
-
-
-    //for our verification code
-/*      Random rand = new Random();
-      int n1 = rand.nextInt(999) + 1;
-      int n2 = rand.nextInt(999) + 1;
-      String verification_code = n1 + " - " + n2;
-
-      //this is the text of the SMS received
-      String message = "Your Populisto verification code is: " + "\n" + verification_code +
-          "\n" + "\n" + "You can delete this message.";*/
-
-/*      try {
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNoofUser, null, message, null, null);
-
-        //9/8/2018
-*//*      pDialog = new ProgressDialog(this);
-      // Showing progress dialog until we get country list, response from server
-      pDialog.setMessage("Waiting for text message...");
-      pDialog.show();*//*
-        // Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
-
-        //show the "Loading" dialog
-        progressDialog.show(getSupportFragmentManager(), "tag");
-
-      } catch (Exception e) {
-        Toast.makeText(getApplicationContext(), "SMS failed, please try again.", Toast.LENGTH_LONG).show();
-        e.printStackTrace();
-      }*/
-  }
-  //}
-
   //this is done just once, on registeration.
   // register the user's phone number, timestamp and the corresponding hash in the user table, this is called
   //when the phone number is verified, when the originating number = sent to number
@@ -745,7 +640,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   //and put the phone numbers in E164 format
   private void getPhoneContacts() {
 
-    // Check the SDK version and whether the permission is already granted or not.
+    Toast.makeText(this, "getPhoneContacts has been called but nothing done apart from this toast.", Toast.LENGTH_SHORT).show();
+
+    // Check the SDK version and whether the read contacts permission is already granted or not.
     // If the phone is Android 6/ SDK 23+ (??) then the phone user has to authorize some "dangerous" commands
     //at run-time.
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -755,7 +652,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
 
     }
-    //else {
+
+
+
     Toast.makeText(this, "getContacts function called", Toast.LENGTH_SHORT).show();
 //          we have this here to avoid cursor errors
     if (cursor != null) {
@@ -999,7 +898,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             // it will be a JSONArray of the form [{"phone_number":"+35312345"}, {"phone_number": etc...
             // We get this from our php file, checkcontact.php. Then we will convert to a string
             // and extract the phone numbers and compare against the contacts on the user's phone.
-
             Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
             System.out.println("the Populisto contacts of this user are :" + response);
 
@@ -1009,7 +907,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             System.out.println("VerifyUserPhoneNumber1: matching contacts of this user are :" + MatchingContactsAsString);
 
             //make an arraylist which will hold the phone_number part of the MatchingContacts string
-            MatchingContactsAsArrayList = new ArrayList<String>();
+            //MatchingContactsAsArrayList = new ArrayList<String>();
 
             try {
               JSONArray Object = new JSONArray(MatchingContactsAsString);
@@ -1385,6 +1283,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
           getPhoneContacts();
           Toast.makeText(getApplicationContext(), "Yay! Granted now", Toast.LENGTH_LONG).show();
+
+
 
           //if Permission is denied, then show our custom made dialog
           //This is important for if user chooses, 'Don't Show Again',

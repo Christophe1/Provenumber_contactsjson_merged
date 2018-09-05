@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
@@ -25,6 +26,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -50,6 +52,7 @@ import java.util.Map;
 import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.allPhonesofContacts;
 import static com.example.chris.populisto.PopulistoContactsAdapter.theContactsList;
+import static com.example.tutorialspoint.R.id.noResultsFoundView;
 
 
 public class NewContact extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
@@ -93,8 +96,14 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   private EditText addressname;
   private EditText commentname;
 
+  //if user has no contacts on his phone, like if no
+  //permission has been given to getPhoneContacts
+  TextView noContactsFound;
 
   int public_or_private;
+
+  //if it is 0, then show the 'No Contacts Found' textbox
+  int noContactFoundCheck;
 
   // ArrayList called selectPhoneContacts that will contain SelectPhoneContact info
   ArrayList<SelectPhoneContact> selectPhoneContacts;
@@ -128,6 +137,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_new_contact);
+
+    noContactsFound = (TextView) findViewById(R.id.noContactsFoundView);
+
 
     existingCategoryList = new ArrayList<>();
 
@@ -402,17 +414,49 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     @Override
     protected Void doInBackground(Void... voids) {
 
+      //we want to delete the old selectContacts from the listview when the Activity loads
+      //because it may need to be updated and we want the user to see the updated listview,
+      //like if the user adds new names and numbers to their phone contacts.
+      //selectPhoneContacts.clear();
 
+/*      if (PopulistoContactsAdapter.allPhonesofContacts.size() == 0) {
+
+        System.out.println("allPhonesofContacts is null" + PopulistoContactsAdapter.MatchingContactsAsArrayList);
+//        Toast.makeText(NewContact.this, "allPhonesofContacts is null", Toast.LENGTH_SHORT).show();
+
+      }*/
+      //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
+      //with this we will put all phone numbers of contacts on user's phone into our recyclerView in NewContact activity
+      SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+      if (!sharedPreferencesallPhonesofContacts.contains("allPhonesofContacts")) {
+        System.out.println("NewContact: it is not in shared prefs" + allPhonesofContacts);
+        //and show the "No Results" textbox
+        noContactFoundCheck = 0;
+
+        //SelectPhoneContact selectContact = new SelectPhoneContact();
+        //selectContact.setType_row("2");
+      }
+
+      else {
         //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
-        for (int i = 0; i < allPhonesofContacts.size(); i++) {
+        for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
 
-          phoneNumberofContact = allPhonesofContacts.get(i);
+          phoneNumberofContact = PopulistoContactsAdapter.allPhonesofContacts.get(i);
           phoneNameofContact = PopulistoContactsAdapter.allNamesofContacts.get(i);
 
           System.out.println("SelectPhoneContactAdapter: phoneNumberofContact : " + phoneNumberofContact);
           System.out.println("SelectPhoneContactAdapter: phoneNameofContact : " + phoneNameofContact);
 
           SelectPhoneContact selectContact = new SelectPhoneContact();
+
+/*          if (PopulistoContactsAdapter.MatchingContactsAsArrayList == null && PopulistoContactsAdapter.MatchingContactsAsArrayList.isEmpty()) {
+
+            // insert it at the end (default)
+            selectPhoneContacts.add(selectContact);
+            selectContact.setType_row("2");
+
+          }*/
 
           //if a phone number is in our array of matching contacts
           if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
@@ -439,13 +483,13 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
 
         }
-    //  }
-      //call the getCategoryList function, it will load all the categories
-      //in autocompletetextview available to own-user
-      getCategoryList();
-      return null;
+          }
+        //call the getCategoryList function, it will load all the categories
+        //in autocompletetextview available to own-user
+        getCategoryList();
+        return null;
+      }
 
-    }
 
 
     @Override
@@ -457,7 +501,11 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       recyclerView.setAdapter(adapter);
       recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
+      if (noContactFoundCheck == 0) {
+        noContactsFound.setVisibility(View.VISIBLE);
+      }
 
+      else {
       //*********set the Matching Contacts to checked, by default ************
       //loop through the matching contacts
       int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
@@ -474,7 +522,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //we need to notify the recyclerview that changes may have been made
         adapter.notifyDataSetChanged();
 
-      //}
+      }
       }
       //*********************************
 
