@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -56,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
+import static com.example.chris.populisto.VerifyUserPhoneNumber.activity;
 
 public class PopulistoListView extends AppCompatActivity implements CategoriesAdapter.CategoriesAdapterListener {
 
@@ -155,6 +157,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   // getting corresponding
   //categories for each of 23, 65 and 67
   String selectOwnUserReviews;
+
+  String selectOwnUserCount;
 
   String selectPrivateReviews;
 
@@ -529,9 +533,40 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         }, new Response.ErrorListener() {
       @Override
       public void onErrorResponse(VolleyError error) {
-        // error in getting json
-        Log.e(TAG, "Error: " + error.getMessage());
-        Toast.makeText(getApplicationContext(), "Value is null, but why? " + error.getMessage(), Toast.LENGTH_SHORT).show();
+
+
+        //If there is an error (such as contacting server for example) then
+        //show a message like:
+        //Sorry, can't contact server right now. Is internet access enabled?, try again, Cancel
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+          builder = new AlertDialog.Builder(PopulistoListView.this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+          builder = new AlertDialog.Builder(PopulistoListView.this);
+        }
+        builder
+            //.setTitle("Delete entry")
+            //prevent box being dismissed on back key press or touch outside
+            .setCancelable(false)
+            .setMessage("Sorry, can't contact server right now. Is internet access enabled?")
+            .setPositiveButton("Try Now", new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int which) {
+
+                //refresh the activity, if the user choses "Try Now"
+                refresh();
+              }
+            })
+            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int which) {
+
+                //close the app
+                activity.finish();
+              }
+            })
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show();
+
+
       }
     })
 
@@ -549,24 +584,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       }
     };
 
-    //this is to hopefully end the VolleyTimeOut error message
-    request.setRetryPolicy(new RetryPolicy() {
-      @Override
-      public int getCurrentTimeout() {
-        return 50000;
-      }
-
-      //set retry to 5 seconds
-      @Override
-      public int getCurrentRetryCount() {
-        return 50000;
-      }
-
-      @Override
-      public void retry(VolleyError error) throws VolleyError {
-
-      }
-    });
 
 
     AppController.getInstance().addToRequestQueue(request);
@@ -821,6 +838,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //remove [ and ] so we have a string of 56,23,87
     selectOwnUserReviews = selectOwnUserReviews.substring(1, selectOwnUserReviews.length() - 1);
 
+    selectOwnUserCount = category.getUserPersonalCount();
+
     //Personal Contact reviews
     //convert [56,23,87] to a string
     selectPrivateReviews = Arrays.toString(category.getPrivateReviewIds());
@@ -835,6 +854,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
     Toast.makeText(getApplicationContext(), "own reviews are:" + selectOwnUserReviews, Toast.LENGTH_LONG).show();
+    Toast.makeText(getApplicationContext(), "own reviews count:" + selectOwnUserCount, Toast.LENGTH_LONG).show();
+
+    // Toast.makeText(getApplicationContext(), "Phone contact reviews are:" + selectPrivateReviews, Toast.LENGTH_LONG).show();
+    //Toast.makeText(getApplicationContext(), "Public reviews are:" + selectPublicReviews, Toast.LENGTH_LONG).show();
+
     //System.out.println("PopulistoListView newarray :" + jsonMatchingContacts);
 
     show_own_private_public_Reviews();
@@ -1157,7 +1181,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           new AlertDialog.Builder(this).
               setCancelable(false).
               // setTitle("You need to enable Read Contacts").
-                  setMessage("To get full use of Populisto, allow Populisto access to your contacts. Click SETTINGS, tap Permissions and turn Contacts on.").
+                  setMessage("To get full use of Populisto, allow Populisto access to your phone contacts. Click SETTINGS, tap Permissions and turn Contacts on.").
               //setIcon(R.drawable.ninja).
                   setPositiveButton("SETTINGS",
                   new DialogInterface.OnClickListener() {
@@ -1185,6 +1209,16 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       }
 
     }
+  }
+
+  //if the user chooses to refresh the Activity, when "Try Again" button is clicked...
+  public void refresh() {
+    Intent intent = getIntent();
+    overridePendingTransition(0, 0);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+    finish();
+    overridePendingTransition(0, 0);
+    startActivity(intent);
   }
 
 }

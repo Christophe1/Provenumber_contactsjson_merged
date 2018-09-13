@@ -20,7 +20,7 @@
         android:paddingTop="10dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="No results"
+        android:text="No phone contacts to display"
         android:visibility="gone"
 
         />

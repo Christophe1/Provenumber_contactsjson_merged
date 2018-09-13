@@ -159,4 +159,6 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <include layout="@layout/nocontactsfound" />
+
 </android.support.design.widget.CoordinatorLayout>

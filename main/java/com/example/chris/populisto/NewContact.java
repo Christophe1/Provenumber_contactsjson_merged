@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -55,7 +56,7 @@ import static com.example.chris.populisto.PopulistoContactsAdapter.theContactsLi
 import static com.example.tutorialspoint.R.id.noResultsFoundView;
 
 
-public class NewContact extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+public class NewContact extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
   @Override
   public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -121,7 +122,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   private AutoCompleteTextView AutoCompTextViewcategoryList;
 
   //for Google Address
-  private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71,136));
+  private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
   private AutoCompleteTextView AutoCompTextViewAddress;
   private GoogleApiClient mGoogleApiClient;
 
@@ -131,6 +132,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
 
   private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
+
+  //sharedprefs for holding all phone numbers of contacts
+  SharedPreferences sharedPreferencesallPhonesofContacts;
 
 
   @Override
@@ -148,8 +152,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     AutoCompTextViewAddress = (AutoCompleteTextView) findViewById(R.id.textViewAddress);
 
 
-
-    PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
+    PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 
 
     // Create a GoogleApiClient instance
@@ -157,11 +160,11 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         .Builder(this)
         .addApi(Places.GEO_DATA_API)
         .addApi(Places.PLACE_DETECTION_API)
-        .enableAutoManage(this,0,this)
+        .enableAutoManage(this, 0, this)
         .build();
 
     //Google Places
-    mPlaceAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, mGoogleApiClient,LAT_LNG_BOUNDS, null);
+    mPlaceAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, mGoogleApiClient, LAT_LNG_BOUNDS, null);
 
     AutoCompTextViewAddress.setAdapter(mPlaceAutoCompleteAdapter);
 
@@ -174,8 +177,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
     //into the toolbar, inflate the back button and Populisto title,
     //which we find in toolbar_custom_view_layout.xml
-     View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
-     toolbar.addView(logo);
+    View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
+    toolbar.addView(logo);
 
     //for the back arrow, tell it to close the activity, when clicked
     ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
@@ -204,8 +207,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     //get the phone number, stored in an XML file, when the user first registered the app
     SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
     phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
-
-    //phoneNoofUserCheck = "+3538520987";
 
 
     System.out.println("NewContact: phone number of user is " + phoneNoofUserCheck);
@@ -236,8 +237,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
         String str = charSequence.toString();
         //if it starts with " " then don't recognise it
-        if(str.equals(" "))
-        {
+        if (str.equals(" ")) {
           categoryname.setText("");
         }
 
@@ -248,7 +248,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
       }
     });
-
 
 
     //for the Public, phoneContacts, justMe, save and cancel buttons
@@ -263,22 +262,40 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     justMeButton();
     saveContactButton();
 
-    //have the phoneContacts button selected by default
-    //make it blue
-    phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+    //If permission denied (will only be on Marshmallow +)
+    PackageManager manager = getPackageManager();
+    int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+    if (hasPermission == manager.PERMISSION_DENIED) {
+      noContactFoundCheck = 0;
+      //have the just me button selected by default
+      justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
+
+      //save it by default to the DB as 0, for just me
+      public_or_private = 0;
+
+      //disable the phoneContacts button
+      phoneContacts.setEnabled(false);
+
+    } else {
+
+      //have the phoneContacts button selected by default
+      //make it blue
+      phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+
+      //save it by default to the DB as 1, for phoneContacts
+      public_or_private = 1;
+
+    }
 
     recyclerView = (RecyclerView) findViewById(R.id.rv);
-
-    //save it by default to the DB as 1, for phoneContacts
-    public_or_private = 1;
 
 
     cancel.setOnClickListener(new View.OnClickListener() {
 
       public void onClick(View v) {
-          //close the activity
-          finish();
-        }
+        //close the activity
+        finish();
+      }
 
     });
 
@@ -286,7 +303,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
   //load this function when the activity is created, put categories
   //in autocomplete
-  public void getCategoryList(){
+  public void getCategoryList() {
 
     StringRequest request = new StringRequest(Request.Method.POST, jsonString,
         new Response.Listener<String>() {
@@ -385,7 +402,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 //14/8/2-18
   //code for the '<', back button. Go back to PopulistoListView, as defined
   //in Manifest, PARENT_ACTIVITY
- // @Override
+  // @Override
 /*  public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       // Respond to the action bar's Up/Home button
@@ -398,7 +415,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         return super.onOptionsItemSelected(item);
     }
   }*/
-
 
 
 //******for the phone contacts in the recyclerView
@@ -425,20 +441,18 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 //        Toast.makeText(NewContact.this, "allPhonesofContacts is null", Toast.LENGTH_SHORT).show();
 
       }*/
-      //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
-      //with this we will put all phone numbers of contacts on user's phone into our recyclerView in NewContact activity
-      SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-      if (!sharedPreferencesallPhonesofContacts.contains("allPhonesofContacts")) {
-        System.out.println("NewContact: it is not in shared prefs" + allPhonesofContacts);
+      //If permission denied (will only be on Marshmallow +)
+      PackageManager manager = getPackageManager();
+      int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+      if (hasPermission == manager.PERMISSION_DENIED) {
+
         //and show the "No Results" textbox
         noContactFoundCheck = 0;
 
         //SelectPhoneContact selectContact = new SelectPhoneContact();
         //selectContact.setType_row("2");
-      }
-
-      else {
+      } else {
         //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
         for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
 
@@ -483,13 +497,12 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
 
         }
-          }
-        //call the getCategoryList function, it will load all the categories
-        //in autocompletetextview available to own-user
-        getCategoryList();
-        return null;
       }
-
+      //call the getCategoryList function, it will load all the categories
+      //in autocompletetextview available to own-user
+      getCategoryList();
+      return null;
+    }
 
 
     @Override
@@ -501,28 +514,28 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       recyclerView.setAdapter(adapter);
       recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
+      //if there's no sharedprefs file containing all phone numbers of contacts
       if (noContactFoundCheck == 0) {
         noContactsFound.setVisibility(View.VISIBLE);
-      }
+      } else {
 
-      else {
-      //*********set the Matching Contacts to checked, by default ************
-      //loop through the matching contacts
-      int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
-      System.out.println("NewContact: the matching contacts are " + PopulistoContactsAdapter.MatchingContactsAsArrayList);
+        //*********set the Matching Contacts to checked, by default ************
+        //loop through the matching contacts
+        int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+        System.out.println("NewContact: the matching contacts are " + PopulistoContactsAdapter.MatchingContactsAsArrayList);
 
-      for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
 
-        theContactsList.add(new SelectPhoneContact());
-        //if (PopulistoContactsAdapter.theContactsList != null && PopulistoContactsAdapter.theContactsList.size() >= 1)
-       // {
+          theContactsList.add(new SelectPhoneContact());
+          //if (PopulistoContactsAdapter.theContactsList != null && PopulistoContactsAdapter.theContactsList.size() >= 1)
+          // {
           //check all matching contacts, we want it to be 'Phone Contacts' by default
           PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
-        //we need to notify the recyclerview that changes may have been made
-        adapter.notifyDataSetChanged();
+          //we need to notify the recyclerview that changes may have been made
+          adapter.notifyDataSetChanged();
 
-      }
+        }
       }
       //*********************************
 
@@ -564,25 +577,33 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //public_or_private column, if saved in this state
         public_or_private = 2;
 
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 
         recyclerView.setAdapter(adapter);
-        // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
-        //loop through the matching contacts
-        int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+        //If permission denied (will only be on Marshmallow +)
+        PackageManager manager = getPackageManager();
+        int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+        if (hasPermission == manager.PERMISSION_DENIED) {
 
-        //i is the number of matching contacts that there are
-        for (int i = 0; i < count; i++) {
+          //show No Results textbox
+          noContactFoundCheck = 0;
+        } else {
 
-          //for all contacts, only those that are matching will be checked
-          PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+          //loop through the matching contacts
+          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
-          //we need to notify the recyclerview that changes may have been made
-          adapter.notifyDataSetChanged();
+          //i is the number of matching contacts that there are
+          for (int i = 0; i < count; i++) {
+
+            //for all contacts, only those that are matching will be checked
+            PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+            //we need to notify the recyclerview that changes may have been made
+            adapter.notifyDataSetChanged();
+          }
         }
       }
-
     });
 
   }
@@ -596,37 +617,50 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       @Override
       public void onClick(View v) {
 
-        //keep the slightly rounded shape, when the button is pressed, and change colour
-        phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
-
-
-//               keep the slightly rounded shape of the others, but still grey
-        publicContacts.setBackgroundResource(R.drawable.buttonshape);
-        justMeContacts.setBackgroundResource(R.drawable.buttonshape);
-
-        //set sharing to Phone Contacts
-        // This will be uploaded to server to review table,
-        //public_or_private column, if saved in this state
-        public_or_private = 1;
-
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 
         recyclerView.setAdapter(adapter);
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
-        //loop through the matching contacts
-        int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+        //if the sharedpreference does not exist (like if the user, on Marshmallow + phones,
+        //didn't chose the READ_CONTACTS permission) then set noContactFoundCheck to 0,
+        //which means to show our "No Contacts Found" textbox
+/*        if (!sharedPreferencesallPhonesofContacts.contains("allPhonesofContacts")) {
 
-        for (int i = 0; i < count; i++) {
 
-          //check all matching contacts, we want it to be 'Phone Contacts'
-          PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+          System.out.println("NewContact: it is not in shared prefs" + allPhonesofContacts);
+          //and show the "No Results" textbox
+          noContactFoundCheck = 0;
 
-          //we need to notify the recyclerview that changes may have been made
-          adapter.notifyDataSetChanged();
-        }
+        } else
+
+        {*/
+
+          //keep the slightly rounded shape, when the button is pressed, and change colour
+          phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+
+          //keep the slightly rounded shape of the others, but still grey
+          publicContacts.setBackgroundResource(R.drawable.buttonshape);
+          justMeContacts.setBackgroundResource(R.drawable.buttonshape);
+
+          //set sharing to Phone Contacts
+          // This will be uploaded to server to review table,
+          //public_or_private column, if saved in this state
+          public_or_private = 1;
+
+          //loop through the matching contacts
+          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+          for (int i = 0; i < count; i++) {
+
+            //check all matching contacts, we want it to be 'Phone Contacts'
+            PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+            //we need to notify the recyclerview that changes may have been made
+            adapter.notifyDataSetChanged();
+          }
+       // }
       }
-
     });
 
   }
@@ -652,24 +686,33 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //public_or_private column, if saved in this state
         public_or_private = 0;
 
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this,1);
+        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 
         recyclerView.setAdapter(adapter);
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
-        //loop through the matching contacts
-        int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+        //If permission denied (will only be on Marshmallow +)
+        PackageManager manager = getPackageManager();
+        int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+        if (hasPermission == manager.PERMISSION_DENIED) {
 
-        for (int i = 0; i < count; i++) {
+          //show the No Results Textbox
+          noContactFoundCheck = 0;
 
-          //uncheck all matching contacts, we want it to be 'Just Me'
-          PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
+        } else {
+          //loop through the matching contacts
+          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
-          //we need to notify the recyclerview that changes may have been made
-          adapter.notifyDataSetChanged();
+          for (int i = 0; i < count; i++) {
+
+            //uncheck all matching contacts, we want it to be 'Just Me'
+            PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
+
+            //we need to notify the recyclerview that changes may have been made
+            adapter.notifyDataSetChanged();
+          }
         }
       }
-
     });
 
   }
@@ -684,60 +727,87 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       public void onClick(View v) {
 
         //close the populistolistview class
-        //(we'll be opening it again, will close now so it will be refreshed)
+        //(we'll be opening it again, will close now so it will be refreshed with new contact details)
         PopulistoListView.fa.finish();
 
         System.out.println("you clicked it, save");
 
-        try {
-          System.out.println("we're in the try part");
 
-          //loop through the matching contacts
-          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+        //If permission denied (will only be on Marshmallow +)
+        PackageManager manager = getPackageManager();
+        int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+        if (hasPermission == manager.PERMISSION_DENIED) {
 
-          for (int i = 0; i < count; i++) {
+          try {
+            //add only phone owner's number to the checkedContacts JSON Array
+            //new JSON Object called phoneOwner
+            JSONObject phoneOwner = new JSONObject();
 
-            //for  contacts that are checked (they can only be matching contacts)...
-            if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
-              //Toast.makeText(NewContact.this, PopulistoContactsAdapter.theContactsList.get(i).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
+            //add the phone number
+            phoneOwner.put("checkedContact", phoneNoofUserCheck);
 
-              // make each checked contact in selectPhoneContacts
-              // into an individual
-              // JSON object called checkedContact
-              JSONObject checkedContact = new JSONObject();
+            //add user's own number to the Array
+            checkedContacts.put(phoneOwner);
 
-              // checkedContact will be of the form {"checkedContact":"+353123456"}
-              checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
 
-              // Add checkedContact JSON Object to checkedContacts jsonArray
-              //The JSON Array will be of the form
-              // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-              //we will be posting this JSON Array to Php, further down below
-              checkedContacts.put(checkedContact);
-              System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+          } catch (Exception e) {
+            System.out.println("there's a problem here unfortunately");
+            e.printStackTrace();
+          }
+        } else
+        //if the logged-in user has enabled READ_CONTACTS Permission
+        {
+
+          try {
+            System.out.println("we're in the try part");
+
+            //loop through the matching contacts
+            int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+            for (int i = 0; i < count; i++) {
+
+              //for  contacts that are checked (they can only be matching contacts)...
+              if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
+                //Toast.makeText(NewContact.this, PopulistoContactsAdapter.theContactsList.get(i).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
+
+                // make each checked contact in selectPhoneContacts
+                // into an individual
+                // JSON object called checkedContact
+                JSONObject checkedContact = new JSONObject();
+
+                //get the phone number of the checked contact
+                // checkedContact will be of the form {"checkedContact":"+353123456"}
+                checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
+
+                // Add checkedContact JSON Object to checkedContacts jsonArray
+                //The JSON Array will be of the form
+                // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                //we will be posting this JSON Array to Php, further down below
+                checkedContacts.put(checkedContact);
+                System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+              }
+
             }
 
+            //add phone owner's number to the checkedContacts JSON Array
+            //new JSON Object called phoneOwner
+            JSONObject phoneOwner = new JSONObject();
+
+            //add the phone number
+            phoneOwner.put("checkedContact", phoneNoofUserCheck);
+            System.out.println("NewContact: phoneOwner: " + phoneOwner);
+
+            //add it to the Array
+            checkedContacts.put(phoneOwner);
+
+            System.out.println("checkedContacts JSON Array " + checkedContacts);
+
+
+          } catch (Exception e) {
+            System.out.println("there's a problem here unfortunately");
+            e.printStackTrace();
           }
-
-          //add phone owner's number to the checkedContacts JSON Array
-          //new JSON Object called phoneOwner
-          JSONObject phoneOwner = new JSONObject();
-
-          //add the phone number
-          phoneOwner.put("checkedContact", phoneNoofUserCheck);
-          System.out.println("NewContact: phoneOwner: " + phoneOwner);
-
-          //add it to the Array
-          checkedContacts.put(phoneOwner);
-
-          System.out.println("checkedContacts JSON Array " + checkedContacts);
-
-
-        } catch (Exception e) {
-          System.out.println("there's a problem here unfortunately");
-          e.printStackTrace();
         }
-
 
         //When the user clicks save
         //post phoneNoofUserCheck to NewContact.php and from that

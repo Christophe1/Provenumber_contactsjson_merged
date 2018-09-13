@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.chris.populisto.PopulistoContactsAdapter.allPhonesofContacts;
 import static com.example.tutorialspoint.R.id.rv;
 import static com.example.tutorialspoint.R.id.sharedWith;
 import static com.example.tutorialspoint.R.layout.activity_view_contact;
@@ -130,15 +132,24 @@ public class ViewContact extends AppCompatActivity {
   //For the recycler view, containing the phone contacts
   RecyclerView recyclerView;
 
-  //5/7/2018
-  //ViewContact mn;
-  // Context mContext;
-  // private Thread mThread;
+  //Sharedprefs containing all phone contacts of logged-in user
+  SharedPreferences sharedPreferencesallPhonesofContacts;
+
+  //if user has no contacts on his phone, like if no
+  //permission has been given to getPhoneContacts
+  TextView noContactsFound;
+
+
+  //if it is 0, then show the 'No Contacts Found' textbox
+  int noContactFoundCheck;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(activity_view_contact);
+
+    noContactsFound = (TextView) findViewById(R.id.noContactsFoundView);
+
 
     //9/8/2018
 /*    pDialog = new ProgressDialog(ViewContact.this);
@@ -284,9 +295,10 @@ public class ViewContact extends AppCompatActivity {
     //if we are coming from UPopulistoListAdapter then
     //we will have a value for review_id at this stage
     //so review_id is not null, make the volley call
-    //Otherwise, we are coming from EditContact, review_id
+
+    //(Otherwise, we are coming from EditContact, review_id
     //IS NULL at this stage. So don't make the Volley call,
-    //we will be passing checkContacts as an intent, from EditContact to ViewContact
+    //we will be passing checkContacts as an intent, from EditContact to ViewContact)
     if (i.getStringExtra("review_id")!=null) {
 
       Toast.makeText(ViewContact.this, categoryname.getText().toString(), Toast.LENGTH_LONG).show();
@@ -743,6 +755,8 @@ public class ViewContact extends AppCompatActivity {
       editorcheckedContactsAsArrayList.putString("checkedContactsAsArrayList", jsoncheckedContactsAsArrayList);
       editorcheckedContactsAsArrayList.commit();
 
+      System.out.println("ViewContact: checkedContacts are: " + checkedContacts.toString());
+
 
       //System.out.println("ViewContact: jsoncheckedContactsAsArrayList is " + jsoncheckedContactsAsArrayList);
 
@@ -752,43 +766,52 @@ public class ViewContact extends AppCompatActivity {
       //like if the user adds new names and numbers to their phone contacts.
       selectPhoneContacts.clear();
 
-      //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
-      for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
+      //If permission denied (will only be on Marshmallow +)
+      PackageManager manager = getPackageManager();
+      int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+      if (hasPermission == manager.PERMISSION_DENIED) {
+        noContactFoundCheck = 0;
 
-        phoneNumberofContact = PopulistoContactsAdapter.allPhonesofContacts.get(i);
-        phoneNameofContact = PopulistoContactsAdapter.allNamesofContacts.get(i);
+      } else {
 
-        System.out.println("ViewContact: phoneNumberofContact : " + phoneNumberofContact);
-        System.out.println("ViewContact: phoneNameofContact : " + phoneNameofContact);
+        //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
+        for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
 
-        SelectPhoneContact selectContact = new SelectPhoneContact();
+          phoneNumberofContact = PopulistoContactsAdapter.allPhonesofContacts.get(i);
+          phoneNameofContact = PopulistoContactsAdapter.allNamesofContacts.get(i);
 
-        //if a phone number is in our array of matching contacts
-        if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
+          System.out.println("ViewContact: it is in shared prefs" + allPhonesofContacts);
+          System.out.println("ViewContact: phoneNumberofContact : " + phoneNumberofContact);
+          System.out.println("ViewContact: phoneNameofContact : " + phoneNameofContact);
 
-        {   //add the selectContacts to the selectPhoneContacts array
-          // insert the contact at the beginning of the listview
-          selectPhoneContacts.add(0, selectContact);
+          SelectPhoneContact selectContact = new SelectPhoneContact();
 
-          //In SelectPhoneContact class, so getItemViewType will know which layout to show
-          //:checkbox or Invite Button
-          selectContact.setType_row("1");
+          //if a phone number is in our array of matching contacts
+          if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
-        } else {
-          // insert it at the end (default)
-          selectPhoneContacts.add(selectContact);
-          selectContact.setType_row("2");
+          {   //add the selectContacts to the selectPhoneContacts array
+            // insert the contact at the beginning of the listview
+            selectPhoneContacts.add(0, selectContact);
+
+            //In SelectPhoneContact class, so getItemViewType will know which layout to show
+            //:checkbox or Invite Button
+            selectContact.setType_row("1");
+
+          } else {
+            // insert it at the end (default)
+            selectPhoneContacts.add(selectContact);
+            selectContact.setType_row("2");
+
+          }
+
+
+          selectContact.setName(phoneNameofContact);
+          //    selectContact.setPhone(phoneNumberofContact);
+          selectContact.setPhone(phoneNumberofContact);
+          //selectContact.setSelected(is);
 
         }
-
-
-        selectContact.setName(phoneNameofContact);
-        //    selectContact.setPhone(phoneNumberofContact);
-        selectContact.setPhone(phoneNumberofContact);
-        //selectContact.setSelected(is);
-
       }
-
 
       return null;
 
@@ -809,13 +832,18 @@ public class ViewContact extends AppCompatActivity {
 
       recyclerView.setLayoutManager((new LinearLayoutManager(ViewContact.this)));
 
-      //we need to notify the listview that changes may have been made on
-      //the background thread, doInBackground, like adding or deleting contacts,
-      //and these changes need to be reflected visibly in the listview. It works
-      //in conjunction with selectContacts.clear()
-      adapter.notifyDataSetChanged();
+      //if there's no sharedprefs file containing all phone numbers of contacts
+      if (noContactFoundCheck == 0) {
+        noContactsFound.setVisibility(View.VISIBLE);
+      } else {
 
+        //we need to notify the listview that changes may have been made on
+        //the background thread, doInBackground, like adding or deleting contacts,
+        //and these changes need to be reflected visibly in the listview. It works
+        //in conjunction with selectContacts.clear()
+        adapter.notifyDataSetChanged();
 
+      }
     }
   }
 

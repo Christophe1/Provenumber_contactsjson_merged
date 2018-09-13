@@ -171,9 +171,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
       }
 
 
-      //     System.out.println("NewContact:the amount in allPhonesofContacts :" + PopulistoContactsAdapter.allPhonesofContacts.size());
-      //     System.out.println("NewContact:the amount in allNamesofContacts :" + allNamesofContacts.size());
-
       //we are fetching the array list checkedContactsAsArrayList, created in ViewContact.
       //with this we will put a tick in the checkboxes of contacts the review is being shared with
       SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(context_type);

@@ -123,14 +123,20 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   //in the db and in shared preferences. It is posted when the number is verified.
   //Of the format +353872934480
   String phoneNoofUser;
+
   //phoneNoofUserInternationalFormat is for formatting purposes only,
   //e.g: +353 87 293 44 80
   String phoneNoofUserInternationalFormat;
+
   //the generated hash value
   String hashedPassWord;
+
+  //time and date the user registered at
   String time_stamp;
+
   //the hash value stored in XML
   String hashedPassinXML;
+
   //the response from HashCompare.php, will be "True" or "False"
   String hashPassTrueorFalse;
 
@@ -275,6 +281,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //hidePDialog();
 
               System.out.println("third, hashpassinXML is:" + hashedPassinXML);
+
               //make hashPassTrueorFalse = the response string, "True" or "False"
               hashPassTrueorFalse = response.toString();
               Toast.makeText(VerifyUserPhoneNumber.this, hashPassTrueorFalse, Toast.LENGTH_LONG).show();
@@ -282,11 +289,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //If the hash on the user's phone does not equal the hash in the DB..
               //and the phone number does not match...
 
-              //It will be "True" or "False"
-              //If false show registration
+              //If false...
               if (hashPassTrueorFalse.equals("False")) {
-
-
 
                 //then show the registration page
                 sendSMSandRegisterUser();
@@ -295,6 +299,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 // if it is registered, if "True", then...
                 //start the next activity, PopulistoListView
                 Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
+
                 //we need phoneNoofUser so we can get user_id and corresponding
                 //reviews in the next activity
                 myIntent.putExtra("keyName", phoneNoofUser);
@@ -652,8 +657,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
 
     }
-
-
 
     Toast.makeText(this, "getContacts function called", Toast.LENGTH_SHORT).show();
 //          we have this here to avoid cursor errors
