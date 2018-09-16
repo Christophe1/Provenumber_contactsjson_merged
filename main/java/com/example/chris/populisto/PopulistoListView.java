@@ -452,12 +452,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           @Override
           public void onResponse(String response) {
 
-            //hide the loading dialog when we get a response
-            //hidePDialog();
+            Toast.makeText(getApplicationContext(), "loaded categoryfilter file" + response, Toast.LENGTH_SHORT).show();
 
-            //Toast.makeText(getApplicationContext(), "loaded categoryfilter file" + response, Toast.LENGTH_SHORT).show();
-
+            //show categories available to the logged-in user
             the_response = response;
+
             //response will be like:
 
             //[{"cat_name":"vet",
@@ -468,65 +467,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             // "private_count":3,
             // "public_count":5}, etc
 
-            //try {
 
-
-
-/*              //items is a list of the category names available to the logged-in user
-              items = new Gson().fromJson(response.toString(), new TypeToken<List<Category>>() {
-              }.getType());*/
-
-/*            //clear the list
-            categoryList.clear();
-              //adding categories to category list
-              categoryList.addAll(items);*/
-
-            //Toast.makeText(getApplicationContext(), "mAdapter, no category results", Toast.LENGTH_SHORT).show();
-
-
-            // System.out.println("categoryList size is :" + CategoriesAdapter.categoryListFiltered.size());
-
-            //app not crashing as much with this here
-            // recyclerView.setAdapter(mAdapter);
-
-            //hidePDialog();
-
-            //if there are no category results for what is typed, with each key press...
-/*              if (mAdapter.getItemCount() < 1) {
-
-                Toast.makeText(getApplicationContext(), "mAdapter is 0, no category results", Toast.LENGTH_SHORT).show();
-
-
-                recyclerView.setVisibility(View.GONE);
-                noResultsFoundView.setVisibility(View.VISIBLE);
-
-                 //hidePDialog();
-
-              } else {
-
-                //if there ARE category results for what is typed, with each key press...
-                Toast.makeText(getApplicationContext(), "mAdapter, show results", Toast.LENGTH_SHORT).show();
-
-                recyclerView.setVisibility(View.VISIBLE);
-                noResultsFoundView.setVisibility(View.GONE);
-
-                // hidePDialog();
-              }*/
-
-            //}
-          /*catch (Exception e) {
-              e.printStackTrace();
-            }*/
-
-
-/*            //when text changes in the searchview, show the 'Loading' dialogue
-            pDialog = new ProgressDialog(PopulistoListView.this);
-            // Showing progress dialog before making http request to get user's reviews
-            pDialog.setMessage("Loading...");
-            pDialog.show();*/
-
-            // refreshing recycler view
-            // mAdapter.notifyDataSetChanged();
           }
 
 

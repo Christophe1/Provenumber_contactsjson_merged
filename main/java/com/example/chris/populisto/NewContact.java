@@ -266,8 +266,12 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     PackageManager manager = getPackageManager();
     int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
     if (hasPermission == manager.PERMISSION_DENIED) {
-      noContactFoundCheck = 0;
+
+      //there's no READ_CONTACT permissions, so show 'No Contacts textbox'
+      noContactFoundCheck = 1;
+
       //have the just me button selected by default
+      //because we don't have access to phone contacts
       justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
 
       //save it by default to the DB as 0, for just me
@@ -276,7 +280,14 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       //disable the phoneContacts button
       phoneContacts.setEnabled(false);
 
+      //disable the public button
+      publicContacts.setEnabled(false);
+
+
     } else {
+
+      //there ARE READ_CONTACT permissions, so DON'T show 'No Contacts textbox'
+      noContactFoundCheck = 0;
 
       //have the phoneContacts button selected by default
       //make it blue
@@ -448,11 +459,14 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       if (hasPermission == manager.PERMISSION_DENIED) {
 
         //and show the "No Results" textbox
-        noContactFoundCheck = 0;
+        noContactFoundCheck = 1;
 
         //SelectPhoneContact selectContact = new SelectPhoneContact();
         //selectContact.setType_row("2");
       } else {
+
+        noContactFoundCheck = 0;
+
         //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
         for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
 
@@ -515,9 +529,12 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
       //if there's no sharedprefs file containing all phone numbers of contacts
-      if (noContactFoundCheck == 0) {
+      if (noContactFoundCheck == 1) {
         noContactsFound.setVisibility(View.VISIBLE);
       } else {
+
+        noContactFoundCheck = 0;
+        noContactsFound.setVisibility(View.GONE);
 
         //*********set the Matching Contacts to checked, by default ************
         //loop through the matching contacts
@@ -582,13 +599,13 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         recyclerView.setAdapter(adapter);
 
         //If permission denied (will only be on Marshmallow +)
-        PackageManager manager = getPackageManager();
+/*        PackageManager manager = getPackageManager();
         int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
         if (hasPermission == manager.PERMISSION_DENIED) {
 
           //show No Results textbox
           noContactFoundCheck = 0;
-        } else {
+        } else {*/
 
           //loop through the matching contacts
           int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
@@ -602,7 +619,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
             //we need to notify the recyclerview that changes may have been made
             adapter.notifyDataSetChanged();
           }
-        }
+        //}
       }
     });
 
@@ -800,7 +817,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
             //add it to the Array
             checkedContacts.put(phoneOwner);
 
-            System.out.println("checkedContacts JSON Array " + checkedContacts);
+            System.out.println("New Contact: checkedContacts JSON Array " + checkedContacts);
 
 
           } catch (Exception e) {

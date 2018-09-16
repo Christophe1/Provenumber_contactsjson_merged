@@ -770,9 +770,14 @@ public class ViewContact extends AppCompatActivity {
       PackageManager manager = getPackageManager();
       int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
       if (hasPermission == manager.PERMISSION_DENIED) {
-        noContactFoundCheck = 0;
+
+        //there's no READ_CONTACT permissions, so show 'No Contacts textbox'
+        noContactFoundCheck = 1;
 
       } else {
+
+        //there ARE READ_CONTACT permissions, so DON'T show 'No Contacts textbox'
+        noContactFoundCheck = 0;
 
         //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
         for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
@@ -833,9 +838,12 @@ public class ViewContact extends AppCompatActivity {
       recyclerView.setLayoutManager((new LinearLayoutManager(ViewContact.this)));
 
       //if there's no sharedprefs file containing all phone numbers of contacts
-      if (noContactFoundCheck == 0) {
+      if (noContactFoundCheck == 1) {
         noContactsFound.setVisibility(View.VISIBLE);
       } else {
+
+        noContactFoundCheck = 0;
+        noContactsFound.setVisibility(View.GONE);
 
         //we need to notify the listview that changes may have been made on
         //the background thread, doInBackground, like adding or deleting contacts,

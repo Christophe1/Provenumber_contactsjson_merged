@@ -2,6 +2,7 @@ package com.example.chris.populisto;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -104,12 +105,11 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     //for each row in recyclerview, get the getType_row
     //it will either have Invite Button, or no Invite Button
 
-    //we are fetching the array list allPhonesofContacts, created in VerifyUserPhoneNumber.
-    //with this we will put all phone numbers of contacts on user's phone into our recyclerView in NewContact activity
-    SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(context_type);
+    //If permission denied (will only be on Marshmallow +)
+    PackageManager manager = context_type.getPackageManager();
+    int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+    if (hasPermission == manager.PERMISSION_DENIED) {
 
-
-    if (!sharedPreferencesallPhonesofContacts.contains("allPhonesofContacts")) {
       System.out.println("it is not in shared prefs" + allPhonesofContacts);
 
     } else {

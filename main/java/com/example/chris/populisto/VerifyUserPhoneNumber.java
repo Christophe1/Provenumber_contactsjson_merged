@@ -40,6 +40,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -226,7 +227,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       allNamesofContacts.clear();
 
 
-
+        //16-9-2018
        /* allPhonesofContacts.add("Youu have no contacts :(");
 
         //allNamesofContacts.add("");
@@ -300,6 +301,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 //start the next activity, PopulistoListView
                 Intent myIntent = new Intent(VerifyUserPhoneNumber.this, PopulistoListView.class);
 
+                //Toast.makeText(getApplicationContext(), "You've allowed Contacts Access", Toast.LENGTH_LONG).show();
+
                 //we need phoneNoofUser so we can get user_id and corresponding
                 //reviews in the next activity
                 myIntent.putExtra("keyName", phoneNoofUser);
@@ -329,6 +332,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+              //dismiss the dialog before showing the error dialog
+              progressDialog.cancel();
 
               //If there is an error (such as contacting server for example) then
               //show a message like:
@@ -379,6 +385,26 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         }
 
       };
+
+      //this is to hopefully end the VolleyTimeOut error message
+      stringRequest.setRetryPolicy(new RetryPolicy() {
+        @Override
+        public int getCurrentTimeout() {
+          return 50000;
+        }
+
+        @Override
+        public int getCurrentRetryCount() {
+          return 50000;
+        }
+
+        @Override
+        public void retry(VolleyError error) throws VolleyError {
+
+        }
+      });
+
+
       RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
       requestQueue.add(stringRequest);
 
@@ -424,8 +450,27 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         progressDialog.cancel();
 
         //check if Marshmallow or newer
+        //if so, we need to manually check for permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-          askForContactPermission();
+
+          //check if permissions denied
+          if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+
+            //if denied, show the standard Android dialog, 'Allow access to Contacts?'
+            ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity,
+                new String[]{Manifest.permission.READ_CONTACTS},
+                PERMISSIONS_REQUEST_READ_CONTACTS);
+
+          }
+
+          //check if permissions granted
+          if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            if (hashPassTrueorFalse.equals("True")) {
+              //if so, get phone contacts
+              getPhoneContacts();
+            }
+          }
+
         }
         //when 'Select Country' Text is clicked
         //load the activity CountryCodes showing the list of all countries
@@ -553,7 +598,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(btnSendSMS.getContext());
             String alert1 = "We will be verifying the phone number:";
             String alert2 = "Is this OK, or would you like to edit the number?";
-            builder.setMessage(alert1 + "\n" + "\n" + phoneNoofUserInternationalFormat + "\n" + phoneNoofUser + "\n" + alert2).setPositiveButton("OK", dialogClickListener)
+            builder.setMessage(alert1 + "\n" + "\n" + phoneNoofUserInternationalFormat + "\n"  + "\n" + alert2).setPositiveButton("OK", dialogClickListener)
                 .setNegativeButton("EDIT", dialogClickListener).show();
 
           }
@@ -1215,6 +1260,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
               startActivity(intent);
 
+             // Toast.makeText(getApplicationContext(), "You've allowed Contacts Access", Toast.LENGTH_LONG).show();
+
+
             } else {
 
               //verification unsuccessful.. display an error message
@@ -1240,41 +1288,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     startActivity(intent);
   }
 
-
-  //for newer Android, need to ask ser for permissions
-  public void askForContactPermission() {
-
-    // Check the SDK version and whether the permission is already granted or not.
-    // If the phone is Android 6/ SDK 23+ (??) then the phone user has to authorize some "dangerous" commands
-    //at run-time.
-
-    //check if Marshmallow or newer
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-      //check if permissions denied
-      if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
-
-        //if denied, show the standard Android dialog, 'Allow access to Contacts?'
-        ActivityCompat.requestPermissions(this,
-            new String[]{Manifest.permission.READ_CONTACTS},
-            PERMISSIONS_REQUEST_READ_CONTACTS);
-
-        //if permissions granted
-      } else {
-        getPhoneContacts();
-      }
-    }
-
-
-    //if Android is older than Marshmallow
-    else {
-      getPhoneContacts();
-    }
-  }
-
-
   @Override
-  //check Permissions status
+  //check Permissions status, this is called when the user clicks ALLOW on the dialog
   public void onRequestPermissionsResult(int requestCode,
                                          String permissions[], int[] grantResults) {
     switch (requestCode) {
@@ -1284,10 +1299,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
         if (grantResults.length > 0
             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          getPhoneContacts();
+          //getPhoneContacts();
           Toast.makeText(getApplicationContext(), "Yay! Granted now", Toast.LENGTH_LONG).show();
-
-
 
           //if Permission is denied, then show our custom made dialog
           //This is important for if user chooses, 'Don't Show Again',
