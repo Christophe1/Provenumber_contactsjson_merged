@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.view.View.GONE;
 import static com.example.chris.populisto.PopulistoContactsAdapter.allPhonesofContacts;
 import static java.lang.String.valueOf;
 
@@ -255,26 +256,10 @@ public class EditContact extends AppCompatActivity {
     int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
     if (hasPermission == manager.PERMISSION_DENIED) {
 
-      //we get sharing status from ViewContact, with an intent
-      //Set the sharing button to be 'public' or 'phone contacts' or 'just me' colour
-      //If pub_or_priv value from ViewContact is 0 then
-      if (public_or_private == 0) {
-        //keep the slightly rounded shape, when the button is pressed, and change colour
-        justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
-      }
+      //PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
 
-      //in this case we don't have READ_CONTACTS Permission so make it just me
-      if (public_or_private == 1) {
-        //keep the slightly rounded shape, when the button is pressed, and change colour
-        justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
-        //make it public
-        public_or_private = 0;
-      }
-
-      if (public_or_private == 2) {
-        //keep the slightly rounded shape, when the button is pressed, and change colour
-        justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
-      }
+      //select the Just Me button
+      justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
 
       //disable the phoneContacts button
       phoneContacts.setEnabled(false);
@@ -399,7 +384,18 @@ public class EditContact extends AppCompatActivity {
   //for the SAVE contact
   private void saveContact() {
 
-    //close the populistolistview class
+    //If permission denied (will only be on Marshmallow +)
+    PackageManager manager = getPackageManager();
+    int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+    if (hasPermission == manager.PERMISSION_DENIED) {
+
+      PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+
+      //set public_or_private to Just Me
+      public_or_private = 0;
+    }
+
+      //close the populistolistview class
     //(we'll be opening it again, will close now so it will be refreshed)
     PopulistoListView.fa.finish();
 
@@ -584,17 +580,20 @@ public class EditContact extends AppCompatActivity {
   //then bring the intents from EditContact
   private void goBacktoViewContact() {
 
+    //If permission denied (will only be on Marshmallow +)
+    PackageManager manager = getPackageManager();
+    int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
     //Booleans have been set to true,
     //when text has changed in our editTexts
     //or when checkboxes have changed in our adapter
-    if ((PopulistoContactsAdapter.checkBoxhasChanged == true) || (editTexthasChanged == true)) {
+    //or when READ_CONTACTS PERMISSIONS Denied
+    if ((PopulistoContactsAdapter.checkBoxhasChanged == true) || (editTexthasChanged == true) || (hasPermission == manager.PERMISSION_DENIED)) {
 
       // if Booleans are true then
       //add a dialogue box
       AlertDialog.Builder builder = new AlertDialog.Builder(recyclerView.getContext());
       builder.setMessage("Save changes you made?").setPositiveButton("Yes", dialogClickListener)
           .setNegativeButton("No", dialogClickListener).show();
-
 
     } else {
 
@@ -664,19 +663,25 @@ public class EditContact extends AppCompatActivity {
     @Override
     protected Void doInBackground(Void... voids) {
 
+
+
       //If permission denied (will only be on Marshmallow +)
       PackageManager manager = getPackageManager();
       int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
       if (hasPermission == manager.PERMISSION_DENIED) {
         System.out.println("1. NoContactFoundCheck value:" + noContactFoundCheck);
-        //Toast.makeText(EditContact.this, "nO cHECK!!!", Toast.LENGTH_SHORT).show();
 
         //and show the "No Results" textbox
         noContactFoundCheck = 1;
+
       }
+
       else {
 
+        //don't show the No Contacts found box
         noContactFoundCheck = 0;
+
+      }
 
         //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
         for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
@@ -713,8 +718,8 @@ public class EditContact extends AppCompatActivity {
           selectContact.setPhone(phoneNumberofContact);
           //selectContact.setSelected(is);
 
+
         }
-      }
 
       return null;
 
@@ -732,15 +737,16 @@ public class EditContact extends AppCompatActivity {
       recyclerView.setAdapter(adapter);
       recyclerView.setLayoutManager((new LinearLayoutManager(EditContact.this)));
 
-      //if there's no sharedprefs file containing all phone numbers of contacts
+      //if READ_CONTACTS is  disabled
       if (noContactFoundCheck == 1) {
         System.out.println("2. NoContactFoundCheck value:" + noContactFoundCheck);
 
         noContactsFound.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(GONE);
       } else {
 
         noContactFoundCheck = 0;
-        noContactsFound.setVisibility(View.GONE);
+        noContactsFound.setVisibility(GONE);
 
         //we need to notify the listview that changes may have been made on
         //the background thread, doInBackground, like adding or deleting contacts,
@@ -809,15 +815,14 @@ public class EditContact extends AppCompatActivity {
         // This will be uploaded to server to review table,
         //public_or_private column, if saved in this state
         public_or_private = 2;
-
         Toast.makeText(EditContact.this, valueOf(public_or_private), Toast.LENGTH_LONG).show();
 
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
         recyclerView.setAdapter(adapter);
 
-        //clear checkedContactsAsArrayList and then add all matching contacts again
-        //PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+        //reset the size of the array to 0
+        PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
 
         //If permission denied (will only be on Marshmallow +)
         PackageManager manager = getPackageManager();
@@ -826,9 +831,10 @@ public class EditContact extends AppCompatActivity {
 
           //show No Results textbox
           noContactFoundCheck = 1;
-        } else {
+        }
 
-          noContactFoundCheck = 0;
+        else {
+
           //loop through the matching contacts
           int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
@@ -844,18 +850,19 @@ public class EditContact extends AppCompatActivity {
             //we need to notify the recyclerview that changes may have been made
             adapter.notifyDataSetChanged();
 
+
+            Log.i("Adapter1", "checkedContactsAsArrayList is: " + PopulistoContactsAdapter.checkedContactsAsArrayList);
+            //Log.i("EditContact-MyMessage", "List is: " + existing_values);
+            Log.i("Adapter1", "number in Matching Contacts is " + PopulistoContactsAdapter.MatchingContactsAsArrayList.size());
+            Log.i("Adapter1", "number in checkedContactsAsArrayList is " + PopulistoContactsAdapter.checkedContactsAsArrayList.size());
+
+            //if checkboxes of contacts have been changed by clicking the button,
+            //then set the boolean to be true
+            PopulistoContactsAdapter.checkBoxhasChanged = true;
+
           }
-          Log.i("Adapter1", "checkedContactsAsArrayList is: " + PopulistoContactsAdapter.checkedContactsAsArrayList);
-          //Log.i("EditContact-MyMessage", "List is: " + existing_values);
-          Log.i("Adapter1", "number in Matching Contacts is " + PopulistoContactsAdapter.MatchingContactsAsArrayList.size());
-          Log.i("Adapter1", "number in checkedContactsAsArrayList is " + PopulistoContactsAdapter.checkedContactsAsArrayList.size());
 
-          //if checkboxes of contacts have been changed by clicking the button,
-          //then set the boolean to be true
-          PopulistoContactsAdapter.checkBoxhasChanged = true;
-
-          // Toast.makeText(EditContact.this, "here it is dudia" + String.valueOf(PopulistoContactsAdapter.checkBoxhasChanged), Toast.LENGTH_SHORT).show();
-
+          noContactFoundCheck = 0;
         }
       }
     });
@@ -871,9 +878,25 @@ public class EditContact extends AppCompatActivity {
       @Override
       public void onClick(View v) {
 
+        //keep the slightly rounded shape, when the button is pressed
+        phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+
+        //keep the slightly rounded shape of the others, but still grey
+        publicContacts.setBackgroundResource(R.drawable.buttonshape);
+        justMeContacts.setBackgroundResource(R.drawable.buttonshape);
+
+        //set sharing to Phone Contacts
+        // This will be uploaded to server to review table,
+        //public_or_private column, if saved in this state
+        public_or_private = 1;
+        Toast.makeText(EditContact.this, "public_or_private is:" + valueOf(public_or_private), Toast.LENGTH_LONG).show();
+
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
         recyclerView.setAdapter(adapter);
+
+        //reset the size of the array to 0
+        PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
 
         //clear checkedContactsAsArrayList and then add all matching contacts again
         //PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
@@ -883,7 +906,6 @@ public class EditContact extends AppCompatActivity {
         int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
         if (hasPermission == manager.PERMISSION_DENIED) {
 
-
           System.out.println("NewContact: it is not in shared prefs" + allPhonesofContacts);
           //and show the "No Results" textbox
           noContactFoundCheck = 1;
@@ -891,23 +913,6 @@ public class EditContact extends AppCompatActivity {
         } else
 
         {
-
-          noContactFoundCheck = 0;
-
-          //keep the slightly rounded shape, when the button is pressed
-          phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
-
-          //keep the slightly rounded shape of the others, but still grey
-          publicContacts.setBackgroundResource(R.drawable.buttonshape);
-          justMeContacts.setBackgroundResource(R.drawable.buttonshape);
-
-          //set sharing to Phone Contacts
-          // This will be uploaded to server to review table,
-          //public_or_private column, if saved in this state
-          public_or_private = 1;
-
-          Toast.makeText(EditContact.this, "public_or_private is:" + valueOf(public_or_private), Toast.LENGTH_LONG).show();
-
 
           //loop through the matching contacts
           int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
@@ -926,8 +931,13 @@ public class EditContact extends AppCompatActivity {
             //if checkboxes of contacts have been changed by clicking the button,
             //then set the boolean to be true
             PopulistoContactsAdapter.checkBoxhasChanged = true;
+
           }
-        }
+
+            //don't show the No Contacts Available box
+            noContactFoundCheck = 0;
+          }
+
       }
     });
 
@@ -963,6 +973,7 @@ public class EditContact extends AppCompatActivity {
         PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
 
         //If permission denied (will only be on Marshmallow +)
+        //then show 'No Contacts Available' because
         PackageManager manager = getPackageManager();
         int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
         if (hasPermission == manager.PERMISSION_DENIED) {
@@ -970,10 +981,10 @@ public class EditContact extends AppCompatActivity {
           //show the No Results Textbox
           noContactFoundCheck = 1;
 
-        } else {
+        }
 
-          noContactFoundCheck = 0;
 
+        else {
           //loop through the matching contacts
           int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
@@ -988,6 +999,10 @@ public class EditContact extends AppCompatActivity {
             //then set the boolean to be true
             PopulistoContactsAdapter.checkBoxhasChanged = true;
           }
+
+          //don't show the No Contacts Available box
+          noContactFoundCheck = 0;
+
         }
       }
     });

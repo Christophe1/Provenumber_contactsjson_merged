@@ -452,7 +452,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           @Override
           public void onResponse(String response) {
 
-            Toast.makeText(getApplicationContext(), "loaded categoryfilter file" + response, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "loaded categoryfilter file" + response, Toast.LENGTH_SHORT).show();
 
             //show categories available to the logged-in user
             the_response = response;

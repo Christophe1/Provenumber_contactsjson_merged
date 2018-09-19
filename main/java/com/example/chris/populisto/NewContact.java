@@ -607,6 +607,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           noContactFoundCheck = 0;
         } else {*/
 
+        //reset the size of the array to 0
+        PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+
           //loop through the matching contacts
           int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
@@ -637,6 +640,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 
         recyclerView.setAdapter(adapter);
+
+        //reset the size of the array to 0
+        PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
         //if the sharedpreference does not exist (like if the user, on Marshmallow + phones,
@@ -707,6 +714,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
         recyclerView.setAdapter(adapter);
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+        //reset the size of the array to 0
+        PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
 
         //If permission denied (will only be on Marshmallow +)
         PackageManager manager = getPackageManager();

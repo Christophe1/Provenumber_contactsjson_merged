@@ -158,6 +158,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   Button buttonSignIn;
 
+  //this is for the progress dialog, while logged-in user is
+  //waiting for verification code
   DelayedProgressDialog progressDialog = new DelayedProgressDialog();
 
 

@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -107,6 +108,8 @@ public class ViewContact extends AppCompatActivity {
 
   private ProgressDialog pDialog;
 
+  //this is for the progress dialog, while logged-in user is
+  //waiting for shared contacts of the review from server
   DelayedProgressDialog progressDialog = new DelayedProgressDialog();
 
 
@@ -160,6 +163,12 @@ public class ViewContact extends AppCompatActivity {
 
     //show the "Loading" dialog
     progressDialog.show(getSupportFragmentManager(), "tag");
+
+
+    //setContentView(R.layout.verify_phone_number);
+    //RelativeLayout progressContainer = findViewById(R.id.container);// change id here
+
+    //progressContainer.setVisibility(View.VISIBLE);
 
     //need to initialize this
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
@@ -303,7 +312,7 @@ public class ViewContact extends AppCompatActivity {
 
       Toast.makeText(ViewContact.this, categoryname.getText().toString(), Toast.LENGTH_LONG).show();
 
-      //post the review_id that has been clicked in the recyclerView and send it to
+      //post the review_id that has been clicked in the recyclerView of previous activity and send it to
       //viewContact.php. from that we will get the checked contact details,
       //who the review is shared with
       StringRequest stringRequest = new StringRequest(Request.Method.POST, ViewContact_URL,
@@ -649,7 +658,7 @@ public class ViewContact extends AppCompatActivity {
           Toast.makeText(ViewContact.this, "delete stuff", Toast.LENGTH_SHORT).show();
 
           pDialog = new ProgressDialog(ViewContact.this);
-          // Showing progress dialog for the review being saved
+          // Showing progress dialog for the review being deleted
           pDialog.setMessage("Deleting...");
           pDialog.show();
 
@@ -837,7 +846,7 @@ public class ViewContact extends AppCompatActivity {
 
       recyclerView.setLayoutManager((new LinearLayoutManager(ViewContact.this)));
 
-      //if there's no sharedprefs file containing all phone numbers of contacts
+      //if READ_CONTACTS Permission is disabled
       if (noContactFoundCheck == 1) {
         noContactsFound.setVisibility(View.VISIBLE);
       } else {
