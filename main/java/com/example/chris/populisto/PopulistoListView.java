@@ -526,7 +526,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     };
 
 
-
     AppController.getInstance().addToRequestQueue(request);
   }
 
@@ -753,9 +752,19 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
         startActivity(intent);
         return true;
+
+
+      case R.id.contact_us:
+        //start the Contact Us class
+        Intent intent2 = new Intent(PopulistoListView.this, ContactUs.class);
+
+        startActivity(intent2);
+        return true;
     }
+
     return false;
   }
+
 
 /*    @Override
     protected void onResume() {

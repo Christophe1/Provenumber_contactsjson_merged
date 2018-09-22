@@ -5,6 +5,10 @@
         android:title="@string/new_contact"
         app:showAsAction="never"></item>
 
+    <item android:id = "@+id/contact_us"
+          android:title="Contact Us"
+          app:showAsAction="never"></item>
+
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/tb_search"

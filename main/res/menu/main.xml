@@ -6,4 +6,10 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         app:showAsAction="never"
         android:title="@string/new_contact"/>
 
+    <item
+        android:id="@+id/contact_us"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="Contact Us"/>
+
 </menu>

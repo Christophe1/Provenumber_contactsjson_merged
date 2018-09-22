@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="15dp">
+
+    <TextView
+        android:id="@+id/bugsOrQuestions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bugs? Questions? Send us an email."
+        android:textSize="18dp"
+        />
+
+    <EditText
+        android:id="@+id/yourEmailPlease"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bugsOrQuestions"
+        android:hint="Your Email Address"
+        android:background="@drawable/textboxes_for_contact"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/copySenttoYouToo"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/yourEmailPlease"
+        android:text="* A copy of this mesage will be mailed to you also."
+        android:textSize="12dp"
+        />
+
+    <EditText
+        android:id="@+id/yourMessage"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/copySenttoYouToo"
+        android:hint="Your Message"
+        android:background="@drawable/textboxes_for_contact"
+        android:textSize="18dp" />
+
+
+
+    <LinearLayout android:layout_alignParentBottom="true"
+                  android:layout_height="50dp"
+                  android:layout_width="wrap_content">
+
+        <Button
+            android:id="@+id/send"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Send" />
+        <!--android:layout_below="@+id/yourMessage"-->
+
+
+    </LinearLayout>
+
+</RelativeLayout>
+</RelativeLayout>

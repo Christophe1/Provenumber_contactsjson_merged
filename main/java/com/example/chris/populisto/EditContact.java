@@ -835,34 +835,8 @@ public class EditContact extends AppCompatActivity {
 
         else {
 
-          //loop through the matching contacts
-          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+          contactsToBeChecked();
 
-          //i is the number of matching contacts that there are
-          for (int i = 0; i < count; i++) {
-
-            //add the matching contacts
-            PopulistoContactsAdapter.checkedContactsAsArrayList.add(i, PopulistoContactsAdapter.MatchingContactsAsArrayList.get(i));
-
-            //set them to be checked
-            PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-
-            //we need to notify the recyclerview that changes may have been made
-            adapter.notifyDataSetChanged();
-
-
-            Log.i("Adapter1", "checkedContactsAsArrayList is: " + PopulistoContactsAdapter.checkedContactsAsArrayList);
-            //Log.i("EditContact-MyMessage", "List is: " + existing_values);
-            Log.i("Adapter1", "number in Matching Contacts is " + PopulistoContactsAdapter.MatchingContactsAsArrayList.size());
-            Log.i("Adapter1", "number in checkedContactsAsArrayList is " + PopulistoContactsAdapter.checkedContactsAsArrayList.size());
-
-            //if checkboxes of contacts have been changed by clicking the button,
-            //then set the boolean to be true
-            PopulistoContactsAdapter.checkBoxhasChanged = true;
-
-          }
-
-          noContactFoundCheck = 0;
         }
       }
     });
@@ -914,29 +888,9 @@ public class EditContact extends AppCompatActivity {
 
         {
 
-          //loop through the matching contacts
-          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+          contactsToBeChecked();
 
-          //i is the number of matching contacts that there are
-          for (int i = 0; i < count; i++) {
-
-            PopulistoContactsAdapter.checkedContactsAsArrayList.add(i, PopulistoContactsAdapter.MatchingContactsAsArrayList.get(i));
-
-            //check all matching contacts, we want it to be 'Phone Contacts'
-            PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-
-            //we need to notify the recyclerview that changes may have been made
-            adapter.notifyDataSetChanged();
-
-            //if checkboxes of contacts have been changed by clicking the button,
-            //then set the boolean to be true
-            PopulistoContactsAdapter.checkBoxhasChanged = true;
-
-          }
-
-            //don't show the No Contacts Available box
-            noContactFoundCheck = 0;
-          }
+        }
 
       }
     });
@@ -1008,6 +962,34 @@ public class EditContact extends AppCompatActivity {
     });
 
   }
+
+
+  public void contactsToBeChecked() {
+
+    //loop through the matching contacts
+    int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+    //i is the number of matching contacts that there are
+    for (int i = 0; i < count; i++) {
+
+      PopulistoContactsAdapter.checkedContactsAsArrayList.add(i, PopulistoContactsAdapter.MatchingContactsAsArrayList.get(i));
+
+      //check all matching contacts, we want it to be 'Phone Contacts'
+      PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+      //we need to notify the recyclerview that changes may have been made
+      adapter.notifyDataSetChanged();
+
+      //if checkboxes of contacts have been changed by clicking the button,
+      //then set the boolean to be true
+      PopulistoContactsAdapter.checkBoxhasChanged = true;
+
+    }
+
+    //don't show the No Contacts Available box
+    noContactFoundCheck = 0;
+  }
+
 
 
   //this is called from PopulistoContactsAdapter

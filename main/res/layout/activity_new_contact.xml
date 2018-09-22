@@ -103,7 +103,6 @@
                 android:layout_height="50dp"
                 android:theme="@style/CustomToolbarStyle"
                 app:layout_collapseMode="pin"
-
                 />
 
 
