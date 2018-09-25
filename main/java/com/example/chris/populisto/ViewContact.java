@@ -55,8 +55,9 @@ import static com.example.tutorialspoint.R.layout.activity_view_contact;
 public class ViewContact extends AppCompatActivity {
   //
   // this is the php file name where to select from.
-  // we will post the review id of the review in ListView (in PopulistoListView.java) into Php and
-  // get the matching details - Category, name, phone, address etc...
+  // we will post the review id of the review in recyclerView (in PopulistoListView.java) into Php and
+  // get the checkedcontacts details.
+  // Category, name, phone, address etc... are taken with an Intent from the recyclerView
   private static final String ViewContact_URL = "http://www.populisto.com/ViewContact.php";
 
   // this is for the Delete button, the php file name where to select from.
@@ -78,15 +79,6 @@ public class ViewContact extends AppCompatActivity {
   private TextView commentname;
  // 4/7/2018 private TextView publicorprivate;
   private TextView sharedWith;
-
-//4/7/2018
-/*  Button publicContacts;
-  Button phoneContacts;
-  Button justMeContacts;*/
-
-  //5/7/2018
-  //for categoryid we only need the value, don't need to cast it to anything
-  //String categoryid;
 
   //this is the review that has been clicked in the recyclerView in PopulistoListView.java
   //We need this for passing to EditContact, so if the changes are saved, we know where to make
@@ -151,6 +143,7 @@ public class ViewContact extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(activity_view_contact);
 
+    //for if READ_CONTACTS is not enabled
     noContactsFound = (TextView) findViewById(R.id.noContactsFoundView);
 
 
@@ -260,37 +253,6 @@ public class ViewContact extends AppCompatActivity {
     //publicorprivate = (TextView) findViewById(R.id.textPublicorPrivate);
     sharedWith = (TextView) findViewById(R.id.textSharedWith);
 
-
-
-    //System.out.println("PhoneNumberofUserFromDB:" + phoneNumberofUserFromDB);
-    //System.out.println("phoneNoofUser:" + phoneNoofUser);
-//5/7/2018
-    //if we are coming from EditContact, where no recyclerView cell has been clicked
-    //if (review_id == null) {
-
-    //then set review_id to the value we put in shared preferences
-    // review_id = PreferenceManager.getDefaultSharedPreferences(this).getString("review_id value", review_id);
-
-    // }
-
-    //System.out.println("ViewContact: review id is " + review_id);
-
-    //5/7/2018
-    //coming from PopulistoListView we will always get a value for review_id
-    //Let's save the review_id in shared preferences
-    //so we can get it easily in EditContact,
-    //and load the corresponding values into ViewContact on < press
-    //PreferenceManager.getDefaultSharedPreferences(this).edit().putString("review_id value", review_id).apply();
-
-
-    //4/7/2018
-    //for the Public, phoneContacts, justMe, save and cancel buttons
-    //publicContacts = (Button) findViewById(R.id.btnPublic);
-    //phoneContacts = (Button) findViewById(R.id.btnPhoneContacts);
-    //justMeContacts = (Button) findViewById(R.id.btnJustMe);
-
-
-
     //set text in textboxes to the values in cell of recyclerView, intents passed from UPopulistoListAdapter
     date_created_name.setText(date_created);
     categoryname.setText(category);
@@ -299,7 +261,7 @@ public class ViewContact extends AppCompatActivity {
     addressname.setText(address);
     commentname.setText(comment);
 
-    Toast.makeText(ViewContact.this, "coming from UPopulisto: " + i.getStringExtra("review_id"), Toast.LENGTH_LONG).show();
+   // Toast.makeText(ViewContact.this, "coming from UPopulisto: " + i.getStringExtra("review_id"), Toast.LENGTH_LONG).show();
 
     //if we are coming from UPopulistoListAdapter then
     //we will have a value for review_id at this stage
@@ -337,15 +299,6 @@ public class ViewContact extends AppCompatActivity {
                 //respective parts
                 JSONObject responseObject = new JSONObject(response);
 
-                //5/7/2018
-                // String category = responseObject.getString("category");
-                //String category_id = responseObject.getString("category_id");
-                // String name = responseObject.getString("name");
-                // String phone = responseObject.getString("phone");
-                // String address = responseObject.getString("address");
-                // String comment = responseObject.getString("comment");
-                //String public_or_private = responseObject.getString("publicorprivate");
-
                 //get the phone numbers with whom the review is shared
                 checkedContacts = responseObject.getString("checkedcontacts");
 
@@ -354,45 +307,6 @@ public class ViewContact extends AppCompatActivity {
                 //so the PopulistoContactsAdapter will show recyclerView with contacts, checked etc...
                 ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
                 loadContact.execute();
-
-                //5/7/2018
-                //assign a textview to each of the fields in the review
-                //categoryname.setText(category);
-                //namename.setText(name);
-                //phonename.setText(phone);
-                //addressname.setText(address);
-                //commentname.setText(comment);
-
-                //convert public_or_private to an integer
-                //pub_or_priv = Integer.parseInt(public_or_private);
-
-
-                // System.out.println("ViewContact: public or private value :" + pub_or_priv);
-
-                //05/7/2018
-                //for categoryid we only need the value, don't need to cast it to anything
-                //we'll be sending this to EditContact with an intent
-                //categoryid = category_id;
-
-                // System.out.println("here are the checkedcontacts" + checkedContacts);
-                //  Toast.makeText(ViewContact.this, "here are the checkedcontacts" + checkedContacts, Toast.LENGTH_SHORT).show();
-
-
-                //05/07/2018
-//*              if (phoneNoofUser.equals(phoneNumberofUserFromDB)) {
-//05/07/2018
-                // Toast.makeText(ViewContact.this, "Yes they match!", Toast.LENGTH_SHORT).show();
-/*                edit.setVisibility(View.VISIBLE);
-                delete.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.VISIBLE);
-              }*/
-
-
-                //System.out.println("ViewContact2: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
-
-
-                //System.out.println("heree it is" + jsonResponse);
-                //Toast.makeText(ContactView.this, jsonResponse, Toast.LENGTH_LONG).show();
 
               } catch (JSONException e) {
                 e.printStackTrace();
@@ -702,7 +616,6 @@ public class ViewContact extends AppCompatActivity {
           AppController.getInstance().addToRequestQueue(stringRequest);
 
           //when deleted, back to the PopulistoListView class and update
-
           Intent j = new Intent(ViewContact.this, PopulistoListView.class);
 
           startActivity(j);
@@ -840,6 +753,7 @@ public class ViewContact extends AppCompatActivity {
 
       // System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
+      //adapter for showing logged-in user's phone contacts
       PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
 
       recyclerView.setAdapter(adapter);

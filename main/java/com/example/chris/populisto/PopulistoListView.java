@@ -254,15 +254,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     mAdapter = new CategoriesAdapter(this, categoryList, this);
 
     //the adapter for all shared reviews including user's own
-    qAdapter = new SharedPopulistoReviewsAdapter(sharedReviewList, this);
+    qAdapter = new SharedPopulistoReviewsAdapter(sharedReviewList);
 
     //set the layout
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
 
     recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-    //recyclerView.setLayoutManager(mLayoutManager);
-
+    //show the logged-in user's reviews
     recyclerView.setAdapter(pAdapter);
 
     Log.e(TAG, "phonno" + phoneNoofUser);
@@ -365,7 +364,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                   e.printStackTrace();
                 }
 
-
                 //set a string to the the phone number from the DB,
                 //the phone number of the person who made the review
                 // phoneNoInDB = phoneNoofUser;
@@ -383,7 +381,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               Log.e("MYAPP", "unexpected JSON exception", e);
               // Do something to recover ... or kill the app.
             }
-
 
             // notifying list adapter about data changes
             // so that it renders the list view with updated data
@@ -448,11 +445,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     StringRequest request = new StringRequest(Request.Method.POST, CategoryFilter_URL,
         new Response.Listener<String>() {
 
-
           @Override
           public void onResponse(String response) {
 
-            //Toast.makeText(getApplicationContext(), "loaded categoryfilter file" + response, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "loaded categoryfilter file", Toast.LENGTH_SHORT).show();
 
             //show categories available to the logged-in user
             the_response = response;
@@ -591,6 +587,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       @Override
       public boolean onQueryTextChange(String query) {
 
+       // sharedReviewList.clear();
+        //clear();
+
 /*        //when text changes in the searchview, show the 'Loading' dialogue
         pDialog = new ProgressDialog(PopulistoListView.this);
         // Showing progress dialog before making http request to get user's reviews
@@ -611,6 +610,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           categoryList.addAll(items);
         }
 
+       // Toast.makeText(getApplicationContext(), "items are:" + categoryList, Toast.LENGTH_SHORT).show();
+
+
         // recyclerView.setAdapter(mAdapter);
 
         mAdapter.getFilter().filter(query);
@@ -619,28 +621,42 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
         if (mAdapter.getItemCount() < 1) {
 
+         // recyclerView.setAdapter(mAdapter);
+
           //if there's nothing to show, hide recyclerView...
           recyclerView.setVisibility(View.GONE);
 
           //and show the "No Results" textbox
           noResultsFoundView.setVisibility(View.VISIBLE);
-          // mAdapter.notifyDataSetChanged();
+
+/*          recyclerView.setAdapter(mAdapter);
+          mAdapter.notifyDataSetChanged();*/
           //hidePDialog();
 
           Toast.makeText(getApplicationContext(), "mAdapter is 0, no item results", Toast.LENGTH_SHORT).show();
 
 
+         // mAdapter.notifyDataSetChanged();
         }
 
         if (mAdapter.getItemCount() >= 1) {
 
+          //if there ARE category results for what is typed, with each key press...
+/*
+          Toast.makeText(getApplicationContext(), "mAdapter size is:" + mAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
+          Toast.makeText(getApplicationContext(), "pAdapter size is:" + pAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
+          Toast.makeText(getApplicationContext(), "qAdapter size is:" + qAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
+*/
+
+
           recyclerView.setVisibility(View.VISIBLE);
           noResultsFoundView.setVisibility(View.GONE);
-          //mAdapter.notifyDataSetChanged();
+
+/*          recyclerView.setAdapter(mAdapter);
+          mAdapter.notifyDataSetChanged();*/
+
           // hidePDialog();
 
-          //if there ARE category results for what is typed, with each key press...
-          Toast.makeText(getApplicationContext(), "mAdapter size is:" + mAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
 
 
         }
@@ -755,11 +771,16 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
       case R.id.contact_us:
-        //start the Contact Us class
-        Intent intent2 = new Intent(PopulistoListView.this, ContactUs.class);
+        //start the email intent
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        //emailIntent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"harris.christophe@gmail.com"});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Populisto, Contact Us");
+        emailIntent.putExtra(Intent.EXTRA_TEXT,"");
 
-        startActivity(intent2);
-        return true;
+        emailIntent.setType("message/rfc822");
+        startActivity(Intent.createChooser(emailIntent, "Choose email package:"));
+
     }
 
     return false;
@@ -803,8 +824,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     selectPublicReviews = selectPublicReviews.substring(1, selectPublicReviews.length() - 1);
 
 
-    Toast.makeText(getApplicationContext(), "own reviews are:" + selectOwnUserReviews, Toast.LENGTH_LONG).show();
-    Toast.makeText(getApplicationContext(), "own reviews count:" + selectOwnUserCount, Toast.LENGTH_LONG).show();
+   // Toast.makeText(getApplicationContext(), "own reviews are:" + selectOwnUserReviews, Toast.LENGTH_LONG).show();
+   // Toast.makeText(getApplicationContext(), "own reviews count:" + selectOwnUserCount, Toast.LENGTH_LONG).show();
 
     // Toast.makeText(getApplicationContext(), "Phone contact reviews are:" + selectPrivateReviews, Toast.LENGTH_LONG).show();
     //Toast.makeText(getApplicationContext(), "Public reviews are:" + selectPublicReviews, Toast.LENGTH_LONG).show();
@@ -828,7 +849,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           @Override
           public void onResponse(String response) {
 
-            Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+       //     Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
             System.out.println("response is :" + response);
 
             //clear the list of shared reviews, start afresh on new filter
@@ -1170,5 +1191,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     overridePendingTransition(0, 0);
     startActivity(intent);
   }
+
+
 
 }

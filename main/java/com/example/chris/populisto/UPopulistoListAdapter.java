@@ -116,7 +116,10 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             public void onClick(View v) {
 
                 //position is the number of the row
-                Toast.makeText(v.getContext(), position + " cheers!", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(v.getContext(), position + " cheers!", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(v.getContext(), "UPopulistoListAdapter", Toast.LENGTH_LONG).show();
+
 
                 Review reviewUser = (Review) UPopulistoListAdapter.getItem(position);
 

@@ -817,9 +817,9 @@ public class EditContact extends AppCompatActivity {
         public_or_private = 2;
         Toast.makeText(EditContact.this, valueOf(public_or_private), Toast.LENGTH_LONG).show();
 
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
+/*        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
         //reset the size of the array to 0
         PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
@@ -865,9 +865,9 @@ public class EditContact extends AppCompatActivity {
         public_or_private = 1;
         Toast.makeText(EditContact.this, "public_or_private is:" + valueOf(public_or_private), Toast.LENGTH_LONG).show();
 
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
+/*        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
         //reset the size of the array to 0
         PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
@@ -965,6 +965,10 @@ public class EditContact extends AppCompatActivity {
 
 
   public void contactsToBeChecked() {
+
+    PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
+
+    recyclerView.setAdapter(adapter);
 
     //loop through the matching contacts
     int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();

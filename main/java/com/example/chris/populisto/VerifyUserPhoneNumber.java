@@ -315,7 +315,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
                 if (hasPermission == manager.PERMISSION_GRANTED) {
                   //you have permission
-                  Toast.makeText(getApplicationContext(), "Read contact granted!", Toast.LENGTH_LONG).show();
+                  //Toast.makeText(getApplicationContext(), "Read contact granted!", Toast.LENGTH_LONG).show();
                   //get all the contacts on the user's phone
                   getPhoneContacts();
 
@@ -692,7 +692,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   //and put the phone numbers in E164 format
   private void getPhoneContacts() {
 
-    Toast.makeText(this, "getPhoneContacts has been called but nothing done apart from this toast.", Toast.LENGTH_SHORT).show();
+  //  Toast.makeText(this, "getPhoneContacts has been called but nothing done apart from this toast.", Toast.LENGTH_SHORT).show();
 
     // Check the SDK version and whether the read contacts permission is already granted or not.
     // If the phone is Android 6/ SDK 23+ (??) then the phone user has to authorize some "dangerous" commands
@@ -705,7 +705,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
     }
 
-    Toast.makeText(this, "getContacts function called", Toast.LENGTH_SHORT).show();
+//    Toast.makeText(this, "getContacts function called", Toast.LENGTH_SHORT).show();
 //          we have this here to avoid cursor errors
     if (cursor != null) {
       cursor.moveToFirst();

@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 //DESCRIPTION OF ACTIVITY
-//This is for showing the recyclerView of reviews available to
+//This is for showing a list in the recyclerView of reviews available to
 //the logged-in user, both his own and those shared with him
 //When a cell is clicked we will show ViewContact or SharedViewContact
 //whichever getItemViewType is set to, 1 or 2 or 3
@@ -35,7 +35,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
   private LayoutInflater inflater;
   public static List<SharedReview> the_Shared_reviews;
   //Context context;
-  Context context_type;
+ // Context context_type;
 
  //we will be passing as an intent which view to show in SharedViewContact based on this value
   Integer getItemViewType;
@@ -94,10 +94,10 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
   }
 
 
-  public SharedPopulistoReviewsAdapter(List<SharedReview> sharedReviews, Context context) {
+  public SharedPopulistoReviewsAdapter(List<SharedReview> sharedReviews) {
 
     the_Shared_reviews = sharedReviews;
-    context_type = context;
+   // context_type = context;
 
 
   }
@@ -186,7 +186,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
       //then show that review, either ViewContact or SharedContact
       public void onClick(View v) {
 
-        Toast.makeText(context_type, "about bloody time", Toast.LENGTH_LONG).show();
+        Toast.makeText(v.getContext(), "SharedPopulistoReviewsAdapter", Toast.LENGTH_LONG).show();
 
 
         SharedReview sharedReview = (SharedReview) SharedPopulistoReviewsAdapter.getItem(position);
@@ -213,32 +213,29 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
           i.putExtra("address", sharedReview.getAddress());
           i.putExtra("comment", sharedReview.getComment());
 
-          //We are coming from SharedPopulistoReviewsAdapter so
-          //we need to tell the adapter whcih view to show:
-          //1: show edit, delete buttons etc (an own-user review)
-          //2: no edit details, can't change another user's review
-          if (viewHolder.getItemViewType() == 1) {
             //Pass as intent to ViewContact, decide what colour to show "U"
             getItemViewType = 1;
-          }
 
           i.putExtra("getItemViewType", getItemViewType);
 
+          //start the ViewContact activity
           v.getContext().startActivity(i);
 
           //If getType_row is 2 or 3, show SharedViewContact
         } else {
 
-          //Toast.makeText(context_type, "a different view", Toast.LENGTH_SHORT).show();
-
-          //we want to pass the review_id and PhoneNumberofUserFromDB
-          // of the sharedReview being clicked
-          //to the SharedViewContact activity, and from there post it and get more
-          //info for that sharedReview - address, comments etc
+          //grab these details as an intent and pass
+          //to the SharedViewContact activity
           Intent i = new Intent(v.getContext(), SharedViewContact.class);
           //pass the review_id to SharedViewContact class
           //the key is "review_id"
           i.putExtra("review_id", sharedReview.getReviewid());
+
+          i.putExtra("category", sharedReview.getCategory());
+          i.putExtra("name", sharedReview.getName());
+          i.putExtra("phone", sharedReview.getPhone());
+          i.putExtra("address", sharedReview.getAddress());
+          i.putExtra("comment", sharedReview.getComment());
 
           //show the review maker's name from logged-in user's phone, or else masked number
           i.putExtra("PhoneNameonPhone", r.getPhoneNameonPhone());
@@ -259,6 +256,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
           i.putExtra("getItemViewType", getItemViewType);
 
+          //start the SharedViewContact activity
           v.getContext().startActivity(i);
 
         }
