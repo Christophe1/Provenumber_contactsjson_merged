@@ -948,7 +948,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             // it will be a JSONArray of the form [{"phone_number":"+35312345"}, {"phone_number": etc...
             // We get this from our php file, checkcontact.php. Then we will convert to a string
             // and extract the phone numbers and compare against the contacts on the user's phone.
-            Toast.makeText(VerifyUserPhoneNumber.this, "the Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
+            Toast.makeText(VerifyUserPhoneNumber.this, "thek Populisto contacts of this user are :" + response, Toast.LENGTH_LONG).show();
             System.out.println("the Populisto contacts of this user are :" + response);
 
             //convert the JSONArray, the response, to a string

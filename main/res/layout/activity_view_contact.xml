@@ -26,6 +26,7 @@
 
             >
 
+            <!--this is the holder for textboxes etc in the activity-->
             <LinearLayout
                 android:id="@+id/holder"
                 android:layout_width="match_parent"
@@ -124,8 +125,16 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:theme="@style/CustomToolbarStyle"
+                android:contentInsetLeft="0dp"
+                android:contentInsetStart="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                android:contentInsetRight="0dp"
+                android:contentInsetEnd="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetEnd="0dp"
                 app:layout_collapseMode="pin" />
 
 

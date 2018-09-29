@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--app_name is what will appear in toolbar
+    for PopulistoListView activity-->
     <string name="app_name">Populisto</string>
     <string name="new_contact">New Contact</string>
     <string name="title_activity_contact_view">ContactView</string>
     <string name="btnInvite">Invite</string>
+    <!--toolbar_title is what will appear in toolbar
+    for new, edit, and view activities-->
     <string name="toolbar_title">Populisto</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Search categories...</string>

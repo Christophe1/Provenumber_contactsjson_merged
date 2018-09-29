@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -185,6 +186,7 @@ public class ViewContact extends AppCompatActivity {
     //actionbar.setDisplayShowHomeEnabled(true);
 
     //remove the app name from the toolbar (don't want it twice)
+    //we already get it from strings.xml
     getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     //into the toolbar, inflate the back button and Populisto title,
@@ -193,8 +195,12 @@ public class ViewContact extends AppCompatActivity {
     toolbar.addView(logo);
 
     //for the back arrow, tell it to close the activity, when clicked
+
+    LinearLayout layoutForBackButton = (LinearLayout) logo.findViewById(R.id.layoutForBackButton);
+
     ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
-    backButton.setOnClickListener(new View.OnClickListener() {
+    backButton.setBackgroundColor(Color.rgb(100, 100, 50));
+    layoutForBackButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         finish();
@@ -454,7 +460,7 @@ public class ViewContact extends AppCompatActivity {
         //"category" is the key
         // which we will be looking for from EditContact.class, categoryname.getText() is the
         // content to pass from ViewContact.class etc....
-        i.putExtra("date_created", date_created_name.getText());
+        //i.putExtra("date_created", date_created_name.getText());
         i.putExtra("category", categoryname.getText());
         //i.putExtra("category_id", categoryid);
         i.putExtra("name", namename.getText());
