@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +21,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,6 +40,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tutorialspoint.R;
+
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -78,7 +86,7 @@ public class ViewContact extends AppCompatActivity {
   private TextView phonename;
   private TextView addressname;
   private TextView commentname;
- // 4/7/2018 private TextView publicorprivate;
+  // 4/7/2018 private TextView publicorprivate;
   private TextView sharedWith;
 
   //this is the review that has been clicked in the recyclerView in PopulistoListView.java
@@ -138,6 +146,11 @@ public class ViewContact extends AppCompatActivity {
 
   //if it is 0, then show the 'No Contacts Found' textbox
   int noContactFoundCheck;
+  /**
+   * ATTENTION: This was auto-generated to implement the App Indexing API.
+   * See https://g.co/AppIndexing/AndroidStudio for more information.
+   */
+  private GoogleApiClient client;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -196,16 +209,46 @@ public class ViewContact extends AppCompatActivity {
 
     //for the back arrow, tell it to close the activity, when clicked
 
-    LinearLayout layoutForBackButton = (LinearLayout) logo.findViewById(R.id.layoutForBackButton);
+    //LinearLayout layoutForBackButton = (LinearLayout) logo.findViewById(R.id.layoutForBackButton);
 
     ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
-    backButton.setBackgroundColor(Color.rgb(100, 100, 50));
-    layoutForBackButton.setOnClickListener(new View.OnClickListener() {
+    //backButton.setBackgroundColor(Color.rgb(100, 100, 50));
+
+    //set the ontouch listener
+    backButton.setOnTouchListener(new View.OnTouchListener() {
+
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+
+        switch (event.getAction()) {
+          case MotionEvent.ACTION_DOWN: {
+            ImageView view = (ImageView) v;
+
+            view.getDrawable().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP);
+            view.invalidate();
+            finish();
+            break;
+          }
+          case MotionEvent.ACTION_UP:
+          case MotionEvent.ACTION_CANCEL: {
+            ImageView view = (ImageView) v;
+            //clear the overlay
+            view.getDrawable().clearColorFilter();
+            view.invalidate();
+            break;
+          }
+        }
+        return true;
+      }
+    });
+
+/*    backButton.setOnClickListener(new View.OnClickListener() {
+
       @Override
       public void onClick(View view) {
         finish();
       }
-    });
+    });*/
 
     //for the delete button
     delete = (Button) findViewById(R.id.delete);
@@ -267,7 +310,7 @@ public class ViewContact extends AppCompatActivity {
     addressname.setText(address);
     commentname.setText(comment);
 
-   // Toast.makeText(ViewContact.this, "coming from UPopulisto: " + i.getStringExtra("review_id"), Toast.LENGTH_LONG).show();
+    // Toast.makeText(ViewContact.this, "coming from UPopulisto: " + i.getStringExtra("review_id"), Toast.LENGTH_LONG).show();
 
     //if we are coming from UPopulistoListAdapter then
     //we will have a value for review_id at this stage
@@ -276,7 +319,7 @@ public class ViewContact extends AppCompatActivity {
     //(Otherwise, we are coming from EditContact, review_id
     //IS NULL at this stage. So don't make the Volley call,
     //we will be passing checkContacts as an intent, from EditContact to ViewContact)
-    if (i.getStringExtra("review_id")!=null) {
+    if (i.getStringExtra("review_id") != null) {
 
       Toast.makeText(ViewContact.this, categoryname.getText().toString(), Toast.LENGTH_LONG).show();
 
@@ -311,7 +354,7 @@ public class ViewContact extends AppCompatActivity {
                 //load the asyncTask straight after we have got the response and
                 // the checked Arraylist has been created
                 //so the PopulistoContactsAdapter will show recyclerView with contacts, checked etc...
-                ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+                LoadContact loadContact = new LoadContact();
                 loadContact.execute();
 
               } catch (JSONException e) {
@@ -374,8 +417,7 @@ public class ViewContact extends AppCompatActivity {
 
     //we are coming from EditContact, review_id at this stage IS NULL...
     //...so we won't be making the Volley call for checkedContacts
-    else
-    {
+    else {
       Intent intent = getIntent();
 
       //update the class with these values from EditView
@@ -403,7 +445,7 @@ public class ViewContact extends AppCompatActivity {
       addressname.setText(address_value);
       commentname.setText(comment_value);
 
-      ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+      LoadContact loadContact = new LoadContact();
       loadContact.execute();
 
       //dismiss the dialog when we come back to ViewContact
@@ -518,8 +560,9 @@ public class ViewContact extends AppCompatActivity {
     }*/
 
 
-      // fetchCheckedContacts();
-   // }
+    // fetchCheckedContacts();
+    // }
+
   }
 
   //this is the function for Volley, trying to change from AsycnTask to Volley
@@ -639,6 +682,10 @@ public class ViewContact extends AppCompatActivity {
   };
 
 
+
+
+
+
   //******for the phone contacts in the recyclerView
 
   // Load data in background
@@ -668,7 +715,7 @@ public class ViewContact extends AppCompatActivity {
       checkedContactsAsArrayList = new ArrayList<String>(Arrays.asList(replace2.split(",")));
       System.out.println("ViewContact1: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
-     // Toast.makeText(ViewContact.this, "checked contacts is: " + checkedContactsAsArrayList, Toast.LENGTH_SHORT).show();
+      // Toast.makeText(ViewContact.this, "checked contacts is: " + checkedContactsAsArrayList, Toast.LENGTH_SHORT).show();
 
       //we want to bring the checkedContactsAsArrayList array list to our PopulistoContactAdapter so
       //we can show contacts with ticked checkboxes in recyclerView
@@ -755,7 +802,7 @@ public class ViewContact extends AppCompatActivity {
     @Override
     protected void onPostExecute(Void aVoid) {
       super.onPostExecute(aVoid);
-     // hidePDialog();
+      // hidePDialog();
 
       // System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
@@ -790,14 +837,14 @@ public class ViewContact extends AppCompatActivity {
 
     super.onResume();*/
 
-    // getPrefs();
+  // getPrefs();
 
-    //    ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
+  //    ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
 
 
-    //    loadContact.execute();
+  //    loadContact.execute();
 //        adapter.notifyDataSetChanged();
-    //Toast.makeText(ViewContact.this, "resuming!", Toast.LENGTH_SHORT).show();
+  //Toast.makeText(ViewContact.this, "resuming!", Toast.LENGTH_SHORT).show();
 
 
   //}
