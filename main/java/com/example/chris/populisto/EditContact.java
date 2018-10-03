@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
@@ -19,6 +21,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -137,10 +140,8 @@ public class EditContact extends AppCompatActivity {
     //actionbar.setDisplayShowHomeEnabled(true);
 
     //remove the app name from the toolbar (don't want it twice)
+    //we already get it from strings.xml
     getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-    //show the App title
-    //actionbar.setTitle("Populisto");
 
     //into the toolbar, inflate the back button and Populisto title,
     //which we find in toolbar_custom_view_layout.xml
@@ -149,14 +150,47 @@ public class EditContact extends AppCompatActivity {
 
     //for the back arrow, tell it to close the activity, when clicked
     ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
-    backButton.setOnClickListener(new View.OnClickListener() {
+    //backButton.setBackgroundColor(Color.rgb(100, 100, 50));
+
+    //use ontouch listener, so when <- image is DOWN it changes to grey
+    //for an instant
+    backButton.setOnTouchListener(new View.OnTouchListener() {
+
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+
+        switch (event.getAction()) {
+          case MotionEvent.ACTION_DOWN: {
+            ImageView view = (ImageView) v;
+
+            view.getDrawable().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP);
+            view.invalidate();
+
+            //before going back, see if changes have been made
+            goBacktoViewContact();
+            break;
+          }
+          case MotionEvent.ACTION_UP:
+          case MotionEvent.ACTION_CANCEL: {
+            ImageView view = (ImageView) v;
+            //clear the overlay
+            view.getDrawable().clearColorFilter();
+            view.invalidate();
+            break;
+          }
+        }
+        return true;
+      }
+    });
+
+/*    backButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         //before going back, see if changes have been made
         goBacktoViewContact();
 
       }
-    });
+    });*/
 
     //get the phone number, stored in an XML file, when the user first registered the app.
     // We need the user's number so we can remove that number from checkedContactsAsArrayList
@@ -582,13 +616,11 @@ public class EditContact extends AppCompatActivity {
   //then bring the intents from EditContact
   private void goBacktoViewContact() {
 
-    //If permission denied (will only be on Marshmallow +)
+    //Check READ_CONTACTS Permissions
     PackageManager manager = getPackageManager();
     int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
-    //Booleans have been set to true,
-    //when text has changed in our editTexts
-    //or when checkboxes have changed in our adapter
-    //or when READ_CONTACTS PERMISSIONS Denied
+    //If permission denied (will only be on Marshmallow +)
+    //or when checkboxes have changed in our adapter or text changes
     if ((PopulistoContactsAdapter.checkBoxhasChanged == true) || (editTexthasChanged == true) || (hasPermission == manager.PERMISSION_DENIED)) {
 
       // if Booleans are true then
@@ -817,7 +849,7 @@ public class EditContact extends AppCompatActivity {
         // This will be uploaded to server to review table,
         //public_or_private column, if saved in this state
         public_or_private = 2;
-        Toast.makeText(EditContact.this, valueOf(public_or_private), Toast.LENGTH_LONG).show();
+        //Toast.makeText(EditContact.this, valueOf(public_or_private), Toast.LENGTH_LONG).show();
 
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
@@ -844,6 +876,7 @@ public class EditContact extends AppCompatActivity {
 
         else {
 
+          checkedContactsAsArrayList.clear();
 
           noContactFoundCheck = 0;
           //loop through the matching contacts

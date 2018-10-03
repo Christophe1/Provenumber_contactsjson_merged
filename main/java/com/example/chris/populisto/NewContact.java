@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -21,6 +23,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
@@ -52,6 +55,7 @@ import java.util.Map;
 
 import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.allPhonesofContacts;
+import static com.example.chris.populisto.PopulistoContactsAdapter.checkedContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.theContactsList;
 import static com.example.tutorialspoint.R.id.noResultsFoundView;
 
@@ -142,6 +146,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_new_contact);
 
+
     noContactsFound = (TextView) findViewById(R.id.noContactsFoundView);
 
 
@@ -182,12 +187,46 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
     //for the back arrow, tell it to close the activity, when clicked
     ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
-    backButton.setOnClickListener(new View.OnClickListener() {
+    //backButton.setBackgroundColor(Color.rgb(100, 100, 50));
+
+    //use ontouch listener, so when <- image is DOWN it changes to grey
+    //for an instant
+    backButton.setOnTouchListener(new View.OnTouchListener() {
+
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+
+        switch (event.getAction()) {
+          case MotionEvent.ACTION_DOWN: {
+            ImageView view = (ImageView) v;
+
+            view.getDrawable().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP);
+            view.invalidate();
+
+            //for the back arrow, tell it to close the activity, when clicked
+            finish();
+            break;
+          }
+          case MotionEvent.ACTION_UP:
+          case MotionEvent.ACTION_CANCEL: {
+            ImageView view = (ImageView) v;
+            //clear the overlay
+            view.getDrawable().clearColorFilter();
+            view.invalidate();
+            break;
+          }
+        }
+        return true;
+      }
+    });
+
+    //1/10/2018
+/*    backButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         finish();
       }
-    });
+    });*/
 
 
     //we are fetching details for the recyclerview - the name, numbers, matching contacts...
@@ -207,7 +246,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     //get the phone number, stored in an XML file, when the user first registered the app
     SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
     phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
-
 
     System.out.println("NewContact: phone number of user is " + phoneNoofUserCheck);
 
@@ -536,6 +574,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         noContactFoundCheck = 0;
         noContactsFound.setVisibility(View.GONE);
 
+        //clear the array list of checked contacts that may be in SharedPrefs
+        checkedContactsAsArrayList.clear();
+
+
         //*********set the Matching Contacts to checked, by default ************
         //loop through the matching contacts
         int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
@@ -608,7 +650,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         } else {*/
 
         //reset the size of the array to 0
-        PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+        checkedContactsAsArrayList.clear();
 
           //loop through the matching contacts
           int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
@@ -642,7 +684,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         recyclerView.setAdapter(adapter);
 
         //reset the size of the array to 0
-        PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+        checkedContactsAsArrayList.clear();
 
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
@@ -716,7 +758,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
         //reset the size of the array to 0
-        PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+        checkedContactsAsArrayList.clear();
 
         //If permission denied (will only be on Marshmallow +)
         PackageManager manager = getPackageManager();
@@ -766,7 +808,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         if (hasPermission == manager.PERMISSION_DENIED) {
 
           try {
-            //add only phone owner's number to the checkedContacts JSON Array
+            //add only logged-in phone owner's number to the checkedContacts JSON Array
             //new JSON Object called phoneOwner
             JSONObject phoneOwner = new JSONObject();
 
@@ -786,7 +828,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         {
 
           try {
-            System.out.println("we're in the try part");
+            //System.out.println("we're in the try part");
 
             //loop through the matching contacts
             int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();

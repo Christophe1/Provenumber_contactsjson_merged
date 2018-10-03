@@ -192,12 +192,6 @@ public class ViewContact extends AppCompatActivity {
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    //31/7/2018
-    //Show the back button (???)
-    //ActionBar actionbar = getSupportActionBar();
-    //actionbar.setDisplayHomeAsUpEnabled(true);
-    //actionbar.setDisplayShowHomeEnabled(true);
-
     //remove the app name from the toolbar (don't want it twice)
     //we already get it from strings.xml
     getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -207,14 +201,14 @@ public class ViewContact extends AppCompatActivity {
     View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
     toolbar.addView(logo);
 
-    //for the back arrow, tell it to close the activity, when clicked
 
     //LinearLayout layoutForBackButton = (LinearLayout) logo.findViewById(R.id.layoutForBackButton);
 
     ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
     //backButton.setBackgroundColor(Color.rgb(100, 100, 50));
 
-    //set the ontouch listener
+    //use ontouch listener, so when <- image is DOWN it changes to grey
+    //for an instant
     backButton.setOnTouchListener(new View.OnTouchListener() {
 
       @Override
@@ -226,6 +220,8 @@ public class ViewContact extends AppCompatActivity {
 
             view.getDrawable().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP);
             view.invalidate();
+
+            //for the back arrow, tell it to close the activity, when clicked
             finish();
             break;
           }
@@ -242,13 +238,6 @@ public class ViewContact extends AppCompatActivity {
       }
     });
 
-/*    backButton.setOnClickListener(new View.OnClickListener() {
-
-      @Override
-      public void onClick(View view) {
-        finish();
-      }
-    });*/
 
     //for the delete button
     delete = (Button) findViewById(R.id.delete);
@@ -256,15 +245,9 @@ public class ViewContact extends AppCompatActivity {
     //call the delete review function
     deleteContactButton();
 
-    //4/7/2018
-    //  when the activity loads, check to see if phoneNoofUser is using the App,if the user is
-    // already registered, by checking the MyData XML file
-    //SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-    //phoneNoofUser = sharedPreferences.getString("phonenumberofuser", "");
-
     Intent i = getIntent();
 
-    //we'll be getting review_id from the cell clicked in the recyclerView,
+    //we'll be getting review_id from the row clicked in the recyclerView,
     //intent review_id is in UPopulistoListAdapter
     //then posting to ViewContact.php to get associated details
     review_id = i.getStringExtra("review_id");
