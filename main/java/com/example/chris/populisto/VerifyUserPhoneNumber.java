@@ -180,6 +180,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     activity = this;
 
     //show the "Loading" dialog
+    //it will be shown in verify_phone_number.xml, in the
+    //progressbar id
     progressDialog.show(getSupportFragmentManager(), "tag");
 
     //execute the AsyncTask, do stuff in the background

@@ -181,22 +181,22 @@
         android:orientation="vertical"
         android:padding="10dp"
         android:visibility="gone">
+        -->
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:text="Wait for the code I sent U"
-            android:textColor="@color/colorPrimary" />-->
+<!--    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone"
+        />
 
     <!--This is positioned in the toolbar, above-->
     <LinearLayout

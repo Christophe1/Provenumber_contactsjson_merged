@@ -1,6 +1,6 @@
 package com.example.chris.populisto;
 
-import android.app.ProgressDialog;
+//import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,6 +30,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,7 +86,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   //Then we're going to post it to our NewContact.php file
   JSONArray checkedContacts = new JSONArray();
 
-  private ProgressDialog pDialog;
+ // private ProgressDialog pDialog;
 
   Button publicContacts;
   Button phoneContacts;
@@ -219,15 +220,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         return true;
       }
     });
-
-    //1/10/2018
-/*    backButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        finish();
-      }
-    });*/
-
 
     //we are fetching details for the recyclerview - the name, numbers, matching contacts...
     LoadContact loadContact = new LoadContact();
@@ -496,13 +488,15 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
       if (hasPermission == manager.PERMISSION_DENIED) {
 
-        //and show the "No Results" textbox
+        //and show the "No Contacts found" textbox
         noContactFoundCheck = 1;
 
         //SelectPhoneContact selectContact = new SelectPhoneContact();
         //selectContact.setType_row("2");
       } else {
 
+        //show matching contacts, other populsito users,
+        //checked by default
         noContactFoundCheck = 0;
 
         //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
@@ -515,14 +509,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           System.out.println("SelectPhoneContactAdapter: phoneNameofContact : " + phoneNameofContact);
 
           SelectPhoneContact selectContact = new SelectPhoneContact();
-
-/*          if (PopulistoContactsAdapter.MatchingContactsAsArrayList == null && PopulistoContactsAdapter.MatchingContactsAsArrayList.isEmpty()) {
-
-            // insert it at the end (default)
-            selectPhoneContacts.add(selectContact);
-            selectContact.setType_row("2");
-
-          }*/
 
           //if a phone number is in our array of matching contacts
           if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
@@ -542,7 +528,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
             selectContact.setType_row("2");
 
           }
-
 
           selectContact.setName(phoneNameofContact);
           selectContact.setPhone(phoneNumberofContact);
@@ -565,6 +550,12 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
       recyclerView.setAdapter(adapter);
       recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
+
+      //this is our progressbar view
+      //we find it in nocontactsfound.xml, make it invisible as there is no waiting
+      //on info from the server.
+      ProgressBar progressbar = findViewById(R.id.progressbar);// change id here
+      progressbar.setVisibility(View.GONE);
 
       //if there's no sharedprefs file containing all phone numbers of contacts
       if (noContactFoundCheck == 1) {
