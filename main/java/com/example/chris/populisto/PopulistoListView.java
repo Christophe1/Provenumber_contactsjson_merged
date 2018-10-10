@@ -3,7 +3,6 @@ package com.example.chris.populisto;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -56,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.chris.populisto.GlobalFunctions.troubleContactingServerDialog;
 import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 import static com.example.chris.populisto.VerifyUserPhoneNumber.activity;
 
@@ -122,18 +122,18 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   //private ProgressDialog pDialog;
 
-  DelayedProgressDialog progressDialog = new DelayedProgressDialog();
+  //DelayedProgressDialog progressDialog = new DelayedProgressDialog();
 
   private List<Review> reviewList = new ArrayList<Review>();
 
   private List<SharedReview> sharedReviewList = new ArrayList<SharedReview>();
 
   //this is the adapter for user's reviews
-  public static UPopulistoListAdapter pAdapter;
+  public static UPopulistoListAdapter uAdapter;
 
 
   //this is the adapter for shared reviews including user's own
-  public SharedPopulistoReviewsAdapter qAdapter;
+  public SharedPopulistoReviewsAdapter sharedAdapter;
 
   //declare an activity object so we can
   //call populistolistview and shut it down in ViewContact and NewContact
@@ -179,6 +179,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   //Manifest alone is not enough
   private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
+  final Context context = this;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -204,16 +206,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       //you don't have permission
       Toast.makeText(getApplicationContext(), "No. Read contacts not granted", Toast.LENGTH_LONG).show();
     }
-  /*  else
-    {
-      Toast.makeText(getApplicationContext(), "Yes!Read contacts granted", Toast.LENGTH_LONG).show();
-
-    }*/
-
-
-    // toolbar
-    //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    //getSupportActionBar().setTitle(R.string.toolbar_title);
 
 
     //get the own user's phone number value from shared preferences file instead
@@ -234,27 +226,23 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     MatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.fromJson(jsonMatchingContactsAsArrayList, type1);
     System.out.println("PopulistoListView MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
-    //why isn't title being set!?
-    //getSupportActionBar().setTitle("Search...");
-
-    //cast a TextView for each of the field ids in activity_view_contact.xml
-    // phone_user_name = (TextView) findViewById(R.id.phone_user_name);
-
-    //populistolistview is the activity object
+    //for when we come back to this activity from New or Edit,
+    //after saving. It will be updated.
     fa = this;
+
     recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
     noResultsFoundView = (TextView) findViewById(R.id.noResultsFoundView);
 
 
     //the adapter for all own user reviews
-    pAdapter = new UPopulistoListAdapter(reviewList);
+    uAdapter = new UPopulistoListAdapter(reviewList);
 
     //the adapter for filtering categories
     mAdapter = new CategoriesAdapter(this, categoryList, this);
 
     //the adapter for all shared reviews including user's own
-    qAdapter = new SharedPopulistoReviewsAdapter(sharedReviewList);
+    sharedAdapter = new SharedPopulistoReviewsAdapter(sharedReviewList);
 
     //set the layout
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -262,7 +250,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
     //show the logged-in user's reviews
-    recyclerView.setAdapter(pAdapter);
+    recyclerView.setAdapter(uAdapter);
 
     Log.e(TAG, "phonno" + phoneNoofUser);
 
@@ -270,40 +258,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     // Showing progress dialog before making http request to get user's reviews
 
     //show the "Loading" dialog
-    progressDialog.show(getSupportFragmentManager(), "tag");
+    //progressDialog.show(getSupportFragmentManager(), "tag");
 
     //pDialog.setMessage("Loading...");
     //pDialog.show();
-
-/*    testy = (EditText) findViewById(R.id.action_search);
-
-    testy.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-      }
-
-      @Override
-      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        String str = charSequence.toString();
-        //if it starts with " " then don't recognise it
-        if(str.equals(" "))
-        {
-          testy.setText("");
-        }
-
-      }
-
-      @Override
-      public void afterTextChanged(Editable editable) {
-
-      }
-    });*/
-
-    //searchView.setOnQueryTextListener(new TextWatcher());
-
-    //searchView.setOnQueryTextListener();
 
     //post the phone number of the logged in user to SelectUserReviews.php and from that
     //get the logged in user's reviews
@@ -313,24 +271,29 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           public void onResponse(String response) {
 
             //dismiss the dialog when we get the response
-            progressDialog.cancel();
-
-            //toast the response of SelectUserReviews.php, which has been converted to a
-            //JSON array in the SelectUserReviews.php file with JSON encode
-            //Toast.makeText(PopulistoListView.this, response, Toast.LENGTH_LONG).show();
-            //System.out.println("the review list array is :" + response);
+            //progressDialog.cancel();
 
             try {
-              //name our JSONArray responseObject
+              //name our JSONArray responseObject.
+              //JSONArray is an array of responseObjects.
+              //one responseObject = one review
               JSONArray responseObject = new JSONArray(response);
 
               for
-                //get the number of objects in the Array
+                //for each responseObject/review
                   (int i = 0; i < responseObject.length(); i++) {
-                //for each object in the array, name it obj
+
+                if (responseObject.length() == 10) {
+                  Toast.makeText(PopulistoListView.this, "it's 12", Toast.LENGTH_LONG).show();
+                  showRandomSharedReviews();
+                  //just show it once
+                  break;
+
+                }
+                //for each responseObject in the array, name it obj
                 //each obj will consist of reviewid, category, name, phone,comment
                 JSONObject obj = responseObject.getJSONObject(i);
-                // and create a new reviewUser, getting details of user's reviews in the db
+                // and create a new object, Review, getting details of user's reviews in the db
                 Review review = new Review();
 
                 //get 0,1 or 2 value, for Just U, private or public
@@ -364,19 +327,23 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                   e.printStackTrace();
                 }
 
-                //set a string to the the phone number from the DB,
+                //set a string to the phone number from the DB,
                 //the phone number of the person who made the review
                 // phoneNoInDB = phoneNoofUser;
                 //set the setter to
                 //the phone number of the person who made the review
                 review.setPhoneNumberofUserFromDB(phoneNoofUser);
 
-                //  Toast.makeText(PopulistoListView.this, obj.getString("publicorprivate"), Toast.LENGTH_LONG).show();
-
                 //add the reviewUser to the sharedReviewList
                 reviewList.add(review);
 
+                //System.out.println("obj length is: " + obj.length());
+
               }
+
+              //number of reviews....
+              System.out.println("responseObject length is: " + responseObject.length());
+
             } catch (JSONException e) {
               Log.e("MYAPP", "unexpected JSON exception", e);
               // Do something to recover ... or kill the app.
@@ -384,11 +351,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
             // notifying list adapter about data changes
             // so that it renders the list view with updated data
-            pAdapter.notifyDataSetChanged();
+            uAdapter.notifyDataSetChanged();
 
-            // System.out.println("size of reviewlist " + sharedReviewList.size());
-            System.out.println("heree it is" + sharedReviewList.size());
-            System.out.println("heree it is" + sharedReviewList.toString());
           }
         },
         new Response.ErrorListener() {
@@ -438,8 +402,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   }
 
 
-  //this is the function for filtering categories in the searchView
-  //it is called onQueryTextChange
+  //this function gets every review that is shared with the logged-in user.
+  //it is called when searchview first gets focus
   private void fetchCategories() {
 
     StringRequest request = new StringRequest(Request.Method.POST, CategoryFilter_URL,
@@ -448,10 +412,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           @Override
           public void onResponse(String response) {
 
-            Toast.makeText(getApplicationContext(), "loaded categoryfilter file", Toast.LENGTH_SHORT).show();
-
             //show categories available to the logged-in user
             the_response = response;
+
+            System.out.println("loaded categoryfilter file: " + the_response);
+            //Toast.makeText(getApplicationContext(), "loaded categoryfilter file: " + the_response, Toast.LENGTH_SHORT).show();
+
 
             //response will be like:
 
@@ -461,7 +427,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             // "public_review_ids":[6,7,8,9,10],
             // "user_personal_count":1,
             // "private_count":3,
-            // "public_count":5}, etc
+            // "public_count":5},
+            //[{"cat_name":"dentist",
+            // "user_review_ids":[],
+            // "private_review_ids":[31,40],
+            // "public_review_ids":[52,60,79],
+            // "user_personal_count":0,
+            // "private_count":2,
+            // "public_count":3}, etc...etc....
 
 
           }
@@ -471,38 +444,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       @Override
       public void onErrorResponse(VolleyError error) {
 
-
         //If there is an error (such as contacting server for example) then
         //show a message like:
         //Sorry, can't contact server right now. Is internet access enabled?, try again, Cancel
-        AlertDialog.Builder builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          builder = new AlertDialog.Builder(PopulistoListView.this, android.R.style.Theme_Material_Dialog_Alert);
-        } else {
-          builder = new AlertDialog.Builder(PopulistoListView.this);
-        }
-        builder
-            //.setTitle("Delete entry")
-            //prevent box being dismissed on back key press or touch outside
-            .setCancelable(false)
-            .setMessage("Sorry, can't contact server right now. Is internet access enabled?")
-            .setPositiveButton("Try Now", new DialogInterface.OnClickListener() {
-              public void onClick(DialogInterface dialog, int which) {
-
-                //refresh the activity, if the user choses "Try Now"
-                refresh();
-              }
-            })
-            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-              public void onClick(DialogInterface dialog, int which) {
-
-                //close the app
-                activity.finish();
-              }
-            })
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .show();
-
+        GlobalFunctions.troubleContactingServerDialog(PopulistoListView.this);
 
       }
     })
@@ -530,7 +475,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     super.onDestroy();
     //hidePDialog();
     //dismiss the dialog when we get the response
-    progressDialog.cancel();
+    //progressDialog.cancel();
   }
 
   //9/8/2018
@@ -644,8 +589,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           //if there ARE category results for what is typed, with each key press...
 /*
           Toast.makeText(getApplicationContext(), "mAdapter size is:" + mAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
-          Toast.makeText(getApplicationContext(), "pAdapter size is:" + pAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
-          Toast.makeText(getApplicationContext(), "qAdapter size is:" + qAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
+          Toast.makeText(getApplicationContext(), "uAdapter size is:" + uAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
+          Toast.makeText(getApplicationContext(), "sharedAdapter size is:" + sharedAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
 */
 
 
@@ -682,8 +627,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           // hidePDialog();
 
           //show the logged-in users reviews, not the searched categories
-          recyclerView.setAdapter(pAdapter);
-          pAdapter.notifyDataSetChanged();
+          recyclerView.setAdapter(uAdapter);
+          uAdapter.notifyDataSetChanged();
 
           //show the recyclerview, hide the noResults textview
           recyclerView.setVisibility(View.VISIBLE);
@@ -801,7 +746,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   public void onCategorySelected(Category category) {
 
     //show the "Loading" dialog
-    progressDialog.show(getSupportFragmentManager(), "tag");
+    //progressDialog.show(getSupportFragmentManager(), "tag");
 
     //Own Reviews
     //convert [56,23,87] to a string
@@ -1083,7 +1028,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
               //set the adapter to show shared reviews
-              recyclerView.setAdapter(qAdapter);
+              recyclerView.setAdapter(sharedAdapter);
 
             } catch (JSONException e) {
               Log.e("MYAPP", "unexpected JSON exception", e);
@@ -1093,10 +1038,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             // notifying list adapter about data changes
             // so that it renders the list view with updated data
             //for shared reviews including user's own
-            qAdapter.notifyDataSetChanged();
+            sharedAdapter.notifyDataSetChanged();
 
             //dismiss the dialog
-            progressDialog.cancel();
+            //progressDialog.cancel();
 
           }
         },
@@ -1192,6 +1137,46 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     startActivity(intent);
   }
 
+  private void showRandomSharedReviews() {
+    //rather than unwelcoming empty screen, if user has no reviews to show on start up,
+    //show 3 random reviews
+    // and create a new sharedReview, getting details of user's reviews in the db
+    SharedReview sharedReview = new SharedReview();
+
+    //System.out.println("tesst1");
+
+    sharedReview.setphoneNameonPhone("U");
+
+    //get 0,1 or 2 value from db, for Just U, private or public
+    sharedReview.setPublicorprivate("1");
+    //we are getting the reviewid from the db so we can pull extra matching info,
+    sharedReview.setReviewid("6");
+    //set the category part of the object to that matching reviewid
+    sharedReview.setCategory("doctor");
+    //etc...
+    sharedReview.setName("Dr Harris");
+    sharedReview.setAddress("Tallaght");
+    sharedReview.setPhone("086 34 63 389");
+    sharedReview.setComment("All I want for Christmas is you");
+
+    //depending on if setType_row is 1 or 2 or 3,
+    //in this case it is 1 - a review that is owned
+    //by logged-in user.
+    //We will getType_row in SharedPopulistoReviewsAdapter.
+    //We will put phoneNameOnPhone in brown, blue or green text - depending
+    //on how loggedin user is sharing the review
+    //We will show ViewContact - has edit,
+    //delete button etc
+    sharedReview.setType_row("1");
+
+    //add the sharedReview to the sharedReviewList
+    sharedReviewList.add(sharedReview);
+
+    //set the adapter to show shared reviews
+    recyclerView.setAdapter(sharedAdapter);
 
 
-}
+  }
+
+  }
+

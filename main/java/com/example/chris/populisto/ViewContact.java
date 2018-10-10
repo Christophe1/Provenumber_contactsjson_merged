@@ -368,6 +368,18 @@ public class ViewContact extends AppCompatActivity {
     //we are coming from EditContact, review_id at this stage IS NULL...
     //...so we won't be making the Volley call for checkedContacts
     else {
+
+
+      //this is our progressbar view
+      //we find it in nocontactsfound.xml, make it invisible as there is no waiting
+      //on info from the server, we are getting the intent from EditContact
+      ProgressBar progressbar = findViewById(R.id.progressbar);// change id here
+      progressbar.setVisibility(View.GONE);
+
+      //and make the recyclerview of shared contacts visible
+      recyclerView.setVisibility(View.VISIBLE);
+
+
       Intent intent = getIntent();
 
       //update the class with these values from EditView

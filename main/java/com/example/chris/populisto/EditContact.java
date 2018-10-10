@@ -9,8 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,11 +18,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -498,7 +494,7 @@ public class EditContact extends AppCompatActivity {
 
     //refresh the populistolistview adapter, so when we go back
     //to that activity the recyclerview will be refreshed
-    PopulistoListView.pAdapter.notifyDataSetChanged();
+    PopulistoListView.uAdapter.notifyDataSetChanged();
 
     // clear the checkbox state of checked contacts, we only want to keep it when the app resumes
     //SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
