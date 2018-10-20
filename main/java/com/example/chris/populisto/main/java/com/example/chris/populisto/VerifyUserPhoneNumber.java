@@ -160,7 +160,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   //this is for the progress dialog, while logged-in user is
   //waiting for verification code
-  DelayedProgressDialog progressDialog = new DelayedProgressDialog();
+  //DelayedProgressDialog progressDialog = new DelayedProgressDialog();
 
 
   public static Activity activity = null;
@@ -182,7 +182,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     //show the "Loading" dialog
     //it will be shown in verify_phone_number.xml, in the
     //progressbar id
-    progressDialog.show(getSupportFragmentManager(), "tag");
+    //progressDialog.show(getSupportFragmentManager(), "tag");
 
     //execute the AsyncTask, do stuff in the background
     VerifyUserPhoneNumber.StartUpInfo startUpInfo = new VerifyUserPhoneNumber.StartUpInfo();
@@ -338,38 +338,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
               //dismiss the dialog before showing the error dialog
-              progressDialog.cancel();
+              //progressDialog.cancel();
 
               //If there is an error (such as contacting server for example) then
               //show a message like:
               //Sorry, can't contact server right now. Is internet access enabled?, try again, Cancel
-              AlertDialog.Builder builder;
-              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder = new AlertDialog.Builder(VerifyUserPhoneNumber.this, android.R.style.Theme_Material_Dialog_Alert);
-              } else {
-                builder = new AlertDialog.Builder(VerifyUserPhoneNumber.this);
-              }
-              builder
-                  //.setTitle("Delete entry")
-                  //prevent box being dismissed on back key press or touch outside
-                  .setCancelable(false)
-                  .setMessage("Sorry, can't contact server right now. Is internet access enabled?")
-                  .setPositiveButton("Try Now", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                      //refresh the activity, if the user choses "Try Now"
-                      refresh();
-                    }
-                  })
-                  .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                      //close the app
-                      activity.finish();
-                    }
-                  })
-                  .setIcon(android.R.drawable.ic_dialog_alert)
-                  .show();
+              GlobalFunctions.troubleContactingServerDialog(VerifyUserPhoneNumber.this);
 
             }
           }) {
@@ -451,7 +425,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         buttonSignIn = (Button) findViewById(R.id.buttonSignIn);
 
         //dismiss the dialog when sendSMSandRegisterUser() has been called
-        progressDialog.cancel();
+        //progressDialog.cancel();
 
         //check if Marshmallow or newer
         //if so, we need to manually check for permissions
@@ -686,7 +660,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     super.onDestroy();
     // hidePDialog();
     //dismiss the dialog when we get the response
-    progressDialog.cancel();
+    //progressDialog.cancel();
   }
 
 

@@ -1,12 +1,18 @@
 package com.example.chris.populisto;
 
+import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import static com.example.chris.populisto.VerifyUserPhoneNumber.activity;
 
 /**
  * Created by Chris on 14/10/2017.
@@ -92,6 +98,42 @@ public class GlobalFunctions {
                 checkAllChildrenCascade((ViewGroup) v);
             }
         }
+    }
+
+    public static void troubleContactingServerDialog(Context context) {
+
+        //If there is an error (such as contacting server for example) then
+        //show a message like:
+        //Sorry, can't contact server right now. Is internet access enabled?, try again, Cancel
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(context);
+        }
+        builder
+            //.setTitle("Delete entry")
+            //prevent box being dismissed on back key press or touch outside
+            .setCancelable(false)
+            .setMessage("Sorry, can't contact server right now. Is internet access enabled?")
+            .setPositiveButton("Try Now", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+
+                    //refresh the activity, if the user choses "Try Now"
+                    activity.recreate();
+                }
+            })
+            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+
+                    //close the app
+                    activity.finish();
+                    System.exit(0);
+                }
+            })
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show();
+
     }
 
 

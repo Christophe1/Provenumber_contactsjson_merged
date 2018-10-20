@@ -9,8 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,13 +18,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -105,14 +102,13 @@ public class EditContact extends AppCompatActivity {
   //int for getting intent info for the sharing buttons in ViewContact
   int pub_or_priv;
 
-  // private CheckBox testchecked;
-
   //we want to detect if editTexts have changed,
   //if so, we'll give the option to save - cancel click will say like'Really? Save changes first?'
   Boolean editTexthasChanged = false;
 
+  //10/10/2018
   //sharedprefs for holding all phone numbers of contacts
-  SharedPreferences sharedPreferencesallPhonesofContacts;
+  //SharedPreferences sharedPreferencesallPhonesofContacts;
 
   //if user has no contacts on his phone, like if no
   //permission has been given to getPhoneContacts
@@ -133,11 +129,6 @@ public class EditContact extends AppCompatActivity {
     //put in a toolbar
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
-
-    //Show the back button (???)
-    //ActionBar actionbar = getSupportActionBar();
-    //actionbar.setDisplayHomeAsUpEnabled(true);
-    //actionbar.setDisplayShowHomeEnabled(true);
 
     //remove the app name from the toolbar (don't want it twice)
     //we already get it from strings.xml
@@ -182,15 +173,6 @@ public class EditContact extends AppCompatActivity {
         return true;
       }
     });
-
-/*    backButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        //before going back, see if changes have been made
-        goBacktoViewContact();
-
-      }
-    });*/
 
     //get the phone number, stored in an XML file, when the user first registered the app.
     // We need the user's number so we can remove that number from checkedContactsAsArrayList
@@ -292,8 +274,6 @@ public class EditContact extends AppCompatActivity {
     int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
     if (hasPermission == manager.PERMISSION_DENIED) {
 
-      //PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
-
       //select the Just Me button
       justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
 
@@ -362,57 +342,12 @@ public class EditContact extends AppCompatActivity {
     cancel.setOnClickListener(new View.OnClickListener() {
 
       public void onClick(View v) {
-        //Toast.makeText(EditContact.this, "here it is dudia" + String.valueOf(PopulistoContactsAdapter.checkBoxhasChanged), Toast.LENGTH_SHORT).show();
 
+        //this function will check if there have been changes
         goBacktoViewContact();
-        //Booleans have been set to true,
-        //when text has changed in our editTexts
-        //and when checkboxes have changed in our adapter
-        /*if ((PopulistoContactsAdapter.checkBoxhasChanged == true) || (editTexthasChanged == true)) {
-
-          // if Booleans are true then
-          //add a dialogue box
-          AlertDialog.Builder builder = new AlertDialog.Builder(recyclerView.getContext());
-          builder.setMessage("Save changes you made?").setPositiveButton("Yes", dialogClickListener)
-              .setNegativeButton("No", dialogClickListener).show();
-
-
-        } else {
-
-          //we need to pass an intent going back to ViewContact
-          //so text boxes and pub_or_priv will be filled
-          //Intent intent = new Intent();
-          Intent intent = new Intent(getApplicationContext(), ViewContact.class);
-          intent.putExtra("categoryfromedit", category);
-          //j.putExtra("category_id",  categoryid);
-          intent.putExtra("namefromedit", name);
-          intent.putExtra("phonefromedit", phone);
-          intent.putExtra("addressfromedit", address);
-          intent.putExtra("commentfromedit", comment);
-          intent.putExtra("checkedContactsfromedit", checkedContactsfromViewContact);
-
-
-          intent.putExtra("publicorprivatefromedit", public_or_private);
-
-          startActivity(intent);
-
-          finish();
-        }*/
       }
 
     });
-
-/*        testchecked = (CheckBox) findViewById(R.id.checkBoxContact);
-
-        testchecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-         @Override
-          public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            Toast.makeText(EditContact.this, "state changed", Toast.LENGTH_LONG).show();
-
-               }
-            }
-        );*/
 
   }
 
@@ -559,7 +494,7 @@ public class EditContact extends AppCompatActivity {
 
     //refresh the populistolistview adapter, so when we go back
     //to that activity the recyclerview will be refreshed
-    PopulistoListView.pAdapter.notifyDataSetChanged();
+    PopulistoListView.uAdapter.notifyDataSetChanged();
 
     // clear the checkbox state of checked contacts, we only want to keep it when the app resumes
     //SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
@@ -771,6 +706,14 @@ public class EditContact extends AppCompatActivity {
       recyclerView.setAdapter(adapter);
       recyclerView.setLayoutManager((new LinearLayoutManager(EditContact.this)));
 
+
+      //this is our progressbar view
+      //we find it in nocontactsfound.xml, make it invisible as there is no waiting
+      //on info from the server, we get the shared contacts from ViewContact
+      ProgressBar progressbar = findViewById(R.id.progressbar);// change id here
+      progressbar.setVisibility(View.GONE);
+
+
       //if READ_CONTACTS is  disabled
       if (noContactFoundCheck == 1) {
         System.out.println("2. NoContactFoundCheck value:" + noContactFoundCheck);
@@ -816,19 +759,6 @@ public class EditContact extends AppCompatActivity {
       pDialog = null;
     }
   }
-
-
-  //for the backbutton, remove the saved checkbox state
-  //20/3/2018: DOES THIS STILL APPLY?
-  //@Override
-/*  public void onBackPressed() {
-    // your code.
-    Integer i = null;
-    SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
-    preferences.edit().clear().commit();
-    finish();
-  }*/
-
 
   //for the Public Contacts button
   private void publicButton() {

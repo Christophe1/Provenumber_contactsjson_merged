@@ -90,8 +90,6 @@ public class ViewContact extends AppCompatActivity {
   // 4/7/2018 private TextView publicorprivate;
   private TextView sharedWith;
 
-  //private View ProgressBar;
-
   //this is the review that has been clicked in the recyclerView in PopulistoListView.java
   //We need this for passing to EditContact, so if the changes are saved, we know where to make
   //changes in the DB by following review_id
@@ -99,22 +97,13 @@ public class ViewContact extends AppCompatActivity {
 
   String date_created, category, name, phone, address, comment;
 
-  //5/7/2018
-  //String new_category_value;
-  //the logged-in user's phone number, which we get in SharedPreferences
-  //from VerifyUserPhoneNumber
-  //to be compared to String phoneNumberofUserFromDB;
-  //String phoneNoofUser;
-
   //this is the phone number of person who made the clicked review in recyclerView
   // in PopulistoListView.java
   String phoneNumberofUserFromDB;
 
-  //private ProgressDialog pDialog;
-
   //this is for the progress dialog, while logged-in user is
   //waiting for shared contacts of the review from server
-  DelayedProgressDialog progressDialog = new DelayedProgressDialog();
+  //DelayedProgressDialog progressDialog = new DelayedProgressDialog();
 
 
   //selectPhoneContacts is an array list that will hold our SelectPhoneContact info
@@ -146,13 +135,9 @@ public class ViewContact extends AppCompatActivity {
   //permission has been given to getPhoneContacts
   TextView noContactsFound;
 
-
   //if it is 0, then show the 'No Contacts Found' textbox
   int noContactFoundCheck;
-  /**
-   * ATTENTION: This was auto-generated to implement the App Indexing API.
-   * See https://g.co/AppIndexing/AndroidStudio for more information.
-   */
+
   private GoogleApiClient client;
 
   @Override
@@ -163,30 +148,11 @@ public class ViewContact extends AppCompatActivity {
     //for if READ_CONTACTS is not enabled
     noContactsFound = (TextView) findViewById(R.id.noContactsFoundView);
 
-
-    //9/8/2018
-/*    pDialog = new ProgressDialog(ViewContact.this);
-    pDialog.setCancelable(true);
-    // Showing progress dialog before making http request
-    pDialog.setMessage("Loading...");
-    pDialog.show();*/
-
-    //show the "Loading" dialog
-    progressDialog.show(getSupportFragmentManager(), "tag");
-
-
-    //setContentView(R.layout.verify_phone_number);
-    //RelativeLayout progressContainer = findViewById(R.id.container);// change id here
-
-    //progressContainer.setVisibility(View.VISIBLE);
-
     //need to initialize this
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);
 
     //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info
     selectPhoneContacts = new ArrayList<SelectPhoneContact>();
-
-    //System.out.println("ViewContact: selectPhoneContacts " + selectPhoneContacts);
 
     //rv is for holding the phone contacts, invite button, checkbox etc
     recyclerView = (RecyclerView) findViewById(rv);
@@ -203,9 +169,6 @@ public class ViewContact extends AppCompatActivity {
     //which we find in toolbar_custom_view_layout.xml
     View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
     toolbar.addView(logo);
-
-
-    //LinearLayout layoutForBackButton = (LinearLayout) logo.findViewById(R.id.layoutForBackButton);
 
     ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
     //backButton.setBackgroundColor(Color.rgb(100, 100, 50));
@@ -265,16 +228,11 @@ public class ViewContact extends AppCompatActivity {
     address = i.getStringExtra("address");
     comment = i.getStringExtra("comment");
 
-
-    //5/7/2018 category = i.getStringExtra("category2");
-
-
     //we'll be getting the phone number of user who made the review
     // clicked in the recyclerView,
     //phoneNumberofUserFromDB is in SharedPopulistoReviewsAdapter and UpulistoListAdapter
     //then posting to ViewContact.php
     phoneNumberofUserFromDB = i.getStringExtra("PhoneNumberofUserFromDB");
-
 
     //cast a TextView for each of the field ids in activity_view_contact.xml
     //textphoneNameonPhone if in ViewContact will always be "U"
@@ -301,7 +259,6 @@ public class ViewContact extends AppCompatActivity {
     //if we are coming from UPopulistoListAdapter then
     //we will have a value for review_id at this stage
     //so review_id is not null, make the volley call
-
     //(Otherwise, we are coming from EditContact, review_id
     //IS NULL at this stage. So don't make the Volley call,
     //we will be passing checkContacts as an intent, from EditContact to ViewContact)
@@ -318,14 +275,12 @@ public class ViewContact extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
 
-
-              //container is a relative layout in ViewContact xml,
-              //it contains our progressbar view
-              RelativeLayout progressContainer = findViewById(R.id.container);// change id here
+              //this is our progressbar view
+              ProgressBar progressbar = findViewById(R.id.progressbar);// change id here
 
               //when we get a response from the server,
               //progress is a success, hide the progressbar
-              progressContainer.setVisibility(View.GONE);
+              progressbar.setVisibility(View.GONE);
 
               //and make the recyclerview of shared contacts visible
               recyclerView.setVisibility(View.VISIBLE);
@@ -413,6 +368,18 @@ public class ViewContact extends AppCompatActivity {
     //we are coming from EditContact, review_id at this stage IS NULL...
     //...so we won't be making the Volley call for checkedContacts
     else {
+
+
+      //this is our progressbar view
+      //we find it in nocontactsfound.xml, make it invisible as there is no waiting
+      //on info from the server, we are getting the intent from EditContact
+      ProgressBar progressbar = findViewById(R.id.progressbar);// change id here
+      progressbar.setVisibility(View.GONE);
+
+      //and make the recyclerview of shared contacts visible
+      recyclerView.setVisibility(View.VISIBLE);
+
+
       Intent intent = getIntent();
 
       //update the class with these values from EditView
@@ -442,9 +409,6 @@ public class ViewContact extends AppCompatActivity {
 
       LoadContact loadContact = new LoadContact();
       loadContact.execute();
-
-      //dismiss the dialog when we come back to ViewContact
-      //progressDialog.cancel();
 
     }
 
@@ -614,11 +578,6 @@ public class ViewContact extends AppCompatActivity {
           PopulistoListView.fa.finish();
 
           Toast.makeText(ViewContact.this, "delete stuff", Toast.LENGTH_SHORT).show();
-
-/*          pDialog = new ProgressDialog(ViewContact.this);
-          // Showing progress dialog for the review being deleted
-          pDialog.setMessage("Deleting...");
-          pDialog.show();*/
 
           //post the review_id in the current activity to DeleteContact.php and
           //delete the review
@@ -809,6 +768,7 @@ public class ViewContact extends AppCompatActivity {
       recyclerView.setLayoutManager((new LinearLayoutManager(ViewContact.this)));
 
       //if READ_CONTACTS Permission is disabled
+      //show 'No Contacts available, sorry'
       if (noContactFoundCheck == 1) {
         noContactsFound.setVisibility(View.VISIBLE);
       } else {
@@ -845,21 +805,21 @@ public class ViewContact extends AppCompatActivity {
   //}
 
 
-  public void hidePDialog() {
+ // public void hidePDialog() {
 /*    if (pDialog != null) {
       pDialog.dismiss();
       pDialog = null;
     }*/
-  }
+ // }
 
 
-  protected void onDestroy() {
+  //protected void onDestroy() {
 
-    super.onDestroy();
+  //  super.onDestroy();
     //make sure that when the activity dies the load dialogue dies
     //with it, otherwise we get a memory leak error and app can crash
-    hidePDialog();
+  //  hidePDialog();
 
-  }
+  //}
 
 }

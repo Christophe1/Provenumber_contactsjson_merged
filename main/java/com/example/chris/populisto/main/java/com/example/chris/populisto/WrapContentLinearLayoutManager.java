@@ -1,5 +1,6 @@
 package com.example.chris.populisto;
-
+//VERY IMPORTANT
+//implemented to stop the app randomly crashing on searching
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
