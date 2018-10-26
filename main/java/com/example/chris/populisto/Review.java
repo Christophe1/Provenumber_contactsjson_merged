@@ -1,8 +1,8 @@
 package com.example.chris.populisto;
 
 public class Review {
-  private String phone_user_name, date_created, category, publicorprivate, name,
-      phone, address, comment, phoneNumberofUserFromDB;
+  private String phone_user_name, date_created, category, type_row,publicorprivate, name,
+      phone, address, comment, phoneNumberofUserFromDB, phoneNameonPhone;
   public String reviewid;
   //int reviewid;
   //  private int year;
@@ -133,7 +133,25 @@ public class Review {
     //reviewidtoString = String.valueOf(reviewid);
   }
 
+  //is it a U review, or somebody else's review?
+  //we set it to either 1 or 2
+  public String getType_row() {
+    return type_row;
+  }
 
+  //is it a U review, or somebody else's review?
+  public void setType_row(String type_row) {
+    this.type_row = type_row;
+  }
 
+  //it will be "U" or the name of person on logged-in user's phone
+  //or a masked phone number
+  public String getPhoneNameonPhone() {
+    return phoneNameonPhone;
+  }
+
+  public void setphoneNameonPhone(String phoneNameonPhone) {
+    this.phoneNameonPhone = phoneNameonPhone;
+  }
 
 }

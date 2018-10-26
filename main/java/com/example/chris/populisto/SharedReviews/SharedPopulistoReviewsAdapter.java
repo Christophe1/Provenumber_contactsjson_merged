@@ -25,14 +25,14 @@ import java.util.List;
 
 //DESCRIPTION OF ACTIVITY
 //This is for showing a list in the recyclerView of reviews available to
-//the logged-in user, both his own and those shared with him
+//the logged-in user when he does a search, both his own and those shared with him
 //When a cell is clicked we will show ViewContact or SharedViewContact
 //whichever getItemViewType is set to, 1 or 2 or 3
 
 public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-  private Activity activity;
-  private LayoutInflater inflater;
+  //private Activity activity;
+  //private LayoutInflater inflater;
   public static List<SharedReview> the_Shared_reviews;
   //Context context;
  // Context context_type;
