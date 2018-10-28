@@ -17,27 +17,33 @@ public class Review {
   }
 
   public Review(String publicorprivate,
-                String phone_user_name,
-                String date_created,
                 String category,
+                String phoneNameonPhone,
+                //String phone_user_name,
+                String date_created,
+
                 String name,
                 String phone,
                 String address,
                 String comment,
+                String phoneNumberofUserFromDB,
                 String reviewid,
-                String phoneNumberofUserFromDB
+                String type_row
+
                 //ArrayList<String> genre
   ) {
     this.publicorprivate = publicorprivate;
     this.phone_user_name = phone_user_name;
+    this.phoneNameonPhone = phoneNameonPhone;
     this.date_created = date_created;
     this.category = category;
     this.name = name;
     this.phone = phone;
     this.address = address;
     this.comment = comment;
-    this.reviewid = reviewid;
     this.phoneNumberofUserFromDB = phoneNumberofUserFromDB;
+    this.reviewid = reviewid;
+    this.type_row = type_row;
   }
 
   //get 0,1 or 2 value, for Just U, private or public
@@ -49,14 +55,30 @@ public class Review {
     this.publicorprivate = publicorprivate;
   }
 
+  public String getPhoneNumberofUserFromDB() {
+    return phoneNumberofUserFromDB;
+  }
 
-  public String getPhone_user_name() {
+  public void setPhoneNumberofUserFromDB(String phoneNumberofUserFromDB) {
+    this.phoneNumberofUserFromDB = phoneNumberofUserFromDB;
+  }
+
+  //it will be "U" or the name of person on logged-in user's phone
+  //or a masked phone number
+  public String getPhoneNameonPhone() {
+    return phoneNameonPhone;
+  }
+
+  public void setphoneNameonPhone(String phoneNameonPhone) {
+    this.phoneNameonPhone = phoneNameonPhone;
+  }
+/*  public String getPhone_user_name() {
     return phone_user_name;
   }
 
   public void setPhone_user_name(String phone_user_name) {
     this.phone_user_name = phone_user_name;
-  }
+  }*/
 
   public String getDate_created() {
     return date_created;
@@ -74,16 +96,6 @@ public class Review {
     this.category = category;
   }
 
-/*
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
-    }
-*/
-
   public String getName() {
     return name;
   }
@@ -98,14 +110,6 @@ public class Review {
 
   public void setAddress(String address) {
     this.address = address;
-  }
-
-  public String getPhoneNumberofUserFromDB() {
-    return phoneNumberofUserFromDB;
-  }
-
-  public void setPhoneNumberofUserFromDB(String phoneNumberofUserFromDB) {
-    this.phoneNumberofUserFromDB = phoneNumberofUserFromDB;
   }
 
   public String getPhone() {
@@ -144,14 +148,6 @@ public class Review {
     this.type_row = type_row;
   }
 
-  //it will be "U" or the name of person on logged-in user's phone
-  //or a masked phone number
-  public String getPhoneNameonPhone() {
-    return phoneNameonPhone;
-  }
 
-  public void setphoneNameonPhone(String phoneNameonPhone) {
-    this.phoneNameonPhone = phoneNameonPhone;
-  }
 
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+
 
 <!--No Results textview or the RecyclerView with results will appear in this xml
     It is included in phone_listview_contacts-->
@@ -11,6 +11,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.chris.populisto.PopulistoListView"
     tools:showIn="@layout/phone_listview_contacts">
+
 
     <!-- for no results -->
     <TextView

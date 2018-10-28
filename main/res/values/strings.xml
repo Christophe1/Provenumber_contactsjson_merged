@@ -3,7 +3,7 @@
     <!--app_name is what will appear in toolbar
     for PopulistoListView activity-->
     <string name="app_name">Populisto</string>
-    <string name="new_contact">New Contact</string>
+    <string name="add_new">Add New</string>
     <string name="title_activity_contact_view">ContactView</string>
     <string name="btnInvite">Invite</string>
     <!--toolbar_title is what will appear in toolbar

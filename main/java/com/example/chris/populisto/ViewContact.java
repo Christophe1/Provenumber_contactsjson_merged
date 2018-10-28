@@ -524,26 +524,7 @@ public class ViewContact extends AppCompatActivity {
 
   }
 
-  //this is the function for Volley, trying to change from AsycnTask to Volley
-  //for getting the checked contacts on phone
-  //private void fetchCheckedContacts() {
 
-
-  //}
-
-  //code for the '<', back button. Go back to PopulistoListView, as defined
-  //in Manifest, PARENT_ACTIVITY
-/*  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      // Respond to the action bar's Up/Home button
-      case android.R.id.home:
-        NavUtils.navigateUpFromSameTask(this);
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
-    }
-  }*/
 
 
   private void deleteContactButton() {

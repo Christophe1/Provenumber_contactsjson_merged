@@ -92,8 +92,7 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         //pubOrPriv is based on publicorprivate in getPublicorprivate
         // taken from the server, which is 0,1 or 2,depending on shared status of the review
-        final int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
-
+        //final int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
 
         //If the review being shown in recyclerView belongs to
         //logged-in user then the colour of "U" will be dependant
@@ -101,6 +100,9 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         //If the review is owned by the logged-in user...
         if (viewHolder.getItemViewType() == 1) {
+
+            final int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
+
 
             //If the review owned by logged-in user is not shared with anybody, only himself
             if (pubOrPriv == 0) {
@@ -117,7 +119,7 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#2AB40E"));
             }
 
-            ((ReviewHolder) viewHolder).phone_user_name.setText("U");
+           // ((ReviewHolder) viewHolder).phone_user_name.setText("U");
         }
 
         //If setType_row = 2 in PopulistoListView,
@@ -136,12 +138,18 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         }
 
+        //set the details in the recyclerView cell
+        ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhoneNameonPhone());
         ((ReviewHolder) viewHolder).date_created.setText("Date Created: " + r.getDate_created());
         ((ReviewHolder) viewHolder).category.setText("Categoryy: " + r.getCategory());
         ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
         ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
         ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
         ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
+
+        if (viewHolder.getItemViewType() == 4) {
+            ((ReviewHolder) viewHolder).category.setText("Dohh! ");
+        }
 
         //set an onClick listener for the row, if it's clicked anywhere
         ((ReviewHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
@@ -165,7 +173,10 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 //with edit, delete button, list of contacts review is shared with etc...
                 if (viewHolder.getItemViewType() == 1) {
 
-                //we want to pass the review_id of the reviewUser being clicked
+                    final int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
+
+
+                    //we want to pass the review_id of the reviewUser being clicked
                 //to the ViewContact activity, and from there post it and get more
                 //info for that reviewUser - address, comments etc
                 Intent i = new Intent(v.getContext(), ViewContact.class);
