@@ -335,6 +335,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 private_review_ids2 = private_review_ids2.replaceFirst(",","");
 
                 //UNDO THIS System.out.println("private_review_ids2:" + private_review_ids2);
+                System.out.println("private_review_ids2:" + private_review_ids2);
 
                 //a string array, separated by commas
                 //because we were getting a stray comma at the start
@@ -353,12 +354,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 }
 
                 //UNDO THIS System.out.println("1. the integers are " + integers);
+                System.out.println("1. the integers are " + integers);
 
                 random_reviews = integers.toString();
 
                 //remove the [ and ] from the string
                 random_reviews = random_reviews.substring(1, random_reviews.length() - 1);
                 //UNDO THIS System.out.println("2. random_reviews : " + random_reviews);
+                System.out.println("2. random_reviews : " + random_reviews);
 
                 //show_random_reviews();
 
@@ -412,12 +415,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
             try {
 
-
+              //for our HEADER, "Add New", just 1 row will be like this
               Review review = new Review();
 
+              //in UPopulistoListAdapter getItemViewType will be 4
               review.setType_row("4");
 
-              //add the reviewUser to the reviewList
+              //add the review to the reviewList
               reviewList.add(review);
 
 
@@ -426,6 +430,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             e.printStackTrace();
           }
 
+            //for U reviews
             try {
               //name our JSONArray responseObject.
               //JSONArray is an array of responseObjects.
@@ -496,6 +501,22 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //add the reviewUser to the reviewList
                 reviewList.add(review);
 
+              }
+
+              try {
+
+                //for the heading, "May be of interest:", just 1 row will be like this
+                Review review = new Review();
+
+                //in UPopulistoListAdapter getItemViewType will be 5
+                review.setType_row("5");
+
+                //add the review to the reviewList
+                reviewList.add(review);
+
+
+              } catch (Exception e) {
+                e.printStackTrace();
               }
 
                 //post random_reviews string to Random_Reviews.php.
@@ -757,10 +778,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       @Override
       public boolean onQueryTextSubmit(String query) {
 
-
-        // hidePDialog();
-
-
         // filter recycler view when query submitted
         mAdapter.getFilter().filter(query);
         return false;
@@ -769,22 +786,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       @Override
       public boolean onQueryTextChange(String query) {
 
-       // sharedReviewList.clear();
-        //clear();
-
-/*        //when text changes in the searchview, show the 'Loading' dialogue
-        pDialog = new ProgressDialog(PopulistoListView.this);
-        // Showing progress dialog before making http request to get user's reviews
-        pDialog.setMessage("Loading...");
-        pDialog.show();*/
-
         //items is the complete list of the category names available to the logged-in user
         items = new Gson().fromJson(the_response, new TypeToken<List<Category>>() {
         }.getType());
 
         //clear the list every time a key is pressed
         categoryList.clear();
-
 
         //was getting NullPointerException so put this here...
         if (items != null && items.size() > 0) {
@@ -810,10 +817,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
           //and show the "No Results" textbox
           noResultsFoundView.setVisibility(View.VISIBLE);
-
-/*          recyclerView.setAdapter(mAdapter);
-          mAdapter.notifyDataSetChanged();*/
-          //hidePDialog();
 
           Toast.makeText(getApplicationContext(), "mAdapter is 0, no item results", Toast.LENGTH_SHORT).show();
           Toast.makeText(getApplicationContext(), the_response, Toast.LENGTH_SHORT).show();
@@ -862,8 +865,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         //if the searchView is empty
         if (searchView.getQuery().length() == 0) {
 
-          // hidePDialog();
-
           //show the logged-in users reviews, not the searched categories
           recyclerView.setAdapter(uAdapter);
           uAdapter.notifyDataSetChanged();
@@ -874,44 +875,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
         }
 
-        // fetchCategories();
-
-        // else {
-
-        //on entering the first character, show
-        //our progress dialog, so user can see activity is happening.
-
-        /*          if (searchView.getQuery().length() == 1) {
-
-*//**//*            pDialog = new ProgressDialog(PopulistoListView.this);
-          // Showing progress dialog before making http request to get user's reviews
-          pDialog.setMessage("Loading...");
-          pDialog.show();*//**//*
-
-            //if there's text in the search box
-            fetchCategories();
-
-          }*//*
-
-
-
-          //if there's text in the search box
-          //fetchCategories();
-
-
-          //Log.e(TAG, "phonno2 is: " + phoneNoofUser);
-          // filter recycler view when text is changed
-          mAdapter.getFilter().filter(query);
-        }*/
-        //app not crashing as much with this here
-        //recyclerView.setAdapter(mAdapter);
-
-        //maybe this will resolve the IndexOutofBounds error?
-        // recyclerView.getRecycledViewPool().clear();
-
         // refreshing recycler view
         mAdapter.notifyDataSetChanged();
-
 
         return false;
 
@@ -924,7 +889,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //mAdapter.notifyDataSetChanged();
 
     return true;
-
 
     // Inflate the menu items for use in the action bar
 /*        MenuInflater inflater = getMenuInflater();
@@ -968,14 +932,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     return false;
   }
-
-
-/*    @Override
-    protected void onResume() {
-        super.onResume();
-        adapter.notifyDataSetChanged();
-    }*/
-
 
   @Override
   //when a fetched category is clicked in recyclerView,

@@ -38,10 +38,12 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public static class ReviewHolder extends RecyclerView.ViewHolder {
 
         //In each populisto_list_row show the items you want to have appearing
-        public TextView phone_user_name, date_created, category, address, name, phone, comment;
+        public TextView pop_something_in,Maybe_of_interest,phone_user_name, date_created, category, address, name, phone, comment;
 
         public ReviewHolder(View itemView) {
             super(itemView);
+            pop_something_in = (TextView) itemView.findViewById(R.id.pop_something_in);
+            Maybe_of_interest = (TextView) itemView.findViewById(R.id.Maybe_of_interest);
             phone_user_name = (TextView) itemView.findViewById(R.id.phone_user_name);
             date_created = (TextView) itemView.findViewById(R.id.date_created);
             category = (TextView) itemView.findViewById(R.id.category);
@@ -90,164 +92,208 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         final Review r = the_reviews.get(position);
 
-        //pubOrPriv is based on publicorprivate in getPublicorprivate
-        // taken from the server, which is 0,1 or 2,depending on shared status of the review
-        //final int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
+        //if review is by logged-in user (1), a phone contact(2) or public (3)
+        //then initialise pubOrPriv value from server
+        //There will be no puborPriv value for getItemViewType = 4 or getItemViewType = 5
+        //we would get a "No Value" error otherwise
+        if (viewHolder.getItemViewType() == 1 || viewHolder.getItemViewType() == 2 || viewHolder.getItemViewType() == 3) {
 
-        //If the review being shown in recyclerView belongs to
-        //logged-in user then the colour of "U" will be dependant
-        //on the shared status of that review: Just U, Phone Contacts or Public (0,1 or 2)
-
-        //If the review is owned by the logged-in user...
-        if (viewHolder.getItemViewType() == 1) {
-
+            //pubOrPriv is based on publicorprivate in getPublicorprivate
+            // taken from the server, which is 0,1 or 2,depending on shared status of the review
             final int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
 
 
-            //If the review owned by logged-in user is not shared with anybody, only himself
-            if (pubOrPriv == 0) {
-                //change colour of "U" depending on value
-                //if it is "Just U"
-                ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#DA850B"));
+            //If the review being shown in recyclerView belongs to
+            //logged-in user then the colour of "U" will be dependant
+            //on the shared status of that review: Just U, Phone Contacts or Public (0,1 or 2)
+
+            //If the review is owned by the logged-in user...
+            if (viewHolder.getItemViewType() == 1) {
+
+                //If the review owned by logged-in user is not shared with anybody, only himself
+                if (pubOrPriv == 0) {
+                    //change colour of "U" depending on value
+                    //if it is "Just U"
+                    ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#DA850B"));
+                }
+                //If logged-in user review is shared with Phone Contacts
+                if (pubOrPriv == 1) {
+                    ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#0A7FDA"));
+                }
+                //If logged-in user review is shared with Public
+                if (pubOrPriv == 2) {
+                    ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#2AB40E"));
+                    //((ReviewHolder) viewHolder).phone_user_name.setVisibility(View.GONE);
+
+                }
             }
-            //If logged-in user review is shared with Phone Contacts
-            if (pubOrPriv == 1) {
+
+            //If setType_row = 2 in PopulistoListView,
+            //if the review is by a phone contact, then make the
+            // phoneNameOnPhone in blue text
+            if (viewHolder.getItemViewType() == 2) {
                 ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#0A7FDA"));
+
             }
-            //If logged-in user review is shared with Public
-            if (pubOrPriv == 2) {
+
+            //If setType_row = 3 in PopulistoListView,
+            //if the review is public by a user not in logged-in user's phone contacts,
+            // then make the phoneNameOnPhone in green text
+            if (viewHolder.getItemViewType() == 3) {
                 ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#2AB40E"));
+
             }
 
-           // ((ReviewHolder) viewHolder).phone_user_name.setText("U");
+
+            //set the details in the recyclerView cell
+            ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhoneNameonPhone());
+            ((ReviewHolder) viewHolder).date_created.setText("Date Created: " + r.getDate_created());
+            ((ReviewHolder) viewHolder).category.setText("Categoryy: " + r.getCategory());
+            ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
+            ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
+            ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
+            ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
+
+            //set an onClick listener for the row, if it's clicked anywhere
+            ((ReviewHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                //When the review is clicked in PopulistoListView
+                //then show that review
+                public void onClick(View v) {
+
+                    Toast.makeText(v.getContext(), "UPopulistoListAdapter", Toast.LENGTH_LONG).show();
+
+                    Review reviewUser = (Review) UPopulistoListAdapter.getItem(position);
+
+                    //If getItemViewType = 1, which means getType_row = 1,
+                    // then the logged-in user owns the review
+                    //so load ViewContact -
+                    //with edit, delete button, list of contacts review is shared with etc...
+                    if (viewHolder.getItemViewType() == 1) {
+
+                        final int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
+
+                        //we want to pass the review_id of the reviewUser being clicked
+                        //to the ViewContact activity, and from there post it and get more
+                        //info for that reviewUser - address, comments etc
+                        Intent i = new Intent(v.getContext(), ViewContact.class);
+                        //pass the review_id to ViewContact class
+                        //the key is "review_id"
+                        i.putExtra("review_id", reviewUser.getReviewid());
+
+                        //pass the intent value of pubOrPriv to ViewContact
+                        i.putExtra("UPuborPrivVal", pubOrPriv);
+                        //pass these values as an intent to ViewContact class
+                        i.putExtra("date_created", reviewUser.getDate_created());
+                        i.putExtra("category", reviewUser.getCategory());
+                        i.putExtra("name", reviewUser.getName());
+                        i.putExtra("phone", reviewUser.getPhone());
+                        i.putExtra("address", reviewUser.getAddress());
+                        i.putExtra("comment", reviewUser.getComment());
+
+                        //Pass as intent to ViewContact, decide what colour to show "U"
+                        getItemViewType = 1;
+
+                        i.putExtra("getItemViewType", getItemViewType);
+
+
+                        //pass the PhoneNumberofUserFromDB to ViewContact class
+                        //the key is "PhoneNumberofUserFromDB"
+                        //i.putExtra("PhoneNumberofUserFromDB", reviewUser.getPhoneNumberofUserFromDB());
+                        v.getContext().startActivity(i);
+                    }
+
+                    //If getType_row is 2 or 3, show SharedViewContact
+                    else {
+
+                        //grab these details as an intent and pass
+                        //to the SharedViewContact activity
+                        Intent i = new Intent(v.getContext(), SharedViewContact.class);
+                        //pass the review_id to SharedViewContact class
+                        //the key is "review_id"
+                        i.putExtra("review_id", reviewUser.getReviewid());
+
+                        i.putExtra("category", reviewUser.getCategory());
+                        i.putExtra("name", reviewUser.getName());
+                        i.putExtra("phone", reviewUser.getPhone());
+                        i.putExtra("address", reviewUser.getAddress());
+                        i.putExtra("comment", reviewUser.getComment());
+
+                        //show the review maker's name from logged-in user's phone, or else masked number
+                        i.putExtra("PhoneNameonPhone", r.getPhoneNameonPhone());
+
+                        //pass getItemViewType value to SharedViewContact with an intent
+                        //it will make phoneNameonPhone in BLUE text
+                        if (viewHolder.getItemViewType() == 2) {
+                            //BLUE text for name
+                            getItemViewType = 2;
+                        }
+
+                        //pass getItemViewType value to SharedViewContact with an intent
+                        //it will make phoneNameonPhone in GREEN text
+                        if (viewHolder.getItemViewType() == 3) {
+                            //GREEN text for name
+                            getItemViewType = 3;
+                        }
+
+                        i.putExtra("getItemViewType", getItemViewType);
+
+                        //start the SharedViewContact activity
+                        v.getContext().startActivity(i);
+
+                    }
+
+                }
+            });
         }
 
-        //If setType_row = 2 in PopulistoListView,
-        //if the review is by a phone contact, then make the
-        // phoneNameOnPhone in blue text
-        if (viewHolder.getItemViewType() == 2) {
-            ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#0A7FDA"));
-
-        }
-
-        //If setType_row = 3 in PopulistoListView,
-        //if the review is public by a user not in logged-in user's phone contacts,
-        // then make the phoneNameOnPhone in green text
-        if (viewHolder.getItemViewType() == 3) {
-            ((ReviewHolder) viewHolder).phone_user_name.setTextColor(Color.parseColor("#2AB40E"));
-
-        }
-
-        //set the details in the recyclerView cell
-        ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhoneNameonPhone());
-        ((ReviewHolder) viewHolder).date_created.setText("Date Created: " + r.getDate_created());
-        ((ReviewHolder) viewHolder).category.setText("Categoryy: " + r.getCategory());
-        ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
-        ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
-        ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
-        ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
-
+        //for "Add New" cell
         if (viewHolder.getItemViewType() == 4) {
-            ((ReviewHolder) viewHolder).category.setText("Dohh! ");
-        }
 
-        //set an onClick listener for the row, if it's clicked anywhere
-        ((ReviewHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
+            //for "Add New" cell only make the button visible, everything
+            //else should be gone
+            ((ReviewHolder) viewHolder).pop_something_in.setVisibility(View.VISIBLE);
+            ((ReviewHolder) viewHolder).phone_user_name.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).date_created.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).category.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).name.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).address.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).phone.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).comment.setVisibility(View.GONE);
 
-            @Override
-            //When the review is clicked in PopulistoListView
-            //then show that review
-            public void onClick(View v) {
+            //set an onClick listener for the button, if it's clicked
+            ((ReviewHolder) viewHolder).pop_something_in.setOnClickListener(new View.OnClickListener() {
 
-                //position is the number of the row
-               // Toast.makeText(v.getContext(), position + " cheers!", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onClick(View v) {
 
-                Toast.makeText(v.getContext(), "UPopulistoListAdapter", Toast.LENGTH_LONG).show();
+                    //start the NewContact class
+                    Intent i = new Intent(v.getContext(), NewContact.class);
 
-
-                Review reviewUser = (Review) UPopulistoListAdapter.getItem(position);
-
-                //If getItemViewType = 1, which means getType_row = 1,
-                // then the logged-in user owns the review
-                //so load ViewContact -
-                //with edit, delete button, list of contacts review is shared with etc...
-                if (viewHolder.getItemViewType() == 1) {
-
-                    final int pubOrPriv = Integer.parseInt(r.getPublicorprivate());
-
-
-                    //we want to pass the review_id of the reviewUser being clicked
-                //to the ViewContact activity, and from there post it and get more
-                //info for that reviewUser - address, comments etc
-                Intent i = new Intent(v.getContext(), ViewContact.class);
-                //pass the review_id to ViewContact class
-                //the key is "review_id"
-                i.putExtra("review_id", reviewUser.getReviewid());
-
-                //pass the intent value of pubOrPriv to ViewContact
-                i.putExtra("UPuborPrivVal", pubOrPriv);
-                //pass these values as an intent to ViewContact class
-                i.putExtra("date_created", reviewUser.getDate_created());
-                i.putExtra("category", reviewUser.getCategory());
-                i.putExtra("name", reviewUser.getName());
-                i.putExtra("phone", reviewUser.getPhone());
-                i.putExtra("address", reviewUser.getAddress());
-                i.putExtra("comment", reviewUser.getComment());
-
-                    //Pass as intent to ViewContact, decide what colour to show "U"
-                    getItemViewType = 1;
-
-                    i.putExtra("getItemViewType", getItemViewType);
-
-
-                    //pass the PhoneNumberofUserFromDB to ViewContact class
-                //the key is "PhoneNumberofUserFromDB"
-                //i.putExtra("PhoneNumberofUserFromDB", reviewUser.getPhoneNumberofUserFromDB());
-                v.getContext().startActivity(i);
-            }
-
-                //If getType_row is 2 or 3, show SharedViewContact
-                else {
-
-                    //grab these details as an intent and pass
-                    //to the SharedViewContact activity
-                    Intent i = new Intent(v.getContext(), SharedViewContact.class);
-                    //pass the review_id to SharedViewContact class
-                    //the key is "review_id"
-                    i.putExtra("review_id", reviewUser.getReviewid());
-
-                    i.putExtra("category", reviewUser.getCategory());
-                    i.putExtra("name", reviewUser.getName());
-                    i.putExtra("phone", reviewUser.getPhone());
-                    i.putExtra("address", reviewUser.getAddress());
-                    i.putExtra("comment", reviewUser.getComment());
-
-                    //show the review maker's name from logged-in user's phone, or else masked number
-                    i.putExtra("PhoneNameonPhone", r.getPhoneNameonPhone());
-
-                    //pass getItemViewType value to SharedViewContact with an intent
-                    //it will make phoneNameonPhone in BLUE text
-                    if (viewHolder.getItemViewType() == 2) {
-                        //BLUE text for name
-                        getItemViewType = 2;
-                    }
-
-                    //pass getItemViewType value to SharedViewContact with an intent
-                    //it will make phoneNameonPhone in GREEN text
-                    if (viewHolder.getItemViewType() == 3) {
-                        //GREEN text for name
-                        getItemViewType = 3;
-                    }
-
-                    i.putExtra("getItemViewType", getItemViewType);
-
-                    //start the SharedViewContact activity
                     v.getContext().startActivity(i);
 
                 }
 
-                }
-        });
+            });
+        }
+
+        //for "May be of interest" cell
+        if (viewHolder.getItemViewType() == 5) {
+
+            //for "May be of interest" cell only make that heading visible, everything
+            //else should be gone
+            ((ReviewHolder) viewHolder).Maybe_of_interest.setVisibility(View.VISIBLE);
+            ((ReviewHolder) viewHolder).phone_user_name.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).date_created.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).category.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).name.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).address.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).phone.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).comment.setVisibility(View.GONE);
+
+        }
+
     }
 
     //I have implemented a getItem method so
@@ -255,7 +301,6 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public static Review getItem(int position) {
         return the_reviews.get(position);
     }
-
 
     @Override
     public int getItemCount() {

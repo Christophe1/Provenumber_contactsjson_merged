@@ -6,6 +6,28 @@
     android:padding="8dp" >
     <!--android:background="@drawable/color_seven" -->
 
+    <Button
+        android:id="@+id/pop_something_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="21dp"
+        android:text="+ Add New"
+        android:visibility="gone"
+        android:textColor="#000000"
+        android:textAllCaps="false"
+        />
+
+    <TextView
+        android:id="@+id/Maybe_of_interest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="21dp"
+        android:text="May be of interest:"
+        android:visibility="gone"
+        android:textColor="#0A7FDA"
+        android:textAllCaps="false"
+        />
+
     <TextView
         android:id="@+id/phone_user_name"
         android:layout_width="wrap_content"
