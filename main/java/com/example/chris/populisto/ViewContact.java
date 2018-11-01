@@ -1,35 +1,24 @@
 package com.example.chris.populisto;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +44,6 @@ import java.util.Map;
 
 import static com.example.chris.populisto.PopulistoContactsAdapter.allPhonesofContacts;
 import static com.example.tutorialspoint.R.id.rv;
-import static com.example.tutorialspoint.R.id.sharedWith;
 import static com.example.tutorialspoint.R.layout.activity_view_contact;
 
 //DESCRIPTION OF ACTIVITY
@@ -166,8 +154,8 @@ public class ViewContact extends AppCompatActivity {
     getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     //into the toolbar, inflate the back button and Populisto title,
-    //which we find in toolbar_custom_view_layout.xml
-    View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
+    //which we find in new_contact_toolbar_layout.xml
+    View logo = getLayoutInflater().inflate(R.layout.view_contact_toolbar_layout, null);
     toolbar.addView(logo);
 
     ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);

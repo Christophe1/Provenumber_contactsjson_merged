@@ -8,12 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -51,14 +45,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
-import static com.example.chris.populisto.PopulistoContactsAdapter.allPhonesofContacts;
 import static com.example.chris.populisto.PopulistoContactsAdapter.checkedContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.theContactsList;
-import static com.example.tutorialspoint.R.id.noResultsFoundView;
 
 
 public class NewContact extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -182,8 +172,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     //into the toolbar, inflate the back button and Populisto title,
-    //which we find in toolbar_custom_view_layout.xml
-    View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
+    //which we find in new_contact_toolbar_layout.xml
+    View logo = getLayoutInflater().inflate(R.layout.new_contact_toolbar_layout, null);
     toolbar.addView(logo);
 
     //for the back arrow, tell it to close the activity, when clicked

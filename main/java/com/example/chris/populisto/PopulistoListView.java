@@ -305,7 +305,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               // "private_count":2,
               // "public_count":3}, etc...etc....
 
-
+              //Toast.makeText(PopulistoListView.this, "response is: " + the_response, Toast.LENGTH_LONG).show();
 
               //breaking up the response into respective parts
               //so we can get values for 'random reviews' string and then
@@ -333,6 +333,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 private_review_ids2 = private_review_ids2.replaceAll("[^0-9]+", ",");
                 //get rid of the first ","
                 private_review_ids2 = private_review_ids2.replaceFirst(",","");
+
 
                 //UNDO THIS System.out.println("private_review_ids2:" + private_review_ids2);
                 System.out.println("private_review_ids2:" + private_review_ids2);
@@ -362,6 +363,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 random_reviews = random_reviews.substring(1, random_reviews.length() - 1);
                 //UNDO THIS System.out.println("2. random_reviews : " + random_reviews);
                 System.out.println("2. random_reviews : " + random_reviews);
+
+                Toast.makeText(PopulistoListView.this, "random_reviews : " + random_reviews, Toast.LENGTH_LONG).show();
 
                 //show_random_reviews();
 

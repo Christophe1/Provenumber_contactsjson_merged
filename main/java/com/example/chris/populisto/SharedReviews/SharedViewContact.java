@@ -1,41 +1,20 @@
 package com.example.chris.populisto.SharedReviews;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.chris.populisto.PopulistoContactsAdapter;
 import com.example.chris.populisto.SelectPhoneContact;
 import com.example.tutorialspoint.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import static com.example.chris.populisto.PopulistoListView.recyclerView;
-import static com.example.tutorialspoint.R.id.rv;
 import static com.example.tutorialspoint.R.layout.activity_sharedview_contact;
 
 public class SharedViewContact extends AppCompatActivity {
@@ -98,8 +77,8 @@ public class SharedViewContact extends AppCompatActivity {
     getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     //into the toolbar, inflate the back button and Populisto title,
-    //which we find in toolbar_custom_view_layout.xml
-    View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
+    //which we find in new_contact_toolbar_layout.xml
+    View logo = getLayoutInflater().inflate(R.layout.new_contact_toolbar_layout, null);
     toolbar.addView(logo);
 
     //for the back arrow, tell it to close the activity, when clicked

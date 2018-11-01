@@ -125,6 +125,8 @@
             android:layout_height="fill_parent"
             />
 
+
+
     </android.support.design.widget.AppBarLayout>
 
 
@@ -134,36 +136,6 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <!--This is positioned in the toolbar, above-->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-
-            >
-
-            <Button
-                android:id="@+id/cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="CANCEL" />
-
-            <Button
-                android:id="@+id/save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/cancel"
-                android:layout_marginRight="1dp"
-                android:text="SAVE" />
-
-        </RelativeLayout>
-    </LinearLayout>
 
     <include layout="@layout/nocontactsfound" />
 

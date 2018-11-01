@@ -135,8 +135,8 @@ public class EditContact extends AppCompatActivity {
     getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     //into the toolbar, inflate the back button and Populisto title,
-    //which we find in toolbar_custom_view_layout.xml
-    View logo = getLayoutInflater().inflate(R.layout.toolbar_custom_view_layout, null);
+    //which we find in new_contact_toolbar_layout.xml
+    View logo = getLayoutInflater().inflate(R.layout.edit_contact_toolbar_layout, null);
     toolbar.addView(logo);
 
     //for the back arrow, tell it to close the activity, when clicked
