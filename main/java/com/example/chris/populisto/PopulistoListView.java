@@ -197,6 +197,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    //phone_listview_contacts.xml is the layout file for PopulistoListView.java,
+    //with toolbar etc and content_main.xml -
     setContentView(R.layout.phone_listview_contacts);
 
 
@@ -692,7 +694,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         new Response.ErrorListener() {
           @Override
           public void onErrorResponse(VolleyError error) {
-            Toast.makeText(PopulistoListView.this, "Trouble cantacting the server right now :(", Toast.LENGTH_LONG).show();
+            Toast.makeText(PopulistoListView.this, "Shouldn't see this at all now:Trouble cantacting the server right now :(", Toast.LENGTH_LONG).show();
 
           }
 
@@ -1344,7 +1346,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     //System.out.println("tesst1");
 
-    sharedReview.setphoneNameonPhone("U");
+ /*   sharedReview.setphoneNameonPhone("U");
 
     //get 0,1 or 2 value from db, for Just U, private or public
     sharedReview.setPublicorprivate("1");
@@ -1357,7 +1359,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     sharedReview.setAddress("Tallaght");
     sharedReview.setPhone("086 34 63 389");
     sharedReview.setComment("All I want for Christmas is you");
-
+*/
     //depending on if setType_row is 1 or 2 or 3,
     //in this case it is 1 - a review that is owned
     //by logged-in user.

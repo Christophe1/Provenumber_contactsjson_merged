@@ -264,6 +264,7 @@ public class ViewContact extends AppCompatActivity {
             public void onResponse(String response) {
 
               //this is our progressbar view
+              //while we are fetching content from server, show this
               ProgressBar progressbar = findViewById(R.id.progressbar);// change id here
 
               //when we get a response from the server,
@@ -310,7 +311,10 @@ public class ViewContact extends AppCompatActivity {
           new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-              Toast.makeText(ViewContact.this, error.toString(), Toast.LENGTH_LONG).show();
+              //If there is an error (such as contacting server for example) then
+              //show a message like:
+              //Sorry, can't contact server right now. Is internet access enabled?, try again, Cancel
+              GlobalFunctions.troubleContactingServerDialog(ViewContact.this);
 
             }
 
@@ -725,9 +729,6 @@ public class ViewContact extends AppCompatActivity {
     @Override
     protected void onPostExecute(Void aVoid) {
       super.onPostExecute(aVoid);
-      // hidePDialog();
-
-      // System.out.println("postexecute: checkedContactsAsArrayList is " + checkedContactsAsArrayList);
 
       //adapter for showing logged-in user's phone contacts
       PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, ViewContact.this, 0);

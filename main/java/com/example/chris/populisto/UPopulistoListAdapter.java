@@ -10,6 +10,8 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +54,14 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             phone = (TextView) itemView.findViewById(R.id.phone);
             comment = (TextView) itemView.findViewById(R.id.comment);
 
+
+            Shader myShader = new LinearGradient(
+                //start gradient at point (0,40) down to (0,0)
+                0, 40, 0, 0,
+                Color.WHITE, Color.BLACK,
+                Shader.TileMode.CLAMP);
+            comment.getPaint().setShader(myShader);
+
         }
 
     }
@@ -82,7 +92,6 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         itemView = inflater.inflate(R.layout.populisto_list_row, parent, false);
 
-        // View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.yourlayout, parent, false);
         return new ReviewHolder(itemView);
     }
 

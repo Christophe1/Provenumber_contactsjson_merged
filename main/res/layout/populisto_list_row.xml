@@ -3,9 +3,14 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/list_row_selector"
-    android:padding="8dp" >
-    <!--android:background="@drawable/color_seven" -->
+    android:padding="8dp"
+                android:requiresFadingEdge="vertical"
+                android:fadingEdgeLength="80dp"
+                android:ellipsize="none"
 
+
+    >
+    <!--+ Add New button, only visible in the first cell -->
     <Button
         android:id="@+id/pop_something_in"
         android:layout_width="wrap_content"
@@ -94,7 +99,7 @@
         android:layout_below="@id/phone"
         android:layout_marginTop="1dip"
         android:textColor="#000000"
-        android:textSize="15dp" />
-
+        android:textSize="15dp"
+        />
 
 </RelativeLayout>

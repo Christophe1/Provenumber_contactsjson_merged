@@ -78,6 +78,11 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static com.example.tutorialspoint.R.layout.verify_user_phone_number;
+
+
+import static com.example.tutorialspoint.R.layout.activity_view_contact;
+
 public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   // this is the php file name where to insert into the database, the user's phone number
@@ -175,14 +180,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+
     //so we can close the activity, if the user has no internet access and they
     //choose "Try again later"
     activity = this;
-
-    //show the "Loading" dialog
-    //it will be shown in verify_phone_number.xml, in the
-    //progressbar id
-    //progressDialog.show(getSupportFragmentManager(), "tag");
 
     //execute the AsyncTask, do stuff in the background
     VerifyUserPhoneNumber.StartUpInfo startUpInfo = new VerifyUserPhoneNumber.StartUpInfo();
@@ -197,6 +198,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
+      setContentView(verify_user_phone_number);
 
     }
 
@@ -229,49 +231,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       //because I was getting repeats of names and phone numbers
       allPhonesofContacts.clear();
       allNamesofContacts.clear();
-
-
-        //16-9-2018
-       /* allPhonesofContacts.add("Youu have no contacts :(");
-
-        //allNamesofContacts.add("");
-
-      //we will save the array list allPhonesofContacts,
-      //with this we will put all phone numbers of contacts on user's phone into our RecyclerView, in other activities
-      SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-      SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
-
-      Gson gson = new Gson();
-      String json = gson.toJson(allPhonesofContacts);
-      prefsEditor.putString("allPhonesofContacts", json);
-      prefsEditor.commit();
-      System.out.println("allPhonesofContacts json is:" + json);
-
-      //now, let's put in the string of names
-      //save the array list allNamesofContacts,
-      //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
-      //SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-      //SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
-
-      //now, let's put in the string of names
-*//*      Gson gsonNames = new Gson();
-      String jsonNames = gsonNames.toJson(allNamesofContacts);
-      prefsEditor2.putString("allNamesofContacts", jsonNames);
-      prefsEditor2.commit();
-      System.out.println("allNamesofContacts json is:" + jsonNames);*//*
-
-      phoneNumberofContact = "Youu have no contacts :(";
-      MatchingContactsAsArrayList.add(phoneNumberofContact);
-
-      SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
-      SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
-
-      Gson gsonMatchingContactsAsArrayList = new Gson();
-      String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
-      editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
-      editorMatchingContactsAsArrayList.commit();
-
-*/
 
       //We need to post hashedpass XML and logged-in phone number
       // to the server and see if the row exists in our DB
@@ -320,8 +279,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                   //Toast.makeText(getApplicationContext(), "Read contact granted!", Toast.LENGTH_LONG).show();
                   //get all the contacts on the user's phone
                   getPhoneContacts();
-
-
 
                 }
                 //If READ_CONTACTS Permission has been denied
