@@ -47,9 +47,10 @@ public class GlobalFunctions {
     }*/
 
 
+    //*******9/11/2018*************
     //this is the function we call to measure the height of the listview
     //we need this because there are problems with a listview within a scrollview
-    public static void justifyListViewHeightBasedOnChildren (Context context, ListView listView) {
+  /*  public static void justifyListViewHeightBasedOnChildren (Context context, ListView listView) {
 
         ListAdapter adapter = listView.getAdapter();
 
@@ -71,11 +72,11 @@ public class GlobalFunctions {
 
         System.out.println("the getcount is " + adapter.getCount());
         System.out.println("the height is " + par.height);
-    }
+    }*/
 
     //this is the function that clears all checkboxes in a viewgroup, the listview
     //would be better if it just cleared MatchingContacts rather than everything
-    public static void uncheckAllChildrenCascade(ViewGroup vg) {
+/*    public static void uncheckAllChildrenCascade(ViewGroup vg) {
         for (int i = 0; i < vg.getChildCount(); i++) {
             View v = vg.getChildAt(i);
             if (v instanceof CheckBox) {
@@ -84,9 +85,9 @@ public class GlobalFunctions {
                 uncheckAllChildrenCascade((ViewGroup) v);
             }
         }
-    }
+    }*/
 
-    //this is the function that checks all checkboxes in a viewgroup, the listview
+/*    //this is the function that checks all checkboxes in a viewgroup, the listview
     //would be better if it just checked MatchingContacts rather than everything
 
     public static void checkAllChildrenCascade(ViewGroup vg) {
@@ -98,7 +99,9 @@ public class GlobalFunctions {
                 checkAllChildrenCascade((ViewGroup) v);
             }
         }
-    }
+    }*/
+
+    //********************
 
     public static void troubleContactingServerDialog(Context context) {
 
@@ -136,8 +139,83 @@ public class GlobalFunctions {
 
     }
 
+    //get the date from server column, and then format correctly like "9 December 2018"
+    public static String getDateandFormat(String TimefromServer) {
 
+        //split the string, e.g:  2018-11-10 04:30:01, when we get to space, " "
+        //so we just have 2018-11-10
+        String[] parts = TimefromServer.split(" ");
+        String first_part = parts[0];
 
+        //split the new string at hyphens
+        String[]date_month_year = first_part.split("-");
+
+        String year = date_month_year[0];
+        String month = date_month_year[1];
+        String date = date_month_year[2];
+
+        String new_date = date.replaceFirst("^0+(?!$)", "");
+
+        System.out.println("the year is" + year);
+        System.out.println("the month is" + month);
+        System.out.println("the date is" + date);
+
+        String month_in_words = "";
+
+        switch(month) {
+
+            case "01" :
+                month_in_words = "January";
+                break;
+
+            case "02" :
+                month_in_words = "February";
+                break;
+
+            case "03" :
+                month_in_words = "March";
+                break;
+
+            case "04" :
+                month_in_words = "April";
+                break;
+
+            case "05" :
+                month_in_words = "May";
+                break;
+
+            case "06" :
+                month_in_words = "June";
+                break;
+
+            case "07" :
+                month_in_words = "July";
+                break;
+
+            case "08" :
+                month_in_words = "August";
+                break;
+
+            case "09" :
+                month_in_words = "September";
+                break;
+
+            case "10" :
+                month_in_words = "October";
+                break;
+
+            case "11" :
+                month_in_words = "November";
+                break;
+
+            case "12" :
+                month_in_words = "December";
+                break;
+        }
+
+        return new_date + " " + month_in_words + " " + year;
+
+    }
 }
 
 

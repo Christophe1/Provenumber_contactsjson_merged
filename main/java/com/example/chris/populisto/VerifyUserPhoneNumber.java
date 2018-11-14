@@ -78,6 +78,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static com.example.chris.populisto.PopulistoContactsAdapter.checkedContactsAsArrayList;
 import static com.example.tutorialspoint.R.layout.verify_user_phone_number;
 
 
@@ -231,6 +232,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       //because I was getting repeats of names and phone numbers
       allPhonesofContacts.clear();
       allNamesofContacts.clear();
+
+      //if checked values for a review still exist in sharedprefs,
+      //delete them
+      if (checkedContactsAsArrayList != null) {
+        //reset the size of the array to 0
+        checkedContactsAsArrayList.clear();
+      }
 
       //We need to post hashedpass XML and logged-in phone number
       // to the server and see if the row exists in our DB

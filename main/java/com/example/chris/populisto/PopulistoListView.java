@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import static com.example.chris.populisto.GlobalFunctions.getDateandFormat;
 import static com.example.chris.populisto.GlobalFunctions.troubleContactingServerDialog;
 import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 import static com.example.chris.populisto.VerifyUserPhoneNumber.activity;
@@ -193,6 +194,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   //final Context context = this;
 
+  String first_part;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -359,6 +361,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //UNDO THIS System.out.println("1. the integers are " + integers);
                 System.out.println("1. the integers are " + integers);
 
+                //make a string from integers
                 random_reviews = integers.toString();
 
                 //remove the [ and ] from the string
@@ -454,10 +457,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 }*/
 
                 //for each responseObject in the array, name it obj
-                //1 obj = 1 review, consisting of reviewid, category, name, phone,comment
+                //1 obj = 1 review, consisting of reviewid, category, name, phone,comment...
                 JSONObject obj = responseObject.getJSONObject(i);
+
                 // and create a new object, Review, getting details of user's reviews in the db
-                //Review review = new Review();
                 Review review = new Review();
 
                 //for logged-in user's reviews, set phone name to "U"
@@ -470,11 +473,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //we are getting the reviewid so we can pull extra matching info,
                 review.setReviewid(obj.getString("reviewid"));
 
-                //convert public_or_private to an integer
+                //get "publicorprivate" from server,
+                //convert it to an integer, pub_or_priv
                 pub_or_priv = Integer.parseInt(obj.getString("publicorprivate"));
-
-                //set the category part of the object to that matching reviewid
-                //sharedReview.setDate_created(obj.getString("date_created"));
 
                 review.setCategory(obj.getString("category"));
                 //etc...
@@ -483,18 +484,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 review.setAddress(obj.getString("address"));
                 review.setComment(obj.getString("comment"));
 
+                //get the part of the object "date_created"
                 String date = obj.getString("date_created");
-                SimpleDateFormat spf = new SimpleDateFormat("yyyy dd mm hh:mm:ss");
-                Date newDate;
-                try {
-                  newDate = spf.parse(date);
-                  spf = new SimpleDateFormat("dd MMM yyyy");
-                  date = spf.format(newDate);
-                  System.out.println("the date is" + date);
 
-                } catch (ParseException e) {
-                  e.printStackTrace();
-                }
+                //we only want the date stuff, not the time in seconds etc.
+                //and we want it formatted like this : 10 October 2018.
+                //not like "2018-11-09 08:04:37
+                review.setDate_created(getDateandFormat(date));
 
                 //in this case it is 1 - a review that is owned
                 //by logged-in user.
@@ -533,6 +529,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                       @Override
                       public void onResponse(String response) {
 
+                        Toast.makeText(PopulistoListView.this, "response is  " + response, Toast.LENGTH_LONG).show();
                         //System.out.println("response is :" + response);
 
                         try {
@@ -652,7 +649,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                     new Response.ErrorListener() {
                       @Override
                       public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PopulistoListView.this, error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(PopulistoListView.this, "bbb " + error.toString(), Toast.LENGTH_LONG).show();
+                        System.out.println("bbb " + error.toString());
 
                       }
 
@@ -1338,6 +1336,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     startActivity(intent);
   }
 
+  //CURRENTLY NOT BEING USED 09/11/2018
   private void showRandomSharedReviews() {
     //rather than unwelcoming empty screen, if user has no reviews to show on start up,
     //show 3 random reviews

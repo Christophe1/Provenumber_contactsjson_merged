@@ -430,22 +430,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     return list;
   }
 
-//14/8/2-18
-  //code for the '<', back button. Go back to PopulistoListView, as defined
-  //in Manifest, PARENT_ACTIVITY
-  // @Override
-/*  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      // Respond to the action bar's Up/Home button
-      case android.R.id.home:
-        Toast.makeText(NewContact.this, "back pressed!", Toast.LENGTH_SHORT).show();
 
-        NavUtils.navigateUpFromSameTask(this);
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
-    }
-  }*/
 
 
 //******for the phone contacts in the recyclerView
@@ -556,10 +541,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         noContactsFound.setVisibility(View.GONE);
 
         //clear the array list of checked contacts that may be in SharedPrefs
-        checkedContactsAsArrayList.clear();
+        //checkedContactsAsArrayList.clear();
 
-
-        //*********set the Matching Contacts to checked, by default ************
+        //*********set the Matching Contacts to be checked, by default ************
         //loop through the matching contacts
         int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
         System.out.println("NewContact: the matching contacts are " + PopulistoContactsAdapter.MatchingContactsAsArrayList);
@@ -781,7 +765,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         PopulistoListView.fa.finish();
 
         System.out.println("you clicked it, save");
-
 
         //If permission denied (will only be on Marshmallow +)
         PackageManager manager = getPackageManager();
