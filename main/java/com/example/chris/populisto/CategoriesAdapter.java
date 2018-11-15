@@ -103,6 +103,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
         //the text entered in the search box
         String charString = charSequence.toString();
 
+        //String charString = charString1.replaceAll("^\\s+", "");
+
         //if searchbox is empty...
         if (charString.isEmpty()) {
 
@@ -136,22 +138,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
                 }
 
               }
-
-              //5/8/2018
-/*              else if
-
-                //this is for if the title starts with the search term.
-                //so if the search term starts with "r", "red onions"
-                //will be added to the list UNLESS it has already been
-                //added (in the if statement above)
-                  (row.getName().startsWith(charString.toLowerCase())) {
-
-                //add the row to the list unless it has been added already
-                if (!filteredList.contains(row)) {
-                  filteredList.add(row);
-
-                }
-              }*/
 
             }
 

@@ -1247,7 +1247,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         new Response.ErrorListener() {
           @Override
           public void onErrorResponse(VolleyError error) {
-            Toast.makeText(PopulistoListView.this, error.toString(), Toast.LENGTH_LONG).show();
+
+            //Toast.makeText(PopulistoListView.this, error.toString(), Toast.LENGTH_LONG).show();
+
+            //If there is an error (such as contacting server for example) then
+            //show a message like:
+            //Sorry, can't contact server right now. Is internet access enabled?, try again, Cancel
+            GlobalFunctions.troubleContactingServerDialog(PopulistoListView.this);
 
           }
 

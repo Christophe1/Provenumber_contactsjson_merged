@@ -78,7 +78,7 @@ public class SharedViewContact extends AppCompatActivity {
 
     //into the toolbar, inflate the back button and Populisto title,
     //which we find in new_contact_toolbar_layout.xml
-    View logo = getLayoutInflater().inflate(R.layout.new_contact_toolbar_layout, null);
+    View logo = getLayoutInflater().inflate(R.layout.sharedview_toolbar_layout, null);
     toolbar.addView(logo);
 
     //for the back arrow, tell it to close the activity, when clicked

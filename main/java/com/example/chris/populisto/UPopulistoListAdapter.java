@@ -54,7 +54,7 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             phone = (TextView) itemView.findViewById(R.id.phone);
             comment = (TextView) itemView.findViewById(R.id.comment);
 
-
+            //fade to white...
             Shader myShader = new LinearGradient(
                 //start gradient at point (0,40) down to (0,0)
                 0, 40, 0, 0,
