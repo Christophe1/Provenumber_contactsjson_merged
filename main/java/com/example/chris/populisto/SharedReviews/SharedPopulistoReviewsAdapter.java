@@ -77,7 +77,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
       category = (TextView) itemView.findViewById(R.id.category);
       name = (TextView) itemView.findViewById(R.id.name);
       address = (TextView) itemView.findViewById(R.id.address);
-      phone = (TextView) itemView.findViewById(R.id.phone);
+      //phone = (TextView) itemView.findViewById(R.id.phone);
       comment = (TextView) itemView.findViewById(R.id.comment);
 
     }
@@ -173,9 +173,9 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
     //set the details in the recyclerView cell
     ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhoneNameonPhone());
     ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
-    ((ReviewHolder) viewHolder).name.setText("Namey: " + r.getName());
+//    ((ReviewHolder) viewHolder).name.setText("Namey: " + r.getName());
     ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
-    ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
+//    ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
     ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
 
     //set an onClick listener for the cell, if it's clicked anywhere

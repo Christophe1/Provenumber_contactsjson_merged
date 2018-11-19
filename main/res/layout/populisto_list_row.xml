@@ -37,7 +37,8 @@
         android:id="@+id/phone_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="17dp"
+        android:textStyle="bold"
+        android:textSize="20dp"
         android:textColor="#000000"
         />
 
@@ -62,26 +63,28 @@
  />
 
     <!-- name -->
-    <TextView
+<!--    <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/category"
         android:textSize="15dp"
         android:textColor="#000000"
- />
+ />-->
 
     <!-- name -->
     <TextView
         android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/name"
+        android:maxLines="1"
+        android:layout_below="@+id/category"
         android:textSize="15dp"
         android:textColor="#000000"
         />
 
 <!-- phone -->
+<!--
     <TextView
         android:id="@+id/phone"
         android:layout_width="fill_parent"
@@ -90,16 +93,25 @@
         android:layout_marginTop="1dip"
         android:textColor="#000000"
         android:textSize="15dp" />
+-->
 
     <!-- comment -->
     <TextView
         android:id="@+id/comment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/phone"
+        android:maxLines="1"
+        android:layout_below="@id/address"
         android:layout_marginTop="1dip"
         android:textColor="#000000"
         android:textSize="15dp"
+        android:paddingBottom="10dp"
         />
+
+    <View android:id="@+id/separator"
+          android:background="#ADD8E6"
+          android:layout_width = "fill_parent"
+          android:layout_height="1dip"
+          android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

@@ -414,6 +414,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //load all the categories shared with the logged in user
     //fetchCategories();
 
+    //This is for the first activity user sees:
+    //"Add New" button, U reviews, " May be of interest" heading and " May be of Interest"
+    //reviews.
     //post the phone number of the logged in user to SelectUserReviews.php and from that
     //get the logged in user's reviews
     StringRequest stringRequest = new StringRequest(Request.Method.POST, SelectUserReviews_URL,
@@ -488,7 +491,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 String date = obj.getString("date_created");
 
                 //we only want the date stuff, not the time in seconds etc.
-                //and we want it formatted like this : 10 October 2018.
+                //and we want it formatted like this : 11 October 2018.
                 //not like "2018-11-09 08:04:37
                 review.setDate_created(getDateandFormat(date));
 
@@ -523,7 +526,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //post random_reviews string to Random_Reviews.php.
                 //It will be a string of the form 5,22,56
                 //then when we get values of category, comment etc from server, show those reviews in recyclerView
-                //under the logged-in user's reviews
+                //below the logged-in user's reviews
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, Random_Reviews_URL,
                     new Response.Listener<String>() {
                       @Override
@@ -566,6 +569,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                             //System.out.println("all phones and names :" + jsonArray);
 
+                            //get the part of the object "date_created" from Random_Reviews.php
+                            String date2 = obj.getString("date_created");
+
+                            //we only want the date stuff, not the time in seconds etc.
+                            //and we want it formatted like this : 11 October 2018.
+                            //not like "2018-11-09 08:04:37
+                            review.setDate_created(getDateandFormat(date2));
                             //get 0,1 or 2 value, for Just U, private or public
                             review.setPublicorprivate(obj.getString("publicorprivate"));
                             //we are getting the reviewid so we can pull extra matching info,
@@ -942,9 +952,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   //show the list of reviews
   //shared with logged in-user including his own.
   public void onCategorySelected(Category category) {
-
-    //show the "Loading" dialog
-    //progressDialog.show(getSupportFragmentManager(), "tag");
 
     //Own Reviews
     //convert [56,23,87] to a string
@@ -1388,9 +1395,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         new Response.Listener<String>() {
           @Override
           public void onResponse(String response) {
-
-            //dismiss the dialog when we get the response
-            //progressDialog.cancel();
 
             try {
               //name our JSONArray responseObject.

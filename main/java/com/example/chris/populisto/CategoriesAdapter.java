@@ -103,7 +103,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
         //the text entered in the search box
         String charString = charSequence.toString();
 
-        //String charString = charString1.replaceAll("^\\s+", "");
+       // String charString = charString1.replaceAll("^\\s+", "");
 
         //if searchbox is empty...
         if (charString.isEmpty()) {

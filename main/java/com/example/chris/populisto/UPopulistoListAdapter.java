@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,19 +41,22 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public static class ReviewHolder extends RecyclerView.ViewHolder {
 
         //In each populisto_list_row show the items you want to have appearing
-        public TextView pop_something_in,Maybe_of_interest,phone_user_name, date_created, category, address, name, phone, comment;
+        public TextView Maybe_of_interest,phone_user_name, date_created, category, address, name, phone, comment;
+        public Button pop_something_in;
+        public View separator;
 
         public ReviewHolder(View itemView) {
             super(itemView);
-            pop_something_in = (TextView) itemView.findViewById(R.id.pop_something_in);
+            pop_something_in = (Button) itemView.findViewById(R.id.pop_something_in);
             Maybe_of_interest = (TextView) itemView.findViewById(R.id.Maybe_of_interest);
             phone_user_name = (TextView) itemView.findViewById(R.id.phone_user_name);
             date_created = (TextView) itemView.findViewById(R.id.date_created);
             category = (TextView) itemView.findViewById(R.id.category);
             name = (TextView) itemView.findViewById(R.id.name);
             address = (TextView) itemView.findViewById(R.id.address);
-            phone = (TextView) itemView.findViewById(R.id.phone);
+            //phone = (TextView) itemView.findViewById(R.id.phone);
             comment = (TextView) itemView.findViewById(R.id.comment);
+            separator = (View) itemView.findViewById(R.id.separator);
 
             //fade to white...
             Shader myShader = new LinearGradient(
@@ -156,11 +160,11 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             //set the details in the recyclerView cell
             ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhoneNameonPhone());
-            ((ReviewHolder) viewHolder).date_created.setText("Date Created: " + r.getDate_created());
+            ((ReviewHolder) viewHolder).date_created.setText("Entered: " + r.getDate_created());
             ((ReviewHolder) viewHolder).category.setText("Categoryy: " + r.getCategory());
-            ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
+            //((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
             ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
-            ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
+            //((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
             ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
 
             //set an onClick listener for the row, if it's clicked anywhere
@@ -266,11 +270,11 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((ReviewHolder) viewHolder).phone_user_name.setVisibility(View.GONE);
             ((ReviewHolder) viewHolder).date_created.setVisibility(View.GONE);
             ((ReviewHolder) viewHolder).category.setVisibility(View.GONE);
-            ((ReviewHolder) viewHolder).name.setVisibility(View.GONE);
+//            ((ReviewHolder) viewHolder).name.setVisibility(View.GONE);
             ((ReviewHolder) viewHolder).address.setVisibility(View.GONE);
-            ((ReviewHolder) viewHolder).phone.setVisibility(View.GONE);
+//            ((ReviewHolder) viewHolder).phone.setVisibility(View.GONE);
             ((ReviewHolder) viewHolder).comment.setVisibility(View.GONE);
-
+            ((ReviewHolder) viewHolder).separator.setVisibility(View.GONE);
             //set an onClick listener for the button, if it's clicked
             ((ReviewHolder) viewHolder).pop_something_in.setOnClickListener(new View.OnClickListener() {
 
@@ -296,9 +300,10 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((ReviewHolder) viewHolder).phone_user_name.setVisibility(View.GONE);
             ((ReviewHolder) viewHolder).date_created.setVisibility(View.GONE);
             ((ReviewHolder) viewHolder).category.setVisibility(View.GONE);
-            ((ReviewHolder) viewHolder).name.setVisibility(View.GONE);
+//            ((ReviewHolder) viewHolder).name.setVisibility(View.GONE);
             ((ReviewHolder) viewHolder).address.setVisibility(View.GONE);
-            ((ReviewHolder) viewHolder).phone.setVisibility(View.GONE);
+//            ((ReviewHolder) viewHolder).phone.setVisibility(View.GONE);
+            ((ReviewHolder) viewHolder).separator.setVisibility(View.GONE);
             ((ReviewHolder) viewHolder).comment.setVisibility(View.GONE);
 
         }
