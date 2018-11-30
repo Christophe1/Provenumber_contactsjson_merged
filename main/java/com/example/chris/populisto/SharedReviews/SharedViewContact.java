@@ -2,9 +2,11 @@ package com.example.chris.populisto.SharedReviews;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ public class SharedViewContact extends AppCompatActivity {
 
   //TextViews..the intents fetched from SharedPopulistoReviewsAdapter will be put in these
   private TextView textphoneNameonPhone;
+  private TextView date_created_name;
   private TextView categoryname;
   private TextView namename;
   private TextView phonename;
@@ -83,12 +86,38 @@ public class SharedViewContact extends AppCompatActivity {
 
     //for the back arrow, tell it to close the activity, when clicked
     ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
-    backButton.setOnClickListener(new View.OnClickListener() {
+
+    //use ontouch listener, so when <- image is DOWN it changes to grey
+    //for an instant
+    backButton.setOnTouchListener(new View.OnTouchListener() {
+
       @Override
-      public void onClick(View view) {
-        finish();
+      public boolean onTouch(View v, MotionEvent event) {
+
+        switch (event.getAction()) {
+          case MotionEvent.ACTION_DOWN: {
+            ImageView view = (ImageView) v;
+
+            view.getDrawable().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP);
+            view.invalidate();
+
+            //for the back arrow, tell it to close the activity, when clicked
+            finish();
+            break;
+          }
+          case MotionEvent.ACTION_UP:
+          case MotionEvent.ACTION_CANCEL: {
+            ImageView view = (ImageView) v;
+            //clear the overlay
+            view.getDrawable().clearColorFilter();
+            view.invalidate();
+            break;
+          }
+        }
+        return true;
       }
     });
+
 
     Intent i = this.getIntent();
 
@@ -97,6 +126,7 @@ public class SharedViewContact extends AppCompatActivity {
     review_id = i.getStringExtra("review_id");
 
     //also get the values of these intents from SharedPopulistoReviewsAdapter
+    date_created = i.getStringExtra("date_created");
     category = i.getStringExtra("category");
     name = i.getStringExtra("name");
     phone = i.getStringExtra("phone");
@@ -125,6 +155,7 @@ public class SharedViewContact extends AppCompatActivity {
 
     //cast a TextView for each of the field ids in activity_view_contact.xml
     textphoneNameonPhone = (TextView) findViewById(R.id.textphoneNameonPhone);
+    date_created_name = (TextView) findViewById(R.id.textViewDateCreated);
     categoryname = (TextView) findViewById(R.id.textViewCategory);
     namename = (TextView) findViewById(R.id.textViewName);
     phonename = (TextView) findViewById(R.id.textViewPhone);
@@ -141,6 +172,7 @@ public class SharedViewContact extends AppCompatActivity {
     // justMeContacts = (Button) findViewById(R.id.btnJustMe);
 
     //assign a textview to each of the fields in the review
+    date_created_name.setText(date_created);
     categoryname.setText(category);
     namename.setText(name);
     phonename.setText(phone);

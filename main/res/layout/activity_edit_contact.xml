@@ -17,7 +17,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="550dp"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleTextAppearance="@android:color/transparent"
@@ -46,11 +46,11 @@
                     android:visibility="invisible" />
 
 
-                <EditText
+        <EditText
         android:id="@+id/textViewCategory"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/textViewInvisible"
         android:layout_centerHorizontal="true"
         android:background="@drawable/textboxes_for_contact"
         android:textSize="30dp" />

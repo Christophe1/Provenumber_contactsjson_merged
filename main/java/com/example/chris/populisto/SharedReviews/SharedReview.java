@@ -1,7 +1,7 @@
 package com.example.chris.populisto.SharedReviews;
 
 public class SharedReview {
-  private String phoneNameonPhone, publicorprivate, category,type_row,
+  private String phoneNameonPhone, date_created, publicorprivate, category,type_row,
       thumbnailUrl, name, phone, address, comment, PhoneNumberofUserFromDB;
   public String reviewid;
 
@@ -14,7 +14,7 @@ public class SharedReview {
   public SharedReview(String publicorprivate,
                       String category,
                       String phoneNameonPhone,
-                      // String thumbnailUrl,
+                      String date_created,
                       String name,
                       String phone,
                       String address,
@@ -28,7 +28,7 @@ public class SharedReview {
     this.publicorprivate = publicorprivate;
     this.phoneNameonPhone = phoneNameonPhone;
     this.category = category;
-    // this.thumbnailUrl = thumbnailUrl;
+    this.date_created = date_created;
     this.name = name;
     this.phone = phone;
     this.address = address;
@@ -64,6 +64,14 @@ public class SharedReview {
 
   public void setphoneNameonPhone(String phoneNameonPhone) {
     this.phoneNameonPhone = phoneNameonPhone;
+  }
+
+  public String getDate_created() {
+    return date_created;
+  }
+
+  public void setDate_created(String date_created) {
+    this.date_created = date_created;
   }
 
   public String getCategory() {

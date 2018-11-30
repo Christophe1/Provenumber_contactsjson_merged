@@ -987,7 +987,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   }
 
   //when a fetched category in recyclerView is clicked,
-  // for example, "veterinarian (U,1,7)" in recyclerView is clicked on
+  // for example, "veterinarian (U,1,7)" in recyclerView is clicked on,
   // do this function
   private void show_own_private_public_Reviews() {
 
@@ -1057,6 +1057,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setPublicorprivate(obj.getString("publicorprivate"));
                 //we are getting the reviewid from the db so we can pull extra matching info,
                 sharedReview.setReviewid(obj.getString("reviewid"));
+                //sharedReview.setDate_created("world wide web");
+
+                sharedReview.setDate_created(obj.getString("date_created"));
+
                 //set the category part of the object to that matching reviewid
                 sharedReview.setCategory(obj.getString("category"));
                 //etc...

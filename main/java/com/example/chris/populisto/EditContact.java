@@ -97,7 +97,7 @@ public class EditContact extends AppCompatActivity {
 
   //string for getting intent info from ViewContact class
   //String categoryid;
-  String category, name, phone, address, comment;
+  String category, date_created, name, phone, address, comment;
 
   //int for getting intent info for the sharing buttons in ViewContact
   int pub_or_priv;
@@ -202,6 +202,7 @@ public class EditContact extends AppCompatActivity {
     //we post review_id in saveContact()
     review_id = i.getStringExtra("review_id");
 
+    date_created = i.getStringExtra("date_created");
     category = i.getStringExtra("category");
     name = i.getStringExtra("name");
     phone = i.getStringExtra("phone");
@@ -225,6 +226,9 @@ public class EditContact extends AppCompatActivity {
     phonename.setText(phone);
     addressname.setText(address);
     commentname.setText(comment);
+
+    Toast.makeText(EditContact.this, "date created is : " + date_created, Toast.LENGTH_SHORT).show();
+
 
     //make the cursor appear at the end of the categoryname
     categoryname.setSelection(categoryname.getText().length());
@@ -458,6 +462,7 @@ public class EditContact extends AppCompatActivity {
         // When we see these in our php,  $_POST["category"],
         //put in the value from Android
         params.put("category", categoryname.getText().toString());
+        params.put("date_created", categoryname.getText().toString());
         params.put("name", namename.getText().toString());
         params.put("phone", phonename.getText().toString());
         params.put("address", addressname.getText().toString());
@@ -521,6 +526,7 @@ public class EditContact extends AppCompatActivity {
           //exit out of the dialogInterface
           break;
 
+        //Yes, they want to cancel, go back to ViewContact
         case DialogInterface.BUTTON_NEGATIVE:
           Toast.makeText(EditContact.this, "Cancel pressed", Toast.LENGTH_SHORT).show();
 
@@ -529,6 +535,7 @@ public class EditContact extends AppCompatActivity {
           //Intent intent = new Intent();
           Intent intent = new Intent(getApplicationContext(), ViewContact.class);
           intent.putExtra("reviewfromedit", review_id);
+          intent.putExtra("datecreatedfromedit", date_created);
           intent.putExtra("categoryfromedit", category);
           //j.putExtra("category_id",  categoryid);
           intent.putExtra("namefromedit", name);
@@ -571,8 +578,8 @@ public class EditContact extends AppCompatActivity {
       //Intent intent = new Intent();
       Intent intent = new Intent(getApplicationContext(), ViewContact.class);
       intent.putExtra("reviewfromedit", review_id);
+      intent.putExtra("datecreatedfromedit", date_created);
       intent.putExtra("categoryfromedit", category);
-      //j.putExtra("category_id",  categoryid);
       intent.putExtra("namefromedit", name);
       intent.putExtra("phonefromedit", phone);
       intent.putExtra("addressfromedit", address);
@@ -591,34 +598,6 @@ public class EditContact extends AppCompatActivity {
     }
 
   }
-
-
-  //code for the '<', back button. Go back to ViewContact
-/*  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    Toast.makeText(EditContact.this, "back pressed!", Toast.LENGTH_SHORT).show();
-
-    Intent j = new Intent(getApplicationContext(), ViewContact.class);
-        j.putExtra("category",  categoryname.getText());
-        //j.putExtra("category_id",  categoryid);
-        j.putExtra("name", namename.getText());
-        j.putExtra("phone",  phonename.getText());
-        j.putExtra("address",  addressname.getText());
-        j.putExtra("comment",  commentname.getText());
-    startActivity(j);
-    finish();*/
-/*
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    return true;
-  }
-*/
 
   //******for the phone contacts in the listview
 

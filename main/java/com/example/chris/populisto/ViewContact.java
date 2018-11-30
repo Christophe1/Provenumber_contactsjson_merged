@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -89,11 +90,6 @@ public class ViewContact extends AppCompatActivity {
   // in PopulistoListView.java
   String phoneNumberofUserFromDB;
 
-  //this is for the progress dialog, while logged-in user is
-  //waiting for shared contacts of the review from server
-  //DelayedProgressDialog progressDialog = new DelayedProgressDialog();
-
-
   //selectPhoneContacts is an array list that will hold our SelectPhoneContact info
   ArrayList<SelectPhoneContact> selectPhoneContacts;
 
@@ -117,7 +113,7 @@ public class ViewContact extends AppCompatActivity {
   RecyclerView recyclerView;
 
   //Sharedprefs containing all phone contacts of logged-in user
-  SharedPreferences sharedPreferencesallPhonesofContacts;
+  //SharedPreferences sharedPreferencesallPhonesofContacts;
 
   //if user has no contacts on his phone, like if no
   //permission has been given to getPhoneContacts
@@ -233,6 +229,8 @@ public class ViewContact extends AppCompatActivity {
     commentname = (TextView) findViewById(R.id.textViewComment);
     //publicorprivate = (TextView) findViewById(R.id.textPublicorPrivate);
     sharedWith = (TextView) findViewById(R.id.textSharedWith);
+
+   // commentname.setMovementMethod(new ScrollingMovementMethod());
 
     //set text in textboxes to the values in cell of recyclerView, intents passed from UPopulistoListAdapter
     date_created_name.setText(date_created);
@@ -441,6 +439,7 @@ public class ViewContact extends AppCompatActivity {
     edit = (Button) findViewById(R.id.edit);
 
 
+    //if Edit Button is clicked
     edit.setOnClickListener(new View.OnClickListener() {
       public void onClick(View view) {
         System.out.println("you clicked it, edit");
@@ -453,7 +452,7 @@ public class ViewContact extends AppCompatActivity {
         //"category" is the key
         // which we will be looking for from EditContact.class, categoryname.getText() is the
         // content to pass from ViewContact.class etc....
-        //i.putExtra("date_created", date_created_name.getText());
+        i.putExtra("date_created", date_created_name.getText());
         i.putExtra("category", categoryname.getText());
         //i.putExtra("category_id", categoryid);
         i.putExtra("name", namename.getText());
@@ -474,50 +473,7 @@ public class ViewContact extends AppCompatActivity {
       }
     });
 
-
-    //This is for when we are coming back to ViewContact class,
-    //after user has finished editing in EditContact
-    //get the "category" key,make it into a string called
-    //new_category_value, and then set it into the categoryname
-    //text box.
-    //update the class with all these new values from EditView
-    //Intent intent = getIntent();
-
-    //if <- button is pressed in EditContact
-    //get the intent values and fill in text values in ViewContact
-    //length of categoryname will be 0 as no intent has been passed
-    //from UPopulistoListAdapter, because we are coming from EditContact,
-    //so the textbox length is 0
-    //if (categoryname.getText().toString().trim().length() == 0) {
-/*
-    {
-      Intent intent = getIntent();
-
-      //update the class with these values from EditView
-      String category_value = intent.getStringExtra("categoryfromedit");
-      String name_value = intent.getStringExtra("namefromedit");
-      String phone_value = intent.getStringExtra("phonefromedit");
-      String address_value = intent.getStringExtra("addressfromedit");
-      String comment_value = intent.getStringExtra("commentfromedit");
-
-      pub_or_priv = i.getIntExtra("UPuborPrivVal", 0);
-
-      categoryname.setText(category_value);
-      namename.setText(name_value);
-      phonename.setText(phone_value);
-      addressname.setText(address_value);
-      commentname.setText(comment_value);
-
-    }*/
-
-
-    // fetchCheckedContacts();
-    // }
-
   }
-
-
-
 
   private void deleteContactButton() {
 
@@ -756,40 +712,5 @@ public class ViewContact extends AppCompatActivity {
     }
   }
 
-
-/*  @Override
-  protected void onResume() {
-
-    super.onResume();*/
-
-  // getPrefs();
-
-  //    ViewContact.LoadContact loadContact = new ViewContact.LoadContact();
-
-
-  //    loadContact.execute();
-//        adapter.notifyDataSetChanged();
-  //Toast.makeText(ViewContact.this, "resuming!", Toast.LENGTH_SHORT).show();
-
-
-  //}
-
-
- // public void hidePDialog() {
-/*    if (pDialog != null) {
-      pDialog.dismiss();
-      pDialog = null;
-    }*/
- // }
-
-
-  //protected void onDestroy() {
-
-  //  super.onDestroy();
-    //make sure that when the activity dies the load dialogue dies
-    //with it, otherwise we get a memory leak error and app can crash
-  //  hidePDialog();
-
-  //}
 
 }

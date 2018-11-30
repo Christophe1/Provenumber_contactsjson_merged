@@ -14,9 +14,11 @@
             <corners android:radius="3dp"/>
             <!--text formatting in the box-->
             <padding
-                android:textSize="18dp"
+                android:textSize="30dp"
+                android:top="15dp"
                 android:bottom="1dp"
-                android:left="20dp" />
+                android:left="20dp"
+                android:right="20dp"/>
         </shape>
     </item>
 </layer-list>

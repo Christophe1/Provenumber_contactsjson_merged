@@ -160,12 +160,12 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             //set the details in the recyclerView cell
             ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhoneNameonPhone());
-            ((ReviewHolder) viewHolder).date_created.setText("Entered: " + r.getDate_created());
+            ((ReviewHolder) viewHolder).date_created.setText(r.getDate_created());
             ((ReviewHolder) viewHolder).category.setText("Categoryy: " + r.getCategory());
             //((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
             ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
             //((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
-            ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
+            ((ReviewHolder) viewHolder).comment.setText("Comment: " + r.getComment());
 
             //set an onClick listener for the row, if it's clicked anywhere
             ((ReviewHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
@@ -226,7 +226,7 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         //pass the review_id to SharedViewContact class
                         //the key is "review_id"
                         i.putExtra("review_id", reviewUser.getReviewid());
-
+                        i.putExtra("date_created", reviewUser.getDate_created());
                         i.putExtra("category", reviewUser.getCategory());
                         i.putExtra("name", reviewUser.getName());
                         i.putExtra("phone", reviewUser.getPhone());
