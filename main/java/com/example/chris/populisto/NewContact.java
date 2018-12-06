@@ -601,6 +601,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //public_or_private column, if saved in this state
         public_or_private = 2;
 
+        Toast.makeText(NewContact.this, "Everyone can see, ur number is masked", Toast.LENGTH_SHORT).show();
+
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 
         recyclerView.setAdapter(adapter);
@@ -708,7 +710,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //keep the slightly rounded shape, when the button is pressed, and change colour
         justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
 
-//               keep the slightly rounded shape of the others, but still grey
+        //keep the slightly rounded shape of the others, but still grey
         publicContacts.setBackgroundResource(R.drawable.buttonshape);
         phoneContacts.setBackgroundResource(R.drawable.buttonshape);
 
@@ -716,6 +718,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         // This will be uploaded to server to review table,
         //public_or_private column, if saved in this state
         public_or_private = 0;
+
+        Toast.makeText(NewContact.this, "Just u can see, edit later", Toast.LENGTH_SHORT).show();
 
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 

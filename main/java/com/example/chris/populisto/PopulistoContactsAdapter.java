@@ -172,20 +172,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         System.out.println("SelectPhoneContactAdapter MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
       }
 
-
-/*
-      //we are fetching the array list checkedContactsAsArrayList, created in ViewContact.
-      //with this we will put a tick in the checkboxes of contacts the review is being shared with
-      SharedPreferences sharedPreferencescheckedContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(context_type);
-      Gson gsoncheckedContactsAsArrayList = new Gson();
-      String jsoncheckedContactsAsArrayList = sharedPreferencescheckedContactsAsArrayList.getString("checkedContactsAsArrayList", "");
-      Type type2 = new TypeToken<ArrayList<String>>() {
-      }.getType();
-      checkedContactsAsArrayList = gsoncheckedContactsAsArrayList.fromJson(jsoncheckedContactsAsArrayList, type2);
-      System.out.println("SelectPhoneContactAdapter checkedContactsAsArrayList :" + checkedContactsAsArrayList);
-*/
-
-
     }
   }
 

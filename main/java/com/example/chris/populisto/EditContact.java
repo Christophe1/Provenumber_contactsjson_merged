@@ -287,9 +287,7 @@ public class EditContact extends AppCompatActivity {
       //disable the public button
       publicContacts.setEnabled(false);
 
-    }
-
-    else {
+    } else {
       //we get sharing status from ViewContact, with an intent
       //Set the sharing button to be 'public' or 'phone contacts' or 'just me' colour
       //If pub_or_priv value from ViewContact is 0 then
@@ -309,20 +307,19 @@ public class EditContact extends AppCompatActivity {
       }
     }
 
-      //  Toast.makeText(EditContact.this, "public_or_private value is : " + public_or_private, Toast.LENGTH_SHORT).show();
+    //  Toast.makeText(EditContact.this, "public_or_private value is : " + public_or_private, Toast.LENGTH_SHORT).show();
 
-      //load the asynctask stuff here
-      LoadContact loadContact = new LoadContact();
+    //load the asynctask stuff here
+    LoadContact loadContact = new LoadContact();
 
-      //execute asynctask
-      loadContact.execute();
+    //execute asynctask
+    loadContact.execute();
 
-      //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info,
-      //the recyclerView of phone contacts, check boxes, Invite button
-      selectPhoneContacts = new ArrayList<SelectPhoneContact>();
+    //selectPhoneContacts is an empty array list that will hold our SelectPhoneContact info,
+    //the recyclerView of phone contacts, check boxes, Invite button
+    selectPhoneContacts = new ArrayList<SelectPhoneContact>();
 
-      recyclerView = (RecyclerView) findViewById(R.id.rv);
-
+    recyclerView = (RecyclerView) findViewById(R.id.rv);
 
 
     //when the SAVE BUTTON is clicked
@@ -370,7 +367,7 @@ public class EditContact extends AppCompatActivity {
       public_or_private = 0;
     }
 
-      //close the populistolistview class
+    //close the populistolistview class
     //(we'll be opening it again, will close now so it will be refreshed)
     PopulistoListView.fa.finish();
 
@@ -438,7 +435,7 @@ public class EditContact extends AppCompatActivity {
           public void onResponse(String response) {
             Toast.makeText(EditContact.this, "page is saving: " + phoneNoofUserCheck + " + " + review_id, Toast.LENGTH_SHORT).show();
 
-           // Toast.makeText(EditContact.this, response, Toast.LENGTH_LONG).show();
+            // Toast.makeText(EditContact.this, response, Toast.LENGTH_LONG).show();
           }
         },
         new Response.ErrorListener() {
@@ -555,6 +552,8 @@ public class EditContact extends AppCompatActivity {
   };
 
   //If going back to ViewContact
+  //see if changes have been made, and prompt if they want to save.
+  //this will be done on <-, CANCEL and Android back button.
   //then bring the intents from EditContact
   private void goBacktoViewContact() {
 
@@ -612,7 +611,6 @@ public class EditContact extends AppCompatActivity {
     protected Void doInBackground(Void... voids) {
 
 
-
       //If permission denied (will only be on Marshmallow +)
       PackageManager manager = getPackageManager();
       int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
@@ -622,52 +620,50 @@ public class EditContact extends AppCompatActivity {
         //and show the "No Results" textbox
         noContactFoundCheck = 1;
 
-      }
-
-      else {
+      } else {
 
         //don't show the No Contacts found box
         noContactFoundCheck = 0;
 
       }
 
-        //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
-        for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
+      //for every value in the allPhonesofContacts array list, call it phoneNumberofContact
+      for (int i = 0; i < PopulistoContactsAdapter.allPhonesofContacts.size(); i++) {
 
-          phoneNumberofContact = PopulistoContactsAdapter.allPhonesofContacts.get(i);
-          phoneNameofContact = PopulistoContactsAdapter.allNamesofContacts.get(i);
+        phoneNumberofContact = PopulistoContactsAdapter.allPhonesofContacts.get(i);
+        phoneNameofContact = PopulistoContactsAdapter.allNamesofContacts.get(i);
 
-          System.out.println("ViewContact: phoneNumberofContact : " + phoneNumberofContact);
-          System.out.println("ViewContact: phoneNameofContact : " + phoneNameofContact);
+        System.out.println("ViewContact: phoneNumberofContact : " + phoneNumberofContact);
+        System.out.println("ViewContact: phoneNameofContact : " + phoneNameofContact);
 
-          SelectPhoneContact selectContact = new SelectPhoneContact();
+        SelectPhoneContact selectContact = new SelectPhoneContact();
 
-          //if a phone number is in our array of matching contacts
-          if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
+        //if a phone number is in our array of matching contacts
+        if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
-          {
-            // insert the contact at the beginning of the listview
-            selectPhoneContacts.add(0, selectContact);
-            // checkBoxforContact.setVisibility(View.VISIBLE);
+        {
+          // insert the contact at the beginning of the listview
+          selectPhoneContacts.add(0, selectContact);
+          // checkBoxforContact.setVisibility(View.VISIBLE);
 
-            //In SelectContact class, so getItemViewType will know which layout to show
-            //:checkbox or Invite Button
-            selectContact.setType_row("1");
+          //In SelectContact class, so getItemViewType will know which layout to show
+          //:checkbox or Invite Button
+          selectContact.setType_row("1");
 
-          } else {
-            // insert it at the end (default)
-            selectPhoneContacts.add(selectContact);
-            selectContact.setType_row("2");
-
-          }
-
-          selectContact.setName(phoneNameofContact);
-          //    selectContact.setPhone(phoneNumberofContact);
-          selectContact.setPhone(phoneNumberofContact);
-          //selectContact.setSelected(is);
-
+        } else {
+          // insert it at the end (default)
+          selectPhoneContacts.add(selectContact);
+          selectContact.setType_row("2");
 
         }
+
+        selectContact.setName(phoneNameofContact);
+        //    selectContact.setPhone(phoneNumberofContact);
+        selectContact.setPhone(phoneNumberofContact);
+        //selectContact.setSelected(is);
+
+
+      }
 
       return null;
 
@@ -714,10 +710,10 @@ public class EditContact extends AppCompatActivity {
   }
 
 
-    @Override
-    protected void onResume() {
+  @Override
+  protected void onResume() {
 
-        super.onResume();
+    super.onResume();
 
 /*          selectPhoneContacts.clear();
 
@@ -726,10 +722,10 @@ public class EditContact extends AppCompatActivity {
 
           loadContact.execute();
         adapter.notifyDataSetChanged();*/
-        Toast.makeText(EditContact.this, "resuming!", Toast.LENGTH_SHORT).show();
+    Toast.makeText(EditContact.this, "resuming!", Toast.LENGTH_SHORT).show();
 
 
-    }
+  }
 
 
   public void hidePDialog() {
@@ -758,7 +754,8 @@ public class EditContact extends AppCompatActivity {
         // This will be uploaded to server to review table,
         //public_or_private column, if saved in this state
         public_or_private = 2;
-        //Toast.makeText(EditContact.this, valueOf(public_or_private), Toast.LENGTH_LONG).show();
+
+        Toast.makeText(EditContact.this, "Everyone can see, ur number is masked", Toast.LENGTH_SHORT).show();
 
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
@@ -781,9 +778,7 @@ public class EditContact extends AppCompatActivity {
 
           //show No Results textbox
           noContactFoundCheck = 1;
-        }
-
-        else {
+        } else {
 
           checkedContactsAsArrayList.clear();
 
@@ -833,7 +828,7 @@ public class EditContact extends AppCompatActivity {
         justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
         //set sharing to Phone Contacts
-        // This will be uploaded to server to review table,
+        // This will be uploaded to server into review table,
         //public_or_private column, if saved in this state
         public_or_private = 1;
         //Toast.makeText(EditContact.this, "public_or_private is:" + valueOf(public_or_private), Toast.LENGTH_LONG).show();
@@ -928,7 +923,8 @@ public class EditContact extends AppCompatActivity {
         // This will be uploaded to server to review table,
         //public_or_private column, if saved in this state
         public_or_private = 0;
-        Toast.makeText(EditContact.this, valueOf(public_or_private), Toast.LENGTH_LONG).show();
+
+        Toast.makeText(EditContact.this, "Just u can see, edit later", Toast.LENGTH_SHORT).show();
 
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
@@ -948,10 +944,7 @@ public class EditContact extends AppCompatActivity {
           //show the No Results Textbox
           noContactFoundCheck = 1;
 
-        }
-
-
-        else {
+        } else {
           //loop through the matching contacts
           int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
@@ -975,8 +968,6 @@ public class EditContact extends AppCompatActivity {
     });
 
   }
-
-
 
 
   //this is called from PopulistoContactsAdapter
@@ -1015,6 +1006,12 @@ public class EditContact extends AppCompatActivity {
     //then set the boolean to be true
     PopulistoContactsAdapter.checkBoxhasChanged = true;
 
+
+  }
+
+  public void onBackPressed() {
+
+    goBacktoViewContact();
 
   }
 

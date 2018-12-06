@@ -225,13 +225,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
       CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
 
-//            Log.v("index value", phoneNoofUser);
-//            Log.v("index value", CountryCode);
-
       //clear these arraylists when the app starts
       //because I was getting repeats of names and phone numbers
       allPhonesofContacts.clear();
       allNamesofContacts.clear();
+      //clear the value of jsonArrayAllPhonesandNamesofContacts
+      //perhaps this is the solution to extra matching contacts values appearing
+      //in the app, when they shouldn't be
+      jsonArrayAllPhonesandNamesofContacts = new JSONArray(new ArrayList<String>());
 
       //if checked values for a review still exist in sharedprefs,
       //delete them
