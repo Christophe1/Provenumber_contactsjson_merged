@@ -231,10 +231,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
       checkedContactsAsArrayList = gsoncheckedContactsAsArrayList.fromJson(jsoncheckedContactsAsArrayList, type2);
       System.out.println("SelectPhoneContactAdapter checkedContactsAsArrayList :" + checkedContactsAsArrayList);
 
-
-
-
-
       //if the row is a matching contact
       if (viewHolder.getItemViewType() == 1)
 
@@ -268,17 +264,29 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
           ((MatchingContact) viewHolder).check.setChecked(true);
         }
       }
-      //disable the checkbox
-      //((MatchingContact) viewHolder).check.setEnabled(false);
+
     }
 
 
     //if the activity is NewContact
     if (whichactivity == 1) {
 
-      // make a copy of MatchingContactsAsArrayList,
-      //these will all be checked by default
-      checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+/*      if (mContext instanceof NewContact) {
+        checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+
+        PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
+
+      }*/
+
+    //  else {
+        // make a copy of MatchingContactsAsArrayList,
+        //these will all be checked by default
+/*
+        checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+*/
+     // }
+
+
 
       //if the row is a matching contact
       if (viewHolder.getItemViewType() == 1)

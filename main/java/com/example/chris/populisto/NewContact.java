@@ -2,6 +2,7 @@ package com.example.chris.populisto;
 
 //import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,8 +19,10 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -47,8 +51,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.checkedContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.theContactsList;
+import static com.example.tutorialspoint.R.id.parent;
 
 
 public class NewContact extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -269,6 +275,38 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       }
     });
 
+    //when user clicks on "commentname" textbox we want a new textbox to open
+    commentname.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(NewContact.this);
+        builder.setTitle("Ur Comment:");
+
+        //start the following xml file/ layout
+        View viewInflated = LayoutInflater.from(NewContact.this).inflate(R.layout.comment_text_pop_up, null, false);
+        builder.setView(viewInflated);
+
+        // Set up the buttons
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+          }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            dialog.cancel();
+          }
+        });
+
+        builder.show();
+
+      }
+    });
+
+
 
     //for the Public, phoneContacts, justMe, save and cancel buttons
     publicContacts = (Button) findViewById(R.id.btnPublic);
@@ -446,6 +484,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     @Override
     protected Void doInBackground(Void... voids) {
 
+      // make a copy of MatchingContactsAsArrayList,
+      //these will all be checked by default
+      checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+
       //we want to delete the old selectContacts from the listview when the Activity loads
       //because it may need to be updated and we want the user to see the updated listview,
       //like if the user adds new names and numbers to their phone contacts.
@@ -486,12 +528,12 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           SelectPhoneContact selectContact = new SelectPhoneContact();
 
           //if a phone number is in our array of matching contacts
-          if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
+          if (MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
           {   //add the selectContacts to the selectPhoneContacts array
             // insert the contact at the beginning of the listview
             selectPhoneContacts.add(0, selectContact);
-            System.out.println("MatchingContactsAsArrayList is : " + PopulistoContactsAdapter.MatchingContactsAsArrayList);
+            System.out.println("MatchingContactsAsArrayList is : " + MatchingContactsAsArrayList);
 
             //In SelectContact class, so getItemViewType will know which layout to show
             //:checkbox or Invite Button
@@ -545,8 +587,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
         //*********set the Matching Contacts to be checked, by default ************
         //loop through the matching contacts
-        int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
-        System.out.println("NewContact: the matching contacts are " + PopulistoContactsAdapter.MatchingContactsAsArrayList);
+        int count = MatchingContactsAsArrayList.size();
+        System.out.println("NewContact: the matching contacts are " + MatchingContactsAsArrayList);
 
         for (int i = 0; i < count; i++) {
 
@@ -589,6 +631,12 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       @Override
       public void onClick(View v) {
 
+        // make a copy of MatchingContactsAsArrayList,
+        //these will all be checked by default
+        //and public_or_private = 2
+        checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+
+
 //              keep the slightly rounded shape, when the button is pressed, and change colour
         publicContacts.setBackgroundResource(R.drawable.publiccontacts_buttonshapepressed);
 
@@ -617,10 +665,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         } else {*/
 
         //reset the size of the array to 0
-        checkedContactsAsArrayList.clear();
+        //PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
 
           //loop through the matching contacts
-          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+          int count = MatchingContactsAsArrayList.size();
 
           //i is the number of matching contacts that there are
           for (int i = 0; i < count; i++) {
@@ -651,7 +699,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         recyclerView.setAdapter(adapter);
 
         //reset the size of the array to 0
-        checkedContactsAsArrayList.clear();
+        //PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
 
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
@@ -682,7 +730,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           public_or_private = 1;
 
           //loop through the matching contacts
-          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+          int count = MatchingContactsAsArrayList.size();
 
           for (int i = 0; i < count; i++) {
 
@@ -719,6 +767,20 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //public_or_private column, if saved in this state
         public_or_private = 0;
 
+        //reset the size of the array to 0
+        checkedContactsAsArrayList.clear();
+
+        //PopulistoContactsAdapter.theContactsList.get(i).getPhone());
+
+        //loop through the matching contacts
+  /*      int count2 = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+        for (int i = 0; i < count2; i++) {
+
+          //uncheck all matching contacts, we want it to be 'Just Me'
+          checkedContactsAsArrayList.remove(PopulistoContactsAdapter.theContactsList.get(i).getPhone());
+        }*/
+
         Toast.makeText(NewContact.this, "Just u can see, edit later", Toast.LENGTH_SHORT).show();
 
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
@@ -726,8 +788,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         recyclerView.setAdapter(adapter);
         // recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
-        //reset the size of the array to 0
-        checkedContactsAsArrayList.clear();
+        //we need to notify the recyclerview that changes may have been made
+        adapter.notifyDataSetChanged();
 
         //If permission denied (will only be on Marshmallow +)
         PackageManager manager = getPackageManager();
@@ -735,11 +797,11 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         if (hasPermission == manager.PERMISSION_DENIED) {
 
           //show the No Results Textbox
-          noContactFoundCheck = 0;
+          noContactFoundCheck = 1;
 
         } else {
           //loop through the matching contacts
-          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+          int count = MatchingContactsAsArrayList.size();
 
           for (int i = 0; i < count; i++) {
 
@@ -799,11 +861,11 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
             //System.out.println("we're in the try part");
 
             //loop through the matching contacts
-            int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+            int count = MatchingContactsAsArrayList.size();
 
             for (int i = 0; i < count; i++) {
 
-              //for  contacts that are checked (they can only be matching contacts)...
+              //for  contacts that are checked (they can only be matching contacts cause only they have a checkbox)...
               if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
                 //Toast.makeText(NewContact.this, PopulistoContactsAdapter.theContactsList.get(i).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
 
@@ -939,6 +1001,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     //keep the slightly rounded shape of the others, but still grey
     publicContacts.setBackgroundResource(R.drawable.buttonshape);
     phoneContacts.setBackgroundResource(R.drawable.buttonshape);
+
 
   }
 

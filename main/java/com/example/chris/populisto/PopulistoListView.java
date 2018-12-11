@@ -532,7 +532,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                       @Override
                       public void onResponse(String response) {
 
-                        Toast.makeText(PopulistoListView.this, "response is  " + response, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(PopulistoListView.this, "response is  " + response, Toast.LENGTH_LONG).show();
                         //System.out.println("response is :" + response);
 
                         try {

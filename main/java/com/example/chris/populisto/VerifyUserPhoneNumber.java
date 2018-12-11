@@ -229,10 +229,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       //because I was getting repeats of names and phone numbers
       allPhonesofContacts.clear();
       allNamesofContacts.clear();
+
+      //6/12/2018
       //clear the value of jsonArrayAllPhonesandNamesofContacts
       //perhaps this is the solution to extra matching contacts values appearing
       //in the app, when they shouldn't be
-      jsonArrayAllPhonesandNamesofContacts = new JSONArray(new ArrayList<String>());
+      //jsonArrayAllPhonesandNamesofContacts = new JSONArray(new ArrayList<String>());
 
       //if checked values for a review still exist in sharedprefs,
       //delete them

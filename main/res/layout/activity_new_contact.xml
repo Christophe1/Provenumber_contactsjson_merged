@@ -41,7 +41,7 @@
                     android:id="@+id/textViewInvisible"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:background="@drawable/textboxes_for_contact"
                     android:visibility="invisible" />
 
@@ -49,7 +49,7 @@
                     android:id="@+id/textViewCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight=".75"
                     android:maxLength="50"
                     android:background="@drawable/textboxes_for_contact"
                     android:hint="Category" />
@@ -58,7 +58,7 @@
                     android:id="@+id/textViewName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight=".75"
                     android:maxLength="50"
                     android:background="@drawable/textboxes_for_contact"
                     android:hint="Name" />
@@ -68,7 +68,7 @@
                     android:inputType="number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight=".75"
                     android:maxLength="50"
                     android:background="@drawable/textboxes_for_contact"
                     android:hint="Phone" />
@@ -78,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLength="100"
-                    android:layout_weight="1"
+                    android:layout_weight=".75"
                     android:background="@drawable/textboxes_for_contact"
                     android:hint="Address" />
 
