@@ -299,6 +299,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         ((MatchingContact) viewHolder).check.setChecked(theContactsList.get(position).getSelected());
         ((MatchingContact) viewHolder).check.setTag(position);
 
+        Toast.makeText(context_type, "matching contacts are:" + MatchingContactsAsArrayList, Toast.LENGTH_SHORT).show();
         Toast.makeText(context_type, "checked checkboxes are:" + checkedContactsAsArrayList, Toast.LENGTH_SHORT).show();
 
         //for the onClick of the check box

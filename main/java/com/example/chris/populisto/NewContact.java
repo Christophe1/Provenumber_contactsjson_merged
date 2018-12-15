@@ -1,6 +1,8 @@
 package com.example.chris.populisto;
 
 //import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -97,6 +99,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   private EditText phonename;
   private EditText addressname;
   private EditText commentname;
+
+  //the edittext for alertdialog, of commentname popup
+  private EditText alertdialog_edittext;
 
   //if user has no contacts on his phone, like if no
   //permission has been given to getPhoneContacts
@@ -250,6 +255,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     commentname = (EditText) findViewById(R.id.textViewComment);
 
 
+
+
+
     //textlistener for categoryname, if it starts with
     //" " then don't let it input in edittext
     categoryname.addTextChangedListener(new TextWatcher() {
@@ -275,37 +283,69 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       }
     });
 
-    //when user clicks on "commentname" textbox we want a new textbox to open
-    commentname.setOnClickListener(new View.OnClickListener() {
+
+    //when user touches on "commentname" edittext we want the alertdialog to open
+    commentname.setOnTouchListener(new View.OnTouchListener() {
       @Override
-      public void onClick(View v) {
+      public boolean onTouch(View v, MotionEvent event) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(NewContact.this);
-        builder.setTitle("Ur Comment:");
+        //when user lifts finger....
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+          AlertDialog.Builder commentname_alertdialog = new AlertDialog.Builder(NewContact.this);
+          final EditText edittext = new EditText(NewContact.this);
 
-        //start the following xml file/ layout
-        View viewInflated = LayoutInflater.from(NewContact.this).inflate(R.layout.comment_text_pop_up, null, false);
-        builder.setView(viewInflated);
+          commentname_alertdialog.setTitle("Ur Comment:");
+          //start the following xml file/ layout
+          //View viewInflated = LayoutInflater.from(NewContact.this).inflate(R.layout.comment_text_pop_up, null, false);
+          commentname_alertdialog.setView(edittext);
 
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-          }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            dialog.cancel();
-          }
-        });
+          // Set up the buttons
+          commentname_alertdialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-        builder.show();
+              //set a value for the text entered in the alert dialog
+              String YouEditTextValueX = edittext.getText().toString();
+              if (YouEditTextValueX.length() > 0) {
 
-      }
+                //call setTextFromDialog function and
+                //pass the text string entered in the alert dialog
+                setTextFromDialog(YouEditTextValueX);
+
+                dialog.dismiss();
+                //we want to copy the text entered in "input", in the alertdialog,
+                //and paste it in commentname
+                // commentname.setText(alertdialog_edittext.getText().toString());
+              }
+            }
+          });
+          commentname_alertdialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+              dialog.cancel();
+            }
+          });
+
+          AlertDialog dialog = commentname_alertdialog.create();
+          dialog.setCanceledOnTouchOutside(false);
+
+          //show keyboard
+          dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+          dialog.show();
+          return true;
+
+        }
+        return false;
+
+
+       };
+
+      //function to pass text entered in alert_dialog to commentname edittext
+    private void setTextFromDialog(final String textFromDialog){
+      commentname.setText(textFromDialog);
+    }
     });
-
 
 
     //for the Public, phoneContacts, justMe, save and cancel buttons
