@@ -19,6 +19,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -100,8 +102,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   private EditText addressname;
   private EditText commentname;
 
-  //the edittext for alertdialog, of commentname popup
   private EditText alertdialog_edittext;
+
+  //the edittext for alertdialog, of commentname popup
+  //private EditText alertdialog_edittext;
 
   //if user has no contacts on his phone, like if no
   //permission has been given to getPhoneContacts
@@ -292,30 +296,52 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //when user lifts finger....
         if (event.getAction() == MotionEvent.ACTION_UP) {
           AlertDialog.Builder commentname_alertdialog = new AlertDialog.Builder(NewContact.this);
-          final EditText edittext = new EditText(NewContact.this);
+
+          //View viewInflated = LayoutInflater.from(NewContact.this).inflate(R.layout.comment_alert_dialog, null, false);
+
+          //commentname_alertdialog.setView(viewInflated);
+
+
+          //alertdialog_edittext = (EditText) findViewById(R.id.input);
+
+          final EditText alertdialog_edittext = new EditText(NewContact.this);
 
           commentname_alertdialog.setTitle("Ur Comment:");
-          //start the following xml file/ layout
-          //View viewInflated = LayoutInflater.from(NewContact.this).inflate(R.layout.comment_text_pop_up, null, false);
-          commentname_alertdialog.setView(edittext);
+
+          commentname_alertdialog.setView(alertdialog_edittext);
+
+
+          //set the text input type
+          alertdialog_edittext.setInputType(InputType.TYPE_CLASS_TEXT);
+          //set the max length of characters for the edittext
+          alertdialog_edittext.setFilters(new InputFilter[] { new InputFilter.LengthFilter(385)});
+
+          alertdialog_edittext.setLines(11);
+
+          //****
+          String CommentTextValue = commentname.getText().toString();
+          setTextFromComment(CommentTextValue);
+
+          Toast.makeText(getApplicationContext(), CommentTextValue, Toast.LENGTH_LONG).show();
+
+
+          //commentname_alertdialog.setView(viewInflated);
 
           // Set up the buttons
           commentname_alertdialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-              //set a value for the text entered in the alert dialog
-              String YouEditTextValueX = edittext.getText().toString();
-              if (YouEditTextValueX.length() > 0) {
+              //set YouEditTextValueX, a value for the text entered in the alert dialog
+              String AlertDialogTextValue = alertdialog_edittext.getText().toString();
+              if (AlertDialogTextValue.length() > 0) {
 
                 //call setTextFromDialog function and
                 //pass the text string entered in the alert dialog
-                setTextFromDialog(YouEditTextValueX);
+                setTextFromDialog(AlertDialogTextValue);
 
                 dialog.dismiss();
-                //we want to copy the text entered in "input", in the alertdialog,
-                //and paste it in commentname
-                // commentname.setText(alertdialog_edittext.getText().toString());
+
               }
             }
           });
@@ -333,19 +359,30 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
           dialog.show();
+
+
+
           return true;
 
         }
         return false;
 
 
-       };
+       }
+
+      //function to pass text entered in comment to alert_dialog
+      private void setTextFromComment(final String textFromComment){
+        alertdialog_edittext.setText(textFromComment);
+      }
+
 
       //function to pass text entered in alert_dialog to commentname edittext
     private void setTextFromDialog(final String textFromDialog){
       commentname.setText(textFromDialog);
     }
     });
+
+
 
 
     //for the Public, phoneContacts, justMe, save and cancel buttons
