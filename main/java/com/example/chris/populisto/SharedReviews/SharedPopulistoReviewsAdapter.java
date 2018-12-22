@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -72,6 +74,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
     //In each populisto_list_row show the items you want to have appearing
     public TextView phone_user_name, date_created, category, name, address, phone, comment;
+    public View separator;
 
     public ReviewHolder(View itemView) {
       super(itemView);
@@ -82,6 +85,16 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
       address = (TextView) itemView.findViewById(R.id.address);
       //phone = (TextView) itemView.findViewById(R.id.phone);
       comment = (TextView) itemView.findViewById(R.id.comment);
+      separator = (View) itemView.findViewById(R.id.separator);
+
+      //fade to white...
+      Shader myShader = new LinearGradient(
+          //start gradient at point (0,40) down to (0,0)
+          0, 40, 0, 0,
+          Color.WHITE, Color.BLACK,
+          Shader.TileMode.CLAMP);
+      comment.getPaint().setShader(myShader);
+
 
     }
 
@@ -180,7 +193,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 //    ((ReviewHolder) viewHolder).name.setText("Namey: " + r.getName());
     ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
 //    ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
-    ((ReviewHolder) viewHolder).comment.setText("Your Comment: " + r.getComment());
+    ((ReviewHolder) viewHolder).comment.setText("Comment: " + r.getComment());
 
     //set an onClick listener for the cell, if it's clicked anywhere
     ((ReviewHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {

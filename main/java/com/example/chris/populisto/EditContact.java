@@ -16,10 +16,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -91,6 +95,8 @@ public class EditContact extends AppCompatActivity {
   private EditText phonename;
   private EditText addressname;
   private EditText commentname;
+
+  private EditText alertdialog_edittext;
 
   //this is an integer, different to the string public_or_private in ViewContact. Not related
   int public_or_private;
@@ -188,6 +194,110 @@ public class EditContact extends AppCompatActivity {
     phonename = (EditText) findViewById(R.id.textViewPhone);
     addressname = (EditText) findViewById(R.id.textViewAddress);
     commentname = (EditText) findViewById(R.id.textViewComment);
+
+
+    //when user touches on "commentname" edittext we want the alertdialog to open
+    commentname.setOnTouchListener(new View.OnTouchListener() {
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+
+        //when user lifts finger....
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+          AlertDialog.Builder commentname_alertdialog = new AlertDialog.Builder(EditContact.this);
+
+          //new EditText
+          alertdialog_edittext = new EditText(EditContact.this);
+
+          commentname_alertdialog.setTitle("Ur Comment:");
+          commentname_alertdialog.setView(alertdialog_edittext);
+
+          //set the text input type
+          alertdialog_edittext.setInputType(InputType.TYPE_CLASS_TEXT);
+          //set the max length of characters for the edittext
+          alertdialog_edittext.setFilters(new InputFilter[] { new InputFilter.LengthFilter(385)});
+          //set to multi-line
+          alertdialog_edittext.setSingleLine(false);
+          alertdialog_edittext.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+
+          alertdialog_edittext.setLines(11);
+
+          //so we can toast a message if text limit is reached
+          alertdialog_edittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+              //toast if text runs on
+              if (alertdialog_edittext.length() > 384) {
+                Toast.makeText(EditContact.this, "Limit reached", Toast.LENGTH_SHORT).show();
+              }
+            }
+          });
+
+          //set a string to the value of the commentname edittext
+          String CommentTextValue = commentname.getText().toString();
+          setTextFromComment(CommentTextValue);
+
+          // Set up the buttons
+          commentname_alertdialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+              //set AlertDialogTextValue, a value for the text entered in the alert dialog
+              String AlertDialogTextValue = alertdialog_edittext.getText().toString();
+
+                //call setTextFromDialog function and
+                //pass the text string entered in the alert dialog
+                setTextFromDialog(AlertDialogTextValue);
+
+                dialog.dismiss();
+
+            }
+          });
+          commentname_alertdialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+              dialog.cancel();
+            }
+          });
+
+          AlertDialog dialog = commentname_alertdialog.create();
+          dialog.setCanceledOnTouchOutside(false);
+
+          //show keyboard
+          dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+          dialog.show();
+
+          return true;
+
+        }
+        return false;
+
+      }
+
+      //function to pass text entered in comment to alert_dialog
+      private void setTextFromComment(final String textFromComment){
+        alertdialog_edittext.setText(textFromComment);
+        //make the cursor appear at the end of the text in alertdialog
+        alertdialog_edittext.setSelection(alertdialog_edittext.getText().length());
+
+      }
+
+      //function to pass text entered in alert_dialog back to commentname edittext
+      private void setTextFromDialog(final String textFromDialog){
+        commentname.setText(textFromDialog);
+      }
+    });
 
     //for the save button
     save = (Button) findViewById(R.id.save);

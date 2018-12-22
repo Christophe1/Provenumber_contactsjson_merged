@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -297,42 +298,33 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         if (event.getAction() == MotionEvent.ACTION_UP) {
           AlertDialog.Builder commentname_alertdialog = new AlertDialog.Builder(NewContact.this);
 
-          //View viewInflated = LayoutInflater.from(NewContact.this).inflate(R.layout.comment_alert_dialog, null, false);
-
-          //commentname_alertdialog.setView(viewInflated);
-
-
-          //alertdialog_edittext = (EditText) findViewById(R.id.input);
-
-          final EditText alertdialog_edittext = new EditText(NewContact.this);
+          alertdialog_edittext = new EditText(NewContact.this);
 
           commentname_alertdialog.setTitle("Ur Comment:");
 
           commentname_alertdialog.setView(alertdialog_edittext);
-
 
           //set the text input type
           alertdialog_edittext.setInputType(InputType.TYPE_CLASS_TEXT);
           //set the max length of characters for the edittext
           alertdialog_edittext.setFilters(new InputFilter[] { new InputFilter.LengthFilter(385)});
 
+          //set to multi-line
+          alertdialog_edittext.setSingleLine(false);
+          alertdialog_edittext.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+
           alertdialog_edittext.setLines(11);
 
-          //****
+          //set a string to the value of the commentname edittext
           String CommentTextValue = commentname.getText().toString();
           setTextFromComment(CommentTextValue);
-
-          Toast.makeText(getApplicationContext(), CommentTextValue, Toast.LENGTH_LONG).show();
-
-
-          //commentname_alertdialog.setView(viewInflated);
 
           // Set up the buttons
           commentname_alertdialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-              //set YouEditTextValueX, a value for the text entered in the alert dialog
+              //set AlertDialogTextValue, a value for the text entered in the alert dialog
               String AlertDialogTextValue = alertdialog_edittext.getText().toString();
               if (AlertDialogTextValue.length() > 0) {
 
@@ -360,13 +352,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
           dialog.show();
 
-
-
           return true;
 
         }
         return false;
-
 
        }
 
@@ -374,7 +363,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       private void setTextFromComment(final String textFromComment){
         alertdialog_edittext.setText(textFromComment);
       }
-
 
       //function to pass text entered in alert_dialog to commentname edittext
     private void setTextFromDialog(final String textFromDialog){
