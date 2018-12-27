@@ -194,7 +194,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   //final Context context = this;
 
-  String first_part;
+  String date;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -488,7 +488,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 review.setComment(obj.getString("comment"));
 
                 //get the part of the object "date_created"
-                String date = obj.getString("date_created");
+                date = obj.getString("date_created");
 
                 //we only want the date stuff, not the time in seconds etc.
                 //and we want it formatted like this : 11 October 2018.
@@ -570,12 +570,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                             //System.out.println("all phones and names :" + jsonArray);
 
                             //get the part of the object "date_created" from Random_Reviews.php
-                            String date2 = obj.getString("date_created");
+                            //String date = obj.getString("date_created");
 
                             //we only want the date stuff, not the time in seconds etc.
                             //and we want it formatted like this : 11 October 2018.
                             //not like "2018-11-09 08:04:37
-                            review.setDate_created(getDateandFormat(date2));
+                            review.setDate_created(getDateandFormat(date));
                             //get 0,1 or 2 value, for Just U, private or public
                             review.setPublicorprivate(obj.getString("publicorprivate"));
                             //we are getting the reviewid so we can pull extra matching info,
@@ -1059,7 +1059,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setReviewid(obj.getString("reviewid"));
                 //sharedReview.setDate_created("world wide web");
 
-                sharedReview.setDate_created(obj.getString("date_created"));
+                //sharedReview.setDate_created(obj.getString("date_created"));
+
+                //we only want the date stuff, not the time in seconds etc.
+                //and we want it formatted like this : 11 October 2018.
+                //not like "2018-11-09 08:04:37
+                sharedReview.setDate_created(getDateandFormat(date));
 
                 //set the category part of the object to that matching reviewid
                 sharedReview.setCategory(obj.getString("category"));
@@ -1114,6 +1119,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setPublicorprivate(obj.getString("publicorprivate"));
                 //we are getting the reviewid so we can pull extra matching info,
                 sharedReview.setReviewid(obj.getString("reviewid"));
+
+                //we only want the date stuff, not the time in seconds etc.
+                //and we want it formatted like this : 11 October 2018.
+                //not like "2018-11-09 08:04:37
+                sharedReview.setDate_created(getDateandFormat(date));
+
                 //set the category part of the object to that matching reviewid
                 sharedReview.setCategory(obj.getString("category"));
                 //etc...
@@ -1213,6 +1224,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //we are getting the reviewid from the db so we can pull extra matching info,
                 sharedReview.setReviewid(obj.getString("reviewid"));
                 //set the category part of the object to that matching reviewid
+
+                //we only want the date stuff, not the time in seconds etc.
+                //and we want it formatted like this : 11 October 2018.
+                //not like "2018-11-09 08:04:37
+                sharedReview.setDate_created(getDateandFormat(date));
+
                 sharedReview.setCategory(obj.getString("category"));
                 //etc...
                 sharedReview.setName(obj.getString("name"));

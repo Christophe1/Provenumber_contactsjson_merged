@@ -105,9 +105,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
   private EditText alertdialog_edittext;
 
-  //the edittext for alertdialog, of commentname popup
-  //private EditText alertdialog_edittext;
-
   //if user has no contacts on his phone, like if no
   //permission has been given to getPhoneContacts
   TextView noContactsFound;
@@ -128,8 +125,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
   //For the recycler view, containing the phone contacts
   RecyclerView recyclerView;
-  PopulistoContactsAdapter adapter;
+  //PopulistoContactsAdapter adapter;
 
+  //for categories autocomplete
   private AutoCompleteTextView AutoCompTextViewcategoryList;
 
   //for Google Address
@@ -137,6 +135,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   private AutoCompleteTextView AutoCompTextViewAddress;
   private GoogleApiClient mGoogleApiClient;
 
+  //for autocomplete of categories, the php file will get categories available to user
+  //to pick from
   private static final String jsonString = "http://www.populisto.com/CategoryList.php";
 
   private ArrayList<CategoryList> existingCategoryList;
@@ -145,7 +145,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
 
   //sharedprefs for holding all phone numbers of contacts
-  SharedPreferences sharedPreferencesallPhonesofContacts;
+  //SharedPreferences sharedPreferencesallPhonesofContacts;
 
 
   @Override
@@ -156,11 +156,12 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
     noContactsFound = (TextView) findViewById(R.id.noContactsFoundView);
 
-
     existingCategoryList = new ArrayList<>();
 
+    //for categories autocomplete...
     AutoCompTextViewcategoryList = (AutoCompleteTextView) findViewById(R.id.textViewCategory);
 
+    //for address autocomplete...
     AutoCompTextViewAddress = (AutoCompleteTextView) findViewById(R.id.textViewAddress);
 
 
@@ -314,6 +315,29 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           alertdialog_edittext.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
 
           alertdialog_edittext.setLines(11);
+
+
+          //so we can toast a message if text limit is reached
+          alertdialog_edittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+              //toast if text runs on
+              if (alertdialog_edittext.length() > 383) {
+                Toast.makeText(NewContact.this, "Limit reached", Toast.LENGTH_SHORT).show();
+              }
+            }
+          });
 
           //set a string to the value of the commentname edittext
           String CommentTextValue = commentname.getText().toString();
@@ -714,7 +738,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //public_or_private column, if saved in this state
         public_or_private = 2;
 
-        Toast.makeText(NewContact.this, "Everyone can see, ur number is masked", Toast.LENGTH_SHORT).show();
+        Toast.makeText(NewContact.this, "Everyone can see, ur number is masked to non-contacts", Toast.LENGTH_SHORT).show();
 
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 

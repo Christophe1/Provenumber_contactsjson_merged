@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,8 +38,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.tutorialspoint.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -50,7 +58,13 @@ import static com.example.chris.populisto.PopulistoContactsAdapter.checkedContac
 import static com.example.chris.populisto.PopulistoContactsAdapter.theContactsList;
 import static java.lang.String.valueOf;
 
-public class EditContact extends AppCompatActivity {
+public class EditContact extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
+
+  @Override
+  public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+  }
 
   // this is the php file name where to select from.
   // we will post the category, name, phone, address and comment into Php and
@@ -78,6 +92,25 @@ public class EditContact extends AppCompatActivity {
 
   //For the recycler view, containing the phone contacts
   RecyclerView recyclerView;
+
+  //for categories autocomplete
+  private AutoCompleteTextView AutoCompTextViewcategoryList;
+
+  //for Google Address
+  private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
+  private AutoCompleteTextView AutoCompTextViewAddress;
+  private GoogleApiClient mGoogleApiClient;
+
+
+  //for autocomplete of categories, the php file will get categories available to user
+  //to pick from
+  private static final String jsonString = "http://www.populisto.com/CategoryList.php";
+
+  private ArrayList<CategoryList> existingCategoryList;
+
+
+  private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
+
 
   //this is the review of the current activity
   String review_id;
@@ -130,7 +163,29 @@ public class EditContact extends AppCompatActivity {
 
     noContactsFound = (TextView) findViewById(R.id.noContactsFoundView);
 
+    existingCategoryList = new ArrayList<>();
+
+    //for categories autocomplete...
+    AutoCompTextViewcategoryList = (AutoCompleteTextView) findViewById(R.id.textViewCategory);
+
+    //for address autocomplete...
+    AutoCompTextViewAddress = (AutoCompleteTextView) findViewById(R.id.textViewAddress);
+
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
+
+    // Create a GoogleApiClient instance
+    mGoogleApiClient = new GoogleApiClient
+        .Builder(this)
+        .addApi(Places.GEO_DATA_API)
+        .addApi(Places.PLACE_DETECTION_API)
+        .enableAutoManage(this, 0, this)
+        .build();
+
+    //Google Places
+    mPlaceAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, mGoogleApiClient, LAT_LNG_BOUNDS, null);
+
+    AutoCompTextViewAddress.setAdapter(mPlaceAutoCompleteAdapter);
+
 
     //put in a toolbar
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -237,7 +292,7 @@ public class EditContact extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
 
               //toast if text runs on
-              if (alertdialog_edittext.length() > 384) {
+              if (alertdialog_edittext.length() > 383) {
                 Toast.makeText(EditContact.this, "Limit reached", Toast.LENGTH_SHORT).show();
               }
             }
@@ -461,6 +516,107 @@ public class EditContact extends AppCompatActivity {
     });
 
   }
+
+  //load this function when the activity is created, put categories
+  //in autocomplete
+  public void getCategoryList() {
+
+    StringRequest request = new StringRequest(Request.Method.POST, jsonString,
+        new Response.Listener<String>() {
+
+          @Override
+          public void onResponse(String response) {
+
+            Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+
+            try {
+
+              //extract the individual details in jsonString
+              existingCategoryList = extractCategoryList(response);
+
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+
+            //context, layout, list of users
+            CategoryListAdapter userAdapter = new CategoryListAdapter(getApplicationContext(), R.layout.categorylist_dropdown_layout, existingCategoryList);
+
+            AutoCompTextViewcategoryList.setAdapter(userAdapter);
+            AutoCompTextViewcategoryList.setThreshold(1);
+
+          }
+
+
+        }, new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError error) {
+
+      }
+    })
+
+    {
+      @Override
+      //post info to php
+      protected Map<String, String> getParams() {
+        Map<String, String> params = new HashMap<String, String>();
+        //phoneNoofUser is the value we get from Android, the user's phonenumber.
+        //the key,KEY_PHONENUMBER_USER, is "phonenumberofuser". When we see "phonenumberofuser" in our php,
+        //put in phoneNoofUserCheck
+        System.out.println("NewContact2: phone number of user is " + phoneNoofUserCheck);
+        params.put("phonenumberofuser", phoneNoofUserCheck);
+        return params;
+
+      }
+    };
+
+
+    AppController.getInstance().addToRequestQueue(request);
+
+  }
+
+  //for dropdown autocomplete of categories -
+  //extract the individual details in jsonString
+  private ArrayList<CategoryList> extractCategoryList(String response) {
+
+    //make a list that will hold cat_id and name
+    ArrayList<CategoryList> list = new ArrayList<>();
+
+    try {
+      //we are getting response from CategoryList.php
+      JSONObject rootJO = new JSONObject(response);
+
+      //break down the array in the JSON object
+      JSONArray userJA = rootJO.getJSONArray("results");
+
+      for (int i2 = 0; i2 < userJA.length(); i2++) {
+
+        JSONObject jo = userJA.getJSONObject(i2);
+
+        //extract values from each key in the results array
+        int id = jo.getInt("cat_id");
+        String name = jo.getString("cat_name");
+
+        //make a new categoryList object
+        CategoryList categoryList = new CategoryList(id, name);
+
+        //add the object to the list array
+        list.add(categoryList);
+
+        Log.e("Parse JSON", "id: " + id + " name: " + name);
+      }
+
+      // Toast.makeText(getApplicationContext(), existingCategoryList.toString(), Toast.LENGTH_LONG).show();
+
+
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+
+    return list;
+  }
+
+
+
 
 
   //for the SAVE contact
@@ -775,6 +931,9 @@ public class EditContact extends AppCompatActivity {
 
       }
 
+      //call the getCategoryList function, it will load all the categories
+      //in autocompletetextview available to own-user
+      getCategoryList();
       return null;
 
 
