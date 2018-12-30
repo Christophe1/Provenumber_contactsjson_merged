@@ -451,14 +451,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //for each responseObject/review
                   (int i = 0; i < responseObject.length(); i++) {
 
-               /* if (responseObject.length() == 10) {
-                  Toast.makeText(PopulistoListView.this, "it's 12", Toast.LENGTH_LONG).show();
-                  showRandomSharedReviews();
-                  //just show it once
-                  break;
-
-                }*/
-
                 //for each responseObject in the array, name it obj
                 //1 obj = 1 review, consisting of reviewid, category, name, phone,comment...
                 JSONObject obj = responseObject.getJSONObject(i);
@@ -540,7 +532,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                           //name our JSONObject User_Private_Public_Obj, which is response from server
                           JSONObject User_Private_Public_Obj = new JSONObject(response);
 
-                          //Now break up the responsef from server
+                          //Now break up the response from server
                           //We want the JSON Array part, "private_review_ids"
                           JSONArray private_ids = User_Private_Public_Obj.getJSONArray("private_review_ids");
 
@@ -570,12 +562,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                             //System.out.println("all phones and names :" + jsonArray);
 
                             //get the part of the object "date_created" from Random_Reviews.php
-                            //String date = obj.getString("date_created");
+                            String date2 = obj.getString("date_created");
 
                             //we only want the date stuff, not the time in seconds etc.
                             //and we want it formatted like this : 11 October 2018.
                             //not like "2018-11-09 08:04:37
-                            review.setDate_created(getDateandFormat(date));
+                            review.setDate_created(getDateandFormat(date2));
                             //get 0,1 or 2 value, for Just U, private or public
                             review.setPublicorprivate(obj.getString("publicorprivate"));
                             //we are getting the reviewid so we can pull extra matching info,
@@ -1059,8 +1051,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setReviewid(obj.getString("reviewid"));
                 //sharedReview.setDate_created("world wide web");
 
-                //sharedReview.setDate_created(obj.getString("date_created"));
-
                 //we only want the date stuff, not the time in seconds etc.
                 //and we want it formatted like this : 11 October 2018.
                 //not like "2018-11-09 08:04:37
@@ -1120,10 +1110,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //we are getting the reviewid so we can pull extra matching info,
                 sharedReview.setReviewid(obj.getString("reviewid"));
 
+                //get the part of the object "date_created" from each review
+                //that appears in search results
+                String date3 = obj.getString("date_created");
+
                 //we only want the date stuff, not the time in seconds etc.
                 //and we want it formatted like this : 11 October 2018.
                 //not like "2018-11-09 08:04:37
-                sharedReview.setDate_created(getDateandFormat(date));
+                sharedReview.setDate_created(getDateandFormat(date3));
 
                 //set the category part of the object to that matching reviewid
                 sharedReview.setCategory(obj.getString("category"));
@@ -1225,10 +1219,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setReviewid(obj.getString("reviewid"));
                 //set the category part of the object to that matching reviewid
 
+                //get the part of the object "date_created" from each review
+                //that appears in search results
+                String date4 = obj.getString("date_created");
+
                 //we only want the date stuff, not the time in seconds etc.
                 //and we want it formatted like this : 11 October 2018.
                 //not like "2018-11-09 08:04:37
-                sharedReview.setDate_created(getDateandFormat(date));
+                sharedReview.setDate_created(getDateandFormat(date4));
 
                 sharedReview.setCategory(obj.getString("category"));
                 //etc...

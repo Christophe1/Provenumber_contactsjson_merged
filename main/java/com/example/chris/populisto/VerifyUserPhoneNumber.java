@@ -104,7 +104,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   // we will be making all phone contacts as a JsonArray
   JSONArray jsonArrayAllPhonesandNamesofContacts = new JSONArray();
 
-  //matching contacts, those on phone and populisto users
+  //matching contacts, those on phone who are populisto users
   public static final ArrayList<String> MatchingContactsAsArrayList = new ArrayList<String>();
   //ArrayList<String> MatchingContactsAsArrayList;
 
@@ -908,9 +908,18 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //for every object in the Array
               for (int x = 0; x < Object.length(); x++) {
                 final JSONObject obj = Object.getJSONObject(x);
+
+                //make our arraylist, matchingcontactsasarraylist, into a list of numbers from the server
                 //strip out the phone number
                 //so it will be like: [+353864677745, +35387123456, etc...]
                 MatchingContactsAsArrayList.add(obj.getString("phone_number"));
+
+                //hopefully to stop duplicates sometimes happening in MatchingContactsAsArrayList...
+                HashSet<String> hashSet = new HashSet<String>();
+                hashSet.addAll(MatchingContactsAsArrayList);
+                MatchingContactsAsArrayList.clear();
+                MatchingContactsAsArrayList.addAll(hashSet);
+
 
               }
               System.out.println("VerifyUserPhoneNumber: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
@@ -925,7 +934,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
               editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
               editorMatchingContactsAsArrayList.commit();
-              System.out.println("VerifyUserPhoneNumber2: jsonMatchingContactsAsArrayList :" + jsonMatchingContactsAsArrayList);
+              System.out.println("VerifyUserPhoneNumber2: jsonMatcnjm ggggggggg           hingContactsAsArrayList :" + jsonMatchingContactsAsArrayList);
               System.out.println("VerifyUserPhoneNumber2: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
               System.out.println("phonenoofuser" + phoneNoofUser);
