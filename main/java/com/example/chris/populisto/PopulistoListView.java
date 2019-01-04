@@ -1051,10 +1051,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 sharedReview.setReviewid(obj.getString("reviewid"));
                 //sharedReview.setDate_created("world wide web");
 
+                //get the part of the object "date_created"
+                String date1 = obj.getString("date_created");
+
                 //we only want the date stuff, not the time in seconds etc.
                 //and we want it formatted like this : 11 October 2018.
                 //not like "2018-11-09 08:04:37
-                sharedReview.setDate_created(getDateandFormat(date));
+                sharedReview.setDate_created(getDateandFormat(date1));
 
                 //set the category part of the object to that matching reviewid
                 sharedReview.setCategory(obj.getString("category"));

@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -1019,6 +1021,35 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
         phoneContacts.setBackgroundResource(R.drawable.buttonshape);
         justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
+        //for boxes
+        LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
+        LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
+        LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
+        LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
+        LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
+
+        GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
+            .findDrawableByLayerId(R.id.textbox_shape);
+
+        // Change background color of the textbox
+        //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
+
+        // Change stroke colour to GREEN. (Assumes 2px stroke width.)
+        gradientDrawable1.setStroke(2, Color.parseColor("#2AB40E"));
+        gradientDrawable2.setStroke(2, Color.parseColor("#2AB40E"));
+        gradientDrawable3.setStroke(2, Color.parseColor("#2AB40E"));
+        gradientDrawable4.setStroke(2, Color.parseColor("#2AB40E"));
+        gradientDrawable5.setStroke(2, Color.parseColor("#2AB40E"));
+
+
         //set sharing to Public
         // This will be uploaded to server to review table,
         //public_or_private column, if saved in this state
@@ -1096,6 +1127,36 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
         publicContacts.setBackgroundResource(R.drawable.buttonshape);
         justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
+
+        //for boxes
+        LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
+        LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
+        LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
+        LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
+        LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
+
+        GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
+            .findDrawableByLayerId(R.id.textbox_shape);
+
+        // Change background color of the textbox
+        //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
+
+        // Change stroke color to BLUE. (Assumes 2px stroke width.)
+        gradientDrawable1.setStroke(2, Color.parseColor("#0A7FDA"));
+        gradientDrawable2.setStroke(2, Color.parseColor("#0A7FDA"));
+        gradientDrawable3.setStroke(2, Color.parseColor("#0A7FDA"));
+        gradientDrawable4.setStroke(2, Color.parseColor("#0A7FDA"));
+        gradientDrawable5.setStroke(2, Color.parseColor("#0A7FDA"));
+
+
         //set sharing to Phone Contacts
         // This will be uploaded to server into review table,
         //public_or_private column, if saved in this state
@@ -1129,23 +1190,6 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
 
 
           noContactFoundCheck = 0;
-
-/*
-          //keep the slightly rounded shape, when the button is pressed
-          phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
-
-          //keep the slightly rounded shape of the others, but still grey
-          publicContacts.setBackgroundResource(R.drawable.buttonshape);
-          justMeContacts.setBackgroundResource(R.drawable.buttonshape);
-
-          //set sharing to Phone Contacts
-          // This will be uploaded to server to review table,
-          //public_or_private column, if saved in this state
-          public_or_private = 1;
-
-          Toast.makeText(EditContact.this, "public_or_private is:" + valueOf(public_or_private), Toast.LENGTH_LONG).show();
-*/
-
 
           //loop through the matching contacts
           int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
@@ -1187,6 +1231,35 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
         //keep the slightly rounded shape of the others, but still grey
         publicContacts.setBackgroundResource(R.drawable.buttonshape);
         phoneContacts.setBackgroundResource(R.drawable.buttonshape);
+
+
+        //for boxes
+        LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
+        LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
+        LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
+        LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
+        LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
+
+        GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
+            .findDrawableByLayerId(R.id.textbox_shape);
+
+        // Change background color of the textbox
+        //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
+
+        // Change stroke color to BROWN. (Assumes 2px stroke width.)
+        gradientDrawable1.setStroke(2, Color.parseColor("#DA850B"));
+        gradientDrawable2.setStroke(2, Color.parseColor("#DA850B"));
+        gradientDrawable3.setStroke(2, Color.parseColor("#DA850B"));
+        gradientDrawable4.setStroke(2, Color.parseColor("#DA850B"));
+        gradientDrawable5.setStroke(2, Color.parseColor("#DA850B"));
 
         //set sharing to Just Me
         // This will be uploaded to server to review table,

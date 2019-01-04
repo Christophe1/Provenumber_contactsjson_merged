@@ -6,9 +6,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +48,7 @@ import java.util.Map;
 
 import static com.example.chris.populisto.PopulistoContactsAdapter.allPhonesofContacts;
 import static com.example.tutorialspoint.R.id.rv;
+import static com.example.tutorialspoint.R.id.textViewCategory;
 import static com.example.tutorialspoint.R.layout.activity_view_contact;
 
 //DESCRIPTION OF ACTIVITY
@@ -408,26 +412,120 @@ public class ViewContact extends AppCompatActivity {
 
     //pub_or_priv is an intent passed from UPopulistoListAdapter
     if (pub_or_priv == 0) {
-      //change colour depending on value
-      sharedWith.setTextColor(Color.parseColor("#DA850B"));
-      shared_status = "Just U";
+
+      //change colours depending on value of pub_or_priv
+
       //for "U"
       textphoneNameonPhone.setTextColor(Color.parseColor("#DA850B"));
       textphoneNameonPhone.setText("U");
+
+      //shared status
+      sharedWith.setTextColor(Color.parseColor("#DA850B"));
+      shared_status = "Just U";
+
+      //for boxes
+      LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
+      LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
+      LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
+      LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
+      LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
+
+      GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
+          .findDrawableByLayerId(R.id.textbox_shape);
+
+      // Change background color of the textbox
+    //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
+
+      // Change stroke color. (Assumes 2px stroke width.)
+      gradientDrawable1.setStroke(2, Color.parseColor("#DA850B"));
+      gradientDrawable2.setStroke(2, Color.parseColor("#DA850B"));
+      gradientDrawable3.setStroke(2, Color.parseColor("#DA850B"));
+      gradientDrawable4.setStroke(2, Color.parseColor("#DA850B"));
+      gradientDrawable5.setStroke(2, Color.parseColor("#DA850B"));
+
     }
 
     if (pub_or_priv == 1) {
-      sharedWith.setTextColor(Color.parseColor("#0A7FDA"));
-      shared_status = "Phone Contacts";
+
       textphoneNameonPhone.setTextColor(Color.parseColor("#0A7FDA"));
       textphoneNameonPhone.setText("U");
+
+      sharedWith.setTextColor(Color.parseColor("#0A7FDA"));
+      shared_status = "Phone Contacts";
+
+      //for boxes
+      LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
+      LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
+      LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
+      LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
+      LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
+
+      GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
+          .findDrawableByLayerId(R.id.textbox_shape);
+
+      // Change background color of the textbox
+      //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
+
+      // Change stroke color. (Assumes 2px stroke width.)
+      gradientDrawable1.setStroke(2, Color.parseColor("#0A7FDA"));
+      gradientDrawable2.setStroke(2, Color.parseColor("#0A7FDA"));
+      gradientDrawable3.setStroke(2, Color.parseColor("#0A7FDA"));
+      gradientDrawable4.setStroke(2, Color.parseColor("#0A7FDA"));
+      gradientDrawable5.setStroke(2, Color.parseColor("#0A7FDA"));
     }
 
     if (pub_or_priv == 2) {
-      sharedWith.setTextColor(Color.parseColor("#2AB40E"));
-      shared_status = "Public";
+
       textphoneNameonPhone.setTextColor(Color.parseColor("#2AB40E"));
       textphoneNameonPhone.setText("U");
+
+      sharedWith.setTextColor(Color.parseColor("#2AB40E"));
+      shared_status = "Public";
+
+      //for boxes
+      LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
+      LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
+      LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
+      LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
+      LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
+
+      GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
+          .findDrawableByLayerId(R.id.textbox_shape);
+      GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
+          .findDrawableByLayerId(R.id.textbox_shape);
+
+      // Change background color of the textbox
+      //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
+
+      // Change stroke color. (Assumes 2px stroke width.)
+      gradientDrawable1.setStroke(2, Color.parseColor("#2AB40E"));
+      gradientDrawable2.setStroke(2, Color.parseColor("#2AB40E"));
+      gradientDrawable3.setStroke(2, Color.parseColor("#2AB40E"));
+      gradientDrawable4.setStroke(2, Color.parseColor("#2AB40E"));
+      gradientDrawable5.setStroke(2, Color.parseColor("#2AB40E"));
+
     }
 
     //put pub_or_priv in the textbox called publicorprivate

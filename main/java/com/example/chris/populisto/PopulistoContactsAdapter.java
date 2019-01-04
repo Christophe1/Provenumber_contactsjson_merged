@@ -257,6 +257,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
       //for every phone number in the checkedContactsAsArrayList array list...
       for (int number2 = 0; number2 < checkedContactsAsArrayList.size(); number2++) {
         // Log.i("MyMessage", "checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
+        System.out.println("PopulistoContactsAdapter: checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
 
         //if a phone number is in our array of checked contacts
         if (checkedContactsAsArrayList.contains(selectPhoneContact.getPhone())) {
@@ -270,23 +271,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     //if the activity is NewContact
     if (whichactivity == 1) {
-
-/*      if (mContext instanceof NewContact) {
-        checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
-
-        PopulistoContactsAdapter.checkedContactsAsArrayList.clear();
-
-      }*/
-
-    //  else {
-        // make a copy of MatchingContactsAsArrayList,
-        //these will all be checked by default
-/*
-        checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
-*/
-     // }
-
-
 
       //if the row is a matching contact
       if (viewHolder.getItemViewType() == 1)
@@ -341,8 +325,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
               if (mContext instanceof NewContact) {
                 ((NewContact) mContext).changeColorofJustMe();
-               // Toast.makeText(context_type, "checkedContactsAsArrayList: " + checkedContactsAsArrayList.size(), Toast.LENGTH_SHORT).show();
-               // Toast.makeText(context_type, "count is 0!", Toast.LENGTH_SHORT).show();
+
 
               }
 
@@ -516,9 +499,6 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     }
 
- //   Log.i("EditContact-MyMessage", "whichactivity=2, checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
-//        Log.i("EditContact-MyMessage", "whichactivity=2,number in checkedContactsAsArrayList is " + checkedContactsAsArrayList.size());
-
   }
 
 
@@ -529,15 +509,5 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     return theContactsList.size();
   }
 
-/*    public interface OnCheckBoxClickListener {
-        void onCheckBoxClick(boolean ischecked);
-    }
-    public void SetOnCheckBoxClickListener(final OnCheckBoxClickListener onCheckBoxClickListener) {
-        this.onCheckBoxClickListener = onCheckBoxClickListener;
-    }*/
-
-/*    private void countCheck(boolean isChecked) {
-        checkAccumulator += isChecked ? 1 : -1 ;
-    }*/
 
 }
