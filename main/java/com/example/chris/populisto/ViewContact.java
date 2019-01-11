@@ -38,9 +38,11 @@ import com.example.tutorialspoint.R;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -61,12 +63,12 @@ public class ViewContact extends AppCompatActivity {
   // we will post the review id of the review in recyclerView (in PopulistoListView.java) into Php and
   // get the checkedcontacts details.
   // Category, name, phone, address etc... are taken with an Intent from the recyclerView
-  private static final String ViewContact_URL = "http://www.populisto.com/ViewContact.php";
+  private static final String ViewContact_URL = "https://www.populisto.com/ViewContact.php";
 
   // this is for the Delete button, the php file name where to select from.
   // we will post the review_id and delete associated fields - category, name, phone,
   // address and comment from the review table
-  private static final String DeleteContact_URL = "http://www.populisto.com/DeleteContact.php";
+  private static final String DeleteContact_URL = "https://www.populisto.com/DeleteContact.php";
 
   //the edit button, if the user wants to edit a review
   Button edit;
@@ -313,6 +315,8 @@ public class ViewContact extends AppCompatActivity {
           new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+             // System.out.println("onErrorResponse is " + error);
+
               //If there is an error (such as contacting server for example) then
               //show a message like:
               //Sorry, can't contact server right now. Is internet access enabled?, try again, Cancel

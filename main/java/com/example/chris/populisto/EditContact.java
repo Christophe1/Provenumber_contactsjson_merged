@@ -71,7 +71,7 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
   // this is the php file name where to select from.
   // we will post the category, name, phone, address and comment into Php and
   // save with matching review_id
-  private static final String EditContact_URL = "http://www.populisto.com/EditContact.php";
+  private static final String EditContact_URL = "https://www.populisto.com/EditContact.php";
 
   private ProgressDialog pDialog;
 
@@ -106,7 +106,7 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
 
   //for autocomplete of categories, the php file will get categories available to user
   //to pick from
-  private static final String jsonString = "http://www.populisto.com/CategoryList.php";
+  private static final String jsonString = "https://www.populisto.com/CategoryList.php";
 
   private ArrayList<CategoryList> existingCategoryList;
 
@@ -252,6 +252,13 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
     addressname = (EditText) findViewById(R.id.textViewAddress);
     commentname = (EditText) findViewById(R.id.textViewComment);
 
+    //textlistener for the edittext fields, if it starts with
+    //" " then don't let it input in edittext
+    categoryname.addTextChangedListener(generalTextWatcher);
+    namename.addTextChangedListener(generalTextWatcher);
+    phonename.addTextChangedListener(generalTextWatcher);
+    addressname.addTextChangedListener(generalTextWatcher);
+    commentname.addTextChangedListener(generalTextWatcher);
 
     //when user touches on "commentname" edittext we want the alertdialog to open
     commentname.setOnTouchListener(new View.OnTouchListener() {
@@ -1021,41 +1028,17 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
         phoneContacts.setBackgroundResource(R.drawable.buttonshape);
         justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
-        //for boxes
-        LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-        LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-        LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-        LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-        LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
-
-        GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-            .findDrawableByLayerId(R.id.textbox_shape);
-
-        // Change background color of the textbox
-        //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-        // Change stroke colour to GREEN. (Assumes 2px stroke width.)
-        gradientDrawable1.setStroke(2, Color.parseColor("#2AB40E"));
-        gradientDrawable2.setStroke(2, Color.parseColor("#2AB40E"));
-        gradientDrawable3.setStroke(2, Color.parseColor("#2AB40E"));
-        gradientDrawable4.setStroke(2, Color.parseColor("#2AB40E"));
-        gradientDrawable5.setStroke(2, Color.parseColor("#2AB40E"));
-
+        //call the function to change the border colour,
+        //if Phone Contacts button is clicked,
+        //we want the border to be GREEN
+        GlobalFunctions.sharing_border_colour(EditContact.this,"#2AB40E");
 
         //set sharing to Public
         // This will be uploaded to server to review table,
         //public_or_private column, if saved in this state
         public_or_private = 2;
 
-        Toast.makeText(EditContact.this, "Everyone can see, ur number is masked", Toast.LENGTH_SHORT).show();
+        Toast.makeText(EditContact.this, "Everyone can see, ur number is masked to non-contacts", Toast.LENGTH_SHORT).show();
 
         PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
@@ -1127,35 +1110,10 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
         publicContacts.setBackgroundResource(R.drawable.buttonshape);
         justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
-
-        //for boxes
-        LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-        LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-        LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-        LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-        LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
-
-        GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-            .findDrawableByLayerId(R.id.textbox_shape);
-
-        // Change background color of the textbox
-        //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-        // Change stroke color to BLUE. (Assumes 2px stroke width.)
-        gradientDrawable1.setStroke(2, Color.parseColor("#0A7FDA"));
-        gradientDrawable2.setStroke(2, Color.parseColor("#0A7FDA"));
-        gradientDrawable3.setStroke(2, Color.parseColor("#0A7FDA"));
-        gradientDrawable4.setStroke(2, Color.parseColor("#0A7FDA"));
-        gradientDrawable5.setStroke(2, Color.parseColor("#0A7FDA"));
-
+        //call the function to change the border colour,
+        //if Phone Contacts button is clicked,
+        //we want the border to be BLUE
+        GlobalFunctions.sharing_border_colour(EditContact.this,"#0A7FDA");
 
         //set sharing to Phone Contacts
         // This will be uploaded to server into review table,
@@ -1197,9 +1155,12 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
           //i is the number of matching contacts that there are
           for (int i = 0; i < count; i++) {
 
-            PopulistoContactsAdapter.checkedContactsAsArrayList.add(i, PopulistoContactsAdapter.MatchingContactsAsArrayList.get(i));
-
-            //check all matching contacts, we want it to be 'Phone Contacts'
+            //add the phone number to the arrayList
+            //if it does not exist there already
+            if (!checkedContactsAsArrayList.contains(theContactsList.get(i).getPhone())) {
+              checkedContactsAsArrayList.add(theContactsList.get(i).getPhone());;
+            }
+            //check mark all matching contacts, we want it to be 'Phone Contacts'
             PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
             //we need to notify the recyclerview that changes may have been made
@@ -1232,34 +1193,10 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
         publicContacts.setBackgroundResource(R.drawable.buttonshape);
         phoneContacts.setBackgroundResource(R.drawable.buttonshape);
 
-
-        //for boxes
-        LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-        LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-        LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-        LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-        LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
-
-        GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-            .findDrawableByLayerId(R.id.textbox_shape);
-
-        // Change background color of the textbox
-        //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-        // Change stroke color to BROWN. (Assumes 2px stroke width.)
-        gradientDrawable1.setStroke(2, Color.parseColor("#DA850B"));
-        gradientDrawable2.setStroke(2, Color.parseColor("#DA850B"));
-        gradientDrawable3.setStroke(2, Color.parseColor("#DA850B"));
-        gradientDrawable4.setStroke(2, Color.parseColor("#DA850B"));
-        gradientDrawable5.setStroke(2, Color.parseColor("#DA850B"));
+        //call the function to change the border colour,
+        //if Phone Contacts button is clicked,
+        //we want the border to be ORANGE
+        GlobalFunctions.sharing_border_colour(EditContact.this,"#DA850B");
 
         //set sharing to Just Me
         // This will be uploaded to server to review table,
@@ -1362,5 +1299,39 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
     super.onDestroy();
     PopulistoContactsAdapter.checkBoxhasChanged = false;
   }
+
+
+  //textlistener for the edittext fields in NewContact
+  // and EditContact, if it starts with
+  //" " then don't let it input in edittext
+  private TextWatcher generalTextWatcher = new TextWatcher() {
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int start, int before,
+                              int count) {
+
+      String str = charSequence.toString();
+      //if it starts with " " then don't recognise it
+      if (str.equals(" ")) {
+        categoryname.setText("");
+        namename.setText("");
+        phonename.setText("");
+        addressname.setText("");
+      }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count,
+                                  int after) {
+
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+  };
 
 }

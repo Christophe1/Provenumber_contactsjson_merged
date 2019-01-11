@@ -87,13 +87,13 @@ import static com.example.tutorialspoint.R.layout.activity_view_contact;
 public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   // this is the php file name where to insert into the database, the user's phone number
-  private static final String REGISTER_URL = "http://www.populisto.com/insert.php";
+  private static final String REGISTER_URL = "https://www.populisto.com/insert.php";
 
   // this is the php file name where to check if hashcode is in the DB
-  private static final String HASHCHECK_URL = "http://www.populisto.com/HashCompare.php";
+  private static final String HASHCHECK_URL = "https://www.populisto.com/HashCompare.php";
 
   // this is the php file we are contacting with Volley to see what contacts are using the App
-  private static final String CHECKPHONENUMBER_URL = "http://www.populisto.com/checkcontact.php";
+  private static final String CHECKPHONENUMBER_URL = "https://www.populisto.com/checkcontact.php";
 
   //allPhonesofContacts is a list of all the phone numbers in the user's contacts
   public static final ArrayList<String> allPhonesofContacts = new ArrayList<String>();
@@ -308,10 +308,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //dismiss the dialog before showing the error dialog
               //progressDialog.cancel();
 
+              System.out.println("onErrorResponse is " + error);
+
+
               //If there is an error (such as contacting server for example) then
               //show a message like:
               //Sorry, can't contact server right now. Is internet access enabled?, try again, Cancel
-              GlobalFunctions.troubleContactingServerDialog(VerifyUserPhoneNumber.this);
+             // GlobalFunctions.troubleContactingServerDialog(VerifyUserPhoneNumber.this);
 
             }
           }) {

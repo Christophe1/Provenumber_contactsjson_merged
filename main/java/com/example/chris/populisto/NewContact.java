@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,6 +57,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
@@ -74,7 +76,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   // this is the php file name where to save to.
   // we will post the category, name, phone, address, comment etc into Php and
   // create a new review_id
-  private static final String NewContact_URL = "http://www.populisto.com/NewContact.php";
+  private static final String NewContact_URL = "https://www.populisto.com/NewContact.php";
 
   //matching contacts, those on phone and populisto users
   //public static final ArrayList<String> MatchingContactsAsArrayList  = new ArrayList<String>();
@@ -139,7 +141,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
   //for autocomplete of categories, the php file will get categories available to user
   //to pick from
-  private static final String jsonString = "http://www.populisto.com/CategoryList.php";
+  private static final String jsonString = "https://www.populisto.com/CategoryList.php";
 
   private ArrayList<CategoryList> existingCategoryList;
 
@@ -262,35 +264,13 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     addressname = (EditText) findViewById(R.id.textViewAddress);
     commentname = (EditText) findViewById(R.id.textViewComment);
 
-
-
-
-
-    //textlistener for categoryname, if it starts with
+    //textlistener for the edittext fields, if it starts with
     //" " then don't let it input in edittext
-    categoryname.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-      }
-
-      @Override
-      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        String str = charSequence.toString();
-        //if it starts with " " then don't recognise it
-        if (str.equals(" ")) {
-          categoryname.setText("");
-        }
-
-      }
-
-      @Override
-      public void afterTextChanged(Editable editable) {
-
-      }
-    });
-
+    categoryname.addTextChangedListener(generalTextWatcher);
+    namename.addTextChangedListener(generalTextWatcher);
+    phonename.addTextChangedListener(generalTextWatcher);
+    addressname.addTextChangedListener(generalTextWatcher);
+    commentname.addTextChangedListener(generalTextWatcher);
 
     //when user touches on "commentname" edittext we want the alertdialog to open
     commentname.setOnTouchListener(new View.OnTouchListener() {
@@ -735,33 +715,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         phoneContacts.setBackgroundResource(R.drawable.buttonshape);
         justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
-        //for boxes
-        LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-        LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-        LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-        LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-        LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
-
-        GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-            .findDrawableByLayerId(R.id.textbox_shape);
-
-        // Change background color of the textbox
-        //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-        // Change stroke colour to GREEN. (Assumes 2px stroke width.)
-        gradientDrawable1.setStroke(2, Color.parseColor("#2AB40E"));
-        gradientDrawable2.setStroke(2, Color.parseColor("#2AB40E"));
-        gradientDrawable3.setStroke(2, Color.parseColor("#2AB40E"));
-        gradientDrawable4.setStroke(2, Color.parseColor("#2AB40E"));
-        gradientDrawable5.setStroke(2, Color.parseColor("#2AB40E"));
+        //call the function to change the border colour,
+        //if Phone Contacts button is clicked,
+        //we want the border to be GREEN
+        GlobalFunctions.sharing_border_colour(NewContact.this,"#2AB40E");
 
         //set sharing to Public.
         // This will be uploaded to server to review table,
@@ -812,33 +769,11 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           publicContacts.setBackgroundResource(R.drawable.buttonshape);
           justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
-        //for boxes
-        LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-        LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-        LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-        LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-        LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
+        //call the function to change the border colour,
+        //if Phone Contacts button is clicked,
+        //we want the border to be BLUE
+        GlobalFunctions.sharing_border_colour(NewContact.this,"#0A7FDA");
 
-        GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-            .findDrawableByLayerId(R.id.textbox_shape);
-
-        // Change background color of the textbox
-        //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-        // Change stroke color to BLUE. (Assumes 2px stroke width.)
-        gradientDrawable1.setStroke(2, Color.parseColor("#0A7FDA"));
-        gradientDrawable2.setStroke(2, Color.parseColor("#0A7FDA"));
-        gradientDrawable3.setStroke(2, Color.parseColor("#0A7FDA"));
-        gradientDrawable4.setStroke(2, Color.parseColor("#0A7FDA"));
-        gradientDrawable5.setStroke(2, Color.parseColor("#0A7FDA"));
 
           //set sharing to Phone Contacts
           // This will be uploaded to server to review table,
@@ -848,9 +783,18 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           //loop through the matching contacts
           int count = MatchingContactsAsArrayList.size();
 
-          for (int i = 0; i < count; i++) {
+      //  Toast.makeText(NewContact.this, "MatchingContactsAsArrayList size is " + count, Toast.LENGTH_SHORT).show();
 
-            //check all matching contacts, we want it to be 'Phone Contacts'
+        //for each matching contact...
+        for (int i = 0; i < count; i++) {
+
+          //add the phone number to the arrayList
+          //if it does not exist there already
+          if (!checkedContactsAsArrayList.contains(theContactsList.get(i).getPhone())) {
+            checkedContactsAsArrayList.add(theContactsList.get(i).getPhone());;
+          }
+
+            //check mark all matching contacts, we want it to be 'Phone Contacts'
             PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
             //we need to notify the recyclerview that changes may have been made
@@ -878,33 +822,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         publicContacts.setBackgroundResource(R.drawable.buttonshape);
         phoneContacts.setBackgroundResource(R.drawable.buttonshape);
 
-        //for boxes
-        LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-        LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-        LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-        LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-        LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
-
-        GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-            .findDrawableByLayerId(R.id.textbox_shape);
-        GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-            .findDrawableByLayerId(R.id.textbox_shape);
-
-        // Change background color of the textbox
-        //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-        // Change stroke color to BROWN. (Assumes 2px stroke width.)
-        gradientDrawable1.setStroke(2, Color.parseColor("#DA850B"));
-        gradientDrawable2.setStroke(2, Color.parseColor("#DA850B"));
-        gradientDrawable3.setStroke(2, Color.parseColor("#DA850B"));
-        gradientDrawable4.setStroke(2, Color.parseColor("#DA850B"));
-        gradientDrawable5.setStroke(2, Color.parseColor("#DA850B"));
+        //call the function to change the border colour,
+        //if Phone Contacts button is clicked,
+        //we want the border to be ORANGE
+        GlobalFunctions.sharing_border_colour(NewContact.this,"#DA850B");
 
         //set sharing to Just Me
         // This will be uploaded to server to review table,
@@ -959,155 +880,162 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       @Override
       public void onClick(View v) {
 
-        //close the populistolistview class
-        //(we'll be opening it again, will close now so it will be refreshed with new contact details)
-        PopulistoListView.fa.finish();
+        String category_name = categoryname.getText().toString();
 
-        System.out.println("you clicked it, save");
+        if (TextUtils.isEmpty(category_name)) {
+          categoryname.setError("Needs to be filled");
+          return;
+        } else {
 
-        //If permission denied (will only be on Marshmallow +)
-        PackageManager manager = getPackageManager();
-        int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
-        if (hasPermission == manager.PERMISSION_DENIED) {
+          //close the populistolistview class
+          //(we'll be opening it again, will close now so it will be refreshed with new contact details)
+          PopulistoListView.fa.finish();
 
-          try {
-            //add only logged-in phone owner's number to the checkedContacts JSON Array
-            //new JSON Object called phoneOwner
-            JSONObject phoneOwner = new JSONObject();
+          System.out.println("you clicked it, save");
 
-            //add the phone number
-            phoneOwner.put("checkedContact", phoneNoofUserCheck);
+          //If permission denied (will only be on Marshmallow +)
+          PackageManager manager = getPackageManager();
+          int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+          if (hasPermission == manager.PERMISSION_DENIED) {
 
-            //add user's own number to the Array
-            checkedContacts.put(phoneOwner);
+            try {
+              //add only logged-in phone owner's number to the checkedContacts JSON Array
+              //new JSON Object called phoneOwner
+              JSONObject phoneOwner = new JSONObject();
+
+              //add the phone number
+              phoneOwner.put("checkedContact", phoneNoofUserCheck);
+
+              //add user's own number to the Array
+              checkedContacts.put(phoneOwner);
 
 
-          } catch (Exception e) {
-            System.out.println("there's a problem here unfortunately");
-            e.printStackTrace();
-          }
-        } else
-        //if the logged-in user has enabled READ_CONTACTS Permission
-        {
+            } catch (Exception e) {
+              System.out.println("there's a problem here unfortunately");
+              e.printStackTrace();
+            }
+          } else
+          //if the logged-in user has enabled READ_CONTACTS Permission
+          {
 
-          try {
-            //System.out.println("we're in the try part");
+            try {
+              //System.out.println("we're in the try part");
 
-            //loop through the matching contacts
-            int count = MatchingContactsAsArrayList.size();
+              //loop through the matching contacts
+              int count = MatchingContactsAsArrayList.size();
 
-            for (int i = 0; i < count; i++) {
+              for (int i = 0; i < count; i++) {
 
-              //for  contacts that are checked (they can only be matching contacts cause only they have a checkbox)...
-              if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
-                //Toast.makeText(NewContact.this, PopulistoContactsAdapter.theContactsList.get(i).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
+                //for  contacts that are checked (they can only be matching contacts cause only they have a checkbox)...
+                if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
+                  //Toast.makeText(NewContact.this, PopulistoContactsAdapter.theContactsList.get(i).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
 
-                // make each checked contact in selectPhoneContacts
-                // into an individual
-                // JSON object called checkedContact
-                JSONObject checkedContact = new JSONObject();
+                  // make each checked contact in selectPhoneContacts
+                  // into an individual
+                  // JSON object called checkedContact
+                  JSONObject checkedContact = new JSONObject();
 
-                //get the phone number of the checked contact
-                // checkedContact will be of the form {"checkedContact":"+353123456"}
-                checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
+                  //get the phone number of the checked contact
+                  // checkedContact will be of the form {"checkedContact":"+353123456"}
+                  checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
 
-                // Add checkedContact JSON Object to checkedContacts jsonArray
-                //The JSON Array will be of the form
-                // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-                //we will be posting this JSON Array to Php, further down below
-                checkedContacts.put(checkedContact);
-                System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+                  // Add checkedContact JSON Object to checkedContacts jsonArray
+                  //The JSON Array will be of the form
+                  // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                  //we will be posting this JSON Array to Php, further down below
+                  checkedContacts.put(checkedContact);
+                  System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+                }
+
               }
+
+              //add phone owner's number to the checkedContacts JSON Array
+              //new JSON Object called phoneOwner
+              JSONObject phoneOwner = new JSONObject();
+
+              //add the phone number
+              phoneOwner.put("checkedContact", phoneNoofUserCheck);
+              System.out.println("NewContact: phoneOwner: " + phoneOwner);
+
+              //add it to the Array
+              checkedContacts.put(phoneOwner);
+
+              System.out.println("New Contact: checkedContacts JSON Array " + checkedContacts);
+
+
+            } catch (Exception e) {
+              System.out.println("there's a problem here unfortunately");
+              e.printStackTrace();
+            }
+          }
+
+          //When the user clicks save
+          //post phoneNoofUserCheck to NewContact.php and from that
+          //get the user_id in the user table, then post category, name, phone etc...
+          //to the review table
+          StringRequest stringRequest = new StringRequest(Request.Method.POST, NewContact_URL,
+              new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                  //response, this will show the checked numbers being posted
+                  // Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
+                }
+              },
+              new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+
+              }) {
+
+            //post these details to the NewContact.php file and do
+            //stuff with it
+            protected Map<String, String> getParams() {
+              Map<String, String> params = new HashMap<String, String>();
+              //post the phone number to php to get the user_id in the user table
+              params.put("phonenumberofuser", phoneNoofUserCheck);
+              //the second value, categoryname.getText().toString() etc...
+              // is the value we get from Android.
+              //the key is "category", "name" etc.
+              // When we see these in our php,  $_POST["category"],
+              //put in the value from Android
+              params.put("category", categoryname.getText().toString());
+              params.put("name", namename.getText().toString());
+              params.put("phone", phonename.getText().toString());
+              params.put("address", addressname.getText().toString());
+              params.put("comment", commentname.getText().toString());
+              params.put("public_or_private", String.valueOf(public_or_private));
+              System.out.println("public_or_private is " + String.valueOf(public_or_private));
+
+              //this is the JSON Array of checked contacts
+              //it will be of the form
+              //[{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+              params.put("checkedContacts", checkedContacts.toString());
+
+              return params;
 
             }
 
-            //add phone owner's number to the checkedContacts JSON Array
-            //new JSON Object called phoneOwner
-            JSONObject phoneOwner = new JSONObject();
 
-            //add the phone number
-            phoneOwner.put("checkedContact", phoneNoofUserCheck);
-            System.out.println("NewContact: phoneOwner: " + phoneOwner);
-
-            //add it to the Array
-            checkedContacts.put(phoneOwner);
-
-            System.out.println("New Contact: checkedContacts JSON Array " + checkedContacts);
+          };
 
 
-          } catch (Exception e) {
-            System.out.println("there's a problem here unfortunately");
-            e.printStackTrace();
-          }
+          // Adding request to request queue
+          AppController.getInstance().addToRequestQueue(stringRequest);
+
+          //when saved, go back to the PopulistoListView class and update with
+          //the new entry
+          Intent j = new Intent(NewContact.this, PopulistoListView.class);
+          j.putExtra("phonenumberofuser", phoneNoofUserCheck);
+
+          NewContact.this.startActivity(j);
+
+          finish();
+
         }
-
-        //When the user clicks save
-        //post phoneNoofUserCheck to NewContact.php and from that
-        //get the user_id in the user table, then post category, name, phone etc...
-        //to the review table
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, NewContact_URL,
-            new Response.Listener<String>() {
-              @Override
-              public void onResponse(String response) {
-
-                //response, this will show the checked numbers being posted
-               // Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
-              }
-            },
-            new Response.ErrorListener() {
-              @Override
-              public void onErrorResponse(VolleyError error) {
-
-              }
-
-            }) {
-
-          //post these details to the NewContact.php file and do
-          //stuff with it
-          protected Map<String, String> getParams() {
-            Map<String, String> params = new HashMap<String, String>();
-            //post the phone number to php to get the user_id in the user table
-            params.put("phonenumberofuser", phoneNoofUserCheck);
-            //the second value, categoryname.getText().toString() etc...
-            // is the value we get from Android.
-            //the key is "category", "name" etc.
-            // When we see these in our php,  $_POST["category"],
-            //put in the value from Android
-            params.put("category", categoryname.getText().toString());
-            params.put("name", namename.getText().toString());
-            params.put("phone", phonename.getText().toString());
-            params.put("address", addressname.getText().toString());
-            params.put("comment", commentname.getText().toString());
-            params.put("public_or_private", String.valueOf(public_or_private));
-            System.out.println("public_or_private is " + String.valueOf(public_or_private));
-
-            //this is the JSON Array of checked contacts
-            //it will be of the form
-            //[{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-            params.put("checkedContacts", checkedContacts.toString());
-
-            return params;
-
-          }
-
-
-        };
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(stringRequest);
-
-        //when saved, go back to the PopulistoListView class and update with
-        //the new entry
-        Intent j = new Intent(NewContact.this, PopulistoListView.class);
-        j.putExtra("phonenumberofuser", phoneNoofUserCheck);
-
-        NewContact.this.startActivity(j);
-
-        finish();
-
       }
-
     });
 
 
@@ -1117,7 +1045,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   //change the colour of the phoneContacts button
   public void changeColourOfPhoneContacts() {
 
-    checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+    //checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+
 
     //keep the slightly rounded shape, when the button is pressed
     phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
@@ -1126,33 +1055,11 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     publicContacts.setBackgroundResource(R.drawable.buttonshape);
     justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
-    //for boxes
-    LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-    LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-    LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-    LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-    LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
+    //call the function to change the border colour,
+    //if Phone Contacts button is clicked,
+    //we want the border to be BLUE
+    GlobalFunctions.sharing_border_colour(NewContact.this,"#0A7FDA");
 
-    GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-        .findDrawableByLayerId(R.id.textbox_shape);
-    GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-        .findDrawableByLayerId(R.id.textbox_shape);
-    GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-        .findDrawableByLayerId(R.id.textbox_shape);
-    GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-        .findDrawableByLayerId(R.id.textbox_shape);
-    GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-        .findDrawableByLayerId(R.id.textbox_shape);
-
-    // Change background color of the textbox
-    //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-    // Change stroke color to BLUE. (Assumes 2px stroke width.)
-    gradientDrawable1.setStroke(2, Color.parseColor("#0A7FDA"));
-    gradientDrawable2.setStroke(2, Color.parseColor("#0A7FDA"));
-    gradientDrawable3.setStroke(2, Color.parseColor("#0A7FDA"));
-    gradientDrawable4.setStroke(2, Color.parseColor("#0A7FDA"));
-    gradientDrawable5.setStroke(2, Color.parseColor("#0A7FDA"));
 
   }
 
@@ -1168,35 +1075,39 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     phoneContacts.setBackgroundResource(R.drawable.buttonshape);
 
 
-    //for boxes
-    LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-    LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-    LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-    LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-    LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
-
-    GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-        .findDrawableByLayerId(R.id.textbox_shape);
-    GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-        .findDrawableByLayerId(R.id.textbox_shape);
-    GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-        .findDrawableByLayerId(R.id.textbox_shape);
-    GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-        .findDrawableByLayerId(R.id.textbox_shape);
-    GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-        .findDrawableByLayerId(R.id.textbox_shape);
-
-    // Change background color of the textbox
-    //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-    // Change stroke color to BROWN. (Assumes 2px stroke width.)
-    gradientDrawable1.setStroke(2, Color.parseColor("#DA850B"));
-    gradientDrawable2.setStroke(2, Color.parseColor("#DA850B"));
-    gradientDrawable3.setStroke(2, Color.parseColor("#DA850B"));
-    gradientDrawable4.setStroke(2, Color.parseColor("#DA850B"));
-    gradientDrawable5.setStroke(2, Color.parseColor("#DA850B"));
-
   }
 
+  //textlistener for the edittext fields in NewContact
+  // and EditContact, if it starts with
+  //" " then don't let it input in edittext
+  private TextWatcher generalTextWatcher = new TextWatcher() {
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int start, int before,
+                              int count) {
+
+      String str = charSequence.toString();
+      //if it starts with " " then don't recognise it
+      if (str.equals(" ")) {
+        categoryname.setText("");
+        namename.setText("");
+        phonename.setText("");
+        addressname.setText("");
+      }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count,
+                                  int after) {
+
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+  };
 
 }

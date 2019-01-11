@@ -61,7 +61,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static com.example.chris.populisto.GlobalFunctions.getDateandFormat;
-import static com.example.chris.populisto.GlobalFunctions.troubleContactingServerDialog;
+//import static com.example.chris.populisto.GlobalFunctions.troubleContactingServerDialog;
 import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 import static com.example.chris.populisto.VerifyUserPhoneNumber.activity;
 import static com.example.tutorialspoint.R.id.category;
@@ -78,7 +78,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   //First thing we see when app loads.
   // we will post the user's phone number into Php and get the matching user_id
   //and all values in the reviews
-  private static final String SelectUserReviews_URL = "http://www.populisto.com/SelectUserReviews.php";
+  private static final String SelectUserReviews_URL = "https://www.populisto.com/SelectUserReviews.php";
 
   //this is the url for loading the categories shared with the logged-in user
   //it returns a JSON Array of categories shared with the user -
@@ -90,17 +90,17 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   // "user_personal_count":1,
   // "private_count":0,
   // "public_count":0}, etc
-  private static final String CategoryFilter_URL = "http://www.populisto.com/CategoryFilter.php";
+  private static final String CategoryFilter_URL = "https://www.populisto.com/CategoryFilter.php";
 
   //this is for showing ALL reviews available to logged-in user when a category is clicked,
   //for that category.
   // we will post the selected (clicked on) category into Php and get the
   //reviews that are shared with the logged in user
   //It returns a JSON Array of this format: {"user_review_ids":[1,3],"private_review_ids":[2],"public_review_ids":[8,12]}
-  private static final String User_Private_Public_Reviews_URL = "http://www.populisto.com/User_Private_Public_Reviews.php";
+  private static final String User_Private_Public_Reviews_URL = "https://www.populisto.com/User_Private_Public_Reviews.php";
 
   //this is for showing 'random reviews', more appealing than recyclerView being left empty
-  private static final String Random_Reviews_URL = "http://www.populisto.com/Random_Reviews.php";
+  private static final String Random_Reviews_URL = "https://www.populisto.com/Random_Reviews.php";
 
   //when searchView has focus and user types, we will be showing/filtering
   //categories
@@ -382,6 +382,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           }, new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
+
+          //System.out.println("onErrorResponse is " + error);
 
           //If there is an error (such as contacting server for example) then
           //show a message like:
@@ -783,6 +785,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       @Override
       public boolean onQueryTextSubmit(String query) {
 
+
+
         // filter recycler view when query submitted
         mAdapter.getFilter().filter(query);
         return false;
@@ -859,14 +863,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         //String str = query.toString();
         // searchView.getText().toString().trim();
 
-
-    /*    String str = query.toString();
-        //if it starts with " " then don't recognise it
-        if(str.equals(" "))
-        {
-          searchView.setQuery("",false);
-        }*/
-
         //if the searchView is empty
         if (searchView.getQuery().length() == 0) {
 
@@ -879,6 +875,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           noResultsFoundView.setVisibility(View.GONE);
 
         }
+
 
         // refreshing recycler view
         mAdapter.notifyDataSetChanged();
@@ -1277,6 +1274,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           @Override
           public void onErrorResponse(VolleyError error) {
 
+           // System.out.println("onErrorResponse is " + error);
+
             //Toast.makeText(PopulistoListView.this, error.toString(), Toast.LENGTH_LONG).show();
 
             //If there is an error (such as contacting server for example) then
@@ -1538,7 +1537,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   }
 
+  public static void set_to_empty() {
 
+    searchView.setQuery("", false);
+
+  }
 
   }
 

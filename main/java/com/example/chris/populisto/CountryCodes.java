@@ -100,7 +100,7 @@ public class CountryCodes extends AppCompatActivity {
 
         //  Create json array request
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.POST,
-                "http://www.populisto.com/CountryCodes.php", (JSONArray)null, new Response.Listener<JSONArray>(){
+                "https://www.populisto.com/CountryCodes.php", (JSONArray)null, new Response.Listener<JSONArray>(){
             public void onResponse(JSONArray jsonArray){
 
               //hide the 'loading' box when the page loads

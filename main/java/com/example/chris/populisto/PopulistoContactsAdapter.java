@@ -334,6 +334,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
               //select 'Phone Contacts' button in NewContact.java
               //if count is more than 0
               if (mContext instanceof NewContact) {
+
+
                 ((NewContact) mContext).changeColourOfPhoneContacts();
                 //  Toast.makeText(context_type, "The count is " + checkedContactsAsArrayList.size(), Toast.LENGTH_SHORT).show();
 

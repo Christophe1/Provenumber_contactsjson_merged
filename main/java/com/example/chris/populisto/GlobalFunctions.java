@@ -1,16 +1,24 @@
 package com.example.chris.populisto;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.tutorialspoint.R;
 
 import static com.example.chris.populisto.VerifyUserPhoneNumber.activity;
 
@@ -216,6 +224,40 @@ public class GlobalFunctions {
         return new_date + " " + month_in_words + " " + year;
 
     }
+
+    //change border colour on sharing state
+    public static void sharing_border_colour(Activity activity, String hex_colour) {
+
+        //for boxes
+        LayerDrawable layerDrawable1 = (LayerDrawable) activity.findViewById(R.id.textViewCategory).getBackground();
+        LayerDrawable layerDrawable2 = (LayerDrawable) activity.findViewById(R.id.textViewName).getBackground();
+        LayerDrawable layerDrawable3 = (LayerDrawable) activity.findViewById(R.id.textViewPhone).getBackground();
+        LayerDrawable layerDrawable4 = (LayerDrawable) activity.findViewById(R.id.textViewAddress).getBackground();
+        LayerDrawable layerDrawable5 = (LayerDrawable) activity.findViewById(R.id.textViewComment).getBackground();
+
+        GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
+            .findDrawableByLayerId(R.id.textbox_shape);
+        GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
+            .findDrawableByLayerId(R.id.textbox_shape);
+
+        // Change stroke color to BLUE. (Assumes 2px stroke width.)
+        gradientDrawable1.setStroke(2, Color.parseColor(hex_colour));
+        gradientDrawable2.setStroke(2, Color.parseColor(hex_colour));
+        gradientDrawable3.setStroke(2, Color.parseColor(hex_colour));
+        gradientDrawable4.setStroke(2, Color.parseColor(hex_colour));
+        gradientDrawable5.setStroke(2, Color.parseColor(hex_colour));
+
+
+    }
+
+
+
 }
 
 

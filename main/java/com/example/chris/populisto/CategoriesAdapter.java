@@ -2,6 +2,7 @@ package com.example.chris.populisto;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import com.example.tutorialspoint.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.tutorialspoint.R.layout.phone_listview_contacts;
+
 /**
  * Created by Chris on 06/04/2018.
  */
@@ -27,6 +30,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
   //categoryListFiltered are the names in the filtered list
   public List<Category> categoryListFiltered;
   private CategoriesAdapterListener listener;
+
   //private List<Category> categoryListFiltered = new ArrayList<>();
 
 
@@ -102,6 +106,16 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
         //the text entered in the search box
         String charString = charSequence.toString();
+
+        //if it starts with " " then don't recognise it, make it ""
+        if (charString.equals(" ")) {
+          // str.trim();
+          //Toast.makeText(context, "leading space", Toast.LENGTH_SHORT).show();
+            //charString.trim();
+         // searchView.setQuery("", false);
+          PopulistoListView.set_to_empty();
+
+        }
 
        // String charString = charString1.replaceAll("^\\s+", "");
 
