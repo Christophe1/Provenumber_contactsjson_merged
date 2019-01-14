@@ -107,15 +107,17 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
         //the text entered in the search box
         String charString = charSequence.toString();
 
+        //charString = charString.replaceAll("^\\s+", "");
+
         //if it starts with " " then don't recognise it, make it ""
-        if (charString.equals(" ")) {
+       // if (charString.equals(" ")) {
           // str.trim();
           //Toast.makeText(context, "leading space", Toast.LENGTH_SHORT).show();
             //charString.trim();
          // searchView.setQuery("", false);
-          PopulistoListView.set_to_empty();
+          //PopulistoListView.set_to_empty();
 
-        }
+       // }
 
        // String charString = charString1.replaceAll("^\\s+", "");
 

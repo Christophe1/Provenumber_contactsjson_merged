@@ -1537,11 +1537,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   }
 
-  public static void set_to_empty() {
+ /* public static void set_to_empty() {
 
     searchView.setQuery("", false);
 
-  }
+  }*/
 
   }
 

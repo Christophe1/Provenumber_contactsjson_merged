@@ -1,6 +1,7 @@
 package com.example.chris.populisto;
 
 //import android.app.ProgressDialog;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -63,6 +64,7 @@ import java.util.Map;
 import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.checkedContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.theContactsList;
+import static com.example.tutorialspoint.R.id.name;
 import static com.example.tutorialspoint.R.id.parent;
 
 
@@ -91,8 +93,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   //Then we're going to post it to our NewContact.php file
   JSONArray checkedContacts = new JSONArray();
 
- // private ProgressDialog pDialog;
-
   Button publicContacts;
   Button phoneContacts;
   Button justMeContacts;
@@ -113,9 +113,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   //permission has been given to getPhoneContacts
   TextView noContactsFound;
 
+  //for sharing, will be 0, 1 or 2
   int public_or_private;
 
-  //if it is 0, then show the 'No Contacts Found' textbox
+  //if permission not given, then show the 'No Contacts Found' textbox
   int noContactFoundCheck;
 
   // ArrayList called selectPhoneContacts that will contain SelectPhoneContact info
@@ -151,6 +152,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   //sharedprefs for holding all phone numbers of contacts
   //SharedPreferences sharedPreferencesallPhonesofContacts;
 
+  //for if review can be saved, nees fields filled for Public and Phone Contacts
+  Boolean allValid;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -290,7 +293,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           //set the text input type
           alertdialog_edittext.setInputType(InputType.TYPE_CLASS_TEXT);
           //set the max length of characters for the edittext
-          alertdialog_edittext.setFilters(new InputFilter[] { new InputFilter.LengthFilter(385)});
+          alertdialog_edittext.setFilters(new InputFilter[]{new InputFilter.LengthFilter(385)});
 
           //set to multi-line
           alertdialog_edittext.setSingleLine(false);
@@ -363,20 +366,18 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         }
         return false;
 
-       }
+      }
 
       //function to pass text entered in comment to alert_dialog
-      private void setTextFromComment(final String textFromComment){
+      private void setTextFromComment(final String textFromComment) {
         alertdialog_edittext.setText(textFromComment);
       }
 
       //function to pass text entered in alert_dialog to commentname edittext
-    private void setTextFromDialog(final String textFromDialog){
-      commentname.setText(textFromDialog);
-    }
+      private void setTextFromDialog(final String textFromDialog) {
+        commentname.setText(textFromDialog);
+      }
     });
-
-
 
 
     //for the Public, phoneContacts, justMe, save and cancel buttons
@@ -425,6 +426,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       //save it by default to the DB as 1, for phoneContacts
       public_or_private = 1;
 
+      //make border colour blue, by default
+      GlobalFunctions.sharing_border_colour(NewContact.this, "#0A7FDA");
     }
 
     recyclerView = (RecyclerView) findViewById(R.id.rv);
@@ -451,7 +454,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           @Override
           public void onResponse(String response) {
 
-           // Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+            // Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
 
             try {
 
@@ -538,8 +541,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
     return list;
   }
-
-
 
 
 //******for the phone contacts in the recyclerView
@@ -718,7 +719,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //call the function to change the border colour,
         //if Phone Contacts button is clicked,
         //we want the border to be GREEN
-        GlobalFunctions.sharing_border_colour(NewContact.this,"#2AB40E");
+        GlobalFunctions.sharing_border_colour(NewContact.this, "#2AB40E");
 
         //set sharing to Public.
         // This will be uploaded to server to review table,
@@ -731,18 +732,18 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
         recyclerView.setAdapter(adapter);
 
-          //loop through the matching contacts
-          int count = MatchingContactsAsArrayList.size();
+        //loop through the matching contacts
+        int count = MatchingContactsAsArrayList.size();
 
-          //i is the number of matching contacts that there are
-          for (int i = 0; i < count; i++) {
+        //i is the number of matching contacts that there are
+        for (int i = 0; i < count; i++) {
 
-            //for all contacts, only those that are matching will be checked
-            PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+          //for all contacts, only those that are matching will be checked
+          PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
-            //we need to notify the recyclerview that changes may have been made
-            adapter.notifyDataSetChanged();
-          }
+          //we need to notify the recyclerview that changes may have been made
+          adapter.notifyDataSetChanged();
+        }
         //}
       }
     });
@@ -762,28 +763,28 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
         recyclerView.setAdapter(adapter);
 
-          //keep the slightly rounded shape, when the button is pressed, and change colour
-          phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+        //keep the slightly rounded shape, when the button is pressed, and change colour
+        phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
 
-          //keep the slightly rounded shape of the others, but still grey
-          publicContacts.setBackgroundResource(R.drawable.buttonshape);
-          justMeContacts.setBackgroundResource(R.drawable.buttonshape);
+        //keep the slightly rounded shape of the others, but still grey
+        publicContacts.setBackgroundResource(R.drawable.buttonshape);
+        justMeContacts.setBackgroundResource(R.drawable.buttonshape);
 
         //call the function to change the border colour,
         //if Phone Contacts button is clicked,
         //we want the border to be BLUE
-        GlobalFunctions.sharing_border_colour(NewContact.this,"#0A7FDA");
+        GlobalFunctions.sharing_border_colour(NewContact.this, "#0A7FDA");
 
 
-          //set sharing to Phone Contacts
-          // This will be uploaded to server to review table,
-          //public_or_private column, if saved in this state
-          public_or_private = 1;
+        //set sharing to Phone Contacts
+        // This will be uploaded to server to review table,
+        //public_or_private column, if saved in this state
+        public_or_private = 1;
 
-          //loop through the matching contacts
-          int count = MatchingContactsAsArrayList.size();
+        //loop through the matching contacts
+        int count = MatchingContactsAsArrayList.size();
 
-      //  Toast.makeText(NewContact.this, "MatchingContactsAsArrayList size is " + count, Toast.LENGTH_SHORT).show();
+        //  Toast.makeText(NewContact.this, "MatchingContactsAsArrayList size is " + count, Toast.LENGTH_SHORT).show();
 
         //for each matching contact...
         for (int i = 0; i < count; i++) {
@@ -791,16 +792,17 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           //add the phone number to the arrayList
           //if it does not exist there already
           if (!checkedContactsAsArrayList.contains(theContactsList.get(i).getPhone())) {
-            checkedContactsAsArrayList.add(theContactsList.get(i).getPhone());;
+            checkedContactsAsArrayList.add(theContactsList.get(i).getPhone());
+            ;
           }
 
-            //check mark all matching contacts, we want it to be 'Phone Contacts'
-            PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+          //check mark all matching contacts, we want it to be 'Phone Contacts'
+          PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
-            //we need to notify the recyclerview that changes may have been made
-            adapter.notifyDataSetChanged();
-          }
-       // }
+          //we need to notify the recyclerview that changes may have been made
+          adapter.notifyDataSetChanged();
+        }
+        // }
       }
     });
 
@@ -825,7 +827,14 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //call the function to change the border colour,
         //if Phone Contacts button is clicked,
         //we want the border to be ORANGE
-        GlobalFunctions.sharing_border_colour(NewContact.this,"#DA850B");
+        GlobalFunctions.sharing_border_colour(NewContact.this, "#DA850B");
+
+        //clear errors, they don't need to be filled
+        //for Just U
+        categoryname.setError(null);
+        namename.setError(null);
+        phonename.setError(null);
+        addressname.setError(null);
 
         //set sharing to Just Me
         // This will be uploaded to server to review table,
@@ -880,162 +889,203 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       @Override
       public void onClick(View v) {
 
+        //assign strings for the fields that need to be filled
         String category_name = categoryname.getText().toString();
+        String name_name = namename.getText().toString();
+        String phone_name = phonename.getText().toString();
+        String address_name = addressname.getText().toString();
 
-        if (TextUtils.isEmpty(category_name)) {
-          categoryname.setError("Needs to be filled");
-          return;
-        } else {
+        //will be set to false if public or phone contacts is
+        //selected and fields are not filled
+        allValid = true;
 
-          //close the populistolistview class
-          //(we'll be opening it again, will close now so it will be refreshed with new contact details)
-          PopulistoListView.fa.finish();
+        //if for phone contacts or public then these
+        //fields can't be empty, need to be filled
+        if (public_or_private == 1 || public_or_private == 2) {
 
-          System.out.println("you clicked it, save");
+          if (TextUtils.isEmpty(category_name)) {
+            categoryname.setError("Needs to be filled");
+            allValid = false;
+          }
 
-          //If permission denied (will only be on Marshmallow +)
-          PackageManager manager = getPackageManager();
-          int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
-          if (hasPermission == manager.PERMISSION_DENIED) {
+          if (TextUtils.isEmpty(name_name)) {
+            namename.setError("Needs to be filled");
+            allValid = false;
+          }
 
-            try {
-              //add only logged-in phone owner's number to the checkedContacts JSON Array
-              //new JSON Object called phoneOwner
-              JSONObject phoneOwner = new JSONObject();
+          if (TextUtils.isEmpty(phone_name)) {
+            phonename.setError("Needs to be filled");
+            allValid = false;
+          }
 
-              //add the phone number
-              phoneOwner.put("checkedContact", phoneNoofUserCheck);
+          if (TextUtils.isEmpty(address_name)) {
+            addressname.setError("Needs to be filled");
+            allValid = false;
+          }
 
-              //add user's own number to the Array
-              checkedContacts.put(phoneOwner);
+        }
+
+/*        if (public_or_private == 0) {
+          allValid = true;
+        }*/
+
+          if (allValid == true) {
+
+            //close the populistolistview class
+            //(we'll be opening it again, will close now so it will be refreshed with new contact details)
+            PopulistoListView.fa.finish();
+
+            System.out.println("you clicked it, save");
+
+            //If permission denied (will only be on Marshmallow +)
+            PackageManager manager = getPackageManager();
+            int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
+            if (hasPermission == manager.PERMISSION_DENIED) {
+
+              try {
+                //add only logged-in phone owner's number to the checkedContacts JSON Array
+                //new JSON Object called phoneOwner
+                JSONObject phoneOwner = new JSONObject();
+
+                //add the phone number
+                phoneOwner.put("checkedContact", phoneNoofUserCheck);
+
+                //add user's own number to the Array
+                checkedContacts.put(phoneOwner);
 
 
-            } catch (Exception e) {
-              System.out.println("there's a problem here unfortunately");
-              e.printStackTrace();
-            }
-          } else
-          //if the logged-in user has enabled READ_CONTACTS Permission
-          {
+              } catch (Exception e) {
+                System.out.println("there's a problem here unfortunately");
+                e.printStackTrace();
+              }
+            } else
+            //if the logged-in user has enabled READ_CONTACTS Permission
+            {
 
-            try {
-              //System.out.println("we're in the try part");
+              try {
+                //System.out.println("we're in the try part");
 
-              //loop through the matching contacts
-              int count = MatchingContactsAsArrayList.size();
+                //loop through the matching contacts
+                int count = MatchingContactsAsArrayList.size();
 
-              for (int i = 0; i < count; i++) {
+                for (int i = 0; i < count; i++) {
 
-                //for  contacts that are checked (they can only be matching contacts cause only they have a checkbox)...
-                if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
-                  //Toast.makeText(NewContact.this, PopulistoContactsAdapter.theContactsList.get(i).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
+                  //for  contacts that are checked (they can only be matching contacts cause only they have a checkbox)...
+                  if (PopulistoContactsAdapter.theContactsList.get(i).getSelected()) {
+                    //Toast.makeText(NewContact.this, PopulistoContactsAdapter.theContactsList.get(i).getPhone() + " clicked!", Toast.LENGTH_SHORT).show();
 
-                  // make each checked contact in selectPhoneContacts
-                  // into an individual
-                  // JSON object called checkedContact
-                  JSONObject checkedContact = new JSONObject();
+                    // make each checked contact in selectPhoneContacts
+                    // into an individual
+                    // JSON object called checkedContact
+                    JSONObject checkedContact = new JSONObject();
 
-                  //get the phone number of the checked contact
-                  // checkedContact will be of the form {"checkedContact":"+353123456"}
-                  checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
+                    //get the phone number of the checked contact
+                    // checkedContact will be of the form {"checkedContact":"+353123456"}
+                    checkedContact.put("checkedContact", PopulistoContactsAdapter.theContactsList.get(i).getPhone());
 
-                  // Add checkedContact JSON Object to checkedContacts jsonArray
-                  //The JSON Array will be of the form
-                  // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-                  //we will be posting this JSON Array to Php, further down below
-                  checkedContacts.put(checkedContact);
-                  System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+                    // Add checkedContact JSON Object to checkedContacts jsonArray
+                    //The JSON Array will be of the form
+                    // [{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                    //we will be posting this JSON Array to Php, further down below
+                    checkedContacts.put(checkedContact);
+                    System.out.println("NewContact: checkedcontact JSONObject :" + checkedContact);
+                  }
+
                 }
+
+                //add phone owner's number to the checkedContacts JSON Array
+                //new JSON Object called phoneOwner
+                JSONObject phoneOwner = new JSONObject();
+
+                //add the phone number
+                phoneOwner.put("checkedContact", phoneNoofUserCheck);
+                System.out.println("NewContact: phoneOwner: " + phoneOwner);
+
+                //add it to the Array
+                checkedContacts.put(phoneOwner);
+
+                System.out.println("New Contact: checkedContacts JSON Array " + checkedContacts);
+
+
+              } catch (Exception e) {
+                System.out.println("there's a problem here unfortunately");
+                e.printStackTrace();
+              }
+            }
+
+            //When the user clicks save
+            //post phoneNoofUserCheck to NewContact.php and from that
+            //get the user_id in the user table, then post category, name, phone etc...
+            //to the review table
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, NewContact_URL,
+                new Response.Listener<String>() {
+                  @Override
+                  public void onResponse(String response) {
+
+                    //response, this will show the checked numbers being posted
+                    // Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
+                  }
+                },
+                new Response.ErrorListener() {
+                  @Override
+                  public void onErrorResponse(VolleyError error) {
+
+                  }
+
+                }) {
+
+              //post these details to the NewContact.php file and do
+              //stuff with it
+              protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                //post the phone number to php to get the user_id in the user table
+                params.put("phonenumberofuser", phoneNoofUserCheck);
+                //the second value, categoryname.getText().toString() etc...
+                // is the value we get from Android.
+                //the key is "category", "name" etc.
+                // When we see these in our php,  $_POST["category"],
+                //put in the value from Android
+                params.put("category", categoryname.getText().toString());
+                params.put("name", namename.getText().toString());
+                params.put("phone", phonename.getText().toString());
+                params.put("address", addressname.getText().toString());
+                params.put("comment", commentname.getText().toString());
+                params.put("public_or_private", String.valueOf(public_or_private));
+                System.out.println("public_or_private is " + String.valueOf(public_or_private));
+
+                //this is the JSON Array of checked contacts
+                //it will be of the form
+                //[{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
+                params.put("checkedContacts", checkedContacts.toString());
+
+                return params;
 
               }
 
-              //add phone owner's number to the checkedContacts JSON Array
-              //new JSON Object called phoneOwner
-              JSONObject phoneOwner = new JSONObject();
 
-              //add the phone number
-              phoneOwner.put("checkedContact", phoneNoofUserCheck);
-              System.out.println("NewContact: phoneOwner: " + phoneOwner);
-
-              //add it to the Array
-              checkedContacts.put(phoneOwner);
-
-              System.out.println("New Contact: checkedContacts JSON Array " + checkedContacts);
+            };
 
 
-            } catch (Exception e) {
-              System.out.println("there's a problem here unfortunately");
-              e.printStackTrace();
-            }
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(stringRequest);
+
+            //when saved, go back to the PopulistoListView class and update with
+            //the new entry
+            Intent j = new Intent(NewContact.this, PopulistoListView.class);
+            j.putExtra("phonenumberofuser", phoneNoofUserCheck);
+
+            NewContact.this.startActivity(j);
+
+            finish();
+
           }
 
-          //When the user clicks save
-          //post phoneNoofUserCheck to NewContact.php and from that
-          //get the user_id in the user table, then post category, name, phone etc...
-          //to the review table
-          StringRequest stringRequest = new StringRequest(Request.Method.POST, NewContact_URL,
-              new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
+        Toast.makeText(NewContact.this, "public_or_private value is: " + public_or_private, Toast.LENGTH_SHORT).show();
 
-                  //response, this will show the checked numbers being posted
-                  // Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
-                }
-              },
-              new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-
-              }) {
-
-            //post these details to the NewContact.php file and do
-            //stuff with it
-            protected Map<String, String> getParams() {
-              Map<String, String> params = new HashMap<String, String>();
-              //post the phone number to php to get the user_id in the user table
-              params.put("phonenumberofuser", phoneNoofUserCheck);
-              //the second value, categoryname.getText().toString() etc...
-              // is the value we get from Android.
-              //the key is "category", "name" etc.
-              // When we see these in our php,  $_POST["category"],
-              //put in the value from Android
-              params.put("category", categoryname.getText().toString());
-              params.put("name", namename.getText().toString());
-              params.put("phone", phonename.getText().toString());
-              params.put("address", addressname.getText().toString());
-              params.put("comment", commentname.getText().toString());
-              params.put("public_or_private", String.valueOf(public_or_private));
-              System.out.println("public_or_private is " + String.valueOf(public_or_private));
-
-              //this is the JSON Array of checked contacts
-              //it will be of the form
-              //[{"checkedContact":"+3531234567"},{"checkedContact":"+353868132813"}]
-              params.put("checkedContacts", checkedContacts.toString());
-
-              return params;
-
-            }
-
-
-          };
-
-
-          // Adding request to request queue
-          AppController.getInstance().addToRequestQueue(stringRequest);
-
-          //when saved, go back to the PopulistoListView class and update with
-          //the new entry
-          Intent j = new Intent(NewContact.this, PopulistoListView.class);
-          j.putExtra("phonenumberofuser", phoneNoofUserCheck);
-
-          NewContact.this.startActivity(j);
-
-          finish();
-
-        }
       }
+
+
+
     });
 
 
@@ -1058,8 +1108,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     //call the function to change the border colour,
     //if Phone Contacts button is clicked,
     //we want the border to be BLUE
-    GlobalFunctions.sharing_border_colour(NewContact.this,"#0A7FDA");
+    GlobalFunctions.sharing_border_colour(NewContact.this, "#0A7FDA");
 
+    public_or_private = 1;
 
   }
 
@@ -1074,6 +1125,19 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     publicContacts.setBackgroundResource(R.drawable.buttonshape);
     phoneContacts.setBackgroundResource(R.drawable.buttonshape);
 
+    //call the function to change the border colour,
+    //if Phone Contacts button is clicked,
+    //we want the border to be ORANGE
+    GlobalFunctions.sharing_border_colour(NewContact.this, "#DA850B");
+
+    //clear errors, they don't need to be filled
+    //for Just U
+    categoryname.setError(null);
+    namename.setError(null);
+    phonename.setError(null);
+    addressname.setError(null);
+
+    public_or_private = 0;
 
   }
 
