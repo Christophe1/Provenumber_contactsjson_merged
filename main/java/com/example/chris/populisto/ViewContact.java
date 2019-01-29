@@ -427,33 +427,10 @@ public class ViewContact extends AppCompatActivity {
       sharedWith.setTextColor(Color.parseColor("#DA850B"));
       shared_status = "Just U";
 
-      //for boxes
-      LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-      LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-      LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-      LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-      LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
-
-      GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-          .findDrawableByLayerId(R.id.textbox_shape);
-
-      // Change background color of the textbox
-    //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-      // Change stroke color. (Assumes 2px stroke width.)
-      gradientDrawable1.setStroke(2, Color.parseColor("#DA850B"));
-      gradientDrawable2.setStroke(2, Color.parseColor("#DA850B"));
-      gradientDrawable3.setStroke(2, Color.parseColor("#DA850B"));
-      gradientDrawable4.setStroke(2, Color.parseColor("#DA850B"));
-      gradientDrawable5.setStroke(2, Color.parseColor("#DA850B"));
+      //call the function to change the border colour,
+      //if Phone Contacts button is clicked,
+      //we want the border to be ORANGE
+      GlobalFunctions.sharing_border_colour(ViewContact.this, "#DA850B");
 
     }
 
@@ -465,33 +442,11 @@ public class ViewContact extends AppCompatActivity {
       sharedWith.setTextColor(Color.parseColor("#0A7FDA"));
       shared_status = "Phone Contacts";
 
-      //for boxes
-      LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-      LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-      LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-      LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-      LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
+      //call the function to change the border colour,
+      //if Phone Contacts button is clicked,
+      //we want the border to be BLUE
+      GlobalFunctions.sharing_border_colour(ViewContact.this, "#0A7FDA");
 
-      GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-          .findDrawableByLayerId(R.id.textbox_shape);
-
-      // Change background color of the textbox
-      //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-      // Change stroke color. (Assumes 2px stroke width.)
-      gradientDrawable1.setStroke(2, Color.parseColor("#0A7FDA"));
-      gradientDrawable2.setStroke(2, Color.parseColor("#0A7FDA"));
-      gradientDrawable3.setStroke(2, Color.parseColor("#0A7FDA"));
-      gradientDrawable4.setStroke(2, Color.parseColor("#0A7FDA"));
-      gradientDrawable5.setStroke(2, Color.parseColor("#0A7FDA"));
     }
 
     if (pub_or_priv == 2) {
@@ -502,33 +457,10 @@ public class ViewContact extends AppCompatActivity {
       sharedWith.setTextColor(Color.parseColor("#2AB40E"));
       shared_status = "Public";
 
-      //for boxes
-      LayerDrawable layerDrawable1 = (LayerDrawable) findViewById(R.id.textViewCategory).getBackground();
-      LayerDrawable layerDrawable2 = (LayerDrawable) findViewById(R.id.textViewName).getBackground();
-      LayerDrawable layerDrawable3 = (LayerDrawable) findViewById(R.id.textViewPhone).getBackground();
-      LayerDrawable layerDrawable4 = (LayerDrawable) findViewById(R.id.textViewAddress).getBackground();
-      LayerDrawable layerDrawable5 = (LayerDrawable) findViewById(R.id.textViewComment).getBackground();
-
-      GradientDrawable gradientDrawable1 = (GradientDrawable) layerDrawable1
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable2 = (GradientDrawable) layerDrawable2
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable3 = (GradientDrawable) layerDrawable3
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable4 = (GradientDrawable) layerDrawable4
-          .findDrawableByLayerId(R.id.textbox_shape);
-      GradientDrawable gradientDrawable5 = (GradientDrawable) layerDrawable5
-          .findDrawableByLayerId(R.id.textbox_shape);
-
-      // Change background color of the textbox
-      //  gradientDrawable.setColor(Color.parseColor("#DA850B"));
-
-      // Change stroke color. (Assumes 2px stroke width.)
-      gradientDrawable1.setStroke(2, Color.parseColor("#2AB40E"));
-      gradientDrawable2.setStroke(2, Color.parseColor("#2AB40E"));
-      gradientDrawable3.setStroke(2, Color.parseColor("#2AB40E"));
-      gradientDrawable4.setStroke(2, Color.parseColor("#2AB40E"));
-      gradientDrawable5.setStroke(2, Color.parseColor("#2AB40E"));
+      //call the function to change the border colour,
+      //if Phone Contacts button is clicked,
+      //we want the border to be GREEN
+      GlobalFunctions.sharing_border_colour(ViewContact.this, "#2AB40E");
 
     }
 

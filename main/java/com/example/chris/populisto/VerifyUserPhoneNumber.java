@@ -314,7 +314,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //If there is an error (such as contacting server for example) then
               //show a message like:
               //Sorry, can't contact server right now. Is internet access enabled?, try again, Cancel
-             // GlobalFunctions.troubleContactingServerDialog(VerifyUserPhoneNumber.this);
+              GlobalFunctions.troubleContactingServerDialog(VerifyUserPhoneNumber.this);
 
             }
           }) {
@@ -1237,14 +1237,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
 
   //if the user chooses to refresh the Activity, when "Try Again" button is clicked...
-  public void refresh() {
+/*  public void refresh() {
     Intent intent = getIntent();
     overridePendingTransition(0, 0);
     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
     finish();
     overridePendingTransition(0, 0);
     startActivity(intent);
-  }
+  }*/
 
   @Override
   //check Permissions status, this is called when the user clicks ALLOW on the dialog

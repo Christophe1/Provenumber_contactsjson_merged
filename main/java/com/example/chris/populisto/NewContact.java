@@ -37,6 +37,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -155,6 +156,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   //for if review can be saved, nees fields filled for Public and Phone Contacts
   Boolean allValid;
 
+  //show progress bar, before response is fetched
+  //ProgressBar Progressbar2;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -171,6 +175,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     //for address autocomplete...
     AutoCompTextViewAddress = (AutoCompleteTextView) findViewById(R.id.textViewAddress);
 
+    //for the progress
+    //Progressbar2 = findViewById(R.id.nocontactsfound_progressbar);
 
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 
@@ -454,7 +460,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           @Override
           public void onResponse(String response) {
 
-            // Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+             Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
 
             try {
 
@@ -580,8 +586,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //and show the "No Contacts found" textbox
         noContactFoundCheck = 1;
 
-        //SelectPhoneContact selectContact = new SelectPhoneContact();
-        //selectContact.setType_row("2");
       } else {
 
         //show matching contacts, other populsito users,
@@ -641,6 +645,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       recyclerView.setLayoutManager((new LinearLayoutManager(NewContact.this)));
 
       //this is our progressbar view
+      //fetching phone contacts from server
       //we find it in nocontactsfound.xml, make it invisible as there is no waiting
       //on info from the server.
       ProgressBar progressbar = findViewById(R.id.progressbar);// change id here
@@ -925,10 +930,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
         }
 
-/*        if (public_or_private == 0) {
-          allValid = true;
-        }*/
-
           if (allValid == true) {
 
             //close the populistolistview class
@@ -1013,6 +1014,25 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
               }
             }
 
+
+            //we run on UI thread to stopp progressbar flickering...
+            runOnUiThread(new Runnable() {
+
+              @Override
+              public void run() {
+
+                //this is our progressbar view
+                //we find it in nocontactsfound.xml, make it visible while waiting
+                //for response from the server.
+                ProgressBar activity_new_contact_progressbar = findViewById(R.id.activity_new_contact_progressbar);// change id here
+                activity_new_contact_progressbar.setVisibility(View.VISIBLE);
+
+                //and set the linear layout to invisible
+                LinearLayout activity_new_contact_linear = findViewById(R.id.holder);// change id here
+                activity_new_contact_linear.setVisibility(View.GONE);
+
+              }});
+
             //When the user clicks save
             //post phoneNoofUserCheck to NewContact.php and from that
             //get the user_id in the user table, then post category, name, phone etc...
@@ -1022,8 +1042,17 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
                   @Override
                   public void onResponse(String response) {
 
+                    //when saved, go back to the PopulistoListView class and update with
+                    //the new entry
+                    Intent j = new Intent(NewContact.this, PopulistoListView.class);
+                    j.putExtra("phonenumberofuser", phoneNoofUserCheck);
+
+                    NewContact.this.startActivity(j);
+
+                    finish();
+
                     //response, this will show the checked numbers being posted
-                    // Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
+                     Toast.makeText(NewContact.this, "didledoo" + response, Toast.LENGTH_LONG).show();
                   }
                 },
                 new Response.ErrorListener() {
@@ -1069,18 +1098,11 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
             // Adding request to request queue
             AppController.getInstance().addToRequestQueue(stringRequest);
 
-            //when saved, go back to the PopulistoListView class and update with
-            //the new entry
-            Intent j = new Intent(NewContact.this, PopulistoListView.class);
-            j.putExtra("phonenumberofuser", phoneNoofUserCheck);
 
-            NewContact.this.startActivity(j);
-
-            finish();
 
           }
 
-        Toast.makeText(NewContact.this, "public_or_private value is: " + public_or_private, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(NewContact.this, "public_or_private value is: " + public_or_private, Toast.LENGTH_SHORT).show();
 
       }
 

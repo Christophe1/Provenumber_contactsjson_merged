@@ -27,6 +27,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +75,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   //for if no categories are displayed in recyclerView
   TextView noResultsFoundView;
+
+  //show progress bar, before response is fetched
+  ProgressBar Content_Main_Progressbar;
 
   // this is the php file for showing all logged in (own user's) reviews in the recyclerView.
   //First thing we see when app loads.
@@ -203,7 +208,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //with toolbar etc and content_main.xml -
     setContentView(R.layout.phone_listview_contacts);
 
-
     //set the layout for the toolbar
     //searchview will appear inside of this
     Toolbar toolbar = findViewById(R.id.toolbar);
@@ -253,6 +257,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //"No results" text box, if no categories to show on searching
     //View is gone, by default
     noResultsFoundView = (TextView) findViewById(R.id.noResultsFoundView);
+
+    Content_Main_Progressbar = findViewById(R.id.content_main_progressbar);
 
 
     //the adapter for all own user reviews
@@ -630,7 +636,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                             //delete button etc
                             review.setType_row("2");
 
-                            //add the sharedReview to the sharedReviewList
+                            //add the review to the sharedReviewList
                             reviewList.add(review);
 
                           }
@@ -828,7 +834,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           noResultsFoundView.setVisibility(View.VISIBLE);
 
           Toast.makeText(getApplicationContext(), "mAdapter is 0, no item results", Toast.LENGTH_SHORT).show();
-          Toast.makeText(getApplicationContext(), the_response, Toast.LENGTH_SHORT).show();
+         // Toast.makeText(getApplicationContext(), the_response, Toast.LENGTH_SHORT).show();
 
 
          // mAdapter.notifyDataSetChanged();
@@ -980,7 +986,20 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   // do this function
   private void show_own_private_public_Reviews() {
 
-    //Toast.makeText(getApplicationContext(), "view the clicked on review", Toast.LENGTH_LONG).show();
+    //we run on UI thread to stopp progressbar flickering...
+    runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+
+                    //before we get a response, hide recyclerView...
+                    recyclerView.setVisibility(View.GONE);
+
+                    //and show the Progress bar, it's loading
+                    Content_Main_Progressbar.setVisibility(View.VISIBLE);
+
+                  }});
 
     //post selectOwnUserReviews string (and private and public) to
     // User_Private_Public_Reviews.php and from that
@@ -989,6 +1008,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         new Response.Listener<String>() {
           @Override
           public void onResponse(String response) {
+
+            //when we get response, make recyclerview visible
+            recyclerView.setVisibility(View.VISIBLE);
+
+            //and hide progressbar
+            Content_Main_Progressbar.setVisibility(View.GONE);
+
+            Toast.makeText(getApplicationContext(), "fetching now..", Toast.LENGTH_LONG).show();
 
        //     Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
             System.out.println("response is :" + response);
@@ -1151,8 +1178,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                       //of the person who made the review
                       sharedReview.setphoneNameonPhone(object.getString("name"));
 
-/*                      String convertedToString = object.getString("name");
-                      System.out.println("convertedToString:" + convertedToString);*/
+//*                      String convertedToString = object.getString("name");
+                     // System.out.println("convertedToString:" + convertedToString);*//*
 
 
                     }

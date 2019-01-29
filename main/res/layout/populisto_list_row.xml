@@ -7,9 +7,9 @@
                 android:requiresFadingEdge="vertical"
                 android:fadingEdgeLength="80dp"
                 android:ellipsize="none"
-
-
     >
+
+
     <!--+ Add New button, only visible in the first cell -->
     <Button
         android:id="@+id/pop_something_in"
@@ -115,5 +115,7 @@
           android:layout_width = "fill_parent"
           android:layout_height="1dip"
           android:layout_alignParentBottom="true"/>
+
+
 
 </RelativeLayout>

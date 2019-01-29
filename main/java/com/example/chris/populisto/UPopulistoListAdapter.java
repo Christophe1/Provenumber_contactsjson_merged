@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -267,6 +268,7 @@ public class UPopulistoListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             //for "Add New" cell only make the button visible, everything
             //else should be gone
             ((ReviewHolder) viewHolder).pop_something_in.setVisibility(View.VISIBLE);
+            //set progressbar to invisible, cause we have a response
             ((ReviewHolder) viewHolder).phone_user_name.setVisibility(View.GONE);
             ((ReviewHolder) viewHolder).date_created.setVisibility(View.GONE);
             ((ReviewHolder) viewHolder).category.setVisibility(View.GONE);

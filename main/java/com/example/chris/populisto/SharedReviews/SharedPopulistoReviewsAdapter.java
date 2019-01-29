@@ -13,9 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chris.populisto.UPopulistoListAdapter;
 import com.example.chris.populisto.ViewContact;
 import com.example.tutorialspoint.R;
 
@@ -78,6 +80,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
     public ReviewHolder(View itemView) {
       super(itemView);
+
       phone_user_name = (TextView) itemView.findViewById(R.id.phone_user_name);
       date_created = (TextView) itemView.findViewById(R.id.date_created);
       category = (TextView) itemView.findViewById(R.id.category);
@@ -186,10 +189,12 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
 
     }
 
+    //set progressbar to invisible, cause we have a response
+    //((ReviewHolder) viewHolder).container2.setVisibility(View.VISIBLE);
     //set the details in the recyclerView cell
     ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhoneNameonPhone());
     ((ReviewHolder) viewHolder).date_created.setText(r.getDate_created());
-    ((ReviewHolder) viewHolder).category.setText("Category: " + r.getCategory());
+    ((ReviewHolder) viewHolder).category.setText("Categoryyy: " + r.getCategory());
 //    ((ReviewHolder) viewHolder).name.setText("Namey: " + r.getName());
     ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
 //    ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
