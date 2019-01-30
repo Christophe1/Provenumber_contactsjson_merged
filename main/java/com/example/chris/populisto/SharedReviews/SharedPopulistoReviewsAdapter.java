@@ -195,7 +195,7 @@ public class SharedPopulistoReviewsAdapter extends RecyclerView.Adapter<Recycler
     ((ReviewHolder) viewHolder).phone_user_name.setText(r.getPhoneNameonPhone());
     ((ReviewHolder) viewHolder).date_created.setText(r.getDate_created());
     ((ReviewHolder) viewHolder).category.setText("Categoryyy: " + r.getCategory());
-//    ((ReviewHolder) viewHolder).name.setText("Namey: " + r.getName());
+    ((ReviewHolder) viewHolder).name.setText("Name: " + r.getName());
     ((ReviewHolder) viewHolder).address.setText("Address: " + r.getAddress());
 //    ((ReviewHolder) viewHolder).phone.setText("Phone: " + r.getPhone());
     ((ReviewHolder) viewHolder).comment.setText("Comment: " + r.getComment());

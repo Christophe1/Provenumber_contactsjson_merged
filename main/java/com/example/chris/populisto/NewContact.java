@@ -42,6 +42,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -290,14 +291,17 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         if (event.getAction() == MotionEvent.ACTION_UP) {
           AlertDialog.Builder commentname_alertdialog = new AlertDialog.Builder(NewContact.this);
 
+          //so double clicking won't open the dialog twice...
+          commentname.setEnabled(false);
+
           alertdialog_edittext = new EditText(NewContact.this);
 
           commentname_alertdialog.setTitle("Ur Comment:");
 
           commentname_alertdialog.setView(alertdialog_edittext);
 
-          //set the text input type
-          alertdialog_edittext.setInputType(InputType.TYPE_CLASS_TEXT);
+          //set the text input type, and make first letter in capitals
+          alertdialog_edittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
           //set the max length of characters for the edittext
           alertdialog_edittext.setFilters(new InputFilter[]{new InputFilter.LengthFilter(385)});
 
@@ -347,17 +351,26 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
                 //pass the text string entered in the alert dialog
                 setTextFromDialog(AlertDialogTextValue);
 
+                commentname.setEnabled(true);
+
                 dialog.dismiss();
 
               }
             }
           });
+          //for the dialog cancel button
           commentname_alertdialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+              commentname.setEnabled(true);
               dialog.cancel();
             }
           });
+
+          //AlertDialog dialog = null;
+
+          //if ((dialog == null) || !dialog.isShowing()) {
 
           AlertDialog dialog = commentname_alertdialog.create();
           dialog.setCanceledOnTouchOutside(false);
@@ -365,11 +378,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           //show keyboard
           dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-          dialog.show();
+            dialog.show();
+            return true;
+          }
 
-          return true;
-
-        }
         return false;
 
       }
@@ -932,11 +944,15 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
           if (allValid == true) {
 
+            //so user can't repeatedly press
+            //save and info sent multiple times to server
+            save.setEnabled(false);
+
             //close the populistolistview class
             //(we'll be opening it again, will close now so it will be refreshed with new contact details)
             PopulistoListView.fa.finish();
 
-            System.out.println("you clicked it, save");
+            //System.out.println("you clicked it, save");
 
             //If permission denied (will only be on Marshmallow +)
             PackageManager manager = getPackageManager();
@@ -956,7 +972,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
 
               } catch (Exception e) {
-                System.out.println("there's a problem here unfortunately");
+                //System.out.println("there's a problem here unfortunately");
                 e.printStackTrace();
               }
             } else
@@ -1027,7 +1043,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
                 ProgressBar activity_new_contact_progressbar = findViewById(R.id.activity_new_contact_progressbar);// change id here
                 activity_new_contact_progressbar.setVisibility(View.VISIBLE);
 
-                //and set the linear layout to invisible
+                //and set the linear layout, containing edittexts,
+                // to invisible
                 LinearLayout activity_new_contact_linear = findViewById(R.id.holder);// change id here
                 activity_new_contact_linear.setVisibility(View.GONE);
 
@@ -1058,6 +1075,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
                 new Response.ErrorListener() {
                   @Override
                   public void onErrorResponse(VolleyError error) {
+
+                    Toast.makeText(NewContact.this, "Problem saving, please try again later", Toast.LENGTH_LONG).show();
 
                   }
 
@@ -1094,6 +1113,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
             };
 
+/*            stringRequest.setRetryPolicy(new
+                DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, 1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+            );*/
 
             // Adding request to request queue
             AppController.getInstance().addToRequestQueue(stringRequest);
@@ -1101,6 +1124,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
 
           }
+
 
         //Toast.makeText(NewContact.this, "public_or_private value is: " + public_or_private, Toast.LENGTH_SHORT).show();
 
