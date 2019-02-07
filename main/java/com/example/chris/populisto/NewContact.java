@@ -574,10 +574,13 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     @Override
     protected Void doInBackground(Void... voids) {
 
-      // make a copy of MatchingContactsAsArrayList,
-      //these will all be checked by default
-      checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
 
+      //if (!Match0ingContactsAsArrayList.isEmpty()) {
+        // make a copy of MatchingContactsAsArrayList,
+        //these will all be checked by default
+        checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+
+      //}
       //we want to delete the old selectContacts from the listview when the Activity loads
       //because it may need to be updated and we want the user to see the updated listview,
       //like if the user adds new names and numbers to their phone contacts.
@@ -1038,7 +1041,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
               public void run() {
 
                 //this is our progressbar view
-                //we find it in nocontactsfound.xml, make it visible while waiting
+                //make it visible while waiting
                 //for response from the server.
                 ProgressBar activity_new_contact_progressbar = findViewById(R.id.activity_new_contact_progressbar);// change id here
                 activity_new_contact_progressbar.setVisibility(View.VISIBLE);

@@ -284,7 +284,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     //Toast.makeText(PopulistoListView.this, "just before call fetchcategories", Toast.LENGTH_LONG).show();
 
-    Toast.makeText(getApplicationContext(), "clickety!", Toast.LENGTH_SHORT).show();
+    //Toast.makeText(getApplicationContext(), "clickety!", Toast.LENGTH_SHORT).show();
 
     //get every review - his own ones, phone contacts and public -
     //that is shared with the logged-in user.
@@ -295,8 +295,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             @Override
             public void onResponse(String response) {
 
+              sendSecondRequest();
+
               //show categories available to the logged-in user
-              the_response = response;
+             // the_response = response;
 
               //response will be like:
 
@@ -315,13 +317,18 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               // "private_count":2,
               // "public_count":3}, etc...etc....
 
-              //Toast.makeText(PopulistoListView.this, "response is: " + the_response, Toast.LENGTH_LONG).show();
+              Toast.makeText(PopulistoListView.this, "response is: " + response, Toast.LENGTH_LONG).show();
+
+             // System.out.println("response is: " + the_response);
 
               //breaking up the response into respective parts
               //so we can get values for 'random reviews' string and then
               //post it in show_random_reviews() function
-              try {
+             /* try {
                 JSONArray responseObject = new JSONArray(response);
+
+                System.out.println("responseObject is: " + responseObject);
+
 
                 //use StringBuilder, so we can append values
                 StringBuilder private_review_ids = new StringBuilder();
@@ -332,9 +339,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                   //get the "private_review_ids" part of the response, append
                   //each value into a string private_review_ids
-                  private_review_ids.append(obj.getString("private_review_ids").toString());
+                  private_review_ids.append(obj.getString("public_review_ids").toString());
 
-                }
+                  System.out.println("private_review_ids: " + private_review_ids);
 
                 //make it all into a single string
                 String private_review_ids2 = private_review_ids.toString();
@@ -342,21 +349,18 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //we only want the numbers (the review_ids) so get rid of other stuff
                 private_review_ids2 = private_review_ids2.replaceAll("[^0-9]+", ",");
                 //get rid of the first ","
-                private_review_ids2 = private_review_ids2.replaceFirst(",","");
+                private_review_ids2 = private_review_ids2.replaceFirst(",", "");
 
-
-                //UNDO THIS System.out.println("private_review_ids2:" + private_review_ids2);
-                System.out.println("private_review_ids2:" + private_review_ids2);
+                  System.out.println("private_review_ids2:" + private_review_ids2);
 
                 //a string array, separated by commas
                 //because we were getting a stray comma at the start
                 String[] just_numbers = private_review_ids2.split(",");
 
-               // System.out.println("just_numbers" + Arrays.toString(just_numbers));
-
                 //We want 3 random numbers from the array just_numbers
                 HashSet<Integer> integers = new HashSet<>(3);
                 Random random = new Random();
+
                 //get 3 random numbers
                 while (integers.size() < 3) {
 
@@ -378,11 +382,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 Toast.makeText(PopulistoListView.this, "random_reviews : " + random_reviews, Toast.LENGTH_LONG).show();
 
                 //show_random_reviews();
-
+              }
               }catch (JSONException e) {
                 Log.e("MYAPP", "unexpected JSON exception", e);
                 // Do something to recover ... or kill the app.
-              }
+              }*/
 
             }
           }, new Response.ErrorListener() {
@@ -418,9 +422,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
       AppController.getInstance().addToRequestQueue(request);
 
+  }
 
-    //load all the categories shared with the logged in user
-    //fetchCategories();
+
+  private void sendSecondRequest(){
 
     //This is for the first activity user sees:
     //"Add New" button, U reviews, " May be of interest" heading and " May be of Interest"
@@ -443,11 +448,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               //add the review to the reviewList
               reviewList.add(review);
 
-
-
             } catch (Exception e) {
-            e.printStackTrace();
-          }
+              e.printStackTrace();
+            }
 
             //for U reviews
             try {
@@ -505,6 +508,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //add the reviewUser to the reviewList
                 reviewList.add(review);
 
+              }}
+
+              catch (Exception e) {
+                e.printStackTrace();
               }
 
               try {
@@ -523,179 +530,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 e.printStackTrace();
               }
 
-                //post random_reviews string to Random_Reviews.php.
-                //It will be a string of the form 5,22,56
-                //then when we get values of category, comment etc from server, show those reviews in recyclerView
-                //below the logged-in user's reviews
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, Random_Reviews_URL,
-                    new Response.Listener<String>() {
-                      @Override
-                      public void onResponse(String response) {
+              sendThirdRequest();
 
-                        //Toast.makeText(PopulistoListView.this, "response is  " + response, Toast.LENGTH_LONG).show();
-                        //System.out.println("response is :" + response);
-
-                        try {
-
-                          //name our JSONObject User_Private_Public_Obj, which is response from server
-                          JSONObject User_Private_Public_Obj = new JSONObject(response);
-
-                          //Now break up the response from server
-                          //We want the JSON Array part, "private_review_ids"
-                          JSONArray private_ids = User_Private_Public_Obj.getJSONArray("private_review_ids");
-
-                          for
-                            //get the number of objects in User_Private_Public_Obj
-                              (int i = 0; i < private_ids.length(); i++)
-
-                          {
-
-                            //for each object in the array private_ids, name it obj
-                            //each obj will consist of reviewid, category, name, address, phone,comment
-                            JSONObject obj = private_ids.getJSONObject(i);
-
-                            Review review = new Review();
-
-                            //get the string from sharedpreferences, AllPhonesandNamesofContacts,
-                            //which we put in VerifyUserPhoneNumber,
-                            //it will be like [{"phone_number":"+123456","name":"Jim Smith"}, etc...]
-                            //we want this so we can display phone name in recyclerView
-                            SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-                            String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
-                            //System.out.println("all phones and names string :" + json_array);
-
-                            //convert the string above into a json array
-                            JSONArray jsonArray = new JSONArray(json_array);
-
-                            //System.out.println("all phones and names :" + jsonArray);
-
-                            //get the part of the object "date_created" from Random_Reviews.php
-                            String date2 = obj.getString("date_created");
-
-                            //we only want the date stuff, not the time in seconds etc.
-                            //and we want it formatted like this : 11 October 2018.
-                            //not like "2018-11-09 08:04:37
-                            review.setDate_created(getDateandFormat(date2));
-                            //get 0,1 or 2 value, for Just U, private or public
-                            review.setPublicorprivate(obj.getString("publicorprivate"));
-                            //we are getting the reviewid so we can pull extra matching info,
-                            review.setReviewid(obj.getString("reviewid"));
-                            //set the category part of the object to that matching reviewid
-                            review.setCategory(obj.getString("category"));
-                            //etc...
-                            review.setName(obj.getString("name"));
-                            review.setAddress(obj.getString("address"));
-
-                            //set a string to the phone number from the DB,
-                            //the phone number of the person who made the review
-                            phoneNoInDB = obj.getString("username");
-
-                            //set the setter to the phone number string, the string is
-                            //the phone number of the person who made the review
-                            review.setPhoneNumberofUserFromDB(phoneNoInDB);
-                            // System.out.println("PopulistoListView newarray :" + jsonMatchingContacts);
-
-                            //jsonArray is our AllPhonesandNamesofContacts
-                            int matching = jsonArray.length();
-                            for (int n = 0; n < matching; n++) {
-
-                              try {
-                                //for every object in AllPhonesandNamesofContacts,
-                                //name it "object"
-                                JSONObject object = jsonArray.getJSONObject(n);
-
-                                //if the phone_number in AllPhonesandNamesofContacts equals
-                                //the phone number in the DB
-                                if (object.getString("phone_number").equals(phoneNoInDB)) {
-
-                                  //then rip out the other part of the object, the name in
-                                  // AllPhonesandNamesofContacts
-                                  //of the person who made the review
-                                  review.setphoneNameonPhone(object.getString("name"));
-
-                                }
-
-                              } catch (JSONException e) {
-                                Log.e("MYAPP", "unexpected JSON exception", e);
-                                // Do something to recover ... or kill the app.
-                              }
-                            }
-
-
-                            review.setPhone(obj.getString("phone"));
-                            review.setComment(obj.getString("comment"));
-
-                            //depending on if setType_row is 1 or 2 or 3,
-                            //in this case it is 2 - a review that is shared with logged-in user
-                            //and in phone contacts of logged-in user.
-                            //We will getType_row in UPopulistoReviewsAdapter.
-                            //We will put phoneNameOnPhone in blue text - for Phone Contact
-                            //if the review is 1 (belongs to logged-in user)
-                            //then we would show ViewContact
-                            //In this case, "2", we will be showing SharedViewContact, no edit,
-                            //delete button etc
-                            review.setType_row("2");
-
-                            //add the review to the sharedReviewList
-                            reviewList.add(review);
-
-                          }
-
-                          //set the adapter to show the random reviews
-                          recyclerView.setAdapter(uAdapter);
-
-                        } catch (JSONException e) {
-                          Log.e("MYAPP", "unexpected JSON exception", e);
-                          // Do something to recover ... or kill the app.
-                        }
-
-                        // notifying list adapter about data changes
-                        // so that it renders the list view with updated data
-                        //for random reviews, after user's own
-                        uAdapter.notifyDataSetChanged();
-
-                      }
-                    },
-                    new Response.ErrorListener() {
-                      @Override
-                      public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PopulistoListView.this, "bbb " + error.toString(), Toast.LENGTH_LONG).show();
-                        System.out.println("bbb " + error.toString());
-
-                      }
-
-                    }) {
-                  @Override
-                  //post info to php
-                  protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-                    //selectOwnUserReviews is a string of_review_ids of reviews, created by logged-in user,
-                    // for the clicked category in filter.
-                    //KEY_REVIEWID_USER is "reviewiduser". When we see "reviewiduser" in our php,
-                    //put in selectOwnUserReviews, which will be exploded, and the values for review_ids
-                    //will be got individually
-                    //params.put(KEY_REVIEWID_USER, selectOwnUserReviews);
-                    params.put(KEY_REVIEWID_PRIVATE, random_reviews);
-                    //params.put(KEY_REVIEWID_PUBLIC, selectPublicReviews);
-
-                    return params;
-
-                  }
-
-                };
-                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                requestQueue.add(stringRequest);
-
-            } catch (JSONException e) {
-              Log.e("MYAPP", "unexpected JSON exception", e);
-              // Do something to recover ... or kill the app.
-            }
-
-
-
-            // notifying list adapter about data changes
-            // so that it renders the recyclerView with updated data
-            uAdapter.notifyDataSetChanged();
 
           }
         },
@@ -721,24 +557,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     };
 
-    //this is to hopefully end the VolleyTimeOut error message
-    stringRequest.setRetryPolicy(new RetryPolicy() {
-      @Override
-      public int getCurrentTimeout() {
-        return 50000;
-      }
-
-      @Override
-      public int getCurrentRetryCount() {
-        return 50000;
-      }
-
-      @Override
-      public void retry(VolleyError error) throws VolleyError {
-
-      }
-    });
-
     RequestQueue requestQueue = Volley.newRequestQueue(this);
     requestQueue.add(stringRequest);
 
@@ -747,7 +565,187 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
 
-  @Override
+
+  private void sendThirdRequest(){
+
+
+    //post random_reviews string to Random_Reviews.php.
+    //It will be a string of the form 5,22,56
+    //then when we get values of category, comment etc from server, show those reviews in recyclerView
+    //below the logged-in user's reviews
+    StringRequest stringRequest = new StringRequest(Request.Method.POST, Random_Reviews_URL,
+        new Response.Listener<String>() {
+          @Override
+          public void onResponse(String response) {
+
+            //Toast.makeText(PopulistoListView.this, "response is  " + response, Toast.LENGTH_LONG).show();
+            //System.out.println("response is :" + response);
+
+            try {
+
+              //name our JSONObject User_Private_Public_Obj, which is response from server
+              JSONObject User_Private_Public_Obj = new JSONObject(response);
+
+              //Now break up the response from server
+              //We want the JSON Array part, "private_review_ids"
+              JSONArray private_ids = User_Private_Public_Obj.getJSONArray("private_review_ids");
+
+              for
+                //get the number of objects in User_Private_Public_Obj
+                  (int i = 0; i < private_ids.length(); i++)
+
+              {
+
+                //for each object in the array private_ids, name it obj
+                //each obj will consist of reviewid, category, name, address, phone,comment
+                JSONObject obj = private_ids.getJSONObject(i);
+
+                Review review = new Review();
+
+                //get the string from sharedpreferences, AllPhonesandNamesofContacts,
+                //which we put in VerifyUserPhoneNumber,
+                //it will be like [{"phone_number":"+123456","name":"Jim Smith"}, etc...]
+                //we want this so we can display phone name in recyclerView
+                SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+                String json_array = sharedPrefs.getString("AllPhonesandNamesofContacts", "0");
+                //System.out.println("all phones and names string :" + json_array);
+
+                //convert the string above into a json array
+                JSONArray jsonArray = new JSONArray(json_array);
+
+                //System.out.println("all phones and names :" + jsonArray);
+
+                //get the part of the object "date_created" from Random_Reviews.php
+                String date2 = obj.getString("date_created");
+
+                //we only want the date stuff, not the time in seconds etc.
+                //and we want it formatted like this : 11 October 2018.
+                //not like "2018-11-09 08:04:37
+                review.setDate_created(getDateandFormat(date2));
+                //get 0,1 or 2 value, for Just U, private or public
+                review.setPublicorprivate(obj.getString("publicorprivate"));
+                //we are getting the reviewid so we can pull extra matching info,
+                review.setReviewid(obj.getString("reviewid"));
+                //set the category part of the object to that matching reviewid
+                review.setCategory(obj.getString("category"));
+                //etc...
+                review.setName(obj.getString("name"));
+                review.setAddress(obj.getString("address"));
+
+                //set a string to the phone number from the DB,
+                //the phone number of the person who made the review
+                phoneNoInDB = obj.getString("username");
+
+                //set the setter to the phone number string, the string is
+                //the phone number of the person who made the review
+                review.setPhoneNumberofUserFromDB(phoneNoInDB);
+                // System.out.println("PopulistoListView newarray :" + jsonMatchingContacts);
+
+                //jsonArray is our AllPhonesandNamesofContacts
+                int matching = jsonArray.length();
+                for (int n = 0; n < matching; n++) {
+
+                  try {
+                    //for every object in AllPhonesandNamesofContacts,
+                    //name it "object"
+                    JSONObject object = jsonArray.getJSONObject(n);
+
+                    //if the phone_number in AllPhonesandNamesofContacts equals
+                    //the phone number in the DB
+                    if (object.getString("phone_number").equals(phoneNoInDB)) {
+
+                      //then rip out the other part of the object, the name in
+                      // AllPhonesandNamesofContacts
+                      //of the person who made the review
+                      review.setphoneNameonPhone(object.getString("name"));
+
+                    }
+
+                  } catch (JSONException e) {
+                    Log.e("MYAPP", "unexpected JSON exception", e);
+                    // Do something to recover ... or kill the app.
+                  }
+                }
+
+
+                review.setPhone(obj.getString("phone"));
+                review.setComment(obj.getString("comment"));
+
+                //depending on if setType_row is 1 or 2 or 3,
+                //in this case it is 2 - a review that is shared with logged-in user
+                //and in phone contacts of logged-in user.
+                //We will getType_row in UPopulistoReviewsAdapter.
+                //We will put phoneNameOnPhone in blue text - for Phone Contact
+                //if the review is 1 (belongs to logged-in user)
+                //then we would show ViewContact
+                //In this case, "2", we will be showing SharedViewContact, no edit,
+                //delete button etc
+                review.setType_row("2");
+
+                //add the review to the sharedReviewList
+                reviewList.add(review);
+
+              }
+
+              //set the adapter to show the random reviews
+              recyclerView.setAdapter(uAdapter);
+
+            } catch (JSONException e) {
+              Log.e("MYAPP", "unexpected JSON exception", e);
+              // Do something to recover ... or kill the app.
+            }
+
+            // notifying list adapter about data changes
+            // so that it renders the list view with updated data
+            //for random reviews, after user's own
+            uAdapter.notifyDataSetChanged();
+
+          }
+        },
+        new Response.ErrorListener() {
+          @Override
+          public void onErrorResponse(VolleyError error) {
+            Toast.makeText(PopulistoListView.this, "bbb " + error.toString(), Toast.LENGTH_LONG).show();
+            System.out.println("bbb " + error.toString());
+
+          }
+
+        }) {
+      @Override
+      //post info to php
+      protected Map<String, String> getParams() {
+        Map<String, String> params = new HashMap<String, String>();
+        //selectOwnUserReviews is a string of_review_ids of reviews, created by logged-in user,
+        // for the clicked category in filter.
+        //KEY_REVIEWID_USER is "reviewiduser". When we see "reviewiduser" in our php,
+        //put in selectOwnUserReviews, which will be exploded, and the values for review_ids
+        //will be got individually
+        //params.put(KEY_REVIEWID_USER, selectOwnUserReviews);
+        params.put(KEY_REVIEWID_PRIVATE, random_reviews);
+        //params.put(KEY_REVIEWID_PUBLIC, selectPublicReviews);
+
+        return params;
+
+      }
+
+    };
+    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+    requestQueue.add(stringRequest);
+
+
+
+  // notifying list adapter about data changes
+  // so that it renders the recyclerView with updated data
+  uAdapter.notifyDataSetChanged();
+
+
+}
+
+
+
+
+
+    @Override
   public void onDestroy() {
     super.onDestroy();
     //hidePDialog();

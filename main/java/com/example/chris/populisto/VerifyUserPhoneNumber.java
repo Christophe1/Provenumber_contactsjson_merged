@@ -190,6 +190,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     VerifyUserPhoneNumber.StartUpInfo startUpInfo = new VerifyUserPhoneNumber.StartUpInfo();
     startUpInfo.execute();
 
+
   }
 
 
@@ -259,7 +260,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
               //make hashPassTrueorFalse = the response string, "True" or "False"
               hashPassTrueorFalse = response.toString();
-              Toast.makeText(VerifyUserPhoneNumber.this, hashPassTrueorFalse, Toast.LENGTH_LONG).show();
+              Toast.makeText(VerifyUserPhoneNumber.this, "hashPassTrueorFalse is" + hashPassTrueorFalse, Toast.LENGTH_LONG).show();
               System.out.println("hashPassTrueorFalse is:" + hashPassTrueorFalse);
               //If the hash on the user's phone does not equal the hash in the DB..
               //and the phone number does not match...
@@ -297,6 +298,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                   Toast.makeText(getApplicationContext(), "Read contacts not granted yet", Toast.LENGTH_LONG).show();
 
                 }
+
+                finish();
               }
 
             }
@@ -403,10 +406,53 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
           //check if permissions denied
-          if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+          if (ContextCompat.checkSelfPermission(getApplicationContext(),
+              Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+
+   /*         new AlertDialog.Builder(VerifyUserPhoneNumber.this).
+                setCancelable(false).
+                // setTitle("You need to enable Read Contacts").
+                    setMessage("blah blah").
+                //setIcon(R.drawable.ninja).
+                    setPositiveButton("CONTINUE",
+                    new DialogInterface.OnClickListener() {
+                      @TargetApi(11)
+                      public void onClick(DialogInterface dialog, int id) {
+                        //showToast("Thank you! You're awesome too!");
+                        dialog.cancel();
+
+                ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity,
+                new String[]{Manifest.permission.READ_CONTACTS},
+                PERMISSIONS_REQUEST_READ_CONTACTS);
+
+*//*                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);*//*
+                      }
+                    })
+                .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
+                  @TargetApi(11)
+                  public void onClick(DialogInterface dialog, int id) {
+                    //showToast("Mike is not awesome for you. :(");
+                    dialog.cancel();
+                  }
+                }).show();
+
+*/
+
+
+
+
+
+
+
+
+
 
             //if denied, show the standard Android dialog, 'Allow access to Contacts?'
-            ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity,
+           ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity,
                 new String[]{Manifest.permission.READ_CONTACTS},
                 PERMISSIONS_REQUEST_READ_CONTACTS);
 

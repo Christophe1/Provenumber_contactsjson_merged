@@ -32,6 +32,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -273,6 +274,9 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
         if (event.getAction() == MotionEvent.ACTION_UP) {
           AlertDialog.Builder commentname_alertdialog = new AlertDialog.Builder(EditContact.this);
 
+          //so double clicking won't open the dialog twice...
+          commentname.setEnabled(false);
+
           //new EditText
           alertdialog_edittext = new EditText(EditContact.this);
 
@@ -280,7 +284,7 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
           commentname_alertdialog.setView(alertdialog_edittext);
 
           //set the text input type
-          alertdialog_edittext.setInputType(InputType.TYPE_CLASS_TEXT);
+          alertdialog_edittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
           //set the max length of characters for the edittext
           alertdialog_edittext.setFilters(new InputFilter[]{new InputFilter.LengthFilter(385)});
           //set to multi-line
@@ -327,6 +331,9 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
               //pass the text string entered in the alert dialog
               setTextFromDialog(AlertDialogTextValue);
 
+              //enable the comment edittext again
+              commentname.setEnabled(true);
+
               dialog.dismiss();
 
             }
@@ -334,6 +341,10 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
           commentname_alertdialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+              //enable the comment edittext again
+              commentname.setEnabled(true);
+
               dialog.cancel();
             }
           });
@@ -681,14 +692,18 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
 
     if (allValid == true) {
 
+      //so user can't repeatedly press
+      //save and info sent multiple times to server
+      save.setEnabled(false);
+
       //close the populistolistview class
       //(we'll be opening it again, will close now so it will be refreshed)
       PopulistoListView.fa.finish();
 
-      pDialog = new ProgressDialog(EditContact.this);
+/*      pDialog = new ProgressDialog(EditContact.this);
       // Showing progress dialog for the review being saved
       pDialog.setMessage("Saving...");
-      pDialog.show();
+      pDialog.show();*/
 
       try {
         System.out.println("we're in the try part");
@@ -740,6 +755,25 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
         e.printStackTrace();
       }
 
+      //we run on UI thread to stopp progressbar flickering...
+      runOnUiThread(new Runnable() {
+
+        @Override
+        public void run() {
+
+          //this is our progressbar view
+          //make it visible while waiting
+          //for response from the server.
+          ProgressBar activity_new_contact_progressbar = findViewById(R.id.activity_edit_contact_progressbar);// change id here
+          activity_new_contact_progressbar.setVisibility(View.VISIBLE);
+
+          //and set the linear layout, containing edittexts,
+          // to invisible
+          LinearLayout activity_edit_contact_linear = findViewById(R.id.holder);// change id here
+          activity_edit_contact_linear.setVisibility(View.GONE);
+
+        }});
+
 
       //post the review_id in the current activity to EditContact.php and from that
       //get associated values - category, name, phone etc...
@@ -747,7 +781,23 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
           new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-              Toast.makeText(EditContact.this, "page is saving: " + phoneNoofUserCheck + " + " + review_id, Toast.LENGTH_SHORT).show();
+
+              //when saved, go to the PopulistoListView class and update with
+              //the edited values
+              Intent j = new Intent(EditContact.this, PopulistoListView.class);
+
+              EditContact.this.startActivity(j);
+
+              //refresh the populistolistview adapter, so when we go back
+              //to that activity the recyclerview will be refreshed
+              PopulistoListView.uAdapter.notifyDataSetChanged();
+
+              // clear the checkbox state of checked contacts, we only want to keep it when the app resumes
+              //SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
+              //preferences.edit().clear().commit();
+
+              finish();
+             // Toast.makeText(EditContact.this, "page is saving: " + phoneNoofUserCheck + " + " + review_id, Toast.LENGTH_SHORT).show();
 
               // Toast.makeText(EditContact.this, response, Toast.LENGTH_LONG).show();
             }
@@ -801,25 +851,8 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
 
       AppController.getInstance().addToRequestQueue(stringRequest);
 
-      //when saved, go to the PopulistoListView class and update with
-      //the edited values
-      Intent j = new Intent(EditContact.this, PopulistoListView.class);
-
-
-      EditContact.this.startActivity(j);
-
-      //refresh the populistolistview adapter, so when we go back
-      //to that activity the recyclerview will be refreshed
-      PopulistoListView.uAdapter.notifyDataSetChanged();
-
-      // clear the checkbox state of checked contacts, we only want to keep it when the app resumes
-      //SharedPreferences preferences = getSharedPreferences("sharedPrefsFile", 0);
-      //preferences.edit().clear().commit();
-
-      finish();
-
       //hide the dialogue box when page is saved
-      hidePDialog();
+      //hidePDialog();
     }
   }
 
@@ -1046,12 +1079,12 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
   }
 
 
-  public void hidePDialog() {
+/*  public void hidePDialog() {
     if (pDialog != null) {
       pDialog.dismiss();
       pDialog = null;
     }
-  }
+  }*/
 
   //for the Public Contacts button
   private void publicButton() {
