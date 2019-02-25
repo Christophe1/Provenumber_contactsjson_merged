@@ -586,13 +586,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       //like if the user adds new names and numbers to their phone contacts.
       //selectPhoneContacts.clear();
 
-/*      if (PopulistoContactsAdapter.allPhonesofContacts.size() == 0) {
-
-        System.out.println("allPhonesofContacts is null" + PopulistoContactsAdapter.MatchingContactsAsArrayList);
-//        Toast.makeText(NewContact.this, "allPhonesofContacts is null", Toast.LENGTH_SHORT).show();
-
-      }*/
-
       //If permission denied (will only be on Marshmallow +)
       PackageManager manager = getPackageManager();
       int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
@@ -680,7 +673,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //*********set the Matching Contacts to be checked, by default ************
         //loop through the matching contacts
         int count = MatchingContactsAsArrayList.size();
-        System.out.println("NewContact: the matching contacts are " + MatchingContactsAsArrayList);
+        //System.out.println("NewContact: the matching contacts are " + MatchingContactsAsArrayList);
 
         for (int i = 0; i < count; i++) {
 
@@ -689,6 +682,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           // {
           //check all matching contacts, we want it to be 'Phone Contacts' by default
           PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+          System.out.println("NewContact: the matching contacts are " + MatchingContactsAsArrayList);
 
           //we need to notify the recyclerview that changes may have been made
           adapter.notifyDataSetChanged();
@@ -804,7 +798,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //loop through the matching contacts
         int count = MatchingContactsAsArrayList.size();
 
-        //  Toast.makeText(NewContact.this, "MatchingContactsAsArrayList size is " + count, Toast.LENGTH_SHORT).show();
+          Toast.makeText(NewContact.this, "MatchingContactsAsArrayList size is " + count, Toast.LENGTH_SHORT).show();
 
         //for each matching contact...
         for (int i = 0; i < count; i++) {

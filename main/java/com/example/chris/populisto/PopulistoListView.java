@@ -22,6 +22,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -207,6 +208,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   Integer[] private_array_numbers;
   Integer[] public_array_numbers;
 
+  List<String> accumulator;
+
+  String[] randomReviewsStringArray;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -323,13 +328,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               // "private_count":2,
               // "public_count":3}, etc...etc....
 
-              Toast.makeText(PopulistoListView.this, "response is: " + the_response, Toast.LENGTH_LONG).show();
+              //Toast.makeText(PopulistoListView.this, "response is: " + the_response, Toast.LENGTH_LONG).show();
 
+              //the_response is defined as a global string, above
               System.out.println("response is: " + the_response);
 
               //breaking up the response into respective parts
-              //so we can get values for 'random reviews' string and then
-              //post it in show_random_reviews() function
+              //so we can get values for 'random reviews'
               try {
                 JSONArray responseObject = new JSONArray(response);
 
@@ -347,28 +352,30 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                   //each value into a string private_review_ids
                   //will be of the form
                   //[][105][][21][111][113][116][173][][104][]
+                  //also, do same for public_review_ids
                   private_review_ids.append(obj.getString("private_review_ids").toString());
                   public_review_ids.append(obj.getString("public_review_ids").toString());
 
 
                 }
 
-                  System.out.println("private_review_ids: " + private_review_ids);
-                  System.out.println("public_review_ids: " + public_review_ids);
+                  //System.out.println("private_review_ids: " + private_review_ids);
+                  //System.out.println("public_review_ids: " + public_review_ids);
 
-
-                //make it all into a single string
+                //make private_review_ids into a single string
                 String private_review_ids2 = private_review_ids.toString();
 
                 //we only want the numbers (the review_ids) so get rid of other stuff
+                //replace everything that's not a number with a comma
                 private_review_ids2 = private_review_ids2.replaceAll("[^0-9]+", ",");
-                //get rid of the first ","
+                //get rid of the first ",", replace it with nothing
                 private_review_ids2 = private_review_ids2.replaceFirst(",", "");
 
 
                 //likewise for public
                 String public_review_ids2 = public_review_ids.toString();
                 //we only want the numbers (the review_ids) so get rid of other stuff
+                //replace everything that's not a number with a comma
                 public_review_ids2 = public_review_ids2.replaceAll("[^0-9]+", ",");
                 //get rid of the first ","
                 public_review_ids2 = public_review_ids2.replaceFirst(",", "");
@@ -377,61 +384,31 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                 //this works
                 //private_review_ids2 is: 10,44,
-                  System.out.println("private_review_ids2 is: " + private_review_ids2);
+                //System.out.println("private_review_ids2 is: " + private_review_ids2);
 
-                System.out.println("public_review_ids2 is: " + public_review_ids2);
+                //System.out.println("public_review_ids2 is: " + public_review_ids2);
 
 
-                //a string array, make the stuff (numbers) between
+                //make a string array, with the stuff (numbers) between
                 //commas into separate strings
                 private_array = private_review_ids2.split(",");
-
                 public_array = public_review_ids2.split(",");
 
-
-               // Toast.makeText(PopulistoListView.this, "just_numbers : " + just_numbers, Toast.LENGTH_LONG).show();
-
                 //[105, 21, 57, 60, 103, 108, 111, 113, 116, 173, 104]
-                System.out.println("private_array : " + Arrays.toString(private_array));
+                //System.out.println("private_array : " + Arrays.toString(private_array));
                 //[10, 44]
-                System.out.println("public_array : " + Arrays.toString(public_array));
+                //System.out.println("public_array : " + Arrays.toString(public_array));
 
-                getPrivateRandomNumbers();
+                //let's get 10 reviews, made of private first and then public
+                getMixedRandomNumbers(3);
 
-                getPublicRandomNumbers();
-
-                  //We want 3 random numbers from the array just_numbers
-/*                HashSet<Integer> integers = new HashSet<>(10);
-                Random random = new Random();
-
-                //get 3 random numbers
-                while (integers.size() < 10) {
-
-                  //add 10 random numbers to integers from the string array private_array
-                  integers.add(Integer.parseInt(private_array[random.nextInt(private_array.length)]));
-
-                }*/
-
-                //UNDO THIS System.out.println("1. the integers are " + integers);
-                System.out.println("1. the integers are " + (Arrays.toString(private_array_numbers)));
-
-                //make a string from integers
-                random_reviews = (Arrays.toString(private_array_numbers));
-
-                //remove the [ and ] from the string
-//                random_reviews = random_reviews.substring(1, random_reviews.length() - 1);
-                //UNDO THIS System.out.println("2. random_reviews : " + random_reviews);
-              //  System.out.println("2. random_reviews : " + random_reviews);
-
-             //   Toast.makeText(PopulistoListView.this, "random_reviews : " + random_reviews, Toast.LENGTH_LONG).show();
-
-                //show_random_reviews();
+                //make a string from the return value of getMixedRandomNumbers
+                random_reviews = (Arrays.toString(randomReviewsStringArray));
 
               }catch (JSONException e) {
                 Log.e("MYAPP", "unexpected JSON exception", e);
                 // Do something to recover ... or kill the app.
               }
-              //random_reviews = "2,66,28";
 
               sendSecondRequest();
 
@@ -612,11 +589,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   }
 
-
-
-
   private void sendThirdRequest(){
-
 
     //post random_reviews string to Random_Reviews.php.
     //It will be a string of the form 5,22,56
@@ -788,32 +761,41 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 }
 
+  //method to get random reviews from phone contacts and public
+  public  String[] getMixedRandomNumbers(int size) {
 
-  private Integer[] getPrivateRandomNumbers() {
-    HashSet<Integer> integers = new HashSet<>(11);
-    Random random = new Random();
-    while (integers.size() < 11) {
-      // add number generation logic below
-      integers.add(Integer.parseInt(private_array[random.nextInt(private_array.length)]));
+    try {
+      //String[] private_array = {"105", "21", "57"};
+      //String[] public_array  = {"103", "44", "3"};
+      List<String> priv = Arrays.asList(private_array);
+      List<String> publ = Arrays.asList(public_array);
+      //shuffle the order
+      Collections.shuffle(priv);
+      Collections.shuffle(publ);
+      List<String> result = new ArrayList<>();
+      //add all the phone contact reviews
+      result.addAll(priv);
+      //if there's not a sufficient number of phone contact reviews, add public
+      for (String p : publ) {
+        if (!result.contains(p)) {
+          result.add(p);
+        }
+      }
+
+      //make a new string consisting of "size" numbers, whatever the method
+      //defines it as
+      randomReviewsStringArray = result.subList(0, size).toArray(new String[0]);
+
+      Toast.makeText(getApplicationContext(), "stream:" + Arrays.toString(randomReviewsStringArray), Toast.LENGTH_SHORT).show();
+
     }
 
-    private_array_numbers = integers.toArray(new Integer[11]);
-
-    return private_array_numbers;
-  }
-
-
-  private Integer[] getPublicRandomNumbers() {
-    HashSet<Integer> integers = new HashSet<>(11);
-    Random random = new Random();
-    while (integers.size() < 11) {
-      // add number generation logic below
-      integers.add(Integer.parseInt(public_array[random.nextInt(public_array.length)]));
+    catch (IndexOutOfBoundsException e) {
+      System.out.println("Exception thrown : " + e);
     }
 
-    public_array_numbers = integers.toArray(new Integer[11]);
+    return randomReviewsStringArray;
 
-    return public_array_numbers;
   }
 
 
@@ -824,7 +806,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     //dismiss the dialog when we get the response
     //progressDialog.cancel();
   }
-
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {

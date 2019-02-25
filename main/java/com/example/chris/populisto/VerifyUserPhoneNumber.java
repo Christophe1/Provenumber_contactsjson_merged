@@ -781,9 +781,17 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         if (!ids.contains(phoneNumberofContact)) {
           ids.add(phoneNumberofContact);
 
+
+
           //allPhonesofContacts is a list of all the phone numbers in the user's contacts
           allPhonesofContacts.add(phoneNumberofContact);
 
+          //if allPhonesofContacts contains logged-in user
+          //s number (like I for some reason have on Nat's
+          //phone) remove it. Otherwise it messes up "Just U"
+          if (allPhonesofContacts.contains(phoneNoofUser)) {
+            allPhonesofContacts.remove(phoneNoofUser);
+          }
           //allNamesofContacts is a list of all the names in the user's contacts
           allNamesofContacts.add(name);
 
@@ -961,7 +969,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 //make our arraylist, matchingcontactsasarraylist, into a list of numbers from the server
                 //strip out the phone number
                 //so it will be like: [+353864677745, +35387123456, etc...]
-                MatchingContactsAsArrayList.add(obj.getString("phone_number"));
+                MatchingContactsAsArrayList.add(obj.getString("usernameMatch"));
 
                 //hopefully to stop duplicates sometimes happening in MatchingContactsAsArrayList...
                 HashSet<String> hashSet = new HashSet<String>();
@@ -991,7 +999,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               System.out.println("the matching contacts are " + MatchingContactsAsString);
 
             } catch (Exception e) {
-              e.printStackTrace();
+              e.printStackTrace(System.out);
             }
 
 
@@ -1000,8 +1008,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         new Response.ErrorListener() {
           @Override
           public void onErrorResponse(VolleyError error) {
-            Toast.makeText(VerifyUserPhoneNumber.this, error.toString(), Toast.LENGTH_LONG).show();
-
+            Toast.makeText(VerifyUserPhoneNumber.this, "fff" + error.toString(), Toast.LENGTH_LONG).show();
+            error.printStackTrace();
+            System.out.println("volley error is " + error.getMessage());
           }
 
         }) {
