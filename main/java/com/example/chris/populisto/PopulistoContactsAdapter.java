@@ -64,7 +64,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
     //In each recycler_blueprint show the items you want to have appearing
     public TextView title, phone;
     public CheckBox check;
-    public Button invite;
+    //public Button invite;
 
 
     public MatchingContact(final View itemView) {
@@ -73,7 +73,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
       //phone is cast to the id called no etc
       title = (TextView) itemView.findViewById(R.id.name);
       phone = (TextView) itemView.findViewById(R.id.no);
-      invite = (Button) itemView.findViewById(R.id.btnInvite);
+     // invite = (Button) itemView.findViewById(R.id.btnInvite);
       check = (CheckBox) itemView.findViewById(R.id.checkBoxContact);
 
     }
@@ -235,6 +235,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
       if (viewHolder.getItemViewType() == 1)
 
       {
+        System.out.println("it's 1");
         //in the title textbox in the row, put the corresponding name etc...
         ((MatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
         ((MatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
@@ -247,6 +248,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
       } else {
 
+        System.out.println("it's 2");
         //if getItemViewType == 2, then show the invite button layout
         ((nonMatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
         ((nonMatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
@@ -276,6 +278,8 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
       if (viewHolder.getItemViewType() == 1)
 
       {
+
+
         //in the title textbox in the row, put the corresponding name, phone number,
         //and checkbox, checked, the review will be shared by default
         ((MatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
@@ -283,7 +287,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
         ((MatchingContact) viewHolder).check.setChecked(theContactsList.get(position).getSelected());
         ((MatchingContact) viewHolder).check.setTag(position);
 
-        Toast.makeText(context_type, "matching contacts are:" + MatchingContactsAsArrayList, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context_type, "matching contacts arre:" + MatchingContactsAsArrayList, Toast.LENGTH_SHORT).show();
         Toast.makeText(context_type, "checked checkboxes are:" + checkedContactsAsArrayList, Toast.LENGTH_SHORT).show();
 
         //for the onClick of the check box

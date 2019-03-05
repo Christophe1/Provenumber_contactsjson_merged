@@ -83,6 +83,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   private static final String NewContact_URL = "https://www.populisto.com/NewContact.php";
 
   //matching contacts, those on phone and populisto users
+  //we need to initialise it, otherwise if user has no matching contacts
+  //the app crashes
   //public static final ArrayList<String> MatchingContactsAsArrayList  = new ArrayList<String>();
 
   //make a List containing info about SelectPhoneContact objects
@@ -154,7 +156,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   //sharedprefs for holding all phone numbers of contacts
   //SharedPreferences sharedPreferencesallPhonesofContacts;
 
-  //for if review can be saved, nees fields filled for Public and Phone Contacts
+  //for if review can be saved, needs fields filled for Public and Phone Contacts
   Boolean allValid;
 
   //show progress bar, before response is fetched
@@ -575,10 +577,14 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     protected Void doInBackground(Void... voids) {
 
 
-      //if (!Match0ingContactsAsArrayList.isEmpty()) {
+      //if (!MatchingContactsAsArrayList.isEmpty()) {
         // make a copy of MatchingContactsAsArrayList,
         //these will all be checked by default
         checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+
+      System.out.println("NewContact, the MatchingContactsAsArrayList is: " + MatchingContactsAsArrayList);
+      System.out.println("NewContact, the checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
+
 
       //}
       //we want to delete the old selectContacts from the listview when the Activity loads
@@ -1066,7 +1072,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
                     finish();
 
                     //response, this will show the checked numbers being posted
-                     Toast.makeText(NewContact.this, "didledoo" + response, Toast.LENGTH_LONG).show();
+                     Toast.makeText(NewContact.this, response, Toast.LENGTH_LONG).show();
                   }
                 },
                 new Response.ErrorListener() {

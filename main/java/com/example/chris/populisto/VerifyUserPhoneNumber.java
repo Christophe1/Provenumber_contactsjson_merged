@@ -214,8 +214,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
       hashedPassinXML = sharedPreferences.getString("hashedpassword", "");
 
+      //hashedPassinXML = "520de413ec45d9f089b05de4f8d6088f";
+
+
       SharedPreferences sharedPreferences2 = getSharedPreferences("MyData", Context.MODE_PRIVATE);
       phoneNoofUser = sharedPreferences2.getString("phonenumberofuser", "");
+
+      //phoneNoofUser = "+353872934480";
 
       System.out.println("hashpassinXML is:" + hashedPassinXML);
       System.out.println("phoneNoofUser is:" + phoneNoofUser);
@@ -225,6 +230,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       // We need this for putting phone contacts into E164
       SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
       CountryCode = sharedPreferencesCountryCode.getString("countrycode", "");
+
+      //CountryCode = "+353";
 
       //clear these arraylists when the app starts
       //because I was getting repeats of names and phone numbers
@@ -260,7 +267,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
               //make hashPassTrueorFalse = the response string, "True" or "False"
               hashPassTrueorFalse = response.toString();
-              Toast.makeText(VerifyUserPhoneNumber.this, "hashPassTrueorFalse is" + hashPassTrueorFalse, Toast.LENGTH_LONG).show();
+              Toast.makeText(VerifyUserPhoneNumber.this, "hashPassTrueorFalse is " + hashPassTrueorFalse, Toast.LENGTH_LONG).show();
               System.out.println("hashPassTrueorFalse is:" + hashPassTrueorFalse);
               //If the hash on the user's phone does not equal the hash in the DB..
               //and the phone number does not match...
@@ -291,6 +298,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                   //Toast.makeText(getApplicationContext(), "Read contact granted!", Toast.LENGTH_LONG).show();
                   //get all the contacts on the user's phone
                   getPhoneContacts();
+                  Toast.makeText(getApplicationContext(), "getPhoneContacts called", Toast.LENGTH_LONG).show();
+
+                  //close this activity, VerifyUserPhoneNumber
+                  finish();
 
                 }
                 //If READ_CONTACTS Permission has been denied
@@ -329,6 +340,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           //the key is "hashpass",
           // When we see this in our php,  $_POST["hashpass"],
           //put in the value from Android, hashedPassinXML
+
+         // params.put("hashpass", "55d293a792079d4874dc36d1e79ba883");
+
           params.put("hashpass", hashedPassinXML);
           params.put("phonenumberofuser", phoneNoofUser);
           System.out.println("second, hashpassinXML is:" + hashedPassinXML);
@@ -656,6 +670,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         //put in the value from Android
         //Likewise, hashpass is the key in PHP etc..
         params.put("phonenumberofuser", phoneNoofUser);
+        //params.put("hashpass", "55d293a792079d4874dc36d1e79ba883");
+
         params.put("hashpass", hashedPassWord);
         params.put("timestamp", time_stamp);
         return params;
@@ -957,14 +973,18 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             String MatchingContactsAsString = response.toString();
             System.out.println("VerifyUserPhoneNumber1: matching contacts of this user are :" + MatchingContactsAsString);
 
-            //make an arraylist which will hold the phone_number part of the MatchingContacts string
-            //MatchingContactsAsArrayList = new ArrayList<String>();
+            System.out.println("MatchingContactsAsArrayList in try statement 1:" + MatchingContactsAsArrayList);
+
+            //clear the arraylist, otherwise superfluous values in sharedprefs are not removed
+            MatchingContactsAsArrayList.clear();
 
             try {
               JSONArray Object = new JSONArray(MatchingContactsAsString);
               //for every object in the Array
               for (int x = 0; x < Object.length(); x++) {
                 final JSONObject obj = Object.getJSONObject(x);
+
+
 
                 //make our arraylist, matchingcontactsasarraylist, into a list of numbers from the server
                 //strip out the phone number
@@ -977,9 +997,22 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 MatchingContactsAsArrayList.clear();
                 MatchingContactsAsArrayList.addAll(hashSet);
 
+                System.out.println("MatchingContactsAsArrayList in try statement 2:" + MatchingContactsAsArrayList);
+
+
 
               }
+
+/*              if(MatchingContactsAsArrayList != null) {
+
+                Toast.makeText(VerifyUserPhoneNumber.this, "The arraylist is empty", Toast.LENGTH_LONG).show();
+                System.out.println("MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
+
+              }*/
               System.out.println("VerifyUserPhoneNumber: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+
+
 
               //save MatchingContactsAsArrayList into sharedpreferences so we can use it elsewhere
               //in our project. It looks like Shared Preferences
@@ -997,8 +1030,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               System.out.println("phonenoofuser" + phoneNoofUser);
               System.out.println("VerifyUserPhoneNumber: all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
               System.out.println("the matching contacts are " + MatchingContactsAsString);
+              System.out.println("the matching contacts are 2:  " + jsonMatchingContactsAsArrayList);
 
-            } catch (Exception e) {
+            }
+
+
+            catch (Exception e) {
               e.printStackTrace(System.out);
             }
 
@@ -1089,6 +1126,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   }
 
   private void SelectCountryorCodeClicked() {
+
+    //close verifyuserhonenumber activity, otherwise it will be open twice
+    //when we go back after countrycodes
+    this.finish();
 
     //this is the number the user enters in the Phone Number textbox
     //We need to parse this when sent, to make it into E.164 format
