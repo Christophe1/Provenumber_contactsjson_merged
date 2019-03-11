@@ -576,11 +576,22 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     @Override
     protected Void doInBackground(Void... voids) {
 
+      //if logged-in user has no matching contacts...
+      if (MatchingContactsAsArrayList == null) {
 
-      //if (!MatchingContactsAsArrayList.isEmpty()) {
-        // make a copy of MatchingContactsAsArrayList,
-        //these will all be checked by default
+        //add logged-in user's number to checkedContactsAsArrayList
+        checkedContactsAsArrayList = new ArrayList();
+        checkedContactsAsArrayList.add(phoneNoofUserCheck);
+
+      }
+
+      else {
+
+        //add all matching contacts as checked, by default
         checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+
+
+      }
 
       System.out.println("NewContact, the MatchingContactsAsArrayList is: " + MatchingContactsAsArrayList);
       System.out.println("NewContact, the checkedContactsAsArrayList is: " + checkedContactsAsArrayList);
@@ -617,22 +628,35 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
           SelectPhoneContact selectContact = new SelectPhoneContact();
 
-          //if a phone number is in our array of matching contacts
-          if (MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
-          {   //add the selectContacts to the selectPhoneContacts array
-            // insert the contact at the beginning of the listview
-            selectPhoneContacts.add(0, selectContact);
-            System.out.println("MatchingContactsAsArrayList is : " + MatchingContactsAsArrayList);
+          if (MatchingContactsAsArrayList != null) {
 
-            //In SelectContact class, so getItemViewType will know which layout to show
-            //:checkbox or Invite Button
-            selectContact.setType_row("1");
+            //if a phone number is in our array of matching contacts
+            if (MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
-          } else {
+            {   //add the selectContacts to the selectPhoneContacts array
+              // insert the contact at the beginning of the listview
+              selectPhoneContacts.add(0, selectContact);
+              System.out.println("MatchingContactsAsArrayList is : " + MatchingContactsAsArrayList);
+
+              //In SelectContact class, so getItemViewType will know which layout to show
+              //:checkbox or Invite Button
+              selectContact.setType_row("1");
+
+            } else {
+              // insert it at the end (default)
+              selectPhoneContacts.add(selectContact);
+              selectContact.setType_row("2");
+
+            }
+          }
+
+          else {
+
             // insert it at the end (default)
             selectPhoneContacts.add(selectContact);
             selectContact.setType_row("2");
+
 
           }
 
@@ -673,10 +697,12 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         noContactFoundCheck = 0;
         noContactsFound.setVisibility(View.GONE);
 
-        //clear the array list of checked contacts that may be in SharedPrefs
-        //checkedContactsAsArrayList.clear();
+        //if matching contacts exists...
+        //(need to take into account logged-in user may have no contacts
+        //who are populisto users, otherwise app wiil crash)
+        if (MatchingContactsAsArrayList != null) {
 
-        //*********set the Matching Contacts to be checked, by default ************
+          //*********set the Matching Contacts to be checked, by default ************
         //loop through the matching contacts
         int count = MatchingContactsAsArrayList.size();
         //System.out.println("NewContact: the matching contacts are " + MatchingContactsAsArrayList);
@@ -684,14 +710,25 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         for (int i = 0; i < count; i++) {
 
           theContactsList.add(new SelectPhoneContact());
-          //if (PopulistoContactsAdapter.theContactsList != null && PopulistoContactsAdapter.theContactsList.size() >= 1)
-          // {
+
           //check all matching contacts, we want it to be 'Phone Contacts' by default
           PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
           System.out.println("NewContact: the matching contacts are " + MatchingContactsAsArrayList);
 
           //we need to notify the recyclerview that changes may have been made
           adapter.notifyDataSetChanged();
+
+        }
+      }
+
+        else {
+
+          int i = 0;
+          //if the user has no matching contacts,
+          //we want to avoid null pointer exception error,
+          //INVITE Button should appear beside all contacts
+          PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
 
         }
       }
@@ -723,12 +760,25 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       @Override
       public void onClick(View v) {
 
-        // make a copy of MatchingContactsAsArrayList,
+        // for public...
         //these will all be checked by default
         //and public_or_private = 2
-        checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
+        //if logged-in user has no matching contacts...
+        if (MatchingContactsAsArrayList == null) {
+
+          //add logged-in user's number to checkedContactsAsArrayList
+          checkedContactsAsArrayList = new ArrayList();
+          checkedContactsAsArrayList.add(phoneNoofUserCheck);
+
+        }
+
+        else {
+
+          //add all matching contacts as checked, by default
+          checkedContactsAsArrayList = new ArrayList<String>(MatchingContactsAsArrayList);
 
 
+        }
 //              keep the slightly rounded shape, when the button is pressed, and change colour
         publicContacts.setBackgroundResource(R.drawable.publiccontacts_buttonshapepressed);
 
@@ -752,6 +802,11 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
         recyclerView.setAdapter(adapter);
 
+        //if matching contacts exists...
+        //(need to take into account logged-in user may have no contacts
+        //who are populisto users, otherwise app wiil crash)
+        if (MatchingContactsAsArrayList != null) {
+
         //loop through the matching contacts
         int count = MatchingContactsAsArrayList.size();
 
@@ -764,7 +819,17 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           //we need to notify the recyclerview that changes may have been made
           adapter.notifyDataSetChanged();
         }
-        //}
+        }
+
+        else {
+
+          int i = 0;
+          //if the user has no matching contacts,
+          //we want to avoid null pointer exception error,
+          //INVITE Button should appear beside all contacts
+          PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+        }
       }
     });
 
@@ -801,7 +866,12 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         //public_or_private column, if saved in this state
         public_or_private = 1;
 
-        //loop through the matching contacts
+        //if matching contacts exists...
+        //(need to take into account logged-in user may have no contacts
+        //who are populisto users, otherwise app will crash)
+        if (MatchingContactsAsArrayList != null) {
+
+          //loop through the matching contacts
         int count = MatchingContactsAsArrayList.size();
 
           Toast.makeText(NewContact.this, "MatchingContactsAsArrayList size is " + count, Toast.LENGTH_SHORT).show();
@@ -822,7 +892,17 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           //we need to notify the recyclerview that changes may have been made
           adapter.notifyDataSetChanged();
         }
-        // }
+        }
+
+        else {
+
+          int i = 0;
+          //if the user has no matching contacts,
+          //we want to avoid null pointer exception error,
+          //INVITE Button should appear beside all contacts
+          PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+        }
       }
     });
 
@@ -883,16 +963,32 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           noContactFoundCheck = 1;
 
         } else {
-          //loop through the matching contacts
-          int count = MatchingContactsAsArrayList.size();
 
-          for (int i = 0; i < count; i++) {
+          //if matching contacts exists...
+          //(need to take into account logged-in user may have no contacts
+          //who are populisto users, otherwise app will crash)
+          if (MatchingContactsAsArrayList != null) {
 
-            //uncheck all matching contacts, we want it to be 'Just Me'
-            PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
+            //loop through the matching contacts
+            int count = MatchingContactsAsArrayList.size();
 
-            //we need to notify the recyclerview that changes may have been made
-            adapter.notifyDataSetChanged();
+            for (int i = 0; i < count; i++) {
+
+              //uncheck all matching contacts, we want it to be 'Just Me'
+              PopulistoContactsAdapter.theContactsList.get(i).setSelected(false);
+
+              //we need to notify the recyclerview that changes may have been made
+              adapter.notifyDataSetChanged();
+            }
+          }
+
+          else {
+
+            int i = 0;
+            //if the user has no matching contacts,
+            //we want to avoid null pointer exception error,
+            //INVITE Button should appear beside all contacts
+            PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
           }
         }
       }

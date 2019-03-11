@@ -69,6 +69,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -163,6 +164,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   private FirebaseAuth mAuth;
 
   Button buttonSignIn;
+
+  SharedPreferences sharedPreferencesallPhonesofContacts;
 
   //this is for the progress dialog, while logged-in user is
   //waiting for verification code
@@ -422,48 +425,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           //check if permissions denied
           if (ContextCompat.checkSelfPermission(getApplicationContext(),
               Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
-
-   /*         new AlertDialog.Builder(VerifyUserPhoneNumber.this).
-                setCancelable(false).
-                // setTitle("You need to enable Read Contacts").
-                    setMessage("blah blah").
-                //setIcon(R.drawable.ninja).
-                    setPositiveButton("CONTINUE",
-                    new DialogInterface.OnClickListener() {
-                      @TargetApi(11)
-                      public void onClick(DialogInterface dialog, int id) {
-                        //showToast("Thank you! You're awesome too!");
-                        dialog.cancel();
-
-                ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity,
-                new String[]{Manifest.permission.READ_CONTACTS},
-                PERMISSIONS_REQUEST_READ_CONTACTS);
-
-*//*                        Intent intent = new Intent();
-                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        Uri uri = Uri.fromParts("package", getPackageName(), null);
-                        intent.setData(uri);
-                        startActivity(intent);*//*
-                      }
-                    })
-                .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
-                  @TargetApi(11)
-                  public void onClick(DialogInterface dialog, int id) {
-                    //showToast("Mike is not awesome for you. :(");
-                    dialog.cancel();
-                  }
-                }).show();
-
-*/
-
-
-
-
-
-
-
-
-
 
             //if denied, show the standard Android dialog, 'Allow access to Contacts?'
            ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity,
@@ -838,6 +799,19 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       System.out.println("here is the list of names in contacts :" + allNamesofContacts);
 
 
+
+
+      sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+
+/*
+      SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
+      prefsEditor.remove("allPhonesofContacts");
+      prefsEditor.commit();
+
+      Toast.makeText(this, Arrays.toString(sharedPreferencesallPhonesofContacts), Toast.LENGTH_SHORT).show();
+
+*/
+
       //we will save the array list allPhonesofContacts,
       //with this we will put all phone numbers of contacts on user's phone into our RecyclerView, in other activities
       SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
@@ -849,11 +823,21 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       prefsEditor.commit();
       System.out.println("allPhonesofContacts json is:" + json);
 
+///////////////////////////
+
+      SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+
+
+      SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
+      //prefsEditor.remove("allNamesofContacts");
+      //prefsEditor.commit();
+
+
       //now, let's put in the string of names
       //save the array list allNamesofContacts,
       //with this we will put all phone names of contacts on user's phone into our ListView, in other activities
-      SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
-      SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
+      //SharedPreferences sharedPreferencesallNamesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
+      //SharedPreferences.Editor prefsEditor2 = sharedPreferencesallNamesofContacts.edit();
 
       //now, let's put in the string of names
       Gson gsonNames = new Gson();
@@ -978,12 +962,17 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             //clear the arraylist, otherwise superfluous values in sharedprefs are not removed
             MatchingContactsAsArrayList.clear();
 
+
+
+
+
+
+
             try {
               JSONArray Object = new JSONArray(MatchingContactsAsString);
               //for every object in the Array
               for (int x = 0; x < Object.length(); x++) {
                 final JSONObject obj = Object.getJSONObject(x);
-
 
 
                 //make our arraylist, matchingcontactsasarraylist, into a list of numbers from the server
@@ -1000,7 +989,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 System.out.println("MatchingContactsAsArrayList in try statement 2:" + MatchingContactsAsArrayList);
 
 
-
               }
 
 /*              if(MatchingContactsAsArrayList != null) {
@@ -1012,28 +1000,37 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               }*/
               System.out.println("VerifyUserPhoneNumber: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
+              //if usernameMatch from server is empty - if no phone contacts
+              //are app users....
+              //clear the sharedprefs, set it to ""
+              if (response.isEmpty()) {
 
+                SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
+                editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", "");
+                editorMatchingContactsAsArrayList.commit();
+              } else {
 
-              //save MatchingContactsAsArrayList into sharedpreferences so we can use it elsewhere
-              //in our project. It looks like Shared Preferences
-              //only works easily with strings so best way to bring the array list in Shared Preferences is with
-              //Gson. Here, we PUT the arraylist into the sharedPreferences
-              SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
-              SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
-              Gson gsonMatchingContactsAsArrayList = new Gson();
-              String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
-              editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
-              editorMatchingContactsAsArrayList.commit();
-              System.out.println("VerifyUserPhoneNumber2: jsonMatcnjm ggggggggg           hingContactsAsArrayList :" + jsonMatchingContactsAsArrayList);
-              System.out.println("VerifyUserPhoneNumber2: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
+                //save MatchingContactsAsArrayList into sharedpreferences so we can use it elsewhere
+                //in our project. It looks like Shared Preferences
+                //only works easily with strings so best way to bring the array list in Shared Preferences is with
+                //Gson. Here, we PUT the arraylist into the sharedPreferences
+                SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
+                Gson gsonMatchingContactsAsArrayList = new Gson();
+                String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
+                editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
+                editorMatchingContactsAsArrayList.commit();
+                System.out.println("VerifyUserPhoneNumber2: jsonMatcnjm ggggggggg           hingContactsAsArrayList :" + jsonMatchingContactsAsArrayList);
+                System.out.println("VerifyUserPhoneNumber2: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
-              System.out.println("phonenoofuser" + phoneNoofUser);
-              System.out.println("VerifyUserPhoneNumber: all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
-              System.out.println("the matching contacts are " + MatchingContactsAsString);
-              System.out.println("the matching contacts are 2:  " + jsonMatchingContactsAsArrayList);
+                System.out.println("phonenoofuser" + phoneNoofUser);
+                System.out.println("VerifyUserPhoneNumber: all contacts on phone are " + jsonArrayAllPhonesandNamesofContacts);
+                System.out.println("the matching contacts are " + MatchingContactsAsString);
+                System.out.println("the matching contacts are 2:  " + jsonMatchingContactsAsArrayList);
 
+              }
             }
-
 
             catch (Exception e) {
               e.printStackTrace(System.out);
