@@ -128,7 +128,9 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
   String CountryCode;
 
+  //the logged-in user's phone number
   String phoneNoofUserCheck;
+
   public String phoneNumberofContact;
   String phoneNameofContact;
 
@@ -580,8 +582,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       if (MatchingContactsAsArrayList == null) {
 
         //add logged-in user's number to checkedContactsAsArrayList
-        checkedContactsAsArrayList = new ArrayList();
-        checkedContactsAsArrayList.add(phoneNoofUserCheck);
+        //checkedContactsAsArrayList = new ArrayList();
+        //checkedContactsAsArrayList.add(phoneNoofUserCheck);
+        ArrayList<String> MatchingContactsAsArrayList = new ArrayList<String>();
+
 
       }
 
@@ -699,7 +703,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
         //if matching contacts exists...
         //(need to take into account logged-in user may have no contacts
-        //who are populisto users, otherwise app wiil crash)
+        //who are populisto users, otherwise app will crash)
         if (MatchingContactsAsArrayList != null) {
 
           //*********set the Matching Contacts to be checked, by default ************
@@ -1056,7 +1060,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
             //If permission denied (will only be on Marshmallow +)
             PackageManager manager = getPackageManager();
             int hasPermission = manager.checkPermission("android.permission.READ_CONTACTS", "com.example.chris.populisto");
-            if (hasPermission == manager.PERMISSION_DENIED) {
+            //if (hasPermission == manager.PERMISSION_DENIED) {
+
+            if (MatchingContactsAsArrayList == null) {
+
 
               try {
                 //add only logged-in phone owner's number to the checkedContacts JSON Array
@@ -1077,6 +1084,15 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
             } else
             //if the logged-in user has enabled READ_CONTACTS Permission
             {
+
+              //22/03/2018
+              //if (MatchingContactsAsArrayList == null) {
+
+                //add logged-in user's number to checkedContactsAsArrayList
+                //checkedContactsAsArrayList = new ArrayList();
+                //checkedContactsAsArrayList.add(phoneNoofUserCheck);
+
+             // }
 
               try {
                 //System.out.println("we're in the try part");

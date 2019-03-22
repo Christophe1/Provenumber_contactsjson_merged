@@ -394,13 +394,18 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 private_array = private_review_ids2.split(",");
                 public_array = public_review_ids2.split(",");
 
+                Toast.makeText(PopulistoListView.this, "private array is" + Arrays.toString(private_array), Toast.LENGTH_LONG).show();
+                Toast.makeText(PopulistoListView.this, "public array is" + Arrays.toString(public_array), Toast.LENGTH_LONG).show();
+
+
                 //[105, 21, 57, 60, 103, 108, 111, 113, 116, 173, 104]
                 //System.out.println("private_array : " + Arrays.toString(private_array));
                 //[10, 44]
                 //System.out.println("public_array : " + Arrays.toString(public_array));
 
+
                 //let's get 10 reviews, made of private first and then public
-                getMixedRandomNumbers(3);
+                getMixedRandomNumbers(1);
 
                 //make a string from the return value of getMixedRandomNumbers
                 random_reviews = (Arrays.toString(randomReviewsStringArray));
@@ -764,6 +769,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   //method to get random reviews from phone contacts and public
   public  String[] getMixedRandomNumbers(int size) {
 
+    //Toast.makeText(PopulistoListView.this, "calling getMixedRandomNumbers", Toast.LENGTH_LONG).show();
+
     try {
       //String[] private_array = {"105", "21", "57"};
       //String[] public_array  = {"103", "44", "3"};
@@ -786,7 +793,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       //defines it as
       randomReviewsStringArray = result.subList(0, size).toArray(new String[0]);
 
-      Toast.makeText(getApplicationContext(), "stream:" + Arrays.toString(randomReviewsStringArray), Toast.LENGTH_SHORT).show();
+      //Toast.makeText(getApplicationContext(), "stream:" + Arrays.toString(randomReviewsStringArray), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -799,13 +806,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   }
 
 
-    @Override
-  public void onDestroy() {
-    super.onDestroy();
-    //hidePDialog();
-    //dismiss the dialog when we get the response
-    //progressDialog.cancel();
-  }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -1066,7 +1066,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             //and hide progressbar
             Content_Main_Progressbar.setVisibility(View.GONE);
 
-            Toast.makeText(getApplicationContext(), "fetching now..", Toast.LENGTH_LONG).show();
+          //  Toast.makeText(getApplicationContext(), "fetching now..", Toast.LENGTH_LONG).show();
 
        //     Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
             System.out.println("response is :" + response);
@@ -1615,10 +1615,15 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   }
 
- /* public static void set_to_empty() {
-
-    searchView.setQuery("", false);
-
+  //delete matching contacts in shared prefs on activity close down
+/*  @Override
+  public void onDestroy() {
+    super.onDestroy();
+  //  Toast.makeText(getApplicationContext(), "Goodbye now", Toast.LENGTH_LONG).show();
+    SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
+    SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
+    editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", "");
+    editorMatchingContactsAsArrayList.apply();
   }*/
 
   }

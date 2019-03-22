@@ -57,6 +57,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.view.View.GONE;
+import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.allPhonesofContacts;
 import static com.example.chris.populisto.PopulistoContactsAdapter.checkedContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.theContactsList;
@@ -986,23 +987,27 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
 
         SelectPhoneContact selectContact = new SelectPhoneContact();
 
-        //if a phone number is in our array of matching contacts
-        if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
-        {
-          // insert the contact at the beginning of the listview
-          selectPhoneContacts.add(0, selectContact);
-          // checkBoxforContact.setVisibility(View.VISIBLE);
+        //if the logged-in user has contacts who are app users also...
+        if (MatchingContactsAsArrayList != null) {
 
-          //In SelectContact class, so getItemViewType will know which layout to show
-          //:checkbox or Invite Button
-          selectContact.setType_row("1");
+          //if a phone number is in our array of matching contacts
+          if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
 
-        } else {
-          // insert it at the end (default)
-          selectPhoneContacts.add(selectContact);
-          selectContact.setType_row("2");
+          {
+            // insert the contact at the beginning of the listview
+            selectPhoneContacts.add(0, selectContact);
+            // checkBoxforContact.setVisibility(View.VISIBLE);
 
+            //In SelectContact class, so getItemViewType will know which layout to show
+            //:checkbox or Invite Button
+            selectContact.setType_row("1");
+          } else {
+            // insert it at the end (default)
+            selectPhoneContacts.add(selectContact);
+            selectContact.setType_row("2");
+
+          }
         }
 
         selectContact.setName(phoneNameofContact);
@@ -1139,24 +1144,31 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
           checkedContactsAsArrayList.clear();
 
           noContactFoundCheck = 0;
-          //loop through the matching contacts
-          int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
-          //i is the number of matching contacts that there are
-          for (int i = 0; i < count; i++) {
-
-            //add the matching contacts
-            PopulistoContactsAdapter.checkedContactsAsArrayList.add(i, PopulistoContactsAdapter.MatchingContactsAsArrayList.get(i));
-
-            //set them to be checked
-            PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-
-            //we need to notify the recyclerview that changes may have been made
-            adapter.notifyDataSetChanged();
+          //if matching contacts exists...
+          //(need to take into account logged-in user may have no contacts
+          //who are populisto users, otherwise app will crash)
+          if (MatchingContactsAsArrayList != null) {
 
 
+            //loop through the matching contacts
+            int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
+
+            //i is the number of matching contacts that there are
+            for (int i = 0; i < count; i++) {
+
+              //add the matching contacts
+              PopulistoContactsAdapter.checkedContactsAsArrayList.add(i, PopulistoContactsAdapter.MatchingContactsAsArrayList.get(i));
+
+              //set them to be checked
+              PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+              //we need to notify the recyclerview that changes may have been made
+              adapter.notifyDataSetChanged();
+
+
+            }
           }
-
           //if checkboxes of contacts have been changed by clicking the button,
           //then set the boolean to be true
           PopulistoContactsAdapter.checkBoxhasChanged = true;
@@ -1222,7 +1234,12 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
 
           noContactFoundCheck = 0;
 
-          //loop through the matching contacts
+          //if matching contacts exists...
+          //(need to take into account logged-in user may have no contacts
+          //who are populisto users, otherwise app will crash)
+          if (MatchingContactsAsArrayList != null) {
+
+            //loop through the matching contacts
           int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
           //i is the number of matching contacts that there are
@@ -1240,6 +1257,7 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
             //we need to notify the recyclerview that changes may have been made
             adapter.notifyDataSetChanged();
 
+          }
             //if checkboxes of contacts have been changed by clicking the button,
             //then set the boolean to be true
             PopulistoContactsAdapter.checkBoxhasChanged = true;
@@ -1305,7 +1323,13 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
           noContactFoundCheck = 1;
 
         } else {
-          //loop through the matching contacts
+
+          //if matching contacts exists...
+          //(need to take into account logged-in user may have no contacts
+          //who are populisto users, otherwise app will crash)
+          if (MatchingContactsAsArrayList != null) {
+
+            //loop through the matching contacts
           int count = PopulistoContactsAdapter.MatchingContactsAsArrayList.size();
 
           for (int i = 0; i < count; i++) {
@@ -1314,6 +1338,8 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
             theContactsList.get(i).setSelected(false);
             //we need to notify the recyclerview that changes may have been made*/
             adapter.notifyDataSetChanged();
+
+          }
 
             //if checkboxes of contacts have been changed by clicking the button,
             //then set the boolean to be true

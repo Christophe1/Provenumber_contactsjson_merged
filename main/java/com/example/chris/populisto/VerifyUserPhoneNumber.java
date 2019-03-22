@@ -820,7 +820,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       Gson gson = new Gson();
       String json = gson.toJson(allPhonesofContacts);
       prefsEditor.putString("allPhonesofContacts", json);
-      prefsEditor.commit();
+      prefsEditor.apply();
       System.out.println("allPhonesofContacts json is:" + json);
 
 ///////////////////////////
@@ -843,7 +843,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       Gson gsonNames = new Gson();
       String jsonNames = gsonNames.toJson(allNamesofContacts);
       prefsEditor2.putString("allNamesofContacts", jsonNames);
-      prefsEditor2.commit();
+      prefsEditor2.apply();
       System.out.println("allNamesofContacts json is:" + jsonNames);
 
 
@@ -923,7 +923,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
       //put the string value into SharedPreferences, with the key "AllPhonesandNamesofContacts"
       editor.putString("AllPhonesandNamesofContacts", jsonArrayAllPhonesandNamesofContacts.toString());
       //commit the string
-      editor.commit();
+      editor.apply();
       System.out.println("jsonArrayAllPhonesandNamesofContacts: " + jsonArrayAllPhonesandNamesofContacts.toString());
 
 
@@ -1008,7 +1008,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
                 SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
                 editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", "");
-                editorMatchingContactsAsArrayList.commit();
+                editorMatchingContactsAsArrayList.apply();
               } else {
 
                 //save MatchingContactsAsArrayList into sharedpreferences so we can use it elsewhere
@@ -1020,7 +1020,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 Gson gsonMatchingContactsAsArrayList = new Gson();
                 String jsonMatchingContactsAsArrayList = gsonMatchingContactsAsArrayList.toJson(MatchingContactsAsArrayList);
                 editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", jsonMatchingContactsAsArrayList);
-                editorMatchingContactsAsArrayList.commit();
+                editorMatchingContactsAsArrayList.apply();
                 System.out.println("VerifyUserPhoneNumber2: jsonMatcnjm ggggggggg           hingContactsAsArrayList :" + jsonMatchingContactsAsArrayList);
                 System.out.println("VerifyUserPhoneNumber2: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
@@ -1250,14 +1250,14 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //phoneNoofUser String is unique, the username of this particular user
               //it will be of the form +353872934480
               editor.putString("phonenumberofuser", phoneNoofUser);
-              editor.commit();
+              editor.apply();
 
               //save the country code so this process is skipped in future
               SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
               SharedPreferences.Editor editor2 = sharedPreferencesCountryCode.edit();
               //we need the Country code as it is needed for determining phone contacts in E164 format
               editor2.putString("countrycode", CountryCode);
-              editor2.commit();
+              editor2.apply();
 
               //let's get the current date and time, for time_stamp
               SimpleDateFormat s = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
@@ -1275,7 +1275,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
               //put hashedPassWord into XML
               editor3.putString("hashedpassword", hashedPassWord);
-              editor3.commit();
+              editor3.apply();
 
               System.out.println("MD5 " + hashedPassWord);
 
@@ -1389,6 +1389,5 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
     }
   }
-
 
 }

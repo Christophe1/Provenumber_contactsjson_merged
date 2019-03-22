@@ -1,5 +1,6 @@
 package com.example.chris.populisto;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,7 +49,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+//import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
+import static com.example.chris.populisto.PopulistoContactsAdapter.MatchingContactsAsArrayList;
 import static com.example.chris.populisto.PopulistoContactsAdapter.allPhonesofContacts;
+import static com.example.chris.populisto.PopulistoContactsAdapter.checkedContactsAsArrayList;
 import static com.example.tutorialspoint.R.id.rv;
 import static com.example.tutorialspoint.R.id.textViewCategory;
 import static com.example.tutorialspoint.R.layout.activity_view_contact;
@@ -89,6 +93,9 @@ public class ViewContact extends AppCompatActivity {
   //We need this for passing to EditContact, so if the changes are saved, we know where to make
   //changes in the DB by following review_id
   String review_id;
+
+  //the logged-in user's phone number
+  String phoneNoofUserCheck;
 
   String date_created, category, name, phone, address, comment;
 
@@ -162,6 +169,13 @@ public class ViewContact extends AppCompatActivity {
 
     ImageView backButton = (ImageView) logo.findViewById(R.id.back_arrow_id);
     //backButton.setBackgroundColor(Color.rgb(100, 100, 50));
+
+
+    //first of all we want to get the phone number of the current user so we
+    //can post it and then get the user_id in php
+    //get the phone number, stored in an XML file, when the user first registered the app
+    SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+    phoneNoofUserCheck = sharedPreferences.getString("phonenumberofuser", "");
 
     //use ontouch listener, so when <- image is DOWN it changes to grey
     //for an instant
@@ -680,27 +694,44 @@ public class ViewContact extends AppCompatActivity {
           System.out.println("ViewContact: it is in shared prefs" + allPhonesofContacts);
           System.out.println("ViewContact: phoneNumberofContact : " + phoneNumberofContact);
           System.out.println("ViewContact: phoneNameofContact : " + phoneNameofContact);
+          System.out.println("ViewContact: MatchingContactsAsArrayList : " + PopulistoContactsAdapter.MatchingContactsAsArrayList);
 
           SelectPhoneContact selectContact = new SelectPhoneContact();
 
-          //if a phone number is in our array of matching contacts
-          if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
+          //if logged-in user has no matching contacts...
+          if (MatchingContactsAsArrayList == null) {
 
-          {   //add the selectContacts to the selectPhoneContacts array
-            // insert the contact at the beginning of the listview
-            selectPhoneContacts.add(0, selectContact);
-
-            //In SelectPhoneContact class, so getItemViewType will know which layout to show
-            //:checkbox or Invite Button
-            selectContact.setType_row("1");
-
-          } else {
-            // insert it at the end (default)
+            // Type_row is "2", all 'Invite' buttons
             selectPhoneContacts.add(selectContact);
             selectContact.setType_row("2");
 
           }
 
+          //if hogged-in user HAS contacts...
+          if (MatchingContactsAsArrayList != null) {
+
+            //if a phone number is in our array of matching contacts
+            if (PopulistoContactsAdapter.MatchingContactsAsArrayList.contains(phoneNumberofContact))
+
+            {
+
+
+              //add the selectContacts to the selectPhoneContacts array
+              // insert the contact at the beginning of the listview
+              selectPhoneContacts.add(0, selectContact);
+
+              //In SelectPhoneContact class, so getItemViewType will know which layout to show
+              //:checkbox or Invite Button
+              selectContact.setType_row("1");
+
+
+            } else {
+              // insert it at the end (default)
+              selectPhoneContacts.add(selectContact);
+              selectContact.setType_row("2");
+
+            }
+          }
 
           selectContact.setName(phoneNameofContact);
           //    selectContact.setPhone(phoneNumberofContact);
