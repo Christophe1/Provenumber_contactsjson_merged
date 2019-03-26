@@ -381,14 +381,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 public_review_ids2 = public_review_ids2.replaceFirst(",", "");
 
 
-
-                //this works
-                //private_review_ids2 is: 10,44,
-                //System.out.println("private_review_ids2 is: " + private_review_ids2);
-
-                //System.out.println("public_review_ids2 is: " + public_review_ids2);
-
-
                 //make a string array, with the stuff (numbers) between
                 //commas into separate strings
                 private_array = private_review_ids2.split(",");
@@ -405,10 +397,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
                 //let's get 10 reviews, made of private first and then public
-                getMixedRandomNumbers(1);
+                //it will give us an array, randomReviewsStringArray
+                getMixedRandomNumbers(6);
 
                 //make a string from the return value of getMixedRandomNumbers
                 random_reviews = (Arrays.toString(randomReviewsStringArray));
+
+                Toast.makeText(PopulistoListView.this, "random_reviews are: " + random_reviews, Toast.LENGTH_LONG).show();
+
 
               }catch (JSONException e) {
                 Log.e("MYAPP", "unexpected JSON exception", e);
@@ -597,7 +593,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   private void sendThirdRequest(){
 
     //post random_reviews string to Random_Reviews.php.
-    //It will be a string of the form 5,22,56
+    //It will be a string of the form 5,22,56, made by getMixedRandomNumbers
     //then when we get values of category, comment etc from server, show those reviews in recyclerView
     //below the logged-in user's reviews
     StringRequest stringRequest = new StringRequest(Request.Method.POST, Random_Reviews_URL,
@@ -605,7 +601,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           @Override
           public void onResponse(String response) {
 
-            //Toast.makeText(PopulistoListView.this, "response is  " + response, Toast.LENGTH_LONG).show();
+            Toast.makeText(PopulistoListView.this, "sendThirdRequest called  " + random_reviews, Toast.LENGTH_LONG).show();
             //System.out.println("response is :" + response);
 
             try {
@@ -789,11 +785,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
         }
       }
 
+      int i = Math.min(size, result.size());
+
       //make a new string consisting of "size" numbers, whatever the method
       //defines it as
-      randomReviewsStringArray = result.subList(0, size).toArray(new String[0]);
+      randomReviewsStringArray = result.subList(0, i).toArray(new String[i]);
 
-      //Toast.makeText(getApplicationContext(), "stream:" + Arrays.toString(randomReviewsStringArray), Toast.LENGTH_SHORT).show();
+      Toast.makeText(getApplicationContext(), "stream, randomReviewsStringArray:" + Arrays.toString(randomReviewsStringArray), Toast.LENGTH_SHORT).show();
 
     }
 

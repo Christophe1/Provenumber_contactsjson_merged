@@ -848,63 +848,68 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       @Override
       public void onClick(View v) {
 
-        PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
+        //if the user has no matching contacts,
+        if (MatchingContactsAsArrayList ==null) {
 
-        recyclerView.setAdapter(adapter);
+          phoneContacts.setEnabled(false);
+         // int i = 0;
+          //we want to avoid null pointer exception error,
+          //INVITE Button should appear beside all contacts
+          //PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
 
-        //keep the slightly rounded shape, when the button is pressed, and change colour
-        phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
-
-        //keep the slightly rounded shape of the others, but still grey
-        publicContacts.setBackgroundResource(R.drawable.buttonshape);
-        justMeContacts.setBackgroundResource(R.drawable.buttonshape);
-
-        //call the function to change the border colour,
-        //if Phone Contacts button is clicked,
-        //we want the border to be BLUE
-        GlobalFunctions.sharing_border_colour(NewContact.this, "#0A7FDA");
-
-
-        //set sharing to Phone Contacts
-        // This will be uploaded to server to review table,
-        //public_or_private column, if saved in this state
-        public_or_private = 1;
-
-        //if matching contacts exists...
-        //(need to take into account logged-in user may have no contacts
-        //who are populisto users, otherwise app will crash)
-        if (MatchingContactsAsArrayList != null) {
-
-          //loop through the matching contacts
-        int count = MatchingContactsAsArrayList.size();
-
-          Toast.makeText(NewContact.this, "MatchingContactsAsArrayList size is " + count, Toast.LENGTH_SHORT).show();
-
-        //for each matching contact...
-        for (int i = 0; i < count; i++) {
-
-          //add the phone number to the arrayList
-          //if it does not exist there already
-          if (!checkedContactsAsArrayList.contains(theContactsList.get(i).getPhone())) {
-            checkedContactsAsArrayList.add(theContactsList.get(i).getPhone());
-            ;
-          }
-
-          //check mark all matching contacts, we want it to be 'Phone Contacts'
-          PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
-
-          //we need to notify the recyclerview that changes may have been made
-          adapter.notifyDataSetChanged();
-        }
         }
 
         else {
 
-          int i = 0;
-          //if the user has no matching contacts,
-          //we want to avoid null pointer exception error,
-          //INVITE Button should appear beside all contacts
-          PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+          PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
+
+          recyclerView.setAdapter(adapter);
+
+          //keep the slightly rounded shape, when the button is pressed, and change colour
+          phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+
+          //keep the slightly rounded shape of the others, but still grey
+          publicContacts.setBackgroundResource(R.drawable.buttonshape);
+          justMeContacts.setBackgroundResource(R.drawable.buttonshape);
+
+          //call the function to change the border colour,
+          //if Phone Contacts button is clicked,
+          //we want the border to be BLUE
+          GlobalFunctions.sharing_border_colour(NewContact.this, "#0A7FDA");
+
+
+          //set sharing to Phone Contacts
+          // This will be uploaded to server to review table,
+          //public_or_private column, if saved in this state
+          public_or_private = 1;
+
+          //if matching contacts exists...
+          //(need to take into account logged-in user may have no contacts
+          //who are populisto users, otherwise app will crash)
+          if (MatchingContactsAsArrayList != null) {
+
+            //loop through the matching contacts
+            int count = MatchingContactsAsArrayList.size();
+
+            Toast.makeText(NewContact.this, "MatchingContactsAsArrayList size is " + count, Toast.LENGTH_SHORT).show();
+
+            //for each matching contact...
+            for (int i = 0; i < count; i++) {
+
+              //add the phone number to the arrayList
+              //if it does not exist there already
+              if (!checkedContactsAsArrayList.contains(theContactsList.get(i).getPhone())) {
+                checkedContactsAsArrayList.add(theContactsList.get(i).getPhone());
+                ;
+              }
+
+              //check mark all matching contacts, we want it to be 'Phone Contacts'
+              PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
+
+              //we need to notify the recyclerview that changes may have been made
+              adapter.notifyDataSetChanged();
+            }
+          }
 
         }
       }
@@ -929,7 +934,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         phoneContacts.setBackgroundResource(R.drawable.buttonshape);
 
         //call the function to change the border colour,
-        //if Phone Contacts button is clicked,
+        //if Just U button is clicked,
         //we want the border to be ORANGE
         GlobalFunctions.sharing_border_colour(NewContact.this, "#DA850B");
 
@@ -986,10 +991,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
             }
           }
 
+          //if the user has no matching contacts,
           else {
 
             int i = 0;
-            //if the user has no matching contacts,
             //we want to avoid null pointer exception error,
             //INVITE Button should appear beside all contacts
             PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);

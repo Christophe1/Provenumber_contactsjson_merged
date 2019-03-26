@@ -987,6 +987,14 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
 
         SelectPhoneContact selectContact = new SelectPhoneContact();
 
+        //if logged-in user has no matching contacts...
+        if (MatchingContactsAsArrayList == null) {
+
+          // Type_row is "2", all 'Invite' buttons
+          selectPhoneContacts.add(selectContact);
+          selectContact.setType_row("2");
+
+        }
 
         //if the logged-in user has contacts who are app users also...
         if (MatchingContactsAsArrayList != null) {
@@ -1083,13 +1091,6 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
 
   }
 
-
-/*  public void hidePDialog() {
-    if (pDialog != null) {
-      pDialog.dismiss();
-      pDialog = null;
-    }
-  }*/
 
   //for the Public Contacts button
   private void publicButton() {

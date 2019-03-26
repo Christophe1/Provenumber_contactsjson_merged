@@ -955,18 +955,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             //convert the JSONArray, the response, to a string
             //It will be like: [{"phone_number":"+353864677745"}, etc...]
             String MatchingContactsAsString = response.toString();
+
             System.out.println("VerifyUserPhoneNumber1: matching contacts of this user are :" + MatchingContactsAsString);
 
             System.out.println("MatchingContactsAsArrayList in try statement 1:" + MatchingContactsAsArrayList);
 
             //clear the arraylist, otherwise superfluous values in sharedprefs are not removed
             MatchingContactsAsArrayList.clear();
-
-
-
-
-
-
 
             try {
               JSONArray Object = new JSONArray(MatchingContactsAsString);
@@ -1005,11 +1000,16 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //clear the sharedprefs, set it to ""
               if (response.isEmpty()) {
 
+                Toast.makeText(VerifyUserPhoneNumber.this, "response empty dude", Toast.LENGTH_LONG).show();
+
                 SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
                 SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
                 editorMatchingContactsAsArrayList.putString("MatchingContactsAsArrayList", "");
                 editorMatchingContactsAsArrayList.apply();
               } else {
+
+                Toast.makeText(VerifyUserPhoneNumber.this, "response not empty dude", Toast.LENGTH_LONG).show();
+
 
                 //save MatchingContactsAsArrayList into sharedpreferences so we can use it elsewhere
                 //in our project. It looks like Shared Preferences
@@ -1033,7 +1033,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             }
 
             catch (Exception e) {
-              e.printStackTrace(System.out);
+              System.out.println("error here buddy");
             }
 
 

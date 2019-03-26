@@ -115,7 +115,9 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
       System.out.println("it is not in shared prefs" + allPhonesofContacts);
 
-    } else {
+    }
+      else {
+
       System.out.println("gettype row is: " + theContactsList.get(position).getType_row());
       return Integer.parseInt(theContactsList.get(position).getType_row());
     }

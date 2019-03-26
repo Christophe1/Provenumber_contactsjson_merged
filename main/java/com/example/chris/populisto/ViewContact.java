@@ -707,7 +707,7 @@ public class ViewContact extends AppCompatActivity {
 
           }
 
-          //if hogged-in user HAS contacts...
+          //if logged-in user HAS contacts...
           if (MatchingContactsAsArrayList != null) {
 
             //if a phone number is in our array of matching contacts
