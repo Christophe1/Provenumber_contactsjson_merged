@@ -62,6 +62,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import static com.example.chris.populisto.GlobalFunctions.getDateandFormat;
 //import static com.example.chris.populisto.GlobalFunctions.troubleContactingServerDialog;
@@ -212,6 +213,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   String[] randomReviewsStringArray;
 
+  String found;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -359,8 +362,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
                 }
 
-                  //System.out.println("private_review_ids: " + private_review_ids);
-                  //System.out.println("public_review_ids: " + public_review_ids);
+                  System.out.println("private_review_ids 1 : " + private_review_ids);
+                  System.out.println("public_review_ids 1 : " + public_review_ids);
 
                 //make private_review_ids into a single string
                 String private_review_ids2 = private_review_ids.toString();
@@ -391,17 +394,19 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
                 //[105, 21, 57, 60, 103, 108, 111, 113, 116, 173, 104]
-                //System.out.println("private_array : " + Arrays.toString(private_array));
+                System.out.println("private_array 2 : " + Arrays.toString(private_array));
                 //[10, 44]
-                //System.out.println("public_array : " + Arrays.toString(public_array));
+                System.out.println("public_array 2 : " + Arrays.toString(public_array));
 
 
                 //let's get 10 reviews, made of private first and then public
                 //it will give us an array, randomReviewsStringArray
-                getMixedRandomNumbers(6);
+                getMixedRandomNumbers(4);
 
                 //make a string from the return value of getMixedRandomNumbers
                 random_reviews = (Arrays.toString(randomReviewsStringArray));
+
+
 
                 Toast.makeText(PopulistoListView.this, "random_reviews are: " + random_reviews, Toast.LENGTH_LONG).show();
 
@@ -590,10 +595,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   }
 
+  //for random_reviews
   private void sendThirdRequest(){
 
+
     //post random_reviews string to Random_Reviews.php.
-    //It will be a string of the form 5,22,56, made by getMixedRandomNumbers
+    //It will be a string of the form 5,22,56
     //then when we get values of category, comment etc from server, show those reviews in recyclerView
     //below the logged-in user's reviews
     StringRequest stringRequest = new StringRequest(Request.Method.POST, Random_Reviews_URL,
@@ -601,12 +608,13 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           @Override
           public void onResponse(String response) {
 
-            Toast.makeText(PopulistoListView.this, "sendThirdRequest called  " + random_reviews, Toast.LENGTH_LONG).show();
+            Toast.makeText(PopulistoListView.this, "sendThirdRequest response is  " + response, Toast.LENGTH_LONG).show();
             //System.out.println("response is :" + response);
 
             try {
 
               //name our JSONObject User_Private_Public_Obj, which is response from server
+              //in the query of all reviews shared with logged-in user
               JSONObject User_Private_Public_Obj = new JSONObject(response);
 
               //Now break up the response from server
@@ -659,12 +667,28 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 //the phone number of the person who made the review
                 phoneNoInDB = obj.getString("username");
 
+                //mask the public number
+                String maskNumber2 = phoneNoInDB;
+
+                //now mask the number
+                maskNumber2 = maskNumber2.substring(0, maskNumber2.length() - 4);
+                maskNumber2 = maskNumber2 + "****";
+
                 //set the setter to the phone number string, the string is
                 //the phone number of the person who made the review
-                review.setPhoneNumberofUserFromDB(phoneNoInDB);
-                // System.out.println("PopulistoListView newarray :" + jsonMatchingContacts);
+                review.setphoneNameonPhone(maskNumber2);
 
-                //jsonArray is our AllPhonesandNamesofContacts
+                review.setPhone(obj.getString("phone"));
+                review.setComment(obj.getString("comment"));
+
+                //in this case it is 3 - a review that is public,  therefore
+                // shared with logged-in user
+                //make it green, mask it....
+                review.setType_row("3");
+
+                //jsonArray is our AllPhonesandNamesofContacts.
+                //we are doing this so we can put name of contact in
+                // logged-in user's phone beside review, rather than just a phone number
                 int matching = jsonArray.length();
                 for (int n = 0; n < matching; n++) {
 
@@ -682,28 +706,25 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                       //of the person who made the review
                       review.setphoneNameonPhone(object.getString("name"));
 
+                      //depending on if setType_row is 1 or 2 or 3,
+                      //in this case it is 2 - a review that is shared with logged-in user
+                      //and in phone contacts of logged-in user.
+                      //We will getType_row in UPopulistoReviewsAdapter.
+                      //We will put phoneNameOnPhone in blue text - for Phone Contact
+                      //if the review is 1 (belongs to logged-in user)
+                      //then we would show ViewContact
+                      //In this case, "2", we will be showing SharedViewContact, no edit,
+                      //delete button etc
+                      review.setType_row("2");
+
                     }
 
                   } catch (JSONException e) {
-                    Log.e("MYAPP", "unexpected JSON exception", e);
+                    System.out.println("error here 1");
+                    //Log.e("MYAPP", "unexpected JSON exception", e);
                     // Do something to recover ... or kill the app.
                   }
                 }
-
-
-                review.setPhone(obj.getString("phone"));
-                review.setComment(obj.getString("comment"));
-
-                //depending on if setType_row is 1 or 2 or 3,
-                //in this case it is 2 - a review that is shared with logged-in user
-                //and in phone contacts of logged-in user.
-                //We will getType_row in UPopulistoReviewsAdapter.
-                //We will put phoneNameOnPhone in blue text - for Phone Contact
-                //if the review is 1 (belongs to logged-in user)
-                //then we would show ViewContact
-                //In this case, "2", we will be showing SharedViewContact, no edit,
-                //delete button etc
-                review.setType_row("2");
 
                 //add the review to the sharedReviewList
                 reviewList.add(review);
@@ -714,8 +735,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               recyclerView.setAdapter(uAdapter);
 
             } catch (JSONException e) {
-              Log.e("MYAPP", "unexpected JSON exception", e);
+              //Log.e("MYAPP", "unexpected JSON exception", e);
               // Do something to recover ... or kill the app.
+              System.out.println("error here 2");
             }
 
             // notifying list adapter about data changes
@@ -755,12 +777,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
 
 
-  // notifying list adapter about data changes
-  // so that it renders the recyclerView with updated data
-  uAdapter.notifyDataSetChanged();
+    // notifying list adapter about data changes
+    // so that it renders the recyclerView with updated data
+    //uAdapter.notifyDataSetChanged();
 
 
-}
+  }
 
   //method to get random reviews from phone contacts and public
   public  String[] getMixedRandomNumbers(int size) {
@@ -791,7 +813,14 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       //defines it as
       randomReviewsStringArray = result.subList(0, i).toArray(new String[i]);
 
+      Set<String> set = new HashSet<String>();
+
+      for (String num : randomReviewsStringArray) {
+        set.add(num);
+      }
+
       Toast.makeText(getApplicationContext(), "stream, randomReviewsStringArray:" + Arrays.toString(randomReviewsStringArray), Toast.LENGTH_SHORT).show();
+      Toast.makeText(getApplicationContext(), "stream, set:" + set, Toast.LENGTH_SHORT).show();
 
     }
 
