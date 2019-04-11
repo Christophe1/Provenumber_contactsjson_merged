@@ -256,7 +256,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
       //We need to post hashedpass XML and logged-in phone number
       // to the server and see if the row exists in our DB
-      //if it does, then get corresponding user_id and do stuff
+      //if it does, then get corresponding user_id and load PopulistoListView
       //HASHCHECK_URL is HashCompare.php
       StringRequest stringRequest = new StringRequest(Request.Method.POST, HASHCHECK_URL,
           new Response.Listener<String>() {
@@ -272,9 +272,10 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               hashPassTrueorFalse = response.toString();
               Toast.makeText(VerifyUserPhoneNumber.this, "hashPassTrueorFalse is " + hashPassTrueorFalse, Toast.LENGTH_LONG).show();
               System.out.println("hashPassTrueorFalse is:" + hashPassTrueorFalse);
+
+              
               //If the hash on the user's phone does not equal the hash in the DB..
               //and the phone number does not match...
-
               //If false...
               if (hashPassTrueorFalse.equals("False")) {
 
@@ -866,28 +867,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
   }
 
-/*  @Override
-  //we need this for newer phones, so permissions can
-  //be given by the user at run-time
-  public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                         int[] grantResults) {
-    if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
-      if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-        // Permission is granted
-        getPhoneContacts();
-      }
-      if (requestCode == PERMISSION_SEND_SMS) {
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          // Permission is granted
-          sendSMSMessage();
-        }
-
-*//*      else {
-        Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
-      }*//*
-      }
-    }
-  }*/
 
   //CONVERT all phone contacts on the user's phone  - the allPhonesofContacts array, into JSON
   //we will be using this array to see which numbers are already users of our app

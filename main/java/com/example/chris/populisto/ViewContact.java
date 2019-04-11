@@ -260,6 +260,7 @@ public class ViewContact extends AppCompatActivity {
     addressname.setText(address);
     commentname.setText(comment);
 
+
     // Toast.makeText(ViewContact.this, "coming from UPopulisto: " + i.getStringExtra("review_id"), Toast.LENGTH_LONG).show();
 
     //if we are coming from UPopulistoListAdapter then
@@ -442,7 +443,7 @@ public class ViewContact extends AppCompatActivity {
       shared_status = "Just U";
 
       //call the function to change the border colour,
-      //if Phone Contacts button is clicked,
+      //if U button is clicked,
       //we want the border to be ORANGE
       GlobalFunctions.sharing_border_colour(ViewContact.this, "#DA850B");
 
@@ -472,7 +473,7 @@ public class ViewContact extends AppCompatActivity {
       shared_status = "Public";
 
       //call the function to change the border colour,
-      //if Phone Contacts button is clicked,
+      //if Public button is clicked,
       //we want the border to be GREEN
       GlobalFunctions.sharing_border_colour(ViewContact.this, "#2AB40E");
 
@@ -501,12 +502,12 @@ public class ViewContact extends AppCompatActivity {
         // which we will be looking for from EditContact.class, categoryname.getText() is the
         // content to pass from ViewContact.class etc....
         i.putExtra("date_created", date_created_name.getText());
-        i.putExtra("category", categoryname.getText());
+        i.putExtra("category", categoryname.getText().toString());
         //i.putExtra("category_id", categoryid);
-        i.putExtra("name", namename.getText());
-        i.putExtra("phone", phonename.getText());
-        i.putExtra("address", addressname.getText());
-        i.putExtra("comment", commentname.getText());
+        i.putExtra("name", namename.getText().toString());
+        i.putExtra("phone", phonename.getText().toString().toString());
+        i.putExtra("address", addressname.getText().toString());
+        i.putExtra("comment", commentname.getText().toString());
         i.putExtra("checkedContacts", checkedContacts);
 
         //bring the pub_or_private value to EditContact.class, for the right button to be

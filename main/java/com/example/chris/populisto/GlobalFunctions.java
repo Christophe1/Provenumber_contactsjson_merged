@@ -56,20 +56,6 @@ public class GlobalFunctions {
 
 
 
-/*    //this is the function that checks all checkboxes in a viewgroup, the listview
-    //would be better if it just checked MatchingContacts rather than everything
-
-    public static void checkAllChildrenCascade(ViewGroup vg) {
-        for (int i = 0; i < vg.getChildCount(); i++) {
-            View v = vg.getChildAt(i);
-            if (v instanceof CheckBox) {
-                ((CheckBox) v).setChecked(true);
-            } else if (v instanceof ViewGroup) {
-                checkAllChildrenCascade((ViewGroup) v);
-            }
-        }
-    }*/
-
     //********************
 
     public static void troubleContactingServerDialog(Context context) {

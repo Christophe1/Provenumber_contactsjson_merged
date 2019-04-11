@@ -417,7 +417,7 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
     addressname.setText(address);
     commentname.setText(comment);
 
-    Toast.makeText(EditContact.this, "date created is : " + date_created, Toast.LENGTH_SHORT).show();
+    //Toast.makeText(EditContact.this, "date created is : " + date_created, Toast.LENGTH_SHORT).show();
 
 
     //make the cursor appear at the end of the categoryname

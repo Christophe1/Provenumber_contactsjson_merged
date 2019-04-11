@@ -11,8 +11,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.chris.populisto.GlobalFunctions;
 import com.example.chris.populisto.PopulistoContactsAdapter;
 import com.example.chris.populisto.SelectPhoneContact;
+import com.example.chris.populisto.ViewContact;
 import com.example.tutorialspoint.R;
 
 import java.util.ArrayList;
@@ -187,6 +189,10 @@ public class SharedViewContact extends AppCompatActivity {
       textphoneNameonPhone.setTextColor(Color.parseColor("#0A7FDA"));
       textphoneNameonPhone.setText(phoneNameonPhone);
 
+      //make the border blue
+      GlobalFunctions.sharing_border_colour(this, "#0A7FDA");
+
+
     }
 
     //getItemViewType has been transferred as an intent
@@ -197,6 +203,8 @@ public class SharedViewContact extends AppCompatActivity {
       textphoneNameonPhone.setTextColor(Color.parseColor("#2AB40E"));
       textphoneNameonPhone.setText(phoneNameonPhone);
 
+      //make the border green
+      GlobalFunctions.sharing_border_colour(this, "#2AB40E");
     }
 
   }

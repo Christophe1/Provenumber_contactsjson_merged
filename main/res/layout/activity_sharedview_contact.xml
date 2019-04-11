@@ -74,6 +74,8 @@
             android:layout_height="wrap_content"
             android:layout_weight=".3"
             android:background="@drawable/textboxes_for_contact"
+            android:textIsSelectable="true"
+
             />
 
         <TextView
@@ -90,6 +92,8 @@
             android:layout_height="wrap_content"
             android:layout_weight=".3"
             android:background="@drawable/textboxes_for_contact"
+            android:textIsSelectable="true"
+
             />
 
         <TextView
@@ -106,6 +110,8 @@
             android:layout_height="wrap_content"
             android:layout_weight=".3"
             android:background="@drawable/textboxes_for_contact"
+            android:textIsSelectable="true"
+
             />
 
         <TextView
@@ -122,6 +128,8 @@
             android:layout_height="wrap_content"
             android:layout_weight=".3"
             android:background="@drawable/textboxes_for_contact"
+            android:textIsSelectable="true"
+
             />
 
         <TextView
@@ -138,6 +146,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:background="@drawable/textboxes_for_contact"
+            android:textIsSelectable="true"
+
             />
 
            <TextView

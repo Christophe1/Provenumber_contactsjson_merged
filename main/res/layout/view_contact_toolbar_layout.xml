@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:textSize="21dp"
         android:text="@string/toolbar_title"
-        android:layout_marginRight="40dp"
+        android:layout_marginRight="0dp"
         android:layout_gravity="center_vertical"
         />
 
