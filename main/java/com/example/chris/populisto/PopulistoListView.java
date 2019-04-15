@@ -389,8 +389,15 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 private_array = private_review_ids2.split(",");
                 public_array = public_review_ids2.split(",");
 
-                Toast.makeText(PopulistoListView.this, "private array is" + Arrays.toString(private_array), Toast.LENGTH_LONG).show();
-                Toast.makeText(PopulistoListView.this, "public array is" + Arrays.toString(public_array), Toast.LENGTH_LONG).show();
+               // Toast.makeText(PopulistoListView.this, "private array is" + Arrays.toString(private_array), Toast.LENGTH_LONG).show();
+               // Toast.makeText(PopulistoListView.this, "public array is" + Arrays.toString(public_array), Toast.LENGTH_LONG).show();
+
+                String hashedPassinXML;
+
+                SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+                hashedPassinXML = sharedPreferences.getString("hashedpassword", "");
+
+                Toast.makeText(PopulistoListView.this, "hashedPassinXML is " + hashedPassinXML, Toast.LENGTH_LONG).show();
 
 
                 //[105, 21, 57, 60, 103, 108, 111, 113, 116, 173, 104]

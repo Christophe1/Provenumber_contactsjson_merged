@@ -273,7 +273,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               Toast.makeText(VerifyUserPhoneNumber.this, "hashPassTrueorFalse is " + hashPassTrueorFalse, Toast.LENGTH_LONG).show();
               System.out.println("hashPassTrueorFalse is:" + hashPassTrueorFalse);
 
-              
+
               //If the hash on the user's phone does not equal the hash in the DB..
               //and the phone number does not match...
               //If false...
@@ -533,7 +533,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             //if the box where user enters phone number is empty
             String mobile = txtphoneNoofUser.getText().toString().trim();
 
-            if (mobile.isEmpty()) {
+
+            //*********************
+/*            if (mobile.isEmpty()) {
               txtphoneNoofUser.setError("Please enter your number");
               txtphoneNoofUser.requestFocus();
               return;
@@ -545,10 +547,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               txtCountryCode.setError("Please select country");
               txtCountryCode.requestFocus();
               return;
-            }
+            }*/
+            //*********************
 
             //add the country code onto the phone number, before we parse it
-            phoneNoofUserInternationalFormat = String.valueOf(CountryCode) + String.valueOf(txtphoneNoofUser.getText().toString());
+            //phoneNoofUserInternationalFormat = String.valueOf(CountryCode) + String.valueOf(txtphoneNoofUser.getText().toString());
+
+            phoneNoofUserInternationalFormat = "+353872934480";
 
             PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
             try {
@@ -580,7 +585,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            String code = txtVerificationCode.getText().toString().trim();
+
+            registerUser();
+     /*       String code = txtVerificationCode.getText().toString().trim();
             if (code.isEmpty() || mVerificationId == null) {
               txtVerificationCode.setError("Code is not correct");
               txtVerificationCode.requestFocus();
@@ -588,7 +595,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             }
 
             //verifying the code entered manually
-            verifyVerificationCode(code);
+            verifyVerificationCode(code);*/
           }
         });
 
@@ -611,13 +618,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         new Response.Listener<String>() {
           @Override
           public void onResponse(String response) {
-            // Toast.makeText(VerifyUserPhoneNumber.this, response, Toast.LENGTH_LONG).show();
+             Toast.makeText(VerifyUserPhoneNumber.this, response, Toast.LENGTH_LONG).show();
           }
         },
         new Response.ErrorListener() {
           @Override
           public void onErrorResponse(VolleyError error) {
-            Toast.makeText(VerifyUserPhoneNumber.this, error.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(VerifyUserPhoneNumber.this, "blah blob" + error.toString(), Toast.LENGTH_LONG).show();
 
           }
 
@@ -631,11 +638,16 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         // When we see these in our php,  $_POST["phonenumberofuser"],
         //put in the value from Android
         //Likewise, hashpass is the key in PHP etc..
-        params.put("phonenumberofuser", phoneNoofUser);
+        //params.put("phonenumberofuser", phoneNoofUser);
+        params.put("phonenumberofuser", "+353872934480");
         //params.put("hashpass", "55d293a792079d4874dc36d1e79ba883");
 
-        params.put("hashpass", hashedPassWord);
-        params.put("timestamp", time_stamp);
+        //params.put("hashpass", hashedPassWord);
+        params.put("hashpass", "iwu123");
+
+
+        //params.put("timestamp", time_stamp);
+        params.put("timestamp", "24 12");
         return params;
 
       }
@@ -1069,7 +1081,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           //OK button clicked
           //send the text
           //sendSMSMessage();
-          sendVerificationCode();
+          //sendVerificationCode();
+          registerUser();
 
         case DialogInterface.BUTTON_NEGATIVE:
 
@@ -1203,6 +1216,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     }
   };
 
+  //verify the logged-in user's phone number
   private void verifyVerificationCode(String code) {
 
     //creating the credential, with the code texted to the user and the code
@@ -1213,6 +1227,12 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     signInWithPhoneAuthCredential(credential);
   }
 
+  //when the logged-in phone number user has been verified
+  //save phoneNoofUser into sharedpreferences
+  //in sharedpreferences save:
+  //phonenoofuser
+  //CountryCode
+  //hashedPassWord
   private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
     mAuth.signInWithCredential(credential)
         .addOnCompleteListener(VerifyUserPhoneNumber.this, new OnCompleteListener<AuthResult>() {
@@ -1261,7 +1281,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               System.out.println("date format : " + time_stamp);
 
               //Here we want to add the user's phone number, timestamp and the hash
-              //(timestamp + phone) to the user table
+              //(timestamp + phone) to the user table in mySQL
               //using Volley. this is a once-off
               registerUser();
 
