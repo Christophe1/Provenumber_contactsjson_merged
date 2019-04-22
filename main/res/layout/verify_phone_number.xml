@@ -22,7 +22,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Populisto will send an SMS message to verify your phone number. Enter your country and phone number. "
+        android:text="Populisto will send an SMS message to verify your phone number (carrier charges may apply). Enter your country and phone number. "
         android:textColor="@color/colorPrimaryDark"
         android:gravity="center"
         android:textSize="18dp"
