@@ -169,7 +169,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   //firebase auth object
   private FirebaseAuth mAuth;
 
-  Button buttonSignIn;
+  //Button buttonSignIn;
 
   SharedPreferences sharedPreferencesallPhonesofContacts;
 
@@ -418,7 +418,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
         txtVerificationCode = (EditText) findViewById(R.id.txtVerificationCode);
 
-        buttonSignIn = (Button) findViewById(R.id.buttonSignIn);
+        //buttonSignIn = (Button) findViewById(R.id.buttonSignIn);
 
         //dismiss the dialog when sendSMSandRegisterUser() has been called
         //progressDialog.cancel();
@@ -505,7 +505,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         btnSendSMS.setOnClickListener(new View.OnClickListener() {
           public void onClick(View view) {
 
-            Toast.makeText(getApplicationContext(), "this happens when button clicked", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "this happens when button clicked", Toast.LENGTH_LONG).show();
 
             //if the box where user enters phone number is empty
             String mobile = txtphoneNoofUser.getText().toString().trim();
@@ -534,8 +534,40 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             //if so, we need to manually check for permissions
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
+              // The request code used in ActivityCompat.requestPermissions()
+// and returned in the Activity's onRequestPermissionsResult()
+              int PERMISSION_ALL = 1;
+              String[] PERMISSIONS = {
+                  android.Manifest.permission.READ_CONTACTS,
+                  android.Manifest.permission.SEND_SMS,
+                  android.Manifest.permission.RECEIVE_SMS
+                  //android.Manifest.permission.WRITE_CONTACTS,
+                  //android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                  //android.Manifest.permission.READ_SMS,
+                  //android.Manifest.permission.CAMERA
+              };
+
+              //If the permissions above are not granted, then ask for permissions from the user
+              if(!hasPermissions(getApplicationContext(), PERMISSIONS)){
+                ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity, PERMISSIONS, PERMISSION_ALL);
+              }
+
+              //check if permissions granted
+              if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED  && checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) {
+                  //if so, get phone contacts
+                  showVerifyNumberScreen();
+                }
+
+
+      /*        if(hasPermissions(getApplicationContext(), PERMISSIONS)){
+                showVerifyNumberScreen();
+
+                //ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity, PERMISSIONS, PERMISSION_ALL);
+              }*/
+
+              //showVerifyNumberScreen();
               //check if permissions denied
-              if (ContextCompat.checkSelfPermission(getApplicationContext(),
+/*              if (ContextCompat.checkSelfPermission(getApplicationContext(),
                   Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
 
                 //if denied, show the standard Android dialog, 'Allow access to Contacts?'
@@ -543,8 +575,19 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                     new String[]{Manifest.permission.READ_CONTACTS},
                     PERMISSIONS_REQUEST_READ_CONTACTS);
 
-              }
+              }*/
             }
+
+            //if Android is not MarshMallow +, then no need to check for permissions
+            //when send button is clicked, just show the Verify Number screen
+            else {
+
+              showVerifyNumberScreen();
+
+            }
+
+
+
               //check if permissions granted
               //if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 //if (hashPassTrueorFalse.equals("True")) {
@@ -634,7 +677,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
         //if the automatic sms detection did not work, user can also enter the code manually
         //so adding a click listener to the button
-        buttonSignIn.setOnClickListener(new View.OnClickListener() {
+/*        buttonSignIn.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
 
@@ -649,7 +692,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             //verifying the code entered manually
             verifyVerificationCode(code);
           }
-        });
+        });*/
 
       }
 
@@ -668,13 +711,32 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           //OK button clicked
           //send the text
 
-          //before 'FireBase' option...
-          sendSMSMessage();
+          //For Marshmallow + phones...
+          //IF SMS permissions have been granted,
+          //use the sendSMSMessage();
+          //saves money!
+
+          //check if Marshmallow or newer
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //check if permissions granted
+            if (checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) {
+              //if so, use the sendSMSMessage();
+              //sendSMSMessage();
+              Toast.makeText(getApplicationContext(), "permission granted, not using FireBase", Toast.LENGTH_LONG).show();
+
+            }
+
+            //IF SMS permissions have NOT been granted,
+            //use the FireBase();
+
+            else {
+
+              Toast.makeText(getApplicationContext(), "permission denied, using FireBase", Toast.LENGTH_LONG).show();
 
 
-          //sendVerificationCode();
+            }
+          }
 
-          //registerUser();
 
         case DialogInterface.BUTTON_NEGATIVE:
 
@@ -1548,10 +1610,17 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   }*/
 
   @Override
-  //check Permissions status, this is called when the user clicks ALLOW on the dialog
+  //check Permissions status, code can be set for ALLOW or DENY
   public void onRequestPermissionsResult(int requestCode,
                                          String permissions[], int[] grantResults) {
-    switch (requestCode) {
+
+    //after showing the permissions dialogues, show, 'This number ok, you want to edit it before
+    //we send you an SMS?'
+    showVerifyNumberScreen();
+
+    //we want to see what was clicked for SMS, Denied or Allowed
+
+    /*switch (requestCode) {
 
       //if Permission is granted, then show the
       //'We will be sending a text message, this ok?' dialog
@@ -1567,7 +1636,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           showVerifyNumberScreen();
 
           //add the country code onto the phone number, before we parse it
-       /*   phoneNoofUserInternationalFormat = String.valueOf(CountryCode) + String.valueOf(txtphoneNoofUser.getText().toString());
+       *//*   phoneNoofUserInternationalFormat = String.valueOf(CountryCode) + String.valueOf(txtphoneNoofUser.getText().toString());
 
           //phoneNoofUserInternationalFormat = "+353872934480";
 
@@ -1593,7 +1662,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           builder.setMessage(alert1 + "\n" + "\n" + phoneNoofUserInternationalFormat + "\n"  + "\n" + alert2).setPositiveButton("OK", dialogClickListener)
               .setNegativeButton("EDIT", dialogClickListener).show();
 
-*/
+*//*
 
           //if Permission is denied, then show our custom made dialog
           //This is important for if user chooses, 'Don't Show Again',
@@ -1602,7 +1671,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
           Toast.makeText(getApplicationContext(), "Nay, not granted", Toast.LENGTH_LONG).show();
 
-/*          new AlertDialog.Builder(this).
+*//*          new AlertDialog.Builder(this).
               setCancelable(false).
               // setTitle("You need to enable Read Contacts").
                   setMessage("To get full use of Populisto, allow Populisto access to your contacts. Click SETTINGS, tap Permissions and turn Contacts on.").
@@ -1626,13 +1695,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int id) {
                   dialog.cancel();
                 }
-              }).show();*/
+              }).show();*//*
 
         }
         return;
       }
 
-    }
+    }*/
   }
 
 
@@ -1669,6 +1738,17 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
 
 
+  }
+
+  public static boolean hasPermissions(Context context, String... permissions) {
+    if (context != null && permissions != null) {
+      for (String permission : permissions) {
+        if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
 }
