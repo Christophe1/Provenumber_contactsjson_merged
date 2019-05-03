@@ -43,7 +43,6 @@
         android:layout_alignLeft="@+id/textView1"
         android:layout_alignStart="@+id/textView1" />
 
-
     <TextView
         android:hint = "Code"
         android:textSize="18dp"
@@ -62,7 +61,7 @@
         android:textColorHint="@color/colorPrimaryDark"
         android:layout_below="@+id/textView2"
         android:layout_marginTop="75dp"
-        android:layout_marginBottom="27dp"
+        android:layout_marginBottom="25dp"
         android:layout_alignLeft="@+id/textView1"
 
         />
@@ -75,7 +74,7 @@
         android:id="@+id/btnSendSMS"
         android:layout_below="@+id/txtphoneNoofUser"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="26dp" />
+        android:layout_marginBottom="20dp" />
 
     <RelativeLayout
         android:id="@+id/container"
@@ -128,20 +127,24 @@
 
     </RelativeLayout>
 
-<!--    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
+    <RelativeLayout
+        android:id="@+id/container2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnSendSMS"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtSMSMayApply"
-        android:hint="Standard SMS Charges may apply."
-        android:textColorHint="@color/colorPrimaryDark"
-        android:layout_centerHorizontal="true"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text= "@string/txtTryAgain"
+            android:id="@+id/txtTryAgain"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp" />
 
-    </RelativeLayout>-->
+    </RelativeLayout>
 
 </RelativeLayout>
