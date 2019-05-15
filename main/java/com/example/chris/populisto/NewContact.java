@@ -82,17 +82,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   // create a new review_id
   private static final String NewContact_URL = "https://www.populisto.com/NewContact.php";
 
-  //matching contacts, those on phone and populisto users
-  //we need to initialise it, otherwise if user has no matching contacts
-  //the app crashes
-  //public static final ArrayList<String> MatchingContactsAsArrayList  = new ArrayList<String>();
-
-  //make a List containing info about SelectPhoneContact objects
-  //public static List<SelectPhoneContact> theContactsList;
-
-  //allPhonesofContacts is a list of all the phone numbers in the user's contacts
-  //public static final ArrayList<String> allPhonesofContacts = new ArrayList<String>();
-
   //in this JSONArray, checkedContacts, we will be storing each checkedContact JSON Object
   //Then we're going to post it to our NewContact.php file
   JSONArray checkedContacts = new JSONArray();
@@ -152,17 +141,11 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
   private ArrayList<CategoryList> existingCategoryList;
 
-
   private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
 
-  //sharedprefs for holding all phone numbers of contacts
-  //SharedPreferences sharedPreferencesallPhonesofContacts;
-
-  //for if review can be saved, needs fields filled for Public and Phone Contacts
+  //for if review can be saved, all fields need to be filled -
+  //name, address, category... etc...
   Boolean allValid;
-
-  //show progress bar, before response is fetched
-  //ProgressBar Progressbar2;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -180,11 +163,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     //for address autocomplete...
     AutoCompTextViewAddress = (AutoCompleteTextView) findViewById(R.id.textViewAddress);
 
-    //for the progress
-    //Progressbar2 = findViewById(R.id.nocontactsfound_progressbar);
-
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
-
 
     // Create a GoogleApiClient instance
     mGoogleApiClient = new GoogleApiClient
@@ -258,7 +237,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
     System.out.println("NewContact1: selectPhoneContacts " + selectPhoneContacts);
 
-    //first of all we want to get the phone number of the current user so we
+    //first of all we want to get the phone number of the logged-in user so we
     //can post it and then get the user_id in php
     //get the phone number, stored in an XML file, when the user first registered the app
     SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -315,7 +294,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
           alertdialog_edittext.setLines(11);
 
-
           //so we can toast a message if text limit is reached
           alertdialog_edittext.addTextChangedListener(new TextWatcher() {
             @Override
@@ -371,10 +349,6 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
               dialog.cancel();
             }
           });
-
-          //AlertDialog dialog = null;
-
-          //if ((dialog == null) || !dialog.isShowing()) {
 
           AlertDialog dialog = commentname_alertdialog.create();
           dialog.setCanceledOnTouchOutside(false);
@@ -435,35 +409,62 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       //disable the public button
       publicContacts.setEnabled(false);
 
-
     } else {
 
       //there ARE READ_CONTACT permissions, so DON'T show 'No Contacts textbox'
       noContactFoundCheck = 0;
 
-      //have the phoneContacts button selected by default
-      //make it blue
-      phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+      //READ_CONTACT permissions enabled.
+      //but check if logged-in user has no matching contacts...
+      if (MatchingContactsAsArrayList.size() < 1) {
 
-      //save it by default to the DB as 1, for phoneContacts
-      public_or_private = 1;
+        System.out.println("NewContact: the matching contacts are " + MatchingContactsAsArrayList);
 
-      //make border colour blue, by default
-      GlobalFunctions.sharing_border_colour(NewContact.this, "#0A7FDA");
-    }
+        //call the function to change the border colour,
+        //if Just U button is clicked,
+        //we want the border to be ORANGE
+        GlobalFunctions.sharing_border_colour(NewContact.this, "#DA850B");
 
-    recyclerView = (RecyclerView) findViewById(R.id.rv);
+        //have the just me button selected by default
+        //because we don't have access to phone contacts
+        justMeContacts.setBackgroundResource(R.drawable.justmecontacts_buttonshapepressed);
 
+        //save it by default to the DB as 0, for just me
+        public_or_private = 0;
 
-    cancel.setOnClickListener(new View.OnClickListener() {
+        //disable the phoneContacts button
+        phoneContacts.setEnabled(false);
 
-      public void onClick(View v) {
-        //close the activity
-        finish();
+        //disable the public button
+        publicContacts.setEnabled(false);
+
+        //the user does have phone contacts using the app...
+      } else {
+
+        //have the phoneContacts button selected by default
+        //make it blue
+        phoneContacts.setBackgroundResource(R.drawable.phonecontacts_buttonshapepressed);
+
+        //save it by default to the DB as 1, for phoneContacts
+        public_or_private = 1;
+
+        //make border colour blue, by default
+        GlobalFunctions.sharing_border_colour(NewContact.this, "#0A7FDA");
       }
 
-    });
+      recyclerView = (RecyclerView) findViewById(R.id.rv);
 
+
+      cancel.setOnClickListener(new View.OnClickListener() {
+
+        public void onClick(View v) {
+          //close the activity
+          finish();
+        }
+
+      });
+
+    }
   }
 
   //load this function when the activity is created, put categories
@@ -476,7 +477,8 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
           @Override
           public void onResponse(String response) {
 
-             Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+             Toast.makeText(getApplicationContext(), "getCategoryList called: " + response, Toast.LENGTH_LONG).show();
+            System.out.println("getCategoryList called: " + response);
 
             try {
 
@@ -1083,7 +1085,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
 
               } catch (Exception e) {
-                //System.out.println("there's a problem here unfortunately");
+                System.out.println("there's a problem here unfortunately");
                 e.printStackTrace();
               }
             } else

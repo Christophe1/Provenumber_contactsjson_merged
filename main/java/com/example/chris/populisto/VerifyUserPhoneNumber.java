@@ -416,36 +416,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
         txtTryAgain = (TextView) findViewById(R.id.txtTryAgain);
 
-        //buttonSignIn = (Button) findViewById(R.id.buttonSignIn);
-
-        //dismiss the dialog when sMSandRegisterUser() has been called
-        //progressDialog.cancel();
-/*
-        //check if Marshmallow or newer
-        //if so, we need to manually check for permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-          //check if permissions denied
-          if (ContextCompat.checkSelfPermission(getApplicationContext(),
-              Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
-
-            //if denied, show the standard Android dialog, 'Allow access to Contacts?'
-           ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity,
-                new String[]{Manifest.permission.READ_CONTACTS},
-                PERMISSIONS_REQUEST_READ_CONTACTS);
-
-          }
-
-          //check if permissions granted
-          if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            if (hashPassTrueorFalse.equals("True")) {
-              //if so, get phone contacts
-              getPhoneContacts();
-            }
-          }
-
-        }*/
-
 
         //check if read contacts permissions granted
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -561,10 +531,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                   android.Manifest.permission.READ_CONTACTS,
                   android.Manifest.permission.SEND_SMS,
                   android.Manifest.permission.RECEIVE_SMS
-                  //android.Manifest.permission.WRITE_CONTACTS,
-                  //android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                  //android.Manifest.permission.READ_SMS,
-                  //android.Manifest.permission.CAMERA
+
               };
 
               //If the permissions above are not granted, then ask for permissions from the user
@@ -572,7 +539,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity, PERMISSIONS, PERMISSION_ALL);
               }
 
-              // if permissions granted
+              // if READ_CONTACTS and SMS permissions granted...
               if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED  && checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) {
                   //if so, show, 'This your number, you want to edit it?'
                   showVerifyNumberScreen();
@@ -621,6 +588,15 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           //use the sendSMSMessage();
           //saves money!
 
+          //generate the hashedPassword
+          //let's get the current date and time, for time_stamp
+          SimpleDateFormat s = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+          time_stamp = s.format(new Date());
+
+          //make a password combining time_stamp and phone number
+          String password = time_stamp + phoneNoofUser;
+          hashedPassWord = MD5(password);
+
           //check if Marshmallow or newer
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //check if permissions granted
@@ -644,7 +620,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             }
           }
 
-          //if it's an old hone, less than M, no need to grant permissions...
+          //if it's an old phone, less than M, no need to grant permissions...
           //just use sendSMSMessage
           else {
 
@@ -665,7 +641,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   // register the user's phone number, timestamp and the corresponding hash in the user table, this is called
   //when the phone number is verified, when the originating number = sent to number
   private void registerUser() {
-    Toast.makeText(VerifyUserPhoneNumber.this, "the numbers match dude" + phoneNoofUser, Toast.LENGTH_LONG).show();
+    Toast.makeText(VerifyUserPhoneNumber.this, "the phone numbers match dude" + phoneNoofUser, Toast.LENGTH_LONG).show();
 
 
     //REGISTER_URL is insert.php
@@ -879,15 +855,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
       sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
 
-/*
-      SharedPreferences.Editor prefsEditor = sharedPreferencesallPhonesofContacts.edit();
-      prefsEditor.remove("allPhonesofContacts");
-      prefsEditor.commit();
-
-      Toast.makeText(this, Arrays.toString(sharedPreferencesallPhonesofContacts), Toast.LENGTH_SHORT).show();
-
-*/
-
       //we will save the array list allPhonesofContacts,
       //with this we will put all phone numbers of contacts on user's phone into our RecyclerView, in other activities
       SharedPreferences sharedPreferencesallPhonesofContacts = PreferenceManager.getDefaultSharedPreferences(getApplication());
@@ -1040,13 +1007,6 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
               }
 
-/*              if(MatchingContactsAsArrayList != null) {
-
-                Toast.makeText(VerifyUserPhoneNumber.this, "The arraylist is empty", Toast.LENGTH_LONG).show();
-                System.out.println("MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
-
-
-              }*/
               System.out.println("VerifyUserPhoneNumber: MatchingContactsAsArrayList :" + MatchingContactsAsArrayList);
 
               //if usernameMatch from server is empty - if no phone contacts
@@ -1161,28 +1121,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         // txtVerificationCode.setText("?"); // Shows view
       }
     }, 20000); // After 3 seconds
-/*
 
-    Handler handler = new Handler(Looper.getMainLooper() *//*UI thread*//*);
-    handler.postDelayed(new Runnable()
-    {
-      public void run()
-      {
-        txtVerificationCode.setText("?");
-      }
-    }, 5000);*/
 
 
     //the thing we're looking out for is received SMSs
     filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-
-    //let's get the current date and time, for time_stamp
-    SimpleDateFormat s = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
-    time_stamp = s.format(new Date());
-
-    //make a password combining time_stamp and phone number
-    String password = time_stamp + phoneNoofUser;
-    hashedPassWord = MD5(password);
 
     //this is to check the incoming text message
     receiver = new BroadcastReceiver() {
@@ -1252,7 +1195,11 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
           editor2.commit();
           editor3.commit();
 
-          System.out.println("just after commit, hashpassinXML is:" + hashedPassinXML);
+          Toast.makeText(getApplicationContext(), "just after commit, SMS, hashpassinXML is:"  + hashedPassinXML, Toast.LENGTH_LONG).show();
+          Toast.makeText(getApplicationContext(), "just after commit, SMS, hashedPassWord is:"  + hashedPassWord, Toast.LENGTH_LONG).show();
+
+
+          System.out.println("just after commit, SMS, hashpassinXML is:" + hashedPassinXML);
           System.out.println("just after commit, phoneNoofUser is:" + phoneNoofUser);
 
           //Here we want to add the user's phone number to the user table
@@ -1478,22 +1425,13 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //phoneNoofUser String is unique, the username of this particular user
               //it will be of the form +353872934480
               editor.putString("phonenumberofuser", phoneNoofUser);
-              editor.apply();
+
 
               //save the country code so this process is skipped in future
               SharedPreferences sharedPreferencesCountryCode = getSharedPreferences("MyData", Context.MODE_PRIVATE);
               SharedPreferences.Editor editor2 = sharedPreferencesCountryCode.edit();
               //we need the Country code as it is needed for determining phone contacts in E164 format
               editor2.putString("countrycode", CountryCode);
-              editor2.apply();
-
-/*              //let's get the current date and time, for time_stamp
-              SimpleDateFormat s = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
-              time_stamp = s.format(new Date());
-
-              //make a password combining time_stamp and phone number
-              String password = time_stamp + phoneNoofUser;
-              hashedPassWord = MD5(password);*/
 
               //When the user registers, when the verification code has been approved,
               //save the hashedPassWord into xml shared prefs
@@ -1503,9 +1441,15 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
               //put hashedPassWord into XML
               editor3.putString("hashedpassword", hashedPassWord);
-              editor3.apply();
 
-              System.out.println("MD5 " + hashedPassWord);
+              //commit the phonenumber, country code and hashedpass to sharedprefs
+              editor.commit();
+              editor2.commit();
+              editor3.commit();
+              Toast.makeText(getApplicationContext(), "just after commit, FireBase, hashpassinXML is:"  + hashedPassinXML, Toast.LENGTH_LONG).show();
+              Toast.makeText(getApplicationContext(), "just after commit, FireBase, hashpassinXML is:"  + hashedPassWord, Toast.LENGTH_LONG).show();
+
+              System.out.println("MD5 password is " + hashedPassWord);
 
               System.out.println("date format : " + time_stamp);
 
@@ -1578,90 +1522,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     //we send you an SMS?'
     showVerifyNumberScreen();
 
-    //we want to see what was clicked for SMS, Denied or Allowed
-
-    /*switch (requestCode) {
-
-      //if Permission is granted, then show the
-      //'We will be sending a text message, this ok?' dialog
-      case PERMISSIONS_REQUEST_READ_CONTACTS: {
-
-        if (grantResults.length > 0
-            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          //getPhoneContacts();
-          Toast.makeText(getApplicationContext(), "Yay! Granted now", Toast.LENGTH_LONG).show();
-
-          //show the Verify Number screen.
-          //'This your number, want to edit it?
-          showVerifyNumberScreen();
-
-          //add the country code onto the phone number, before we parse it
-       *//*   phoneNoofUserInternationalFormat = String.valueOf(CountryCode) + String.valueOf(txtphoneNoofUser.getText().toString());
-
-          //phoneNoofUserInternationalFormat = "+353872934480";
-
-          PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-          try {
-            //For the second parameter, CountryCode, put whatever country code the user picks
-            //we pass it through phoneUtil to get rid of first 0 like in +353087 etc
-            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNoofUserInternationalFormat, CountryCode);
-
-            //phoneNoofUser in the correct format
-            phoneNoofUserInternationalFormat = phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
-
-          } catch (NumberParseException e) {
-            System.err.println("NumberParseException was thrown: " + e.toString());
-          }
-
-          Toast.makeText(getApplicationContext(), "user's number is:" + phoneNoofUserInternationalFormat, Toast.LENGTH_LONG).show();
-
-          //Before sending, show an alert dialogue
-          AlertDialog.Builder builder = new AlertDialog.Builder(btnSendSMS.getContext());
-          String alert1 = "We will be verifying the phone number:";
-          String alert2 = "Is this OK, or would you like to edit the number?";
-          builder.setMessage(alert1 + "\n" + "\n" + phoneNoofUserInternationalFormat + "\n"  + "\n" + alert2).setPositiveButton("OK", dialogClickListener)
-              .setNegativeButton("EDIT", dialogClickListener).show();
-
-*//*
-
-          //if Permission is denied, then show our custom made dialog
-          //This is important for if user chooses, 'Don't Show Again',
-          //It will open up SETTINGS and user can change it
-        } else {
-
-          Toast.makeText(getApplicationContext(), "Nay, not granted", Toast.LENGTH_LONG).show();
-
-*//*          new AlertDialog.Builder(this).
-              setCancelable(false).
-              // setTitle("You need to enable Read Contacts").
-                  setMessage("To get full use of Populisto, allow Populisto access to your contacts. Click SETTINGS, tap Permissions and turn Contacts on.").
-              //setIcon(R.drawable.ninja).
-                  setPositiveButton("SETTINGS",
-                  new DialogInterface.OnClickListener() {
-                    @TargetApi(11)
-                    public void onClick(DialogInterface dialog, int id) {
-                      dialog.cancel();
-
-                      //Open up the SETTINGS for the App, user can enable contacts
-                      Intent intent = new Intent();
-                      intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                      Uri uri = Uri.fromParts("package", getPackageName(), null);
-                      intent.setData(uri);
-                      startActivity(intent);
-                    }
-                  })
-              .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
-                @TargetApi(11)
-                public void onClick(DialogInterface dialog, int id) {
-                  dialog.cancel();
-                }
-              }).show();*//*
-
-        }
-        return;
-      }
-
-    }*/
+  
   }
 
 
