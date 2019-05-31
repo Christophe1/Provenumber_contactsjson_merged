@@ -54,8 +54,9 @@
         <Button
             android:id="@+id/btnInvite"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="20dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="inviteSomeone"
             android:text="@string/btnInvite" />
 
     </LinearLayout>

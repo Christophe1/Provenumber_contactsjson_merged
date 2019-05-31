@@ -5,7 +5,7 @@
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
                                                  android:fitsSystemWindows="true"
-                                                 tools:context="com.example.chris.populisto.NewContact">
+                                                 tools:context="com.populisto.chris.populisto.NewContact">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -146,7 +146,7 @@
 
 
         <fragment
-            android:name="com.example.chris.populisto.ButtonSharingFragment"
+            android:name="com.populisto.chris.populisto.ButtonSharingFragment"
             android:id = "@+id/myFragment"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

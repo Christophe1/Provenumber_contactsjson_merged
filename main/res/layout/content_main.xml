@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.chris.populisto.PopulistoListView"
+    tools:context="com.populisto.chris.populisto.PopulistoListView"
     tools:showIn="@layout/phone_listview_contacts">
 
     <ProgressBar

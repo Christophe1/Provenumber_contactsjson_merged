@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tutorialspoint"
+    package="com.populisto.chris.populisto"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -30,12 +30,12 @@
 
     <application
         android:icon="@drawable/ic_launcher"
-        android:name="com.example.chris.populisto.AppController"
+        android:name="com.populisto.chris.populisto.AppController"
         android:allowBackup="false"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.example.chris.populisto.VerifyUserPhoneNumber"
+            android:name="com.populisto.chris.populisto.VerifyUserPhoneNumber"
             android:screenOrientation="portrait"
             >
             <intent-filter>
@@ -45,7 +45,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.chris.populisto.PopulistoListView"
+            android:name="com.populisto.chris.populisto.PopulistoListView"
             android:launchMode="singleInstance"></activity>
         <meta-data
             android:name="android.app.searchable"
@@ -56,37 +56,37 @@
             <action android:name="android.intent.action.SEARCH" />
         </intent-filter>
             />
-        <activity android:name="com.example.chris.populisto.CountryCodes">
+        <activity android:name="com.populisto.chris.populisto.CountryCodes">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chris.populisto.VerifyUserPhoneNumber" />
+                android:value="com.populisto.chris.populisto.VerifyUserPhoneNumber" />
         </activity>
         <activity
-            android:name="com.example.chris.populisto.ViewContact"
+            android:name="com.populisto.chris.populisto.ViewContact"
             android:noHistory="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chris.populisto.PopulistoListView" />
+                android:value="com.populisto.chris.populisto.PopulistoListView" />
         </activity>
         <activity
-            android:name="com.example.chris.populisto.SharedReviews.SharedViewContact"
+            android:name="com.populisto.chris.populisto.SharedReviews.SharedViewContact"
             android:noHistory="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chris.populisto.PopulistoListView" />
+                android:value="com.populisto.chris.populisto.PopulistoListView" />
         </activity>
-        <activity android:name="com.example.chris.populisto.EditContact">
+        <activity android:name="com.populisto.chris.populisto.EditContact">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chris.populisto.PopulistoListView" />
+                android:value="com.populisto.chris.populisto.PopulistoListView" />
         </activity>
 
         <activity
-            android:name="com.example.chris.populisto.NewContact"
+            android:name="com.populisto.chris.populisto.NewContact"
             android:configChanges="orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chris.populisto.PopulistoListView" />
+                android:value="com.populisto.chris.populisto.PopulistoListView" />
         </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
 
