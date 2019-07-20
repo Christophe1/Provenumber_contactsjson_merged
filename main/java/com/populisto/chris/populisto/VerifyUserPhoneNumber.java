@@ -46,11 +46,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.auth.AuthResult;
+/*import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;*/
 import com.google.gson.Gson;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -163,7 +163,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   private String mVerificationId;
 
   //firebase auth object
-  private FirebaseAuth mAuth;
+  //private FirebaseAuth mAuth;
 
   //Button buttonSignIn;
 
@@ -398,7 +398,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         setContentView(R.layout.verify_phone_number);
 
         //initialize objects
-        mAuth = FirebaseAuth.getInstance();
+       // mAuth = FirebaseAuth.getInstance();
 
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
 
@@ -536,13 +536,15 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 
               //If the permissions above are not granted, then ask for permissions from the user
               if(!hasPermissions(getApplicationContext(), PERMISSIONS)){
+                Toast.makeText(getApplicationContext(), "ask for permissions", Toast.LENGTH_LONG).show();
                 ActivityCompat.requestPermissions(VerifyUserPhoneNumber.activity, PERMISSIONS, PERMISSION_ALL);
               }
 
               // if READ_CONTACTS and SMS permissions granted...
               if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED  && checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) {
                   //if so, show, 'This your number, you want to edit it?'
-                  showVerifyNumberScreen();
+                Toast.makeText(getApplicationContext(), "all permissions granted, not using FireBase", Toast.LENGTH_LONG).show();
+                showVerifyNumberScreen();
                 }
 
             }
@@ -603,7 +605,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             if (checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) {
               //if so, use the sendSMSMessage();
               //sendSMSMessage();
-              Toast.makeText(getApplicationContext(), "permission granted, not using FireBase", Toast.LENGTH_LONG).show();
+              Toast.makeText(getApplicationContext(), "read, send, receive permissions granted, not using FireBase", Toast.LENGTH_LONG).show();
 
 
               sendSMSMessage();
@@ -1014,7 +1016,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
               //clear the sharedprefs, set it to ""
               if (response.isEmpty()) {
 
-                Toast.makeText(VerifyUserPhoneNumber.this, "response empty dude", Toast.LENGTH_LONG).show();
+                //Toast.makeText(VerifyUserPhoneNumber.this, "response empty dude", Toast.LENGTH_LONG).show();
 
                 SharedPreferences sharedPreferencesMatchingContactsAsArrayList = PreferenceManager.getDefaultSharedPreferences(getApplication());
                 SharedPreferences.Editor editorMatchingContactsAsArrayList = sharedPreferencesMatchingContactsAsArrayList.edit();
@@ -1022,7 +1024,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
                 editorMatchingContactsAsArrayList.apply();
               } else {
 
-                Toast.makeText(VerifyUserPhoneNumber.this, "response not empty dude", Toast.LENGTH_LONG).show();
+                //Toast.makeText(VerifyUserPhoneNumber.this, "response not empty dude", Toast.LENGTH_LONG).show();
 
 
                 //save MatchingContactsAsArrayList into sharedpreferences so we can use it elsewhere
@@ -1100,6 +1102,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
 //SMS Permission granted, send without FireBase
   protected void sendSMSMessage() {
 
+    Toast.makeText(getApplicationContext(), "sendSMSMessage called, newer phones", Toast.LENGTH_LONG).show();
+
     IntentFilter filter = new IntentFilter();
 
     //show a progress dialog below the Send button, to show activity
@@ -1127,13 +1131,18 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     //the thing we're looking out for is received SMSs
     filter.addAction("android.provider.Telephony.SMS_RECEIVED");
 
+    Toast.makeText(getApplicationContext(), "18/6/19  does it go wrong here?", Toast.LENGTH_LONG).show();
+
+
     //this is to check the incoming text message
     receiver = new BroadcastReceiver() {
       @Override
+
       public void onReceive(Context context, Intent intent)
 
       {
         Bundle extras = intent.getExtras();
+        Toast.makeText(getApplicationContext(), "18/6/19 or here?", Toast.LENGTH_LONG).show();
 
         if (extras == null)
           return;
@@ -1143,6 +1152,8 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         //apparently this code deals with the deprecated createFromPdu
         //issue, for more modern phones
         if (Build.VERSION.SDK_INT >= 19) { //KITKAT
+          Toast.makeText(getApplicationContext(), "19+", Toast.LENGTH_LONG).show();
+
           SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
           smsMessage = msgs[0];
           origNumber = smsMessage.getOriginatingAddress();
@@ -1350,18 +1361,18 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     } catch (NumberParseException e) {
       System.err.println("NumberParseException was thrown: " + e.toString());
     }
-
-    PhoneAuthProvider.getInstance().verifyPhoneNumber(
+  }
+/*    PhoneAuthProvider.getInstance().verifyPhoneNumber(
         //send a text to the phone number entered by the user
         phoneNoofUserInternationalFormat,
         60,
         TimeUnit.SECONDS,
         TaskExecutors.MAIN_THREAD,
         mCallbacks);
-  }
+  }*/
 
   //the callback to detect the verification status
-  private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+/*  private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
     @Override
     public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
 
@@ -1376,9 +1387,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         //verifying the code
         verifyVerificationCode(code);
       }
-    }
+    }*/
 
-    @Override
+   /* @Override
     public void onVerificationFailed(FirebaseException e) {
       Toast.makeText(VerifyUserPhoneNumber.this, e.getMessage(), Toast.LENGTH_LONG).show();
     }
@@ -1500,7 +1511,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             }
           }
         });
-  }
+  }*/
 
 
   //if the user chooses to refresh the Activity, when "Try Again" button is clicked...
@@ -1512,18 +1523,19 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     overridePendingTransition(0, 0);
     startActivity(intent);
   }*/
-
+/*
   @Override
   //check Permissions status, code can be set for ALLOW or DENY
   public void onRequestPermissionsResult(int requestCode,
                                          String permissions[], int[] grantResults) {
+    Toast.makeText(getApplicationContext(), "onRequestPermissionsResult", Toast.LENGTH_LONG).show();
 
     //after showing the permissions dialogues, show, 'This number ok, you want to edit it before
     //we send you an SMS?'
     showVerifyNumberScreen();
 
 
-  }
+  }*/
 
 
   //show the Verify Number screen.

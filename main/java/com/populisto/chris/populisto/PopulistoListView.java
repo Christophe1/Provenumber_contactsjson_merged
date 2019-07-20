@@ -205,7 +205,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
   String[] randomReviewsStringArray;
 
-  String found;
+  //String found;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -310,11 +310,11 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
               //[{"cat_name":"vet",
               // "user_review_ids":[2],
-              // "private_review_ids":[3,4,5],
-              // "public_review_ids":[6,7,8,9,10],
               // "user_personal_count":1,
               // "private_count":3,
-              // "public_count":5},
+              // "public_count":5,
+              // "private_review_ids":[3,4,5],
+              // "public_review_ids":[6,7,8,9,10]},
               //{"cat_name":"dentist",
               // "user_review_ids":[],
               // "private_review_ids":[31,40],
@@ -323,7 +323,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               // "private_count":2,
               // "public_count":3}, etc...etc....
 
-              //Toast.makeText(PopulistoListView.this, "response is: " + the_response, Toast.LENGTH_LONG).show();
+             // Toast.makeText(PopulistoListView.this, "response is: " + the_response, Toast.LENGTH_LONG).show();
 
               //the_response is defined as a global string, above
               System.out.println("response is: " + the_response);
@@ -365,6 +365,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 private_review_ids2 = private_review_ids2.replaceAll("[^0-9]+", ",");
                 //get rid of the first ",", replace it with nothing
                 private_review_ids2 = private_review_ids2.replaceFirst(",", "");
+                private_review_ids2 = private_review_ids2.replaceAll(",$", "");
+
+
                 System.out.println("private_review_ids2 : " + private_review_ids2);
 
                 //likewise for public
@@ -374,6 +377,9 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 public_review_ids2 = public_review_ids2.replaceAll("[^0-9]+", ",");
                 //get rid of the first ","
                 public_review_ids2 = public_review_ids2.replaceFirst(",", "");
+                public_review_ids2 = public_review_ids2.replaceAll(",$", "");
+
+
                 System.out.println("public_review_ids2 : " + public_review_ids2);
 
 
@@ -390,7 +396,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 SharedPreferences sharedPreferences = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                 hashedPassinXML = sharedPreferences.getString("hashedpassword", "");
 
-                Toast.makeText(PopulistoListView.this, "hashedPassinXML is " + hashedPassinXML, Toast.LENGTH_LONG).show();
+               // Toast.makeText(PopulistoListView.this, "hashedPassinXML is " + hashedPassinXML, Toast.LENGTH_LONG).show();
 
 
                 //[105, 21, 57, 60, 103, 108, 111, 113, 116, 173, 104]
@@ -404,7 +410,12 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
                 getMixedRandomNumbers(10);
 
                 //make a string from the return value of getMixedRandomNumbers
-                random_reviews = (Arrays.toString(randomReviewsStringArray));
+                random_reviews = Arrays.toString(randomReviewsStringArray);
+
+                //random_reviews = Arrays.toString(randomReviewsStringArray).replaceFirst(",","");
+
+                //get rid of the trailing comma at the end
+                //random_reviews = random_reviews.replaceAll(", $", "");
 
                 //Toast.makeText(PopulistoListView.this, "random_reviews are: " + random_reviews, Toast.LENGTH_LONG).show();
                 System.out.println("random_reviews : " + random_reviews);
@@ -607,8 +618,8 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
           @Override
           public void onResponse(String response) {
 
-            Toast.makeText(PopulistoListView.this, "sendThirdRequest response is  " + response, Toast.LENGTH_LONG).show();
-            //System.out.println("response is :" + response);
+           // Toast.makeText(PopulistoListView.this, "random_reviews :   " + random_reviews, Toast.LENGTH_LONG).show();
+            System.out.println("random_reviews :" + random_reviews);
 
             try {
 
@@ -778,7 +789,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
     // notifying list adapter about data changes
     // so that it renders the recyclerView with updated data
-    //uAdapter.notifyDataSetChanged();
+    uAdapter.notifyDataSetChanged();
 
 
   }
@@ -786,10 +797,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   //method to get random reviews from phone contacts and public
   public  String[] getMixedRandomNumbers(int size) {
 
-    //Toast.makeText(PopulistoListView.this, "calling getMixedRandomNumbers", Toast.LENGTH_LONG).show();
+   // Toast.makeText(PopulistoListView.this, "calling getMixedRandomNumbers", Toast.LENGTH_LONG).show();
 
     try {
-      //String[] private_array = {"105", "21", "57"};
+      //String[] private_array = {"1", "1", "2"};
       //String[] public_array  = {"103", "44", "3"};
       List<String> priv = Arrays.asList(private_array);
       List<String> publ = Arrays.asList(public_array);
@@ -811,16 +822,18 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
       //make a new string consisting of "size" numbers, whatever the method
       //defines it as
       randomReviewsStringArray = result.subList(0, i).toArray(new String[i]);
+      //randomReviewsStringArray = i.replaceAll(",$", "");
 
       Set<String> set = new HashSet<String>();
 
       for (String num : randomReviewsStringArray) {
+        //num = num.replaceAll(",$", "");
         set.add(num);
       }
 
-     // Toast.makeText(getApplicationContext(), "stream, randomReviewsStringArray:" + Arrays.toString(randomReviewsStringArray), Toast.LENGTH_SHORT).show();
+    //  Toast.makeText(getApplicationContext(), "stream, randomReviewsStringArray:" + Arrays.toString(randomReviewsStringArray), Toast.LENGTH_SHORT).show();
      // Toast.makeText(getApplicationContext(), "stream, set:" + set, Toast.LENGTH_SHORT).show();
-      System.out.println("randomReviewsStringArray : " + randomReviewsStringArray);
+      System.out.println("randomReviewsStringArray : " + Arrays.toString(randomReviewsStringArray).replaceFirst(",",""));
 
     }
 
@@ -1020,14 +1033,16 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
   }
 
   @Override
-  //when a fetched category is clicked in recyclerView,
+  //when a fetched category is clicked in searchbar
   //like "veterinarian (U,1,7)"
-  //show the list of reviews
+  //show the list of reviews in the recyclerview
   //shared with logged in-user including his own.
+  //From onCategorySelected we call show_own_private_public_reviews function, below
   public void onCategorySelected(Category category) {
 
     //Own Reviews
-    //convert [56,23,87] to a string
+    //convert [56,23,87] from the user_review_ids JSON value to a string
+    //user_review_ids is in CategoryFilter.php
     selectOwnUserReviews = Arrays.toString(category.getUserReviewIds());
     //remove [ and ] so we have a string of 56,23,87
     selectOwnUserReviews = selectOwnUserReviews.substring(1, selectOwnUserReviews.length() - 1);
@@ -1049,6 +1064,10 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
 
    // Toast.makeText(getApplicationContext(), "own reviews are:" + selectOwnUserReviews, Toast.LENGTH_LONG).show();
    // Toast.makeText(getApplicationContext(), "own reviews count:" + selectOwnUserCount, Toast.LENGTH_LONG).show();
+    System.out.println("own reviews are :" + selectOwnUserReviews);
+    System.out.println("private reviews are :" + selectPrivateReviews);
+    System.out.println("public reviews are :" + selectPublicReviews);
+
 
     // Toast.makeText(getApplicationContext(), "Phone contact reviews are:" + selectPrivateReviews, Toast.LENGTH_LONG).show();
     // Toast.makeText(getApplicationContext(), "Public reviews are:" + selectPublicReviews, Toast.LENGTH_LONG).show();
@@ -1475,172 +1494,6 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
     startActivity(intent);
   }
 
-  //CURRENTLY NOT BEING USED 09/11/2018
-  private void showRandomSharedReviews() {
-    //rather than unwelcoming empty screen, if user has no reviews to show on start up,
-    //show 3 random reviews
-    // and create a new sharedReview, getting details of user's reviews in the db
-    SharedReview sharedReview = new SharedReview();
-
-    //System.out.println("tesst1");
-
- /*   sharedReview.setphoneNameonPhone("U");
-
-    //get 0,1 or 2 value from db, for Just U, private or public
-    sharedReview.setPublicorprivate("1");
-    //we are getting the reviewid from the db so we can pull extra matching info,
-    sharedReview.setReviewid("6");
-    //set the category part of the object to that matching reviewid
-    sharedReview.setCategory("doctor");
-    //etc...
-    sharedReview.setName("Dr Harris");
-    sharedReview.setAddress("Tallaght");
-    sharedReview.setPhone("086 34 63 389");
-    sharedReview.setComment("All I want for Christmas is you");
-*/
-    //depending on if setType_row is 1 or 2 or 3,
-    //in this case it is 1 - a review that is owned
-    //by logged-in user.
-    //We will getType_row in SharedPopulistoReviewsAdapter.
-    //We will put phoneNameOnPhone in brown, blue or green text - depending
-    //on how loggedin user is sharing the review
-    //We will show ViewContact - has edit,
-    //delete button etc
-    sharedReview.setType_row("1");
-
-    //add the sharedReview to the sharedReviewList
-    sharedReviewList.add(sharedReview);
-
-    //set the adapter to show shared reviews
-    recyclerView.setAdapter(sharedAdapter);
-
-
-    //post the phone number of the logged in user to SelectUserReviews.php and from that
-    //get the logged in user's reviews
-    StringRequest stringRequest = new StringRequest(Request.Method.POST, SelectUserReviews_URL,
-        new Response.Listener<String>() {
-          @Override
-          public void onResponse(String response) {
-
-            try {
-              //name our JSONArray responseObject.
-              //JSONArray is an array of responseObjects.
-              //one responseObject = one review
-              JSONArray responseObject = new JSONArray(response);
-
-              for
-                //for each responseObject/review
-                  (int i = 0; i < responseObject.length(); i++) {
-
-                //for each responseObject in the array, name it obj
-                //each obj will consist of reviewid, category, name, phone,comment
-                JSONObject obj = responseObject.getJSONObject(i);
-                // and create a new object, Review, getting details of user's reviews in the db
-                Review review = new Review();
-
-                //get 0,1 or 2 value, for Just U, private or public
-                review.setPublicorprivate(obj.getString("publicorprivate"));
-                //we are getting the reviewid so we can pull extra matching info,
-                review.setReviewid(obj.getString("reviewid"));
-
-                //convert public_or_private to an integer
-                pub_or_priv = Integer.parseInt(obj.getString("publicorprivate"));
-
-                //set the category part of the object to that matching reviewid
-                review.setDate_created(obj.getString("date_created"));
-
-                review.setCategory(obj.getString("category"));
-                //etc...
-                review.setName(obj.getString("name"));
-                review.setPhone(obj.getString("phone"));
-                review.setAddress(obj.getString("address"));
-                review.setComment(obj.getString("comment"));
-
-                String date = obj.getString("date_created");
-                SimpleDateFormat spf = new SimpleDateFormat("yyyy dd mm hh:mm:ss");
-                Date newDate;
-                try {
-                  newDate = spf.parse(date);
-                  spf = new SimpleDateFormat("dd MMM yyyy");
-                  date = spf.format(newDate);
-                  System.out.println("the date is" + date);
-
-                } catch (ParseException e) {
-                  e.printStackTrace();
-                }
-
-                //set a string to the phone number from the DB,
-                //the phone number of the person who made the review
-                // phoneNoInDB = phoneNoofUser;
-                //set the setter to
-                //the phone number of the person who made the review
-                review.setPhoneNumberofUserFromDB(phoneNoofUser);
-
-                //add the reviewUser to the sharedReviewList
-                reviewList.add(review);
-
-                //System.out.println("obj length is: " + obj.length());
-
-              }
-
-              //number of reviews....
-              System.out.println("responseObject length is: " + responseObject.length());
-
-            } catch (JSONException e) {
-              Log.e("MYAPP", "unexpected JSON exception", e);
-              // Do something to recover ... or kill the app.
-            }
-
-            // notifying list adapter about data changes
-            // so that it renders the list view with updated data
-            uAdapter.notifyDataSetChanged();
-
-          }
-        },
-        new Response.ErrorListener() {
-          @Override
-          public void onErrorResponse(VolleyError error) {
-            Toast.makeText(PopulistoListView.this, "Trouble cantacting the server right now :(", Toast.LENGTH_LONG).show();
-
-          }
-
-        }) {
-      @Override
-      //post info to php
-      protected Map<String, String> getParams() {
-        Map<String, String> params = new HashMap<String, String>();
-        //phoneNoofUser is the value we get from Android, the user's phonenumber.
-        //the key is "phonenumberofuser". When we see "phonenumberofuser" in our php,
-        //put in phoneNoofUser
-        params.put(KEY_PHONENUMBER_USER, phoneNoofUser);
-        return params;
-
-      }
-
-    };
-
-    //this is to hopefully end the VolleyTimeOut error message
-    stringRequest.setRetryPolicy(new RetryPolicy() {
-      @Override
-      public int getCurrentTimeout() {
-        return 50000;
-      }
-
-      @Override
-      public int getCurrentRetryCount() {
-        return 50000;
-      }
-
-      @Override
-      public void retry(VolleyError error) throws VolleyError {
-
-      }
-    });
-
-    RequestQueue requestQueue = Volley.newRequestQueue(this);
-    requestQueue.add(stringRequest);
-
-  }
 
   //delete matching contacts in shared prefs on activity close down
 /*  @Override

@@ -1039,12 +1039,12 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
     protected void onPostExecute(Void aVoid) {
       super.onPostExecute(aVoid);
 
-
+      // ******  for recyclerview of contacts
       PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, EditContact.this, 2);
 
       recyclerView.setAdapter(adapter);
       recyclerView.setLayoutManager((new LinearLayoutManager(EditContact.this)));
-
+      // *******
 
       //this is our progressbar view
       //we find it in nocontactsfound.xml, make it invisible as there is no waiting
