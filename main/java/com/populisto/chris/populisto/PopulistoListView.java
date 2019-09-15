@@ -301,7 +301,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
             @Override
             public void onResponse(String response) {
 
-              //show categories available to the logged-in user
+              //show reviews available to the logged-in user
               //the_response is defined as a global string, above,
               //so we use this, rather than just "response"
               the_response = response;
@@ -323,7 +323,7 @@ public class PopulistoListView extends AppCompatActivity implements CategoriesAd
               // "private_count":2,
               // "public_count":3}, etc...etc....
 
-             // Toast.makeText(PopulistoListView.this, "response is: " + the_response, Toast.LENGTH_LONG).show();
+              Toast.makeText(PopulistoListView.this, "response is: " + the_response, Toast.LENGTH_LONG).show();
 
               //the_response is defined as a global string, above
               System.out.println("response is: " + the_response);

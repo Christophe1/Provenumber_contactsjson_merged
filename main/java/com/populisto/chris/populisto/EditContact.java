@@ -127,7 +127,7 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
 
   Button save;
   Button cancel;
-
+  Button invite;
 
   private EditText categoryname;
   private EditText namename;
@@ -538,6 +538,32 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
 
     });
 
+    //for the invite button
+    invite = (Button) findViewById(R.id.btnInvite);
+
+
+  }
+
+  //I have onClick code in recycler_blueprint_non_matching.xml,
+  //android:onClick="inviteSomeone"
+  public void inviteSomeone(View view) {
+
+    Toast.makeText(this, "invite", Toast.LENGTH_SHORT).show();
+
+    Intent intent = new Intent(Intent.ACTION_SEND);
+    intent.setType("text/plain");
+
+// Create intent to show chooser
+    Intent chooser = Intent.createChooser(intent, "Pick your app");
+
+    String shareSub = "This App is cool!";
+    intent.putExtra(Intent.EXTRA_TEXT, shareSub);
+    intent.putExtra("address", "+73737373");
+
+// Verify the intent will resolve to at least one activity
+    // if (intent.resolveActivity(getPackageManager()) != null) {
+    startActivity(chooser);
+    // }
   }
 
   //load this function when the activity is created, put categories
@@ -689,6 +715,15 @@ public class EditContact extends AppCompatActivity implements GoogleApiClient.On
         allValid = false;
       }
 
+    }
+
+
+    if (public_or_private == 0) {
+
+      if (TextUtils.isEmpty(category_name)) {
+        categoryname.setError("Needs to be filled");
+        allValid = false;
+      }
     }
 
     if (allValid == true) {

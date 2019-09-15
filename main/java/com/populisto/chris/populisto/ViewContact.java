@@ -526,35 +526,17 @@ public class ViewContact extends AppCompatActivity {
   //android:onClick="inviteSomeone"
   public void inviteSomeone(View view) {
 
-    Toast.makeText(ViewContact.this, "invite", Toast.LENGTH_SHORT).show();
-/*    Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
-    whatsappIntent.setType("text/plain");
-    whatsappIntent.setPackage("com.whatsapp");
-    whatsappIntent.putExtra(Intent.EXTRA_TEXT, "The text you wanted to share");
-    try {
-      activity.startActivity(whatsappIntent);
-    } catch (android.content.ActivityNotFoundException ex) {
-      //ToastHelper.MakeShortText("Whatsapp have not been installed.");
-      Toast.makeText(ViewContact.this, "invite", Toast.LENGTH_SHORT).show();
-
-    }*/
-/*
-
-    Intent sendIntent = new Intent();
-    sendIntent.setAction(Intent.ACTION_VIEW);
-    sendIntent.addCategory("android.intent.category.LAUNCHER");
-    //sendIntent.putExtra(Intent.EXTRA_TEXT, "YOUR_LINK");
-    sendIntent.setType("text/plain");
-    startActivity(sendIntent);
-*/
+    Toast.makeText(this, "invite", Toast.LENGTH_SHORT).show();
 
     Intent intent = new Intent(Intent.ACTION_SEND);
     intent.setType("text/plain");
-// Always use string resources for UI text.
-// This says something like "Share this photo with"
-    String title = "Pick your app";
+
 // Create intent to show chooser
-    Intent chooser = Intent.createChooser(intent, title);
+    Intent chooser = Intent.createChooser(intent, "Pick your app");
+
+    String shareSub = "This App is cool!";
+    intent.putExtra(Intent.EXTRA_TEXT, shareSub);
+    intent.putExtra("address", "+73737373");
 
 // Verify the intent will resolve to at least one activity
    // if (intent.resolveActivity(getPackageManager()) != null) {
@@ -772,13 +754,14 @@ public class ViewContact extends AppCompatActivity {
               //In SelectPhoneContact class, so getItemViewType will know which layout to show
               //:checkbox or Invite Button
               selectContact.setType_row("1");
+              System.out.println("selectContact with setType_row 1: " + selectContact.getPhone());
 
 
             } else {
               // insert it at the end (default)
               selectPhoneContacts.add(selectContact);
               selectContact.setType_row("2");
-
+              System.out.println("selectContact with setType_row 2: " + selectContact.getPhone());
             }
           }
 

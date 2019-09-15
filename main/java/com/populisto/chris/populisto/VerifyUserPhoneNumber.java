@@ -41,6 +41,11 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.populisto.chris.populisto.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -163,7 +168,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
   private String mVerificationId;
 
   //firebase auth object
-  //private FirebaseAuth mAuth;
+  private FirebaseAuth mAuth;
 
   //Button buttonSignIn;
 
@@ -398,7 +403,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         setContentView(R.layout.verify_phone_number);
 
         //initialize objects
-       // mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
 
@@ -1361,18 +1366,18 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     } catch (NumberParseException e) {
       System.err.println("NumberParseException was thrown: " + e.toString());
     }
-  }
-/*    PhoneAuthProvider.getInstance().verifyPhoneNumber(
+
+    PhoneAuthProvider.getInstance().verifyPhoneNumber(
         //send a text to the phone number entered by the user
         phoneNoofUserInternationalFormat,
         60,
         TimeUnit.SECONDS,
         TaskExecutors.MAIN_THREAD,
         mCallbacks);
-  }*/
+  }
 
   //the callback to detect the verification status
-/*  private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+  private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
     @Override
     public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
 
@@ -1387,9 +1392,9 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
         //verifying the code
         verifyVerificationCode(code);
       }
-    }*/
+    }
 
-   /* @Override
+    @Override
     public void onVerificationFailed(FirebaseException e) {
       Toast.makeText(VerifyUserPhoneNumber.this, e.getMessage(), Toast.LENGTH_LONG).show();
     }
@@ -1511,7 +1516,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
             }
           }
         });
-  }*/
+  }
 
 
   //if the user chooses to refresh the Activity, when "Try Again" button is clicked...
@@ -1523,7 +1528,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     overridePendingTransition(0, 0);
     startActivity(intent);
   }*/
-/*
+
   @Override
   //check Permissions status, code can be set for ALLOW or DENY
   public void onRequestPermissionsResult(int requestCode,
@@ -1535,7 +1540,7 @@ public class VerifyUserPhoneNumber extends AppCompatActivity {
     showVerifyNumberScreen();
 
 
-  }*/
+  }
 
 
   //show the Verify Number screen.

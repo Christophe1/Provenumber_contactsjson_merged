@@ -1,6 +1,8 @@
 package com.populisto.chris.populisto;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
@@ -20,6 +22,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.populisto.chris.populisto.VerifyUserPhoneNumber.activity;
 
 /**
  * Created by Chris on 07/01/2018.
@@ -116,8 +120,12 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
       else {
 
       System.out.println("gettype row is: " + theContactsList.get(position).getType_row());
+      if (!theContactsList.isEmpty())
       return Integer.parseInt(theContactsList.get(position).getType_row());
-    }
+      else
+        System.out.println("doobie ");
+
+  }
     return 1;
   }
 
@@ -320,7 +328,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
               //add the number to the arrayList
               checkedContactsAsArrayList.add(theContactsList.get(position).getPhone());
               Toast.makeText(context_type, "checkboxes are:" + checkedContactsAsArrayList, Toast.LENGTH_SHORT).show();
-
+              Toast.makeText(context_type, "the checked number is :" + theContactsList.get(position).getPhone(), Toast.LENGTH_SHORT).show();
             }
 
             //if count is 0, nothing selected, then show 'Just Me'
@@ -354,10 +362,43 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
       else {
 
+        //if getItemViewTyoe = 2, not a Populisto user (if it has an 'invite' button)
+
         //for people on logged-in user's phone who aren't populisto users
         ((nonMatchingContact) viewHolder).title.setText(selectPhoneContact.getName());
         ((nonMatchingContact) viewHolder).phone.setText(selectPhoneContact.getPhone());
 
+        //for the onClick of the INVITE button
+        ((nonMatchingContact) viewHolder).invite.setOnClickListener(new View.OnClickListener() {
+
+          @Override
+          public void onClick(View v) {
+            Toast.makeText(context_type, "invite button clicked:" + theContactsList.get(position).getPhone(), Toast.LENGTH_SHORT).show();
+
+            //I have onClick code in recycler_blueprint_non_matching.xml,
+            //android:onClick="inviteSomeone"
+        //    public void inviteSomeone(Context context_type) {
+
+              Toast.makeText(context_type, "invite", Toast.LENGTH_SHORT).show();
+
+              Intent intent = new Intent(Intent.ACTION_SEND);
+              intent.setType("text/plain");
+
+// Create intent to show chooser
+              Intent chooser = Intent.createChooser(intent, "Pick your app");
+
+              String shareSub = "This App is cool!";
+              intent.putExtra(Intent.EXTRA_TEXT, shareSub);
+              intent.putExtra("address", theContactsList.get(position).getPhone());
+
+// Verify the intent will resolve to at least one activity
+              // if (intent.resolveActivity(getPackageManager()) != null) {
+              context_type.startActivity(chooser);
+              // }
+           // }
+
+          }
+        });
       }
 
 
@@ -509,7 +550,7 @@ public class PopulistoContactsAdapter extends RecyclerView.Adapter<RecyclerView.
 
   @Override
   public int getItemCount() {
-    System.out.println("here it is, thecontactlist" + theContactsList.size());
+    //System.out.println("here it is, thecontacstlist " + theContactsList.size());
 
     return theContactsList.size();
   }

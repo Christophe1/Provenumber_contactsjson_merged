@@ -81,6 +81,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   Button justMeContacts;
   Button save;
   Button cancel;
+  Button invite;
   //CheckBox mcheckbox;
 
   //thse are the fields in the xml
@@ -456,6 +457,10 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
       }
 
     });
+
+    //for the invite button
+    invite = (Button) findViewById(R.id.btnInvite);
+
   }
 
   //load this function when the activity is created, put categories
@@ -639,11 +644,15 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
               //In SelectContact class, so getItemViewType will know which layout to show
               //:checkbox or Invite Button
               selectContact.setType_row("1");
+              System.out.println("selectContact with setType_row 1: " + selectContact.getPhone());
+
 
             } else {
               // insert it at the end (default)
               selectPhoneContacts.add(selectContact);
               selectContact.setType_row("2");
+              System.out.println("selectContact with setType_row 2: " + selectContact.getPhone());
+
 
             }
           }
@@ -708,16 +717,20 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
           for (int i = 0; i < count; i++) {
 
-            theContactsList.add(new SelectPhoneContact());
+           // theContactsList.add(new SelectPhoneContact());
 
             //check all matching contacts, we want it to be 'Phone Contacts' by default
             PopulistoContactsAdapter.theContactsList.get(i).setSelected(true);
             System.out.println("NewContact: the matching contacts are " + MatchingContactsAsArrayList);
 
             //we need to notify the recyclerview that changes may have been made
-            adapter.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
 
           }
+
+          //we need to notify the recyclerview that changes may have been made
+          adapter.notifyDataSetChanged();
+
         }
 
         else {
@@ -730,9 +743,12 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
 
         }
+
+
       }
 
     }
+
   }
 
 
