@@ -6,6 +6,8 @@
     <string name="add_new">Add New</string>
     <string name="title_activity_contact_view">ContactView</string>
     <string name="btnInvite">Invite</string>
+    <!--following this tutorial for Places API: https://www.youtube.com/watch?v=jtOYctzpa_w-->
+    <string name="places_api_key">AIzaSyC7ocaJhMlmxi900rkkXNBqDN2Wxb-del8</string>
     <!--toolbar_title is what will appear in toolbar
     for new, edit, and view activities-->
     <string name="toolbar_title">Populisto</string>

@@ -10,13 +10,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -40,10 +40,16 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.populisto.chris.populisto.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Places;
+//import com.google.android.gms.location.places.Places;
+import com.google.android.libraries.places.api.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -52,6 +58,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -124,7 +131,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
   //for Google Address
   private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
   private AutoCompleteTextView AutoCompTextViewAddress;
-  private GoogleApiClient mGoogleApiClient;
+ // private GoogleApiClient mGoogleApiClient;
 
   //for autocomplete of categories, the php file will get categories available to user
   //to pick from
@@ -132,7 +139,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
 
   private ArrayList<CategoryList> existingCategoryList;
 
-  private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
+  //private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
 
   //for if review can be saved, all fields need to be filled -
   //name, address, category... etc...
@@ -143,8 +150,46 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_new_contact);
 
+    Places.initialize(getApplicationContext(),getString(R.string.places_api_key));
+    // Create a new Places client instance.
+    PlacesClient placesClient = Places.createClient(this);
 
-    noContactsFound = (TextView) findViewById(R.id.noContactsFoundView);
+    // Initialize the AutocompleteSupportFragment.
+    AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+        getSupportFragmentManager().findFragmentById(R.id.textViewCategory);
+
+    // Specify the types of place data to return.
+    autocompleteFragment.setPlaceFields(Arrays.asList(
+        Place.Field.NAME,
+        Place.Field.LAT_LNG
+    ));
+
+    // Set up a PlaceSelectionListener to handle the response.
+    autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                                                      @Override
+                                                      public void onPlaceSelected(Place place) {
+                                                        // TODO: Get info about the selected place.
+                                                        String name = place.getName();
+                                                        double lat, lng;
+                                                        if (place.getLatLng() !=null){
+                                                          lat =place.getLatLng().latitude;
+                                                          lng =place.getLatLng().longitude;
+                                                        }
+
+                                                        //do something
+                                                      }
+
+      @Override
+      public void onError(Status status) {
+        // TODO: Handle the error.
+       // Log.i(TAG, "An error occurred: " + status);
+      }
+    });
+
+
+
+
+                                                      noContactsFound = (TextView) findViewById(R.id.noContactsFoundView);
 
     existingCategoryList = new ArrayList<>();
 
@@ -157,17 +202,19 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
     PopulistoContactsAdapter adapter = new PopulistoContactsAdapter(selectPhoneContacts, NewContact.this, 1);
 
     // Create a GoogleApiClient instance
-    mGoogleApiClient = new GoogleApiClient
+/*    mGoogleApiClient = new GoogleApiClient
         .Builder(this)
-        .addApi(Places.GEO_DATA_API)
-        .addApi(Places.PLACE_DETECTION_API)
+        .addApi(Place.GEO_DATA_API)
+        .addApi(Place.PLACE_DETECTION_API)
         .enableAutoManage(this, 0, this)
-        .build();
+        .build();*/
 
     //Google Places
+/*
     mPlaceAutoCompleteAdapter = new PlaceAutoCompleteAdapter(this, mGoogleApiClient, LAT_LNG_BOUNDS, null);
 
     AutoCompTextViewAddress.setAdapter(mPlaceAutoCompleteAdapter);
+*/
 
     //put in a toolbar
     Toolbar toolbar = findViewById(R.id.toolbar);

@@ -64,6 +64,7 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/textViewCategory"
+                    android:name = "com.google.android.libraries.places.widget.AutocompleteActivity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".75"
