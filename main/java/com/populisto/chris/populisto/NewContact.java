@@ -159,13 +159,13 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         getSupportFragmentManager().findFragmentById(R.id.textViewCategory);
 
     // Specify the types of place data to return.
-    autocompleteFragment.setPlaceFields(Arrays.asList(
+/*    autocompleteFragment.setPlaceFields(Arrays.asList(
         Place.Field.NAME,
         Place.Field.LAT_LNG
-    ));
+    ));*/
 
     // Set up a PlaceSelectionListener to handle the response.
-    autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+/*    autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                                                       @Override
                                                       public void onPlaceSelected(Place place) {
                                                         // TODO: Get info about the selected place.
@@ -184,7 +184,7 @@ public class NewContact extends AppCompatActivity implements GoogleApiClient.OnC
         // TODO: Handle the error.
        // Log.i(TAG, "An error occurred: " + status);
       }
-    });
+    });*/
 
 
 
